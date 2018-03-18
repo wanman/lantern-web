@@ -1,0 +1,15 @@
+---
+page_id: "map"
+---
+
+extends ../../_layouts/_master.pug
+
+block content
+    section#map-app
+        canvas#canvas
+        button#back &larr;
+
+block scripts
+        script(src="/vendor/geojson-vt.min.js")
+        script(src="https://d3js.org/topojson.v1.min.js")
+        script(src="/view/map/map.js")
