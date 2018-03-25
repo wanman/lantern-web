@@ -16,8 +16,8 @@ window.list_view = (function() {
     var vm = new Vue(opts);
     vm.$mount('#list-app');
 
-    var db = new LanternStore();
-    db.local.allDocs().then(function(result) {
+    var store = new LanternStore();
+    store.db.allDocs().then(function(result) {
         vm.$data.docs = result.rows;
     });
 
