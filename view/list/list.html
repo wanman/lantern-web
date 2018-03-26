@@ -7,8 +7,8 @@ extends ../../_layouts/_master.pug
 block content
     section#list-app(v-cloak)
         ul
-            li(v-for="doc in docs")
-                span="{{ doc.id }}"
+            li(v-for="row in rows" v-bind:id="row.id" v-bind:class="row.type")
+                span="{{ row.name }}"
 
 block styles
     link(rel="stylesheet" type="text/css" href="/view/list/list.css")
@@ -16,5 +16,6 @@ block styles
 block scripts
     script(src="/vendor/pouchdb.js")
     script(src="/lib/store.js")
+    script(src="/lib/transform.js")
     script(src="/vendor/vue.min.js")
     script(src="/view/list/list.js")
