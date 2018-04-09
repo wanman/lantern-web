@@ -1,17 +1,19 @@
-window.default_view = (function() {
+window.app = (function() {
 
-    //---------------------------------------------------------------- Vue App
-    var opts = {
+    var self = {};
+    var vue_opts = {
         methods: {},
         data: {
-            active_user_count: 321
+            r_docs: [],
+            active_user_count: 321,
         },
         beforeMount: function() {
             console.log("[default] view initialized");
-            // load interests
         }
     };
-    var vm = new Vue(opts);
-    vm.$mount('#default-app');
-
+    self.vm = new Vue(vue_opts);
+    self.vm.$mount('#default-app');
+    self.store = new LanternStore(self.vm.$data);
+    self.store.setup(["r"]);
+    return self;
 }());

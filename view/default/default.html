@@ -9,7 +9,10 @@ block content
         h1 What do you need most today?
         h2 {{ active_user_count }} users are listening
 
+        ul#resources
+            li(v-for="row in r_docs" v-bind:id="row._id" v-bind:style="'color: #' + row.color +'; background-color: #' + row.background_color")
+                span="{{ row.title }}"
+
 
 block scripts
-        script(src="/vendor/vue.min.js")
-        script(src="/view/default/default.js")
+    script(src="/view/default/default.js")

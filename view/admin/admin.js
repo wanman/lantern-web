@@ -1,7 +1,6 @@
-window.admin_view = (function() {
+window.app = (function() {
 
     var self = {
-        store: new LanternStore(),
         registerInterests: function() {
             registerInterest("Shelter", "shr", "ffcc54", "fff7ef");
             registerInterest("Water", "wtr", "78aef9", "e9f2fe");
@@ -12,7 +11,7 @@ window.admin_view = (function() {
             registerInterest("Power", "pwr", "f45d90", "f2dae2");
             registerInterest("Supplies", "sup", "4aaddb", "e8f4fa");
         },
-        loadInterests: loadInterests
+        registerPlace: registerPlace
     };
 
     /**
@@ -22,8 +21,7 @@ window.admin_view = (function() {
     * Allows for dynamically adding new interests over over time
     */
     function registerInterest(title, slug, color, background_color) {
-        return self.store.db.upsert("int-"+slug, function(doc) {
-            doc.type = "interest";
+        return self.store.upsert("r:"+slug, function(doc) {
             doc.title = title;
             doc.color = color;
             doc.background_color = background_color;
@@ -33,46 +31,38 @@ window.admin_view = (function() {
             else {
                 doc.updated_at = new Date();
             }
-            console.log("[admin] registering new interest: ", doc);
             return doc;
-        }).then(function (response) {
-            console.log("[admin] registered interests");
-        }).catch(function (err) {
-            console.log(err);
         });
     }
 
-    function loadInterests() {
-        self.store.db.allDocs({include_docs: true}).then(function(result) {
-            for (var idx in result.rows) {
-                var doc = result.rows[idx].doc;
-                console.log(doc);
-                if (doc.type == "interest") {
-                    vm.$data.interests.push(doc);
-                    console.log(doc)
-                }
+    function registerPlace() {
+        return self.store.upsert("p:test-place", function(doc) {
+            doc.title = 'Meadowlane ' + Math.round(Math.random()*100);
+            if (!doc.created_at) {
+                doc.created_at = new Date();
             }
+            else {
+                doc.updated_at = new Date();
+            }
+            return doc;
         });
     }
 
-
-    //---------------------------------------------------------------- Vue App
-    var opts = {
+    var vue_opts = {
         methods: {},
         data: {
-            interests: []
+            r_docs: []
         },
         beforeMount: function() {
             console.log("[admin] view initialized");
-            self.store.sync()
-                .on('active', function () {
-                    console.log("[admin] sync enabled");
-                });
-
         }
     };
-    var vm = new Vue(opts);
-    vm.$mount('#admin-app');
+
+    self.vm = new Vue(vue_opts);
+    self.vm.$mount('#admin-app');
+
+    self.store = new LanternStore(self.vm.$data);
+    self.store.setup(["r"]);
 
     return self;
 }());
