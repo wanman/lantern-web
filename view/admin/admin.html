@@ -1,0 +1,19 @@
+---
+id: "admin"
+---
+
+extends ../../_layouts/_master.pug
+
+block content
+    section#admin-app(v-cloak)
+        ul#interests
+             li(v-for="row in interests" v-bind:id="row._id" v-bind:class="row.type" v-bind:style="'color: #' + row.color +'; background-color: #' + row.background_color")
+                span="{{ row.title }}"
+
+
+block scripts
+    script(src="/vendor/pouchdb.js")
+    script(src="/vendor/pouchdb.upsert.js")
+    script(src="/lib/store.js")
+    script(src="/vendor/vue.min.js")
+    script(src="/view/admin/admin.js")
