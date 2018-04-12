@@ -5,11 +5,15 @@ id: "admin"
 extends ../../_layouts/_master.pug
 
 block content
-    section#admin-app(v-cloak)
-        ul#resources
-             li(v-for="row in r_docs" v-bind:id="row._id" v-bind:style="'color: #' + row.color +'; background-color: #' + row.background_color")
-                span="{{ row.title }}"
+    div#admin-app(v-cloak)
 
+        section
+            a(v-on:click="importResources") Resource Data
+            p {{ pluralize(r_docs.length) }}
+
+        section 
+            a(v-on:click="importPlaces") Place Data
+            p {{ pluralize(p_docs.length) }}
 
 block scripts
     script(src="/view/admin/admin.js")
