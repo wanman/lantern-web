@@ -2,13 +2,21 @@ window.app = (function() {
 
     var self = {};
 
+    var types = [
+        {key: "u", name: "User Profile", docs: [], populate: addUserProfile},
+        {key: "p", name: "Geo Point", docs: [], populate: addDefaultPoints},
+        {key: "r", name: "Geo Route", docs: [], populate: addDefaultRoutes},
+        {key: "c", name: "Resource Category", docs: [], populate: addDefaultCategories},
+        {key: "s", name: "Supply Level", docs: [], populate: addDefaultSupplyLevels}
+    ];
+
     /**
     * Save an interest to the database for future use in the interface.
     * Allows for dynamically adding new interests over over time.
     */
-    function registerInterest(title, slug, color, background_color) {
-        return self.store.upsert("r:"+slug, function(doc) {
-            doc.title = title;
+    function addCategory(title, slug, color, background_color) {
+        return self.store.upsert("c:"+slug, function(doc) {
+            doc.name = title;
             doc.color = color;
             doc.background_color = background_color;
             if (!doc.created_at) {
@@ -21,15 +29,71 @@ window.app = (function() {
         });
     }
     
+    function addDefaultCategories() {
+        console.log("[admin] adding default resource categories");
+        addCategory("Shelter", "shr", "ffcc54", "fff7ef");
+        addCategory("Water", "wtr", "78aef9", "e9f2fe");
+        addCategory("Fuel", "ful", "c075c9", "f5e9f6");
+        addCategory("Internet", "net", "73cc72", "e8f7e8");
+        addCategory("Medical", "med", "ff844d", "ffebe2");
+        addCategory("Donations", "dnt", "50c1b6", "e3f5f3");
+        addCategory("Power", "pwr", "f45d90", "f2dae2");
+        addCategory("Supplies", "sup", "4aaddb", "e8f4fa");
+    }
 
     /**
     * Save an arbitrary map location into the database.
     * Allows for tracking population size and resource distribution
     * against meaningful points in a town.
     */
-    function registerPlace() {
+    function addDefaultPoints() {
+        console.log("[admin] adding default geo points");
         return self.store.upsert("p:test-place", function(doc) {
-            doc.title = 'Meadowlane ' + Math.round(Math.random()*100);
+            doc.name = 'Meadowlane ' + Math.round(Math.random()*100);
+            doc.geo = "u4pruydq";
+            if (!doc.created_at) {
+                doc.created_at = new Date();
+            }
+            else {
+                doc.updated_at = new Date();
+            }
+            return doc;
+        });
+    }
+
+    function addDefaultRoutes() {
+        console.log("[admin] adding default geo routes"); 
+        return self.store.upsert("r:test-route", function(doc) {
+            doc.geo_start = 'u4pruydq';
+            doc.geo_stop = 'u4pruyde';
+            if (!doc.created_at) {
+                doc.created_at = new Date();
+            }
+            else {
+                doc.updated_at = new Date();
+            }
+            return doc;
+        });
+    }
+
+    function addDefaultSupplyLevels() {
+        console.log("[admin] adding default geo routes");
+        return self.store.upsert("s:test-level", function(doc) {
+            doc.count = 10;
+            if (!doc.created_at) {
+                doc.created_at = new Date();
+            }
+            else {
+                doc.updated_at = new Date();
+            }
+            return doc;
+        });
+    }
+
+    function addUserProfile() {        
+        console.log("[admin] adding a user profile");
+        return self.store.upsert("u:test-user", function(doc) {
+            doc.name = 'Anonymous';
             if (!doc.created_at) {
                 doc.created_at = new Date();
             }
@@ -44,21 +108,6 @@ window.app = (function() {
     //------------------------------------------------------------------------
     var vue_opts = {
         methods: {
-            importResources: function() {
-                console.log("[admin] importing resources");
-                registerInterest("Shelter", "shr", "ffcc54", "fff7ef");
-                registerInterest("Water", "wtr", "78aef9", "e9f2fe");
-                registerInterest("Fuel", "ful", "c075c9", "f5e9f6");
-                registerInterest("Internet", "net", "73cc72", "e8f7e8");
-                registerInterest("Medical", "med", "ff844d", "ffebe2");
-                registerInterest("Donations", "dnt", "50c1b6", "e3f5f3");
-                registerInterest("Power", "pwr", "f45d90", "f2dae2");
-                registerInterest("Supplies", "sup", "4aaddb", "e8f4fa");
-            },
-            importPlaces: function() {
-                console.log("[admin] importing places");
-                registerPlace();
-            },
             pluralize: function(count) {
                 if (count === 0) {
                     return 'No Documents';
@@ -71,17 +120,23 @@ window.app = (function() {
             }
         },
         data: {
-            p_docs: [],
-            r_docs: []
+            types: types
         },
         beforeMount: function() {
             console.log("[admin] view initialized");
         }
     };
 
+    var docs_to_preload = [];
+    for (var idx in types) {
+        docs_to_preload.push(types[idx].key);
+        vue_opts.data[types[idx].key+"_docs"] = types[idx].docs;
+    }
+
+
     self.vm = new Vue(vue_opts);
     self.store = new LanternStore(self.vm.$data);
-    self.store.setup(["r","p"]).then(function() {
+    self.store.setup(docs_to_preload).then(function() {
         self.vm.$mount('#admin-app');
     });
 

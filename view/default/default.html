@@ -5,14 +5,7 @@ id: "default"
 extends ../../_layouts/_master.pug
 
 block content
-    section#default-app(v-cloak)
-        h1 What do you need most today?
-        h2 {{ active_user_count }} users are listening
-
-        ul#resources
-            li(v-for="row in r_docs" v-bind:id="row._id" v-bind:style="'color: #' + row.color +'; background-color: #' + row.background_color")
-                span="{{ row.title }}"
-
-
-block scripts
-    script(src="/view/default/default.js")
+    section
+        a(href="/view/map/map.html") Need Help
+    section
+        a(href="/view/map/edit.html") Offering Help

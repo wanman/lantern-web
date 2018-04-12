@@ -1,0 +1,13 @@
+
+:root {
+  --stencil-color: #EEE;
+}
+
+#categories li {
+    font-weight: bold;
+    float: left;
+    width: 10em;
+    height: 10em;
+    padding: 1em;
+    margin: 0.5em;
+}

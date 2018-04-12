@@ -1,0 +1,22 @@
+---
+id: "map"
+---
+
+extends ../../_layouts/_master.pug
+
+block content
+    #map-app(v-cloak)
+        section
+            h1 What do you need most today?
+            h2 {{ pluralize(u_docs.length) }} Listening
+
+        section
+            ul#categories
+                li(v-for="row in c_docs" v-bind:id="row._id" v-bind:style="'color: #' + row.color +'; background-color: #' + row.background_color")
+                    span="{{ row.name }}"
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/view/map/map.css")
+
+block scripts
+    script(src="/view/map/map.js")

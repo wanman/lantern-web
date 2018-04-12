@@ -1,9 +1,0 @@
-
-:root {
-  --stencil-color: #EEE;
-}
-
-li {
-    border: 1px solid var(--stencil-color);
-    margin: 0.5em;
-}

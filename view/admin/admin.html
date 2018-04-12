@@ -7,13 +7,10 @@ extends ../../_layouts/_master.pug
 block content
     div#admin-app(v-cloak)
 
-        section
-            a(v-on:click="importResources") Resource Data
-            p {{ pluralize(r_docs.length) }}
+        section(v-for="item in types")
+            a(v-on:click="item.populate") {{ item.name }} Data
+            p {{ pluralize(item.docs.length) }}
 
-        section 
-            a(v-on:click="importPlaces") Place Data
-            p {{ pluralize(p_docs.length) }}
 
 block scripts
     script(src="/view/admin/admin.js")
