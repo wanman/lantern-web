@@ -3,11 +3,11 @@ window.app = (function() {
     var self = {};
 
     var types = [
-        {key: "u", name: "User Profile", docs: [], populate: addUserProfile},
-        {key: "p", name: "Geo Point", docs: [], populate: addDefaultPoints},
-        {key: "r", name: "Geo Route", docs: [], populate: addDefaultRoutes},
-        {key: "c", name: "Resource Category", docs: [], populate: addDefaultCategories},
-        {key: "s", name: "Supply Level", docs: [], populate: addDefaultSupplyLevels}
+        {key: "v", name: "Venue", docs: [], populate: addDefaultVenues},
+        {key: "r", name: "Route", docs: [], populate: addDefaultRoutes},
+        {key: "c", name: "Category", docs: [], populate: addDefaultCategories},
+        {key: "s", name: "Supply", docs: [], populate: addDefaultSupplyLevels},
+        {key: "u", name: "Profile", docs: [], populate: addUserProfile}
     ];
 
     /**
@@ -46,9 +46,9 @@ window.app = (function() {
     * Allows for tracking population size and resource distribution
     * against meaningful points in a town.
     */
-    function addDefaultPoints() {
-        console.log("[admin] adding default geo points");
-        return self.store.upsert("p:test-place", function(doc) {
+    function addDefaultVenues() {
+        console.log("[admin] adding default venues");
+        return self.store.upsert("v:test-place", function(doc) {
             doc.name = 'Meadowlane ' + Math.round(Math.random()*100);
             doc.geo = "u4pruydq";
             if (!doc.created_at) {
