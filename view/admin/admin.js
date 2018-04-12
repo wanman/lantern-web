@@ -38,7 +38,7 @@ window.app = (function() {
         addCategory("Medical", "med", "ff844d", "ffebe2");
         addCategory("Donations", "dnt", "50c1b6", "e3f5f3");
         addCategory("Power", "pwr", "f45d90", "f2dae2");
-        addCategory("Supplies", "sup", "4aaddb", "e8f4fa");
+        addCategory("Equipment", "eqp", "4aaddb", "e8f4fa");
     }
 
     /**

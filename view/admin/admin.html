@@ -6,7 +6,8 @@ extends ../../_layouts/_master.pug
 
 block content
     div#admin-app(v-cloak)
-
+        section
+            p Click to populate database with sample data:
         section(v-for="item in types")
             a(v-on:click="item.populate") {{ item.name }} Data
             p {{ pluralize(item.docs.length) }}
