@@ -5,19 +5,21 @@ id: "map"
 extends ../../_layouts/_master.pug
 
 block content
-    #map-app(v-cloak)
+    #map-app
         section
             h1 What do you need most today?
-            h2 {{ pluralize(u_docs.length-1) }} Listening
+            h2(v-cloak) {{ pluralize(u_docs.length-1) }} Listening
 
-        section
+        section(v-cloak)
             ul#categories
                 li(
                     v-for="r in c_docs" 
                     v-on:click="toggleCategory" 
-                    v-bind:class='my_profile && my_profile.watch[r._id] ? "active" : "inactive"' v-bind:id="r._id" 
-                    v-bind:style="'color: #' + r.color +'; background-color: #' + r.background_color + '; border-color: #' + r.color")
-                    span="{{ r.name }}"
+                    v-bind:class="makeCategoryClass(r)"
+                    v-bind:id="r._id" 
+                    v-bind:style="makeCategoryStyle(r)"
+                    )
+                        span="{{ r.name }}"
 
 block styles
     link(rel="stylesheet" type="text/css" href="/view/map/map.css")

@@ -7,7 +7,7 @@ window.app = (function() {
     var vue_opts = {
         methods: {
             pluralize: function(count) {
-                if (count === 0) {
+                if (count < 1) {
                     return 'No Users';
                 } 
                 else if (count === 1) {
@@ -29,6 +29,22 @@ window.app = (function() {
                     self.vm.$data.my_profile = doc;
                     return doc;
                 });
+            },
+            makeCategoryClass: function(cat) {
+                var cls = "";
+                var profile = self.vm.$data.my_profile;
+                if (profile && profile.watch.hasOwnProperty(cat._id)) {
+                    if (profile.watch[cat._id]) {
+                        cls += "active ";
+                    }
+                }
+                return cls;
+            },
+            makeCategoryStyle: function(cat) {
+                var style = ["color: #" + cat.color];
+                style.push("background-color: #" + cat.background_color);
+                style.push("border-color: #" + cat.color);
+                return style.join("; ");
             }
         },
         data: {
@@ -38,18 +54,19 @@ window.app = (function() {
         },
         beforeMount: function() {
             console.log("[map] view initialized");
-
-            self.store.get("u:" + self.store.getUserId())
-                .then(function(doc) {
-                    self.vm.$data.my_profile = doc;
-                });
         }
     };
 
     self.vm = new Vue(vue_opts);
 
     self.store = new LanternStore(self.vm.$data);
+
     self.store.setup(["c", "u"]).then(function() {
+        self.store.get("u:" + self.store.getUserId())
+            .then(function(doc) {
+                self.vm.$data.my_profile = doc;
+            });
+
         self.vm.$mount('#map-app');
     });
 

@@ -6,8 +6,7 @@ window.app = (function() {
         {key: "v", name: "Venue", docs: [], populate: addDefaultVenues},
         {key: "r", name: "Route", docs: [], populate: addDefaultRoutes},
         {key: "c", name: "Category", docs: [], populate: addDefaultCategories},
-        {key: "s", name: "Supply", docs: [], populate: addDefaultSupplyLevels},
-        {key: "u", name: "Profile", docs: [], populate: addUserProfile}
+        {key: "s", name: "Supply", docs: [], populate: addDefaultSupplyLevels}
     ];
 
     /**
@@ -89,22 +88,6 @@ window.app = (function() {
             return doc;
         });
     }
-
-    function addUserProfile() {        
-        console.log("[admin] adding a user profile");
-        var my_user_id = self.store.getUserId();
-        return self.store.upsert("u:" + my_user_id, function(doc) {
-            doc.name = 'Anonymous';
-            if (!doc.created_at) {
-                doc.created_at = new Date();
-            }
-            else {
-                doc.updated_at = new Date();
-            }
-            return doc;
-        });
-    }
-
 
     //------------------------------------------------------------------------
     var vue_opts = {
