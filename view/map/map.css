@@ -11,3 +11,11 @@
     padding: 1em;
     margin: 0.5em;
 }
+
+#categories li:hover {
+    cursor: pointer;
+}
+
+#categories li.active {
+    border: 2px solid #000;
+}

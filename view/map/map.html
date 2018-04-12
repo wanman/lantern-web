@@ -12,8 +12,12 @@ block content
 
         section
             ul#categories
-                li(v-for="row in c_docs" v-bind:id="row._id" v-bind:style="'color: #' + row.color +'; background-color: #' + row.background_color")
-                    span="{{ row.name }}"
+                li(
+                    v-for="r in c_docs" 
+                    v-on:click="toggleCategory" 
+                    v-bind:class='my_profile && my_profile.watch[r._id] ? "active" : "inactive"' v-bind:id="r._id" 
+                    v-bind:style="'color: #' + r.color +'; background-color: #' + r.background_color + '; border-color: #' + r.color")
+                    span="{{ r.name }}"
 
 block styles
     link(rel="stylesheet" type="text/css" href="/view/map/map.css")

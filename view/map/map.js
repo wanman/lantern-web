@@ -15,14 +15,34 @@ window.app = (function() {
                 } else {
                     return count + ' Users';
                 }
+            },
+            toggleCategory: function(evt) {
+                var el = evt.target;
+                var cat = el.getAttribute("id");
+                console.log("[map] toggle category: " + cat);
+                // save category state
+                var doc_id = "u:" + self.store.getUserId();
+                return self.store.upsert(doc_id, function(doc) {
+                    doc.updated_at = new Date();
+                    if (!doc.watch) doc.watch = {};
+                    doc.watch[cat] = (doc.watch[cat] === true ? false : true);
+                    self.vm.$data.my_profile = doc;
+                    return doc;
+                });
             }
         },
         data: {
             c_docs: [],
-            u_docs: []
+            u_docs: [],
+            my_profile: null
         },
         beforeMount: function() {
             console.log("[map] view initialized");
+
+            self.store.get("u:" + self.store.getUserId())
+                .then(function(doc) {
+                    self.vm.$data.my_profile = doc;
+                });
         }
     };
 
