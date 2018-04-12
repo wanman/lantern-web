@@ -92,7 +92,8 @@ window.app = (function() {
 
     function addUserProfile() {        
         console.log("[admin] adding a user profile");
-        return self.store.upsert("u:test-user", function(doc) {
+        var my_user_id = self.store.getUserId();
+        return self.store.upsert("u:" + my_user_id, function(doc) {
             doc.name = 'Anonymous';
             if (!doc.created_at) {
                 doc.created_at = new Date();
