@@ -6,16 +6,7 @@ window.app = (function() {
 
     var vue_opts = {
         methods: {
-            pluralize: function(count) {
-                if (count < 1) {
-                    return 'No Users';
-                } 
-                else if (count === 1) {
-                    return '1 User';
-                } else {
-                    return count + ' Users';
-                }
-            },
+          
             toggleCategory: function(evt) {
                 var el = evt.target;
                 var cat = el.getAttribute("id");
@@ -46,7 +37,7 @@ window.app = (function() {
                     var cat_id = "c:"+cat;
                     cat = self.store.getCached(cat_id);
                 }
-                if (!cat.color) {
+                if (!cat || !cat.hasOwnProperty("color")) {
                     console.log("[map] skipping bad cat", cat);
                     return;
                 }

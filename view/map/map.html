@@ -8,7 +8,7 @@ block content
     #map-app
         section
             h1 What do you need most today?
-            h2(v-cloak) {{ pluralize(u_docs.length-1) }} Listening
+            h2(v-cloak v-if="u_docs.length > 2") {{ u_docs.length-1 }} Listening
 
         section(v-cloak)
             ul#categories.is-clearfix
@@ -32,7 +32,7 @@ block content
             ul#supplies
                 li.box(v-for="r in s_docs")
                     span(v-bind:style="makeCategoryStyle(r.cat)")= "{{ r.cat }}"
-                    span= " {{ r.name }}"
+                    span= " {{ r.count }} {{ r.name }}"
 
 block styles
     link(rel="stylesheet" type="text/css" href="/view/map/map.css")
