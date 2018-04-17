@@ -1,3 +1,10 @@
-#admin-app .tag {
-    width: 9em;
+#admin-app {
+    .tag {
+        width: 9em;
+    }
+    .actions {
+        border-top: 1px solid #EEE;
+        margin-top: 1em;
+        padding-top: 2em;
+    }
 }

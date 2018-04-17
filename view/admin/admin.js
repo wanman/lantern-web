@@ -107,6 +107,16 @@ window.app = (function() {
     //------------------------------------------------------------------------
     var vue_opts = {
         methods: {
+            importDocs: function() {
+                addDefaultVenues();
+                addDefaultRoutes();
+                addDefaultCategories();
+                addDefaultSupplyLevels();
+                addDefaultNotes();
+            },
+            resetDocs: function() {
+                self.store.deleteAll();
+            },
             pluralize: function(count) {
                 if (count === 0) {
                     return 'No Docs';

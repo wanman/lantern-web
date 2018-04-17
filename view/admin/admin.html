@@ -6,10 +6,15 @@ extends ../../_layouts/_master.pug
 
 block content
     div#admin-app(v-cloak)
+        
         .tags.has-addons(v-for="item in types")
             a(v-on:click="item.populate") 
                 span.tag {{ item.name }}
                 span.tag.is-primary {{ pluralize(item.docs.length) }}
+
+        .actions.is-pulled-left
+            .button.is-primary(v-on:click="importDocs") Import Docs
+            .button.is-danger.is-outlined(v-on:click="resetDocs") Reset Docs
 
 block styles
     link(rel="stylesheet" type="text/css" href="/view/admin/admin.css")
