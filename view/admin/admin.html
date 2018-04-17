@@ -6,12 +6,13 @@ extends ../../_layouts/_master.pug
 
 block content
     div#admin-app(v-cloak)
-        section
-            p Click to populate database with sample data:
-        section(v-for="item in types")
-            a(v-on:click="item.populate") {{ item.name }} Data
-            p {{ pluralize(item.docs.length) }}
+        .tags.has-addons(v-for="item in types")
+            a(v-on:click="item.populate") 
+                span.tag {{ item.name }}
+                span.tag.is-primary {{ pluralize(item.docs.length) }}
 
+block styles
+    link(rel="stylesheet" type="text/css" href="/view/admin/admin.css")
 
 block scripts
     script(src="/view/admin/admin.js")

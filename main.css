@@ -1,6 +1,10 @@
+@import "bulma/sass/utilities/_all";
 $text: #595959;
 $body-size: 14px;
-@import "bulma/sass/utilities/_all";
+$box-radius: 8px;
+$box-shadow: 0 2px 50px rgba($black, 0.05), 0 0 0 1px rgba($black, 0.05);
+@import "bulma/sass/elements/box";
+@import "bulma/sass/elements/tag";
 @import "bulma/sass/base/_all";
 
 :root {
@@ -15,6 +19,7 @@ body {
     text-align: center;
     font-family: "montserrat",sans-serif;
     letter-spacing: 0.06em;
+    padding: #{$body-line-height}em;;
 }
 
 h1, h2 {
@@ -27,5 +32,5 @@ h1 {
 }
 
 section {
-    padding: #{$body-line-height}em;
+    padding: #{$body-line-height/3}em;
 }

@@ -6,7 +6,8 @@ window.app = (function() {
         {key: "v", name: "Venue", docs: [], populate: addDefaultVenues},
         {key: "r", name: "Route", docs: [], populate: addDefaultRoutes},
         {key: "c", name: "Category", docs: [], populate: addDefaultCategories},
-        {key: "s", name: "Supply", docs: [], populate: addDefaultSupplyLevels}
+        {key: "s", name: "Supply", docs: [], populate: addDefaultSupplyLevels},
+        {key: "n", name: "Note", docs: [], populate: addDefaultNotes}
     ];
 
     /**
@@ -89,17 +90,31 @@ window.app = (function() {
         });
     }
 
+    function addDefaultNotes() {
+        console.log("[admin] adding default notes");   
+        return self.store.upsert("n:test-note", function(doc) {
+            doc.ref = "v:test-place";
+            if (!doc.created_at) {
+                doc.created_at = new Date();
+            }
+            else {
+                doc.updated_at = new Date();
+            }
+            return doc;
+        });
+    }
+
     //------------------------------------------------------------------------
     var vue_opts = {
         methods: {
             pluralize: function(count) {
                 if (count === 0) {
-                    return 'No Documents';
+                    return 'No Docs';
                 } 
                 else if (count === 1) {
-                    return '1 Document';
+                    return '1 Doc';
                 } else {
-                    return count + ' Documents';
+                    return count + ' Docs';
                 }
             }
         },
