@@ -6,10 +6,9 @@
 #categories li {
     font-weight: bold;
     float: left;
-    width: 10em;
-    height: 10em;
-    padding: 1em;
+    overflow: hidden;
     margin: 0.5em;
+    padding: 6px;
 }
 
 #categories li:hover {
@@ -17,5 +16,6 @@
 }
 
 #categories li.active {
+    padding: 4px;
     border: 2px solid #000;
 }

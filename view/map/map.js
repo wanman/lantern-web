@@ -27,13 +27,14 @@ window.app = (function() {
                     if (!doc.watch) doc.watch = {};
                     doc.watch[cat] = (doc.watch[cat] === true ? false : true);
                     self.vm.$data.my_profile = doc;
+                    console.log(JSON.stringify(doc));
                     return doc;
                 });
             },
             makeCategoryClass: function(cat) {
                 var cls = "";
                 var profile = self.vm.$data.my_profile;
-                if (profile && profile.watch.hasOwnProperty(cat._id)) {
+                if (profile && profile.watch) {
                     if (profile.watch[cat._id]) {
                         cls += "active ";
                     }
@@ -41,6 +42,14 @@ window.app = (function() {
                 return cls;
             },
             makeCategoryStyle: function(cat) {
+                if (typeof(cat) == "string") {
+                    var cat_id = "c:"+cat;
+                    cat = self.store.getCached(cat_id);
+                }
+                if (!cat.color) {
+                    console.log("[map] skipping bad cat", cat);
+                    return;
+                }
                 var style = ["color: #" + cat.color];
                 style.push("background-color: #" + cat.background_color);
                 style.push("border-color: #" + cat.color);
@@ -49,7 +58,9 @@ window.app = (function() {
         },
         data: {
             c_docs: [],
+            v_docs: [],
             u_docs: [],
+            s_docs: [],
             my_profile: null
         },
         beforeMount: function() {
@@ -61,10 +72,11 @@ window.app = (function() {
 
     self.store = new LanternStore(self.vm.$data);
 
-    self.store.setup(["c", "u"]).then(function() {
+    self.store.setup(["v", "c", "u", "s"]).then(function() {
         self.store.get("u:" + self.store.getUserId())
-            .then(function(doc) {
-                self.vm.$data.my_profile = doc;
+            .then(function(profile) {
+                self.vm.$data.my_profile = profile;
+
             });
 
         self.vm.$mount('#map-app');

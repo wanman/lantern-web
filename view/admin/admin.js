@@ -78,7 +78,9 @@ window.app = (function() {
 
     function addDefaultSupplyLevels() {
         console.log("[admin] adding default geo routes");
-        return self.store.upsert("s:test-level", function(doc) {
+        return self.store.upsert("s:water-bottles", function(doc) {
+            doc.name = "Bottles";
+            doc.cat = "wtr";
             doc.count = 10;
             if (!doc.created_at) {
                 doc.created_at = new Date();
