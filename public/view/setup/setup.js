@@ -1,7 +1,5 @@
 window.app = (function() {
 
-    var self = {};
-
     var types = [
         {key: "v", name: "Venue", docs: [], populate: addDefaultVenues},
         {key: "r", name: "Route", docs: [], populate: addDefaultRoutes},
@@ -15,7 +13,7 @@ window.app = (function() {
     * Allows for dynamically adding new interests over over time.
     */
     function addCategory(title, slug, color, background_color) {
-        return self.store.upsert("c:"+slug, function(doc) {
+        return self.stor.upsert("c:"+slug, function(doc) {
             doc.name = title;
             doc.color = color;
             doc.background_color = background_color;
@@ -30,7 +28,7 @@ window.app = (function() {
     }
     
     function addDefaultCategories() {
-        console.log("[admin] adding default resource categories");
+        self.log(" adding default resource categories");
         addCategory("Shelter", "shr", "ffcc54", "fff7ef");
         addCategory("Water", "wtr", "78aef9", "e9f2fe");
         addCategory("Fuel", "ful", "c075c9", "f5e9f6");
@@ -47,8 +45,8 @@ window.app = (function() {
     * against meaningful points in a town.
     */
     function addDefaultVenues() {
-        console.log("[admin] adding default venues");
-        return self.store.upsert("v:test-place", function(doc) {
+        self.log(" adding default venues");
+        return self.stor.upsert("v:test-place", function(doc) {
             doc.name = 'Meadowlane ' + Math.round(Math.random()*100);
             doc.geo = "u4pruydq";
             if (!doc.created_at) {
@@ -62,8 +60,8 @@ window.app = (function() {
     }
 
     function addDefaultRoutes() {
-        console.log("[admin] adding default geo routes"); 
-        return self.store.upsert("r:test-route", function(doc) {
+        self.log(" adding default geo routes"); 
+        return self.stor.upsert("r:test-route", function(doc) {
             doc.geo_start = 'u4pruydq';
             doc.geo_stop = 'u4pruyde';
             if (!doc.created_at) {
@@ -77,8 +75,8 @@ window.app = (function() {
     }
 
     function addDefaultSupplyLevels() {
-        console.log("[admin] adding default geo routes");
-        return self.store.upsert("s:water-bottles", function(doc) {
+        self.log(" adding default geo routes");
+        return self.stor.upsert("s:water-bottles", function(doc) {
             doc.name = "Bottles";
             doc.cat = "wtr";
             doc.count = 10;
@@ -93,8 +91,8 @@ window.app = (function() {
     }
 
     function addDefaultNotes() {
-        console.log("[admin] adding default notes");   
-        return self.store.upsert("n:test-note", function(doc) {
+        self.log(" adding default notes");   
+        return self.stor.upsert("n:test-note", function(doc) {
             doc.ref = "v:test-place";
             if (!doc.created_at) {
                 doc.created_at = new Date();
@@ -107,49 +105,42 @@ window.app = (function() {
     }
 
     //------------------------------------------------------------------------
-    var vue_opts = {
-        methods: {
-            importDocs: function() {
-                addDefaultVenues();
-                addDefaultRoutes();
-                addDefaultCategories();
-                addDefaultSupplyLevels();
-                addDefaultNotes();
-            },
-            resetDocs: function() {
-                self.store.deleteAll();
-            },
-            pluralize: function(count) {
-                if (count === 0) {
-                    return 'No Docs';
-                } 
-                else if (count === 1) {
-                    return '1 Doc';
-                } else {
-                    return count + ' Docs';
-                }
+
+    var opts = {};
+
+    opts.data = {
+        types: types
+    };
+
+    opts.methods = {
+        importDocs: function() {
+            addDefaultVenues();
+            addDefaultRoutes();
+            addDefaultCategories();
+            addDefaultSupplyLevels();
+            addDefaultNotes();
+        },
+        resetDocs: function() {
+            self.stor.deleteAll();
+        },
+        pluralize: function(count) {
+            if (count === 0) {
+                return 'No Docs';
+            } 
+            else if (count === 1) {
+                return '1 Doc';
+            } else {
+                return count + ' Docs';
             }
-        },
-        data: {
-            types: types
-        },
-        beforeMount: function() {
-            console.log("[admin] view initialized");
         }
     };
 
     var docs_to_preload = [];
     for (var idx in types) {
         docs_to_preload.push(types[idx].key);
-        vue_opts.data[types[idx].key+"_docs"] = types[idx].docs;
+        opts.data[types[idx].key+"_docs"] = types[idx].docs;
     }
 
-
-    self.vm = new Vue(vue_opts);
-    self.store = new LanternStore(self.vm.$data);
-    self.store.setup(docs_to_preload).then(function() {
-        self.vm.$mount('#admin-app');
-    });
-
+    var self = new LanternControl("setup", opts, docs_to_preload);
     return self;
 }());

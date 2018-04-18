@@ -1,11 +1,11 @@
 ---
-id: "admin"
+id: "setup"
 ---
 
 extends ../../_layouts/_master.pug
 
 block content
-    div#admin-app(v-cloak)
+    div#setup-app(v-cloak)
         
         .tags.has-addons(v-for="item in types")
             a(v-on:click="item.populate") 
@@ -17,7 +17,7 @@ block content
             .button.is-danger.is-outlined(v-on:click="resetDocs") Reset Docs
 
 block styles
-    link(rel="stylesheet" type="text/css" href="/view/admin/admin.css")
+    link(rel="stylesheet" type="text/css" href="/view/setup/setup.css")
 
 block scripts
-    script(src="/view/admin/admin.js")
+    script(src="/view/setup/setup.js")

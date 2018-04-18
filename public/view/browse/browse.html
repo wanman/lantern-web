@@ -1,16 +1,16 @@
 ---
-id: "map"
+id: "browse"
 ---
 
 extends ../../_layouts/_master.pug
 
 block content
-    #map-app
+    #browse-app(v-cloak)
         section
             h1 What do you need most today?
-            h2(v-cloak v-if="u_docs.length > 2") {{ u_docs.length-1 }} Listening
+            h2(v-if="u_docs.length > 2") {{ u_docs.length-1 }} Listening
 
-        section(v-cloak)
+        section
             ul#categories.is-clearfix
                 li(
                     v-for="r in c_docs" 
@@ -20,14 +20,14 @@ block content
                     v-bind:style="makeCategoryStyle(r)"
                     )="{{ r.name }}"
 
-        section(v-cloak)
+        section
 
             ul#venues
                 li.box(v-for="r in v_docs")="{{ r.name }}"
 
 
 
-        section(v-cloak)
+        section
 
             ul#supplies
                 li.box(v-for="r in s_docs")
@@ -35,7 +35,7 @@ block content
                     span= " {{ r.count }} {{ r.name }}"
 
 block styles
-    link(rel="stylesheet" type="text/css" href="/view/map/map.css")
+    link(rel="stylesheet" type="text/css" href="/view/browse/browse.css")
 
 block scripts
-    script(src="/view/map/map.js")
+    script(src="/view/browse/browse.js")

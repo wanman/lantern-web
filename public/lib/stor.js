@@ -1,17 +1,16 @@
-window.LanternStore = (function($data) {
+window.LanternStor = (function($data) {
 
-    // local and remote database connections
-    var db_opts = {
-        skip_setup: true,
-        withCredentials: false        
+    var remote_uri = window.location.origin + "/db/lantern";
+
+    var self = {
+        cache: {},        
+        local_db: new PouchDB("lantern"),
+        remote_db: new PouchDB(remote_uri.replace(":3000", ":8080"), {
+            skip_setup: true,
+            withCredentials: false        
+        }),
+        target_db: null
     };
-    var cache_map = {};
-    var local_db = new PouchDB("lantern", db_opts);
-    var remote_db = new PouchDB("http://localhost:8080/db/lantern/", db_opts);
-    var target_db = null; // set once we know if remote is available
-
-    var self = {};
-
 
     //------------------------------------------------------------------------
 
@@ -28,28 +27,28 @@ window.LanternStore = (function($data) {
 
         var type = doc._id.split(":")[0];
         var index;
-
         // is the document already cached?
-        if (cache_map[doc._id]) {
+        if (self.cache[doc._id]) {
             index = getIndexForDoc(type, doc._id);
             if (doc._deleted) {
-                console.log("[store] delete from cache", doc._id);
+                console.log("[stor] delete from cache", doc._id, index);
                 $data[type+"_docs"].splice(index, 1);
-                cache_map[doc._id] = null;
+                self.cache[doc._id] = null;
             }
             else {
-                console.log("[store] replace cache doc:", doc._id);
+                console.log("[stor] replace cache doc:", doc._id, index);
                 // replace in cache
                 $data[type+"_docs"].splice(index, 1, doc);
+                self.cache[doc._id].index = index;
             }
-            cache_map[doc._id].index = index;
+            
         }
         else {
             // insert new to cache
-            console.log("[store] cache doc:", doc._id);
+            console.log("[stor] cache doc:", doc._id);
             $data[type+"_docs"].push(doc);
             index = getIndexForDoc(type, doc._id);
-            cache_map[doc._id] = {
+            self.cache[doc._id] = {
                 id: doc._id, 
                 type: type,
                 index: index
@@ -58,13 +57,13 @@ window.LanternStore = (function($data) {
     }
 
     function loadDocuments(type) {
-        console.log("[store] loading type: " + type);
+        //console.log("[stor] loading type: " + type);
         var params = {
             startkey: type+':', 
             endkey: type + ":\ufff0", 
             include_docs: true
         };
-        return target_db.allDocs(params)
+        return self.target_db.allDocs(params)
             .then(function(result) {
                 return Promise.all(result.rows.map(function(result) {
                     return refreshDocInCache(result.doc);
@@ -73,20 +72,20 @@ window.LanternStore = (function($data) {
     }
 
     function pickDatabase() {
-        if (target_db) return Promise.resolve(target_db);
-        return local_db.info()
+        if (self.target_db) return Promise.resolve(self.target_db);
+        return self.local_db.info()
             .then(function (result) {
-                target_db = local_db;
-                return target_db;
+                self.target_db = self.local_db;
+                return self.target_db;
             }).catch(function(err) {
                 if (err.status == 500) {
                     if (err.name == "indexed_db_went_bad") {
                         // may be in private browsing mode
-                        // attempt in-memory store
-                        // some browsers may not allow us to store data locally
+                        // attempt in-memory stor
+                        // some browsers may not allow us to stor data locally
                         console.log("may be in private browsing mode. refusing to cache data in browser");
-                        target_db = remote_db;
-                        return target_db;
+                        self.target_db = self.remote_db;
+                        return self.target_db;
                     }
                 }
             });
@@ -102,33 +101,9 @@ window.LanternStore = (function($data) {
         return uid;
     };
 
-    self.registerUser = function() {
-        console.log("[store] adding your user profile");
-        var my_user_id = self.getUserId();
-        return self.upsert("u:" + my_user_id, function(doc) {
-            doc.name = 'Anonymous';
-            if (!doc.watch) {
-                doc.watch = {};
-            }
-            if (!doc.created_at) {
-                doc.created_at = new Date();
-            }
-            else {
-                doc.updated_at = new Date();
-            }
-            return doc;
-        });
-    };
 
     self.setup = function(types) {
         return pickDatabase()
-            .then(function(db) {
-                console.log("[store] db: " + 
-                    (db.prefix == "_pouch_" ? "local" : "remote"));
-              
-                console.log("[store] user id: " + self.getUserId());
-                return self.registerUser();
-            })
             .then(function() {
                 if (types && types.length) {
                     return Promise.all(types.map(function (type) {
@@ -145,58 +120,59 @@ window.LanternStore = (function($data) {
 
 
     self.get = function(id) {
-        return target_db.get(id);
+        return self.target_db.get(id);
     };
 
     self.getCached = function(id) {
-        var cached = cache_map[id];
+        var cached = self.cache[id];
+        if (!cached) return;
         return $data[cached.type+"_docs"][cached.index];
     };
 
     self.upsert = function(id, fn) {
-        return target_db.upsert(id,fn);
+        return self.target_db.upsert(id,fn);
     };
 
     self.sync = function() {
-        if (!local_db) {
-            console.log("[store] skipping sync since no local db");
+        if (self.target_db.adapter == "http") {
+            console.log("[stor] skipping sync since target is remote");
             return;
         }
         else {
-            console.log("[store] starting sync");
+            console.log("[stor] starting sync");
         }
-        local_db.sync(remote_db, {
+        self.local_db.sync(self.remote_db, {
             live: true,
             retry: true
         })
         .on('change', function (info) {
+            console.log(info);
             if (info.change.docs) {
-                console.log("[store] did %s to remote database: %s docs", 
+                console.log("[stor] did %s to remote database: %s docs", 
                         info.direction, 
                         info.change.docs.length);
                 for (var idx in info.change.docs) {
-                    console.log("[store] change: " + info.change.docs[idx]._id);
                     refreshDocInCache(info.change.docs[idx]);
                 }
             }
         })
         .on('error', function (err) {
-            console.log("[store] sync err", err);
+            console.log("[stor] sync err", err);
         });
         return;
     };
 
 
     self.deleteAll = function() {
-        return target_db.allDocs()
+        return self.target_db.allDocs()
             .then(function (result) {
                 // Promise isn't supported by all browsers; you may want to use bluebird
                 return Promise.all(result.rows.map(function (row) {
-                    console.log("[store] delete " + row.id  + " " + row.value.rev);
-                    return target_db.remove(row.id, row.value.rev);
+                    console.log("[stor] delete " + row.id  + " " + row.value.rev);
+                    return self.target_db.remove(row.id, row.value.rev);
                 }));
             }).then(function () {
-                console.log("[store] finished deleting all docs");
+                console.log("[stor] finished deleting all docs");
               // done!
             }).catch(function (err) {
                 console.log(err);
