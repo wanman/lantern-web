@@ -9,22 +9,12 @@ window.app = (function() {
             var el = evt.target;
             var cat = el.getAttribute("id");
             self.log("toggle category: " + cat);
-            // save category state
-            var doc_id = "u:" + self.stor.getUserId();
-            return self.stor.upsert(doc_id, function(doc) {
-                doc.updated_at = new Date();
-                if (!doc.watch) doc.watch = {};
-                doc.watch[cat] = (doc.watch[cat] === true ? false : true);
-                self.vm.$data.my_profile = doc;
-                console.log(JSON.stringify(doc));
-                return doc;
-            });
+            return self.toggleSubscribe(cat);
         },
         makeCategoryClass: function(cat) {
             var cls = "";
-            var profile = self.vm.$data.my_profile;
-            if (profile && profile.watch) {
-                if (profile.watch[cat._id]) {
+            if (self.user && self.user.watch) {
+                if (self.user.watch[cat._id]) {
                     cls += "active ";
                 }
             }
@@ -52,7 +42,7 @@ window.app = (function() {
         v_docs: [],
         u_docs: [],
         s_docs: [],
-        my_profile: null
+        user: null
     };
 
     
@@ -61,7 +51,7 @@ window.app = (function() {
             window.location.href = "/view/setup/setup.html";
         }
         else {
-            self.vm.$data.my_profile = self.profile;
+            self.vm.$data.user = self.user;
         }
     };
 

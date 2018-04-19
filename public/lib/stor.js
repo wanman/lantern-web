@@ -9,7 +9,7 @@ window.LanternStor = (function($data) {
             skip_setup: true,
             withCredentials: false        
         }),
-        target_db: null
+        db: null
     };
 
     //------------------------------------------------------------------------
@@ -45,7 +45,7 @@ window.LanternStor = (function($data) {
         }
         else {
             // insert new to cache
-            console.log("[stor] cache doc:", doc._id);
+            //console.log("[stor] cache doc:", doc._id);
             $data[type+"_docs"].push(doc);
             index = getIndexForDoc(type, doc._id);
             self.cache[doc._id] = {
@@ -63,7 +63,7 @@ window.LanternStor = (function($data) {
             endkey: type + ":\ufff0", 
             include_docs: true
         };
-        return self.target_db.allDocs(params)
+        return self.db.allDocs(params)
             .then(function(result) {
                 return Promise.all(result.rows.map(function(result) {
                     return refreshDocInCache(result.doc);
@@ -72,11 +72,11 @@ window.LanternStor = (function($data) {
     }
 
     function pickDatabase() {
-        if (self.target_db) return Promise.resolve(self.target_db);
+        if (self.db) return Promise.resolve(self.db);
         return self.local_db.info()
             .then(function (result) {
-                self.target_db = self.local_db;
-                return self.target_db;
+                self.db = self.local_db;
+                return self.db;
             }).catch(function(err) {
                 if (err.status == 500) {
                     if (err.name == "indexed_db_went_bad") {
@@ -84,23 +84,14 @@ window.LanternStor = (function($data) {
                         // attempt in-memory stor
                         // some browsers may not allow us to stor data locally
                         console.log("may be in private browsing mode. refusing to cache data in browser");
-                        self.target_db = self.remote_db;
-                        return self.target_db;
+                        self.db = self.remote_db;
+                        return self.db;
                     }
                 }
             });
     }
 
     //------------------------------------------------------------------------
-    self.getUserId = function() {
-        var uid = window.localStorage.getItem("lantern-profile");
-        if (!uid) {
-            uid = Math.round(Math.random()*1000000);
-            window.localStorage.setItem("lantern-profile", uid);
-        }
-        return uid;
-    };
-
 
     self.setup = function(types) {
         return pickDatabase()
@@ -119,22 +110,15 @@ window.LanternStor = (function($data) {
     };
 
 
-    self.get = function(id) {
-        return self.target_db.get(id);
-    };
-
     self.getCached = function(id) {
         var cached = self.cache[id];
         if (!cached) return;
         return $data[cached.type+"_docs"][cached.index];
     };
 
-    self.upsert = function(id, fn) {
-        return self.target_db.upsert(id,fn);
-    };
 
     self.sync = function() {
-        if (self.target_db.adapter == "http") {
+        if (self.db.adapter == "http") {
             console.log("[stor] skipping sync since target is remote");
             return;
         }
@@ -164,12 +148,12 @@ window.LanternStor = (function($data) {
 
 
     self.deleteAll = function() {
-        return self.target_db.allDocs()
+        return self.db.allDocs()
             .then(function (result) {
                 // Promise isn't supported by all browsers; you may want to use bluebird
                 return Promise.all(result.rows.map(function (row) {
                     console.log("[stor] delete " + row.id  + " " + row.value.rev);
-                    return self.target_db.remove(row.id, row.value.rev);
+                    return self.db.remove(row.id, row.value.rev);
                 }));
             }).then(function () {
                 console.log("[stor] finished deleting all docs");
