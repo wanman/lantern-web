@@ -47,12 +47,24 @@ window.app = (function() {
     };
 
 
+    opts.data = {
+        user: null
+    };
+
+    var preload = ["v", "c", "u", "s"];
+
+    for (var idx in preload) {
+        opts.data[preload[idx] +"_docs"] = [];
+    }
+
+
+
     opts.beforeMount = function() {
         if (!self.vm.$data.c_docs.length) {
-            window.location.href = "/view/setup/setup.html";
+            window.location.href = "/p/setup/setup.html";
         }
     };
 
-    self = new LanternPage("browse", opts, ["v", "c", "u", "s"]);
+    self = new LanternPage("browse", opts, preload);
     return self;
 }());

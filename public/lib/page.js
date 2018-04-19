@@ -4,13 +4,6 @@ window.LanternPage= (function(id, vue_opts, preload) {
 
     console.log("[page] -------------------------------------- " + id);
     
-    vue_opts.data = vue_opts.data || {};
-    vue_opts.data.user = null;
-    for (var idx in preload) {
-        vue_opts.data[preload[idx] +"_docs"] = [];
-    }
-
-
 
     function registerUser() {
         console.log("[user] registering new user");

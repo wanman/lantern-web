@@ -118,6 +118,7 @@ window.app = (function() {
     var opts = {};
 
     opts.data = {
+        user: null,
         types: types
     };
 
