@@ -5,7 +5,8 @@ window.app = (function() {
         {key: "r", name: "Route", docs: [], populate: addDefaultRoutes},
         {key: "c", name: "Category", docs: [], populate: addDefaultCategories},
         {key: "s", name: "Supply", docs: [], populate: addDefaultSupplyLevels},
-        {key: "n", name: "Note", docs: [], populate: addDefaultNotes}
+        {key: "n", name: "Note", docs: [], populate: addDefaultNotes},
+        {key: "u", name: "User", docs: [], populate: addDefaultUser}
     ];
 
     /**
@@ -26,9 +27,17 @@ window.app = (function() {
             return doc;
         });
     }
+
+    /**
+    * No need to create a default user, for now...
+    */
+    function addDefaultUser() {
+        self.getOrCreateUser();
+
+    }
     
     function addDefaultCategories() {
-        self.log(" adding default resource categories");
+        //console.log(" adding default resource categories");
         addCategory("Shelter", "shr", "ffcc54", "fff7ef");
         addCategory("Water", "wtr", "78aef9", "e9f2fe");
         addCategory("Fuel", "ful", "c075c9", "f5e9f6");
@@ -45,7 +54,7 @@ window.app = (function() {
     * against meaningful points in a town.
     */
     function addDefaultVenues() {
-        self.log(" adding default venues");
+        //console.log(" adding default venues");
         return self.stor.upsert("v:test-place", function(doc) {
             doc.name = 'Meadowlane ' + Math.round(Math.random()*100);
             doc.geo = "u4pruydq";
@@ -60,7 +69,7 @@ window.app = (function() {
     }
 
     function addDefaultRoutes() {
-        self.log(" adding default geo routes"); 
+        //console.log(" adding default geo routes"); 
         return self.stor.upsert("r:test-route", function(doc) {
             doc.geo_start = 'u4pruydq';
             doc.geo_stop = 'u4pruyde';
@@ -75,7 +84,7 @@ window.app = (function() {
     }
 
     function addDefaultSupplyLevels() {
-        self.log(" adding default geo routes");
+        //console.log(" adding default geo routes");
         return self.stor.upsert("s:water-bottles", function(doc) {
             doc.name = "Bottles";
             doc.cat = "wtr";
@@ -91,7 +100,7 @@ window.app = (function() {
     }
 
     function addDefaultNotes() {
-        self.log(" adding default notes");   
+        //console.log(" adding default notes");   
         return self.stor.upsert("n:test-note", function(doc) {
             doc.ref = "v:test-place";
             if (!doc.created_at) {
@@ -113,15 +122,13 @@ window.app = (function() {
     };
 
     opts.methods = {
-        importDocs: function() {
-            addDefaultVenues();
-            addDefaultRoutes();
-            addDefaultCategories();
-            addDefaultSupplyLevels();
-            addDefaultNotes();
+        loadTestData: function() {
+            for (var idx in types) {
+                types[idx].populate();
+            }
         },
-        resetDocs: function() {
-            self.stor.deleteAll();
+        removeAllDocs: function() {
+            self.stor.removeAll();
         },
         pluralize: function(count) {
             if (count === 0) {
@@ -141,6 +148,6 @@ window.app = (function() {
         opts.data[types[idx].key+"_docs"] = types[idx].docs;
     }
 
-    var self = new LanternControl("setup", opts, docs_to_preload);
+    var self = new LanternPage("setup", opts, docs_to_preload);
     return self;
 }());

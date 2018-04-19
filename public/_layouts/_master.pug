@@ -15,12 +15,15 @@ html(lang="en")
         block styles
 
     body(id=id+"-view")
-        block content
+
+
+        .content.is-clearfix
+            block content
 
         
         script(src="/vendor/pouchdb.js")
         script(src="/vendor/pouchdb.upsert.js")
-        script(src="/lib/ctl.js")
+        script(src="/lib/page.js")
         script(src="/lib/stor.js")
         script(src="/vendor/vue.min.js")
         block scripts

@@ -8,13 +8,23 @@ window.app = (function() {
         toggleCategory: function(evt) {
             var el = evt.target;
             var cat = el.getAttribute("id");
-            self.log("toggle category: " + cat);
-            return self.toggleSubscribe(cat);
+            console.log("toggle category: " + cat);
+
+            // save category state
+            return self.stor.upsert("u:"+self.getUserId(), function(user_doc) {
+                console.log(user_doc);
+                user_doc.updated_at = new Date();
+                if (!user_doc.watch) user_doc.watch = {};
+                user_doc.watch[cat] = (user_doc.watch[cat] === true ? false : true);
+                self.vm.$data.user = user_doc;
+                return user_doc;
+            });
         },
         makeCategoryClass: function(cat) {
             var cls = "";
-            if (self.user && self.user.watch) {
-                if (self.user.watch[cat._id]) {
+            var user = self.vm.$data.user;
+            if (user && user.watch) {
+                if (user.watch[cat._id]) {
                     cls += "active ";
                 }
             }
@@ -26,7 +36,7 @@ window.app = (function() {
                 cat = self.stor.getCached(cat_id);
             }
             if (!cat || !cat.hasOwnProperty("color")) {
-                self.log("skipping bad cat", cat);
+                console.log("skipping bad cat", cat);
                 return "";
             }
             var style = ["color: #" + cat.color];
@@ -37,24 +47,12 @@ window.app = (function() {
     };
 
 
-    opts.data = {
-        c_docs: [],
-        v_docs: [],
-        u_docs: [],
-        s_docs: [],
-        user: null
-    };
-
-    
     opts.beforeMount = function() {
         if (!self.vm.$data.c_docs.length) {
             window.location.href = "/view/setup/setup.html";
         }
-        else {
-            self.vm.$data.user = self.user;
-        }
     };
 
-    self = new LanternControl("browse", opts, ["v", "c", "u", "s"]);
+    self = new LanternPage("browse", opts, ["v", "c", "u", "s"]);
     return self;
 }());

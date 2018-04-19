@@ -10,6 +10,6 @@ window.app = (function() {
         }
     };
 
-    var self = new LanternControl("staff", opts, ["c"]);
+    var self = new LanternPage("staff", opts, ["c"]);
     return self;
 }());

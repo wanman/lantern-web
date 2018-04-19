@@ -15,7 +15,7 @@ window.LanternStor = (function($data) {
     //------------------------------------------------------------------------
 
 
-    function getIndexForDoc(type, id) {
+    function getIndexForDoc(id,type) {
         var doc_id_list = $data[type+"_docs"].map(function(compare_doc) {
             return compare_doc._id;
         });
@@ -23,36 +23,53 @@ window.LanternStor = (function($data) {
         return index;
     }
 
+    function removeFromCache(doc_id) {
+        var type = doc_id.split(":")[0];
+        var index = getIndexForDoc(doc_id,type);
+        //console.log("[stor] remove from cache", doc_id, index);
+        $data[type+"_docs"].splice(index, 1);
+        self.cache[doc_id] = null;
+    }
+
+    function addToCache(doc) {
+        var type = doc._id.split(":")[0];
+        //console.log("[stor] cache doc:", doc._id, type);
+        $data[type+"_docs"].push(doc);
+        index = getIndexForDoc(doc._id, type);
+        self.cache[doc._id] = {
+            id: doc._id, 
+            type: type,
+            index: index
+        };
+    }
+
+    function replaceInCache(doc) {
+        var type = doc._id.split(":")[0];
+        var index = getIndexForDoc(doc._id,type);
+        //console.log("[stor] replace cache doc:", doc._id, type, index);
+        // replace in cache
+        $data[type+"_docs"].splice(index, 1, doc);
+        self.cache[doc._id].index = index;
+    }
+
+
     function refreshDocInCache(doc) {
 
         var type = doc._id.split(":")[0];
         var index;
         // is the document already cached?
         if (self.cache[doc._id]) {
-            index = getIndexForDoc(type, doc._id);
+            index = getIndexForDoc(doc._id,type);
             if (doc._deleted) {
-                console.log("[stor] delete from cache", doc._id, index);
-                $data[type+"_docs"].splice(index, 1);
-                self.cache[doc._id] = null;
+                removeFromCache(doc._id);
             }
             else {
-                console.log("[stor] replace cache doc:", doc._id, index);
-                // replace in cache
-                $data[type+"_docs"].splice(index, 1, doc);
-                self.cache[doc._id].index = index;
+                replaceInCache(doc);
             }
-            
         }
         else {
             // insert new to cache
-            //console.log("[stor] cache doc:", doc._id);
-            $data[type+"_docs"].push(doc);
-            index = getIndexForDoc(type, doc._id);
-            self.cache[doc._id] = {
-                id: doc._id, 
-                type: type,
-                index: index
-            };
+            addToCache(doc);
         }
     }
 
@@ -104,9 +121,68 @@ window.LanternStor = (function($data) {
                         return loadDocuments(type);
                     }));
                 }
-            }).then(function() {
-                setTimeout(self.sync, 1500);
+            })
+            .then(function() {
+
+            console.log("[stor] target = " + 
+                (self.db.adapter == "http" ? "remote" : "local"));
             });
+    };
+
+
+    self.get = function() {
+        console.log("[stor] get: " + arguments[0]);
+        return self.db.get.apply(self.db, arguments);
+    };
+
+    self.remove = function() {
+        var doc_id = arguments[0];
+        var type = doc_id.split(":")[0];
+        console.log("[stor] remove: " + doc_id);
+        return self.db.remove.apply(self.db, arguments).then(function() {
+            removeFromCache(doc_id);
+        });
+    };
+
+    self.removeAll = function() {
+        return self.db.allDocs()
+            .then(function (result) {
+                // Promise isn't supported by all browsers; you may want to use bluebird
+                return Promise.all(result.rows.map(function (row) {
+                    return self.remove(row.id, row.value.rev);
+                }));
+            }).then(function () {
+                console.log("[stor] finished deleting all docs");
+              // done!
+            }).catch(function (err) {
+                console.log(err);
+              // error!
+            });
+     };
+
+    self.put = function() {
+        var doc = arguments[0];
+        console.log("[stor] put: ", doc);
+        return self.db.put.apply(self.db, arguments).then(function() {
+            addToCache(doc);
+        });
+    };
+
+    self.upsert = function() {
+        console.log("[stor] upsert " + arguments[0]);
+        var fn = arguments[1];
+        var new_doc;
+
+        var wrapper_fn = function(old_doc) {
+            new_doc = fn(old_doc);
+            return new_doc;
+        };
+        arguments[1] = wrapper_fn;
+
+        return self.db.upsert.apply(self.db, arguments).then(function(results) {
+            new_doc._rev = results.rev;
+            refreshDocInCache(new_doc);
+        });
     };
 
 
@@ -147,22 +223,6 @@ window.LanternStor = (function($data) {
     };
 
 
-    self.deleteAll = function() {
-        return self.db.allDocs()
-            .then(function (result) {
-                // Promise isn't supported by all browsers; you may want to use bluebird
-                return Promise.all(result.rows.map(function (row) {
-                    console.log("[stor] delete " + row.id  + " " + row.value.rev);
-                    return self.db.remove(row.id, row.value.rev);
-                }));
-            }).then(function () {
-                console.log("[stor] finished deleting all docs");
-              // done!
-            }).catch(function (err) {
-                console.log(err);
-              // error!
-            });
-     };
 
 
     return self;

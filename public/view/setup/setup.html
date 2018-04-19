@@ -13,8 +13,8 @@ block content
                 span.tag.is-primary {{ pluralize(item.docs.length) }}
 
         .actions.is-pulled-left
-            .button.is-primary(v-on:click="importDocs") Import Docs
-            .button.is-danger.is-outlined(v-on:click="resetDocs") Reset Docs
+            .button.is-primary(v-on:click="loadTestData") Load Test Data
+            .button.is-danger.is-outlined(v-on:click="removeAllDocs") Remove All Docs
 
 block styles
     link(rel="stylesheet" type="text/css" href="/view/setup/setup.css")
