@@ -11,6 +11,7 @@ html(lang="en")
         meta(name="msapplication-TileColor", content="#da532c")
         meta(name="theme-color", content="#ffffff")
         link(rel="stylesheet" type="text/css" href="/main.css")
+        link(rel="stylesheet" href="/media/font/css/open-iconic.css")
         link(rel="stylesheet" href="https://use.typekit.net/def4dck.css")
         block styles
 
@@ -21,6 +22,21 @@ html(lang="en")
             block content
 
         
+        nav.panel
+            a.panel-block(href="/p/browse/browse.html")
+                span.panel-icon.oi(data-glyph="compass")
+                .
+                    Browse
+            a.panel-block(href="/p/staff/staff.html")
+                span.panel-icon.oi(data-glyph="medical-cross")
+                .
+                    Staff
+            a.panel-block(href="/p/setup/setup.html")
+                span.panel-icon.oi(data-glyph="wrench")
+                .
+                    Setup
+
+
         script(src="/vendor/pouchdb.js")
         script(src="/vendor/pouchdb.upsert.js")
         script(src="/lib/page.js")
