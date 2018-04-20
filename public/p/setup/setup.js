@@ -58,7 +58,7 @@ window.app = (function() {
         //console.log(" adding default venues");
         return self.stor.upsert("v:test-place", function(doc) {
             doc.name = 'Meadowlane ' + Math.round(Math.random()*100);
-            doc.geo = "u4pruydq";
+            doc.point0 = "u4pruydq";
             if (!doc.created_at) {
                 doc.created_at = new Date();
             }
@@ -72,8 +72,8 @@ window.app = (function() {
     function addDefaultRoutes() {
         //console.log(" adding default geo routes"); 
         return self.stor.upsert("r:test-route", function(doc) {
-            doc.geo_start = 'u4pruydq';
-            doc.geo_stop = 'u4pruyde';
+            doc.point0 = 'u4pruydq';
+            doc.point1 = 'u4pruyde';
             if (!doc.created_at) {
                 doc.created_at = new Date();
             }
@@ -88,7 +88,7 @@ window.app = (function() {
         //console.log(" adding default geo routes");
         return self.stor.upsert("s:water-bottles", function(doc) {
             doc.name = "Bottles";
-            doc.cat = "wtr";
+            doc.category = "wtr";
             doc.count = 10;
             if (!doc.created_at) {
                 doc.created_at = new Date();
@@ -103,7 +103,7 @@ window.app = (function() {
     function addDefaultNotes() {
         //console.log(" adding default notes");   
         return self.stor.upsert("n:test-note", function(doc) {
-            doc.ref = "v:test-place";
+            doc.parent_doc = "v:test-place";
             if (!doc.created_at) {
                 doc.created_at = new Date();
             }
