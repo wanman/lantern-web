@@ -35,13 +35,13 @@ window.app = (function() {
                 var cat_id = "c:"+cat;
                 cat = self.stor.getCached(cat_id);
             }
-            if (!cat || !cat.hasOwnProperty("color")) {
+            if (!cat || !cat.hasOwnProperty("style")) {
                 console.log("skipping bad cat", cat);
                 return "";
             }
-            var style = ["color: #" + cat.color];
-            style.push("background-color: #" + cat.background_color);
-            style.push("border-color: #" + cat.color);
+            var style = ["color: #" + cat.style.color];
+            style.push("background-color: #" + cat.style.background_color);
+            style.push("border-color: #" + cat.style.color);
             return style.join("; ");
         }
     };

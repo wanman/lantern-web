@@ -16,8 +16,9 @@ window.app = (function() {
     function addCategory(title, slug, color, background_color) {
         return self.stor.upsert("c:"+slug, function(doc) {
             doc.name = title;
-            doc.color = color;
-            doc.background_color = background_color;
+            doc.style = doc.style || {};
+            doc.style.color = color;
+            doc.style.background_color = background_color;
             if (!doc.created_at) {
                 doc.created_at = new Date();
             }
