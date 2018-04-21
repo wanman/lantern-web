@@ -31,7 +31,7 @@ block content
 
             ul#supplies
                 li.box(v-for="r in s_docs")
-                    span(v-bind:style="makeCategoryStyle(r.cat)")= "{{ r.cat }}"
+                    span(v-bind:style="makeCategoryStyle(r.category)")= "{{ r.category }}"
                     span= " {{ r.count }} {{ r.name }}"
 
 block styles

@@ -1,32 +1,5 @@
 window.LanternStor = (function($data) {
 
-    // used to preserve keyspace when storing and sending low-bandwidth
-    var REG = {
-        owner: 0x00,
-        editor: 0x01,
-        created_at: 0x02,
-        updated_at: 0x03,
-        parent_doc: 0x04,
-        child_doc: 0x05,
-        name: 0x10,
-        category: 0x20, 
-        count: 0x30,
-        status: 0x40,
-        point0: 0x60,
-        point1: 0x61,
-        point2: 0x62,
-        point3: 0x63,
-        point4: 0x64,
-        point5: 0x65,
-        point6: 0x66,
-        point7: 0x67,
-        point8: 0x68,
-        point9: 0x69,
-        style: 0x90
-    };
-
-
-    console.log(REG);
     
     var remote_uri = window.location.origin + "/db/lantern";
 
@@ -42,16 +15,6 @@ window.LanternStor = (function($data) {
 
     //------------------------------------------------------------------------
 
-
-    // so we can get back keys by value in REG
-    function getKeyByValue( obj, value ) {
-        for( var prop in obj ) {
-            if( obj.hasOwnProperty( prop ) ) {
-                 if( obj[ prop ] === value )
-                     return prop;
-            }
-        }
-    }
 
     function getIndexForDoc(id,type) {
         var doc_id_list = $data[type+"_docs"].map(function(compare_doc) {
@@ -70,36 +33,43 @@ window.LanternStor = (function($data) {
     }
 
     function addToCache(doc) {
-        var type = doc._id.split(":")[0];
-        //console.log("[stor] cache doc:", doc._id, type);
-        $data[type+"_docs"].push(doc);
-        index = getIndexForDoc(doc._id, type);
-        self.cache[doc._id] = {
-            id: doc._id, 
+
+        var type = doc.id.split(":")[0];
+        var obj = doc.toJSONFriendly();
+        //console.log("[stor] cache doc:", obj);
+        var type_key = type+"_docs";
+        if (!$data.hasOwnProperty(type_key)) {
+            $data[type_key] = [];
+        }
+        $data[type_key].push(obj);
+        index = getIndexForDoc(doc.id, type);
+        self.cache[doc.id] = {
+            id: doc.id, 
             type: type,
             index: index
         };
     }
 
     function replaceInCache(doc) {
-        var type = doc._id.split(":")[0];
-        var index = getIndexForDoc(doc._id,type);
-        //console.log("[stor] replace cache doc:", doc._id, type, index);
+        var type = doc.id.split(":")[0];
+        var index = getIndexForDoc(doc.id,type);
+        //console.log("[stor] replace cache doc:", obj._id, type, index);
         // replace in cache
-        $data[type+"_docs"].splice(index, 1, doc);
-        self.cache[doc._id].index = index;
+        var obj = doc.toJSONFriendly();
+        $data[type+"_docs"].splice(index, 1, obj);
+        self.cache[doc.id].index = index;
     }
 
 
     function refreshDocInCache(doc) {
-
-        var type = doc._id.split(":")[0];
+        var type = doc.id.split(":")[0];
+        var obj = doc.toJSONFriendly();
         var index;
         // is the document already cached?
-        if (self.cache[doc._id]) {
-            index = getIndexForDoc(doc._id,type);
-            if (doc._deleted) {
-                removeFromCache(doc._id);
+        if (self.cache[doc.id]) {
+            index = getIndexForDoc(doc.id,type);
+            if (obj._deleted) {
+                removeFromCache(doc.id);
             }
             else {
                 replaceInCache(doc);
@@ -121,41 +91,11 @@ window.LanternStor = (function($data) {
         return self.db.allDocs(params)
             .then(function(result) {
                 return Promise.all(result.rows.map(function(result) {
-                    return refreshDocInCache(expandDoc(result.doc));
+                    return refreshDocInCache(new LanternDocument(result.doc, self));
                 }));
             });
     }
 
-    function compressDoc(doc) {
-        var new_doc = {};
-        for (var idx in doc) {
-            if (typeof(doc[idx]) == "function") {
-                // skip
-                console.log(idx);
-            }
-            else if (REG[idx]) {
-                new_doc[REG[idx]] = doc[idx];
-            }
-            else {
-                new_doc[idx] = doc[idx];
-            }
-        }
-        return new_doc;
-    }
-
-    function expandDoc(doc) {
-        var new_doc = {};
-        for (var idx in doc) {
-            var key = getKeyByValue(idx);
-            if (key) {
-                new_doc[key] = doc[idx];
-            }
-            else {
-                new_doc[idx] = doc[idx];
-            }
-        }
-        return new_doc;
-    }
 
     function pickDatabase() {
         if (self.db) return Promise.resolve(self.db);
@@ -203,7 +143,8 @@ window.LanternStor = (function($data) {
         console.log("[stor] get: " + arguments[0]);
         return self.db.get.apply(self.db, arguments)
             .then(function(doc) {
-                return expandDoc(doc);
+                refreshDocInCache(new LanternDocument(doc), self);
+                return doc;
             });
     };
 
@@ -211,8 +152,9 @@ window.LanternStor = (function($data) {
         var doc_id = arguments[0];
         var type = doc_id.split(":")[0];
         console.log("[stor] remove: " + doc_id);
-        return self.db.remove.apply(self.db, arguments).then(function() {
+        return self.db.remove.apply(self.db, arguments).then(function(result) {
             removeFromCache(doc_id);
+            return result;
         });
     };
 
@@ -235,30 +177,28 @@ window.LanternStor = (function($data) {
     self.put = function() {
         var doc = arguments[0];
         console.log("[stor] put: ", doc);
-        var compressed_doc = compressDoc(doc);
-        console.log(compressed_doc);
-        arguments[0] = compressed_doc;
         return self.db.put.apply(self.db, arguments).then(function() {
-            addToCache(doc);
+            addToCache(new LanternDocument(doc, self));
         });
     };
 
     self.upsert = function() {
         console.log("[stor] upsert " + arguments[0]);
         var fn = arguments[1];
-        var new_doc;
+        var obj;
 
         var wrapper_fn = function(old_doc) {
-            new_doc = compressDoc(fn(old_doc));
-            console.log(new_doc);
-            return new_doc;
+            obj = fn(old_doc);
+            return obj;
         };
+
         arguments[1] = wrapper_fn;
 
         return self.db.upsert.apply(self.db, arguments).then(function(results) {
-            console.log(results);
-            new_doc._rev = results.rev;
-            refreshDocInCache(expandDoc(new_doc));
+            var new_doc = new LanternDocument(obj);
+            new_doc.set("_rev", results.rev);
+            refreshDocInCache(new_doc);
+            return results;
         });
     };
 
@@ -283,13 +223,12 @@ window.LanternStor = (function($data) {
             retry: true
         })
         .on('change', function (info) {
-            console.log(info);
             if (info.change.docs) {
                 console.log("[stor] did %s to remote database: %s docs", 
                         info.direction, 
                         info.change.docs.length);
                 for (var idx in info.change.docs) {
-                    refreshDocInCache(info.change.docs[idx]);
+                    refreshDocInCache(new LanternDocument(info.change.docs[idx], self));
                 }
             }
         })

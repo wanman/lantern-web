@@ -14,19 +14,13 @@ window.page = (function() {
     * Allows for dynamically adding new interests over over time.
     */
     function addCategory(title, slug, color, background_color) {
-        return self.stor.upsert("c:"+slug, function(doc) {
-            doc.name = title;
-            doc.style = doc.style || {};
-            doc.style.color = color;
-            doc.style.background_color = background_color;
-            if (!doc.created_at) {
-                doc.created_at = new Date();
-            }
-            else {
-                doc.updated_at = new Date();
-            }
-            return doc;
-        });
+        var doc = new LanternDocument("c:"+slug, self.stor);
+        doc.set("name", title);
+        doc.set("style", {
+            "color": color, 
+            "background-color": background_color}
+        );
+        doc.save();
     }
 
     /**

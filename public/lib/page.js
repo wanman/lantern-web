@@ -1,42 +1,25 @@
 window.LanternPage= (function(id, vue_opts, preload) {
 
-    var self = {};
+    var self = {
+        user: null
+    };
 
     console.log("[page] -------------------------------------- " + id);
     
 
     function registerUser() {
         console.log("[user] registering new user");
-        var doc = {
-            _id: "u:"+self.getUserId(),
-            name: "",
-            role:  "guest",
-            watch: {},
-            created_at: new Date()
-        };
-        return self.stor.put(doc)
-            .then(function(result) {
-                self.vm.$data.user = doc;
-                return doc;
-            })
-            .catch(function(err) {
-                if(err.name === "conflict") {
-                    console.log("[user] conflicted user doc: " + doc._id, err);
-                }
-                else {
-                    console.log("[user] unable to register user", err);
-                }
-
-            });
+        var doc = new LanternDocument("u:"+self.getUserId(), self.stor);
+        doc.set("watch", {});
+        doc.save();
+        return doc;
     }
-    
-  
 
     function getUser() {
         return self.stor.get("u:"+self.getUserId()).then(function(doc) {
             console.log("[page] existing user:", doc._id);
             self.vm.$data.user = doc;
-            return doc;
+            return new LanternDocument(doc, self.stor);
         });
     }
 
@@ -63,7 +46,10 @@ window.LanternPage= (function(id, vue_opts, preload) {
 
     self.stor.setup(preload)
         .then(self.getOrCreateUser)
-        .then(function(doc) {
+        .then(function(user) {
+            self.user = user;
+            var cached = self.stor.getCached(user.id);
+            self.vm.$data.user = cached;
             self.vm.$mount('#' + id + '-app');
         });
 
