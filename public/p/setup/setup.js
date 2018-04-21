@@ -1,4 +1,4 @@
-window.app = (function() {
+window.page = (function() {
 
     var types = [
         {key: "v", name: "Venue", docs: [], populate: addDefaultVenues},

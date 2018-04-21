@@ -1,4 +1,4 @@
-window.app = (function() {
+window.page = (function() {
 
     var opts = {};
     opts.beforeMount = function() {
