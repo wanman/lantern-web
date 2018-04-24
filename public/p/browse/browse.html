@@ -18,12 +18,12 @@ block content
                     v-bind:class="makeCategoryClass(r)"
                     v-bind:id="r._id" 
                     v-bind:style="makeCategoryStyle(r)"
-                    )="{{ r.name }}"
+                    )="{{ r.title }}"
 
         section
 
             ul#venues
-                li.box(v-for="r in v_docs")="{{ r.name }}"
+                li.box(v-for="r in v_docs")="{{ r.title }}"
 
 
 
@@ -31,8 +31,8 @@ block content
 
             ul#supplies
                 li.box(v-for="r in s_docs")
-                    span(v-bind:style="makeCategoryStyle(r.category)")= "{{ r.category }}"
-                    span= " {{ r.count }} {{ r.name }}"
+                    span(v-bind:style="makeCategoryStyle(r.tag[0])")= "cat"
+                    span= " {{ r.status }} {{ r.title }}"
 
 block styles
     link(rel="stylesheet" type="text/css" href="/p/browse/browse.css")

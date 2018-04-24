@@ -8,17 +8,19 @@ window.page = (function() {
         toggleCategory: function(evt) {
             var el = evt.target;
             var cat = el.getAttribute("id");
-            var state = ( self.user.get("watch", cat) ? true : false);
-            self.user.set("watch", cat, !state);
+            if (self.user.has("tag", cat)) {
+                self.user.pop("tag", cat);
+            }
+            else {
+                self.user.push("tag", cat);
+            }
             self.user.save();
         },
         makeCategoryClass: function(cat) {
             var cls = "";
             var user = self.user;
-            if (user && user.has("watch", cat._id)) {
-                if (user.get("watch", cat._id)) {
-                    cls += "active ";
-                }
+            if (user && user.has("tag", cat._id)) {
+                cls += "active ";
             }
             return cls;
         },
@@ -30,8 +32,7 @@ window.page = (function() {
             }
 
             if (typeof(cat) == "string") {
-                var cat_id = "c:"+cat;
-                obj = self.stor.getCached(cat_id);
+                obj = self.stor.getCached(cat);
             }
             else {
                 obj = cat;

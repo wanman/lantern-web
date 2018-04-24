@@ -1,12 +1,12 @@
 window.page = (function() {
 
     var types = [
-        {key: "v", name: "Venue", docs: [], populate: addDefaultVenues},
-        {key: "r", name: "Route", docs: [], populate: addDefaultRoutes},
-        {key: "c", name: "Category", docs: [], populate: addDefaultCategories},
-        {key: "s", name: "Supply", docs: [], populate: addDefaultSupplyLevels},
-        {key: "n", name: "Note", docs: [], populate: addDefaultNotes},
-        {key: "u", name: "User", docs: [], populate: addDefaultUser}
+        {key: "v", title: "Venue", docs: [], populate: addDefaultVenues},
+        {key: "r", title: "Route", docs: [], populate: addDefaultRoutes},
+        {key: "c", title: "Category", docs: [], populate: addDefaultCategories},
+        {key: "s", title: "Supply", docs: [], populate: addDefaultSupplyLevels},
+        {key: "n", title: "Note", docs: [], populate: addDefaultNotes},
+        {key: "u", title: "User", docs: [], populate: addDefaultUser}
     ];
 
     /**
@@ -15,7 +15,7 @@ window.page = (function() {
     */
     function addCategory(title, slug, color, background_color) {
         var doc = new LanternDocument("c:"+slug, self.stor);
-        doc.set("name", title);
+        doc.set("title", title);
         doc.set("style", {
             "color": color, 
             "background-color": background_color}
@@ -51,7 +51,7 @@ window.page = (function() {
     function addDefaultVenues() {
         //console.log(" adding default venues");
         var doc = new LanternDocument("v:test-place", self.stor);
-        doc.set("name", 'Meadowlane ' + Math.round(Math.random()*100));
+        doc.set("title", 'Meadowlane ' + Math.round(Math.random()*100));
         doc.set("geo", ["u4pruydq"]);
         doc.save();
     }
@@ -59,23 +59,23 @@ window.page = (function() {
     function addDefaultRoutes() {
         //console.log(" adding default geo routes"); 
         var doc = new LanternDocument("r:test-route", self.stor);
-        doc.geo = ['u4pruydq', 'u4pruyde'];
+        doc.set("geo", ['u4pruydq', 'u4pruyde']);
         doc.save();
     }
 
     function addDefaultSupplyLevels() {
         //console.log(" adding default geo routes");
         var doc = new LanternDocument("s:water-bottles", self.stor);
-        doc.set("name",  "Bottles");
-        doc.set("category", "wtr");
-        doc.set("count", 10);
+        doc.set("title",  "Bottles");
+        doc.set("status", 10);
+        doc.push("tag", "c:wtr");
         doc.save();
     }
 
     function addDefaultNotes() {
         //console.log(" adding default notes");
         var doc = new LanternDocument("n:test-note", self.stor);
-        doc.set("parent_doc", "v:test-place");
+        doc.push("tag", "v:test-place");
         doc.save();
     }
 

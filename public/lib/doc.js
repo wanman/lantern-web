@@ -2,28 +2,20 @@ window.LanternDocument = (function(id,stor) {
 
     // used to preserve keyspace when storing and sending low-bandwidth
     var REG = {
-        owner: 0x01,
-        editor: 0x02,
-        created_at: 0x03,
-        updated_at: 0x04,
-        parent_doc: 0x05,
-        child_doc: 0x06,
-        name: 0x10,
-        category: 0x20, 
-        count: 0x30,
-        status: 0x40,
-        point0: 0x60,
-        point1: 0x61,
-        point2: 0x62,
-        point3: 0x63,
-        point4: 0x64,
-        point5: 0x65,
-        point6: 0x66,
-        point7: 0x67,
-        point8: 0x68,
-        point9: 0x69,
-        watch: 0x80,
-        style: 0x90
+        
+        title: 0x01,        // title or name of object
+        text: 0x02,         // text or label for object
+        status: 0x03,       // level or quantity
+
+        owner: 0x10,        // user array
+        editor: 0x11,       // user array
+
+        ts: 0x20,           // timestamp array
+        geo: 0x21,          // geohash array
+
+        tag: 0x30,          // category or other tags
+
+        style: 0x40         // css styles
     };
 
 
@@ -50,30 +42,21 @@ window.LanternDocument = (function(id,stor) {
         data: {}
     };
 
-    self.set = function(k, s, val) {
-
-        var key = (REG[k] ? REG[k] : k);
-
-        // support one level of nested keys
-        if (val === undefined) {
-            val = s;
-            self.data[key] = val;
-        }
-        else {
-            self.data[key] = self.data[key] || {};
-            self.data[key][s] = val;
-        }
-    };
-
     self.has = function(k,s) {
 
         var key = (REG[k] ? REG[k] : k);
 
         var val = self.data[key]; 
 
+
         // easy access for nested keys one level down
-        if (s) {
-            return val.hasOwnProperty(s);
+        if (s && val) {
+            if (val instanceof Array) {
+                return val.indexOf(s) != -1;
+            }
+            else {
+                return val.hasOwnProperty(s);
+            }
         }
         else {
             return self.data.hasOwnProperty(key);
@@ -99,19 +82,50 @@ window.LanternDocument = (function(id,stor) {
         }
     };
 
+    self.set = function(k, s, val) {
+
+        var key = (REG[k] ? REG[k] : k);
+
+        // support one level of nested keys
+        if (val === undefined) {
+            val = s;
+            self.data[key] = val;
+        }
+        else {
+            self.data[key] = self.data[key] || {};
+            self.data[key][s] = val;
+        }
+    };
+
+    self.push = function(k,val) {
+        var key = (REG[k] ? REG[k] : k);
+        self.data[key] = self.data[key] || [];
+        self.data[key].push(val);
+    };
+
+    self.pop = function(k,val) {
+
+        var key = (REG[k] ? REG[k] : k);
+
+        if (val === undefined) {
+            delete self.data[key];
+        }
+        else {
+            self.data[key] = self.data[key] || [];
+            var index = self.data[key].indexOf(val);
+            console.log(index);
+            self.data[key].splice(index,1);
+            console.log(self.data[key]);
+        }
+    };
+
     self.save = function() {
         return stor.upsert(self.id, function(doc) {
-            
             for (var idx in self.data) {
                 doc[idx] = self.data[idx];
             }
-
-            if (!doc[REG.created_at]) {
-                doc[REG.created_at] = new Date();
-            }
-            else {
-                doc[REG.updated_at] = new Date();
-            }
+            doc[REG.ts] = doc[REG.ts] || [];
+            doc[REG.ts].push(new Date());
             return doc;
         })
         .catch(function(err) {

@@ -9,7 +9,7 @@ block content
         
         .tags.has-addons(v-for="item in types")
             a(v-on:click="item.populate") 
-                span.tag {{ item.name }}
+                span.tag {{ item.title }}
                 span.tag.is-primary {{ pluralize(item.docs.length) }}
 
         .actions.is-pulled-left

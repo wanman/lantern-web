@@ -10,7 +10,6 @@ window.LanternPage= (function(id, vue_opts, preload) {
     function registerUser() {
         console.log("[user] registering new user");
         var doc = new LanternDocument("u:"+self.getUserId(), self.stor);
-        doc.set("watch", {});
         doc.save();
         return doc;
     }
