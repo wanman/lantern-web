@@ -50,62 +50,33 @@ window.page = (function() {
     */
     function addDefaultVenues() {
         //console.log(" adding default venues");
-        return self.stor.upsert("v:test-place", function(doc) {
-            doc.name = 'Meadowlane ' + Math.round(Math.random()*100);
-            doc.point0 = "u4pruydq";
-            if (!doc.created_at) {
-                doc.created_at = new Date();
-            }
-            else {
-                doc.updated_at = new Date();
-            }
-            return doc;
-        });
+        var doc = new LanternDocument("v:test-place", self.stor);
+        doc.set("name", 'Meadowlane ' + Math.round(Math.random()*100));
+        doc.set("geo", ["u4pruydq"]);
+        doc.save();
     }
 
     function addDefaultRoutes() {
         //console.log(" adding default geo routes"); 
-        return self.stor.upsert("r:test-route", function(doc) {
-            doc.point0 = 'u4pruydq';
-            doc.point1 = 'u4pruyde';
-            if (!doc.created_at) {
-                doc.created_at = new Date();
-            }
-            else {
-                doc.updated_at = new Date();
-            }
-            return doc;
-        });
+        var doc = new LanternDocument("r:test-route", self.stor);
+        doc.geo = ['u4pruydq', 'u4pruyde'];
+        doc.save();
     }
 
     function addDefaultSupplyLevels() {
         //console.log(" adding default geo routes");
-        return self.stor.upsert("s:water-bottles", function(doc) {
-            doc.name = "Bottles";
-            doc.category = "wtr";
-            doc.count = 10;
-            if (!doc.created_at) {
-                doc.created_at = new Date();
-            }
-            else {
-                doc.updated_at = new Date();
-            }
-            return doc;
-        });
+        var doc = new LanternDocument("s:water-bottles", self.stor);
+        doc.set("name",  "Bottles");
+        doc.set("category", "wtr");
+        doc.set("count", 10);
+        doc.save();
     }
 
     function addDefaultNotes() {
-        //console.log(" adding default notes");   
-        return self.stor.upsert("n:test-note", function(doc) {
-            doc.parent_doc = "v:test-place";
-            if (!doc.created_at) {
-                doc.created_at = new Date();
-            }
-            else {
-                doc.updated_at = new Date();
-            }
-            return doc;
-        });
+        //console.log(" adding default notes");
+        var doc = new LanternDocument("n:test-note", self.stor);
+        doc.set("parent_doc", "v:test-place");
+        doc.save();
     }
 
     //------------------------------------------------------------------------
