@@ -10,8 +10,9 @@ window.LanternDocument = (function(id,stor) {
         owner: 0x10,        // user array
         editor: 0x11,       // user array
 
-        ts: 0x20,           // timestamp array
-        geo: 0x21,          // geohash array
+        created_at: 0x20,   // creation date
+        updated_at: 0x21,   // doc update date
+        geo: 0x22,          // geohash array
 
         tag: 0x30,          // category or other tags
 
@@ -120,12 +121,17 @@ window.LanternDocument = (function(id,stor) {
     };
 
     self.save = function() {
+
+        self.set("updated_at", new Date());
+
         return stor.upsert(self.id, function(doc) {
             for (var idx in self.data) {
                 doc[idx] = self.data[idx];
             }
-            doc[REG.ts] = doc[REG.ts] || [];
-            doc[REG.ts].push(new Date());
+
+            if (!self.has("created_at")) {
+                self.set("created_at", new Date());
+            }
             return doc;
         })
         .catch(function(err) {
