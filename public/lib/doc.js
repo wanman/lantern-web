@@ -81,13 +81,9 @@ window.LanternDocument = (function(id,stor) {
     };
 
     self.get = function(k,s) {
-        var val;
-        if (REG[k]) {
-            val = self.data[REG[k]]; 
-        }
-        else {
-            val = self.data[k];
-        }
+
+        var key = (REG[k] ? REG[k] : k);
+        var val = self.data[key]; 
 
         // easy access for nested keys one level down
         if (s) {
