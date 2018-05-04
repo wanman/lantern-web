@@ -3,20 +3,21 @@ window.LanternDocument = (function(id,stor) {
     // used to preserve keyspace when storing and sending low-bandwidth
     var REG = {
         
-        title: 0x01,        // title or name of object
-        text: 0x02,         // text or label for object
-        status: 0x03,       // level or quantity
+        // private metadata won't relay over LoRa
+        created_at: "$ca",   // creation date
+        updated_at: "$ua",   // doc update date
+        received_at: "$ra",  // doc received at (from radio)
+        sent_at: "$sa",      // doc sent (with radio)
 
-        owner: 0x10,        // user array
-        editor: 0x11,       // user array
-
-        created_at: 0x20,   // creation date
-        updated_at: 0x21,   // doc update date
-        geo: 0x22,          // geohash array
-
-        tag: 0x30,          // category or other tags
-
-        style: 0x40         // css styles
+        // public data for all sync and broadcast
+        title: "tt",        // title or name of object
+        text: "tx",         // text or label for object
+        status: "st",       // level or quantity
+        owner: "ou",        // user array
+        editor: "eu",       // user array
+        geo: "gp",          // geohash array
+        tag: "tg",          // category or other tags
+        style: "sl"         // css styles
     };
 
 
@@ -114,9 +115,7 @@ window.LanternDocument = (function(id,stor) {
         else {
             self.data[key] = self.data[key] || [];
             var index = self.data[key].indexOf(val);
-            console.log(index);
             self.data[key].splice(index,1);
-            console.log(self.data[key]);
         }
     };
 

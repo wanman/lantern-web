@@ -30,7 +30,7 @@ block content
         section
 
             ul#supplies
-                li.box(v-for="r in s_docs" v-if="r.tag.length")
+                li.box(v-for="r in s_docs" v-if="r.tag")
                     span(v-bind:style="makeCategoryStyle(r.tag[0])")= "cat"
                     span= " {{ r.status }} {{ r.title }} " 
 

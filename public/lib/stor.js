@@ -133,8 +133,10 @@ window.LanternStor = (function($data) {
             })
             .then(function() {
 
-            console.log("[stor] target = " + 
-                (self.db.adapter == "http" ? "remote" : "local"));
+                console.log("[stor] target = " + 
+                    (self.db.adapter == "http" ? "remote" : "local")
+                );
+                self.sync();
             });
     };
 
