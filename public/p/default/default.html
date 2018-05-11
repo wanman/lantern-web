@@ -2,10 +2,53 @@
 id: "default"
 ---
 
-extends ../../_layouts/_master.pug
+extends ../../_layouts/_slim.pug
 
 block content
-    section
-        a.box(href="/p/browse/browse.html") Need Help
-    section
-        a.box(href="/p/staff/staff.html") Offering Help
+
+    div#default-app(v-cloak)
+        
+        #logo
+            img(src="../../media/logo.png")
+        
+        <!-- prompt for wifi credentials -->
+        form.card(v-if="prompt_for_creds"  @submit.prevent="handleSubmit")
+            header.card-header
+                p.card-header-title Welcome
+            .card-content
+                .content
+                    h4 Do you have a working wireless internet connection? If so, please enter your credentials so the Lantern can connect:
+
+                    .field.is-horizontal
+                        .field-label.is-normal
+                            label.label Network Name
+                        .field-body
+                            .field
+                                p.control
+                                    input.input(type="text" v-model="network_ssid")
+
+
+                    .field.is-horizontal
+                        .field-label.is-normal
+                            label.label Password
+                        .field
+                            p.control
+                                input.input(type="password" v-model="network_pass")
+        
+            footer.card-footer
+                a.card-footer-item(@click="handleSubmit") Connect Lantern
+                a.card-footer-item Skip For Now
+                
+        #goal-prompt(v-if="prompt_for_creds == false")
+            section
+                a.box(href="/p/browse/browse.html") Need Help
+            section
+                a.box(href="/p/staff/staff.html") Offering Help
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/p/default/default.css")
+
+block scripts
+    script(src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.0")    
+    script(src="/p/default/default.js")
+

@@ -1,6 +1,8 @@
 window.LanternPage= (function(id, vue_opts, preload) {
 
     var self = {
+        base_uri: "http://" + (window.location.host == "localhost:3000" 
+                ? "localhost:8080" :  window.location.host),
         user: null
     };
 
