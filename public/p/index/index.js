@@ -1,5 +1,12 @@
 window.page = (function() {
-    var self;
+    var self;   
+
+    function completeSetup() {
+
+        var importer = new LanternImport(self.stor);
+        importer.all();
+        self.vm.$data.is_setup = true;
+    }
 
     var opts = {};
 
@@ -17,10 +24,14 @@ window.page = (function() {
                 "pass": self.vm.$data.network_pass
             }).then(function(response) {
                 console.log(response);
-                self.vm.$data.is_setup = true;
+                completeSetup();
             }, function(err) {
                 console.log(err);
             });
+        },
+        handleSkip: function() {
+            console.log("skipping wifi credentials...");
+            completeSetup();
         }
     }
     var docs_to_preload = [];

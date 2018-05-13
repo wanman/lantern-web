@@ -72,6 +72,14 @@ window.LanternImport = function(stor) {
         doc.save();
     }
 
+    self.all = function() {
+        self.category();
+        self.venue();
+        self.route();
+        self.supply();
+        self.note();
+    }
+
 
 
     //------------------------------------------------------------------------
