@@ -1,0 +1,25 @@
+---
+id: "dash"
+---
+
+extends ../../_layouts/_slim.pug
+
+block content
+
+    div#dash-app(v-cloak)
+
+        .actions
+            .button.is-primary(v-on:click="loadTestData") Load Test Data
+            .button.is-danger.is-outlined(v-on:click="removeAllDocs") Remove All Docs
+        
+        
+        a.tags.has-addons(v-for="item in types" v-on:click="item.populate") 
+            span.tag {{ item.title }}
+            span.tag.is-primary {{ pluralize(item.docs.length) }}
+
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/p/dash/dash.css")
+
+block scripts
+    script(src="/p/dash/dash.js")

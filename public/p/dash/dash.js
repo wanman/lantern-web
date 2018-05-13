@@ -115,6 +115,6 @@ window.page = (function() {
         opts.data[types[idx].key+"_docs"] = types[idx].docs;
     }
 
-    var self = new LanternPage("setup", opts, docs_to_preload);
+    var self = new LanternPage("dash", opts, docs_to_preload);
     return self;
 }());
