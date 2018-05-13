@@ -1,24 +1,20 @@
 ---
-id: "default"
+id: "index"
 ---
 
 extends ../../_layouts/_slim.pug
 
 block content
 
-    div#default-app(v-cloak)
-        
-        #logo
-            img(src="../../media/logo.png")
+    div#index-app(v-cloak)
         
         <!-- prompt for wifi credentials -->
-        form.card(v-if="prompt_for_creds"  @submit.prevent="handleSubmit")
+        form.card(v-if="is_setup === false"  @submit.prevent="handleSubmit")
             header.card-header
-                p.card-header-title Welcome
+                p.card-header-title Lantern Setup
             .card-content
                 .content
-                    h4 Do you have a working wireless internet connection? If so, please enter your credentials so the Lantern can connect:
-
+                 
                     .field.is-horizontal
                         .field-label.is-normal
                             label.label Network Name
@@ -36,19 +32,19 @@ block content
                                 input.input(type="password" v-model="network_pass")
         
             footer.card-footer
-                a.card-footer-item(@click="handleSubmit") Connect Lantern
-                a.card-footer-item Skip For Now
+                a.card-footer-item(@click="handleSubmit") Save
+                a.card-footer-item Skip
                 
-        #goal-prompt(v-if="prompt_for_creds == false")
+        #goal-prompt(v-if="is_setup")
             section
                 a.box(href="/p/browse/browse.html") Need Help
             section
                 a.box(href="/p/staff/staff.html") Offering Help
 
 block styles
-    link(rel="stylesheet" type="text/css" href="/p/default/default.css")
+    link(rel="stylesheet" type="text/css" href="/p/index/index.css")
 
 block scripts
     script(src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.0")    
-    script(src="/p/default/default.js")
+    script(src="/p/index/index.js")
 

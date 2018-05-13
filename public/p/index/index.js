@@ -4,7 +4,7 @@ window.page = (function() {
     var opts = {};
 
     opts.data = {
-        prompt_for_creds: true,
+        is_setup: false,
         network_ssid: "",
         network_pass: ""
     }
@@ -17,13 +17,13 @@ window.page = (function() {
                 "pass": self.vm.$data.network_pass
             }).then(function(response) {
                 console.log(response);
-                self.vm.$data.prompt_for_creds = false;
+                self.vm.$data.is_setup = true;
             }, function(err) {
                 console.log(err);
             });
         }
     }
     var docs_to_preload = [];
-    self = new LanternPage("default", opts, docs_to_preload);
+    self = new LanternPage("index", opts, docs_to_preload);
     return self;
 }());
