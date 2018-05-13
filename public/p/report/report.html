@@ -1,0 +1,23 @@
+---
+id: "report"
+---
+
+extends ../../_layouts/_master.pug
+
+block content
+    section#report-app(v-cloak)
+        h1 Help Us Map Your Region
+        ul
+
+            li
+                a.box(@click="handleReportSupply") Report Supply Locations
+            li
+                a.box(@click="handleReportShelter") Report Safe Shelters
+            li
+                a.box(@click="handleReportCondition") Report Dangerous Area  
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/p/report/report.css")
+
+block scripts
+    script(src="/p/report/report.js")
