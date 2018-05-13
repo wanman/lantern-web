@@ -13,8 +13,8 @@ block content
             .button.is-danger.is-outlined(v-on:click="removeAllDocs") Remove All Docs
         
         
-        a.tags.has-addons(v-for="item in types" v-on:click="item.populate") 
-            span.tag {{ item.title }}
+        a.tags.has-addons(v-for="item in types") 
+            span.tag {{ item.slug }}
             span.tag.is-primary {{ pluralize(item.docs.length) }}
 
 

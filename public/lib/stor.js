@@ -36,6 +36,9 @@ window.LanternStor = (function($data) {
 
         var type = doc.id.split(":")[0];
         var obj = doc.toJSONFriendly();
+        if (obj._deleted == true) {
+            return;
+        }
         //console.log("[stor] cache doc:", obj);
         var type_key = type+"_docs";
         if (!$data.hasOwnProperty(type_key)) {
@@ -185,7 +188,7 @@ window.LanternStor = (function($data) {
     };
 
     self.upsert = function() {
-        console.log("[stor] upsert " + arguments[0]);
+        //console.log("[stor] upsert " + arguments[0]);
         var fn = arguments[1];
         var obj;
 
