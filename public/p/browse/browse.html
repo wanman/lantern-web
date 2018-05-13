@@ -6,11 +6,11 @@ extends ../../_layouts/_master.pug
 
 block content
     #browse-app(v-cloak)
-        section
-            h1 What do you need most today?
-            h2(v-if="u_docs.length > 2") {{ u_docs.length-1 }} Listening
+        
+        section#map
+            .button(@click="showReportPanel") Add
 
-        section
+        section(v-if="show_filter")
             ul#categories.is-clearfix
                 li(
                     v-for="r in c_docs" 
@@ -20,8 +20,9 @@ block content
                     v-bind:style="makeCategoryStyle(r)"
                     )="{{ r.title }}"
 
-        section
+        
 
+        section#list
             ul#venues
                 li.box(v-for="r in v_docs")="{{ r.title }}"
 

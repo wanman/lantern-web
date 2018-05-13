@@ -3,6 +3,9 @@
   --stencil-color: #EEE;
 }
 
+#list {
+    margin-top: 100px;
+}
 #categories li {
     font-weight: bold;
     float: left;
@@ -18,4 +21,13 @@
 #categories li.active {
     padding: 4px;
     border: 2px solid #000;
+}
+
+#map {
+    height: 100px;
+    background: #ECECEC;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
 }

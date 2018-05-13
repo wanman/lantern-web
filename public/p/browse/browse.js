@@ -43,12 +43,15 @@ window.page = (function() {
             style.push("background-color: #" + doc.get("style", "background-color"));
             style.push("border-color: #" + doc.get("style", "color"));
             return style.join("; ");
+        },
+        showReportPanel: function() {
+            window.location = "/p/report/report.html";
         }
     };
 
 
     opts.data = {
-        user: null
+        show_filter: false
     };
 
     var preload = ["v", "c", "u", "s"];

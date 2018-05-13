@@ -2,7 +2,7 @@
 id: "index"
 ---
 
-extends ../../_layouts/_slim.pug
+extends ../../_layouts/_master.pug
 
 block content
 
@@ -35,11 +35,6 @@ block content
                 a.card-footer-item(@click="handleSubmit") Save
                 a.card-footer-item(@click="handleSkip") Skip
                 
-        #goal-prompt(v-if="is_setup")
-            section
-                a.box(href="/p/browse/browse.html") Need Help
-            section
-                a.box(href="/p/staff/staff.html") Offering Help
 
 block styles
     link(rel="stylesheet" type="text/css" href="/p/index/index.css")

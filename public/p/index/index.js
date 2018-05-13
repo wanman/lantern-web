@@ -6,6 +6,7 @@ window.page = (function() {
         var importer = new LanternImport(self.stor);
         importer.all();
         self.vm.$data.is_setup = true;
+        window.location = "/p/browse/browse.html";
     }
 
     var opts = {};
