@@ -12,17 +12,17 @@ html(lang="en")
         meta(name="theme-color", content="#ffffff")
         link(rel="stylesheet" type="text/css" href="/main.css")
         link(rel="stylesheet" href="/media/font/css/open-iconic.css")
-        link(rel="stylesheet" href="https://use.typekit.net/def4dck.css")
         block styles
 
     body(id=id+"-page")
-
-
-        .content.is-clearfix
+        // map is empty by default - only certain pages will fill this region
+        #map
+        .content
             block content
 
         script(src="/vendor/pouchdb.js")
         script(src="/vendor/pouchdb.upsert.js")
+        script(src="/vendor/moment.min.js")
         script(src="/lib/page.js")
         script(src="/lib/stor.js")
         script(src="/lib/import.js")

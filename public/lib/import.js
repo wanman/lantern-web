@@ -19,6 +19,21 @@ window.LanternImport = function(stor) {
         doc.save();
     }
     
+    function addSupplyStation(id, title, geo) {
+        var venue_doc = new LanternDocument(id, stor);
+        venue_doc.set("title", title);
+        venue_doc.set("geo", [geo]);
+        venue_doc.save();
+
+        var supply_id = "s:wtr-" + Math.round((Math.random()*100000));
+        var supply_doc = new LanternDocument(supply_id, stor);
+        supply_doc.set("status", 1);
+        supply_doc.push("parent", id);
+        supply_doc.push("tag", "c:wtr");
+        supply_doc.save();
+        console.log(supply_doc);
+
+    }
 
 
 
@@ -43,10 +58,9 @@ window.LanternImport = function(stor) {
     */
     self.venue = function() {
         //console.log(" adding default venues");
-        var doc = new LanternDocument("v:test-place", stor);
-        doc.set("title", 'Meadowlane ' + Math.round(Math.random()*100));
-        doc.set("geo", ["u4pruydq"]);
-        doc.save();
+        addSupplyStation("v:css", "Central City Supply Station", "u4pruydq");
+        addSupplyStation("v:ost", "OXFAM Supply Truck", "u4pruyed");
+        addSupplyStation("v:rcm", "Red Cross Morristown HQ", "u4pruyqr");
     }
 
     self.route = function() {
@@ -56,14 +70,6 @@ window.LanternImport = function(stor) {
         doc.save();
     }
 
-    self.supply = function() {
-        //console.log(" adding default geo routes");
-        var doc = new LanternDocument("s:water-bottles", stor);
-        doc.set("title",  "Bottles");
-        doc.set("status", 10);
-        doc.push("tag", "c:wtr");
-        doc.save();
-    }
 
     self.note = function() {
         //console.log(" adding default notes");
@@ -76,7 +82,6 @@ window.LanternImport = function(stor) {
         self.category();
         self.venue();
         self.route();
-        self.supply();
         self.note();
     }
 
