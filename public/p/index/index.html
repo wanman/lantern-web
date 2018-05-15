@@ -15,8 +15,8 @@ block content
         <!-- prompt for wifi credentials -->
         form.panel(@submit.prevent="handleSubmit")
 
-            p.panel-heading
-
+            p.panel-heading(v-if="!warning")
+            .panel-heading.has-text-weight-normal.is-size-6.has-background-warning(v-if="warning") {{ warning }}
             .panel-block
                 .select.is-rounded
                     select(v-model="region")

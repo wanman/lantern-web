@@ -1,11 +1,45 @@
 window.page = (function() {
     var self;   
     var docs_to_preload = [];
-    var $data;
+
+
+    function validateForm() {
+        var $data = self.vm.$data;
+        if ($data.region == "") {
+            $data.warning = "Please select your geographical region";
+            return;
+        }
+        else if ($data.connection == null) {
+            $data.warning = "Please enter your connection type";
+            return;
+        } 
+        
+        $data.processing = true;
+
+        self.user.set("status", $data.connection);
+        self.user.save();
+
+        if ($data.connection == 1) {
+            console.log("[index] storing wifi credentials...");
+            self.vm.$http.post(self.base_uri + "/api/network", {
+                "ssid": $data.network_ssid,
+                "pass": $data.network_pass
+            }).then(function(response) {
+                completeSetup();
+            }, function(err) {
+                $data.warning = "Please check your wifi credentials";
+                $data.processing = false;
+            });
+        }
+        else {
+
+            completeSetup();
+        }
+    }
 
     function completeSetup() {
         self.stor.sync();
-        console.log("[index] importing data for region: " + $data.region);
+        console.log("[index] importing data for region: " + self.vm.$data.region);
         var importer = new LanternImport(self.stor);
         importer.all();
 
@@ -22,7 +56,8 @@ window.page = (function() {
         region: "",
         network_ssid: "",
         network_pass: "",
-        processing: false
+        processing: false,
+        warning: ""
     }
 
     opts.watch = {
@@ -36,33 +71,10 @@ window.page = (function() {
 
     opts.methods = {
         handleSubmit: function() {
-
-
-            $data.processing = true;
-
-            self.user.set("status", $data.connection);
-            self.user.save();
-
-            if ($data.connection == 1) {
-                console.log("[index] storing wifi credentials...");
-                self.vm.$http.post(self.base_uri + "/api/network", {
-                    "ssid": $data.network_ssid,
-                    "pass": $data.network_pass
-                }).then(function(response) {
-                    console.log(response);
-                    completeSetup();
-                }, function(err) {
-                    console.log(err);
-                });
-            }
-            else {
-
-                completeSetup();
-            }
-
+            self.vm.$data.warning = "";
+            setTimeout(validateForm, 300);
         }
     }
     self = new LanternPage("index", opts, docs_to_preload);
-    $data = self.vm.$data;
     return self;
 }());
