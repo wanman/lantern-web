@@ -36,9 +36,13 @@ body {
     border: 1px solid $border;
 }
 
-.card-header{
+.card-header {
     border-bottom: 1px solid $border;
-    shadow: none;
+    box-shadow: none;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    margin-right: 1em;
 }
 
 h1, h2 {

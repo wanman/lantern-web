@@ -6,34 +6,48 @@ extends ../../_layouts/_master.pug
 
 block content
 
+    // this landing page ensures the lantern is setup for required use cases
+    // after leaving this page, the user should have an operational database
+    // wifi credentials may be added if the user has working internet access
+
     div#index-app(v-cloak)
         
         <!-- prompt for wifi credentials -->
-        form.card(v-if="is_setup === false"  @submit.prevent="handleSubmit")
-            header.card-header
-                p.card-header-title Lantern Setup
-            .card-content
-                .content
-                 
-                    .field.is-horizontal
-                        .field-label.is-normal
-                            label.label Network Name
-                        .field-body
-                            .field
-                                p.control
-                                    input.input(type="text" v-model="network_ssid")
+        form.panel(@submit.prevent="handleSubmit")
 
+            p.panel-heading
 
-                    .field.is-horizontal
-                        .field-label.is-normal
-                            label.label Password
-                        .field
-                            p.control
-                                input.input(type="password" v-model="network_pass")
+            .panel-block
+                .select.is-rounded
+                    select(v-model="region")
+                        option(disabled value="") Choose region...
+                        option(value="use") US - South East
+                        option(value="usw") US - South West
+                        option(value="une") US - North East
+                        option(value="unw") US - North West
+
+            label.radio.panel-block
+                input(type="radio" value="1" name="connection" v-model="connection") 
+                | I have a working wireless internet connection
+            
+            // prompt for valid wi-fi credentials if available
+            #wifi-creds.panel-block(v-if="connection == 1")
+                input.input(type="text" placeholder="WiFi SSID" v-model="network_ssid")
+
+                input.input(type="password" placeholder="WiFi Password" v-model="network_pass")
         
-            footer.card-footer
-                a.card-footer-item(@click="handleSubmit") Save
-                a.card-footer-item(@click="handleSkip") Skip
+            label.radio.panel-block
+                input(type="radio" value="0" name="connection" v-model="connection") 
+                | My internet is unreliable
+
+            label.radio.panel-block
+                input(type="radio" value="-1" name="connection" v-model="connection") 
+                | I am offline
+
+
+            .panel-block
+                a.button.is-primary(@click="handleSubmit" :class="processing ? 'is-loading' : ''") Save
+                    
                 
 
 block styles

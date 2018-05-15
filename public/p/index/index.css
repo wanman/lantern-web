@@ -1,5 +1,16 @@
-#index-page {
-    h4 {
-        margin-bottom: 1em;
+#index-page {    
+    .radio + .radio {
+        margin-left: 0em;
+    }
+
+    #wifi-creds {
+        display: block;
+        input {
+            margin: 0.25em;
+        }
+    }
+
+    .button {
+        width: 10em;
     }
 }
