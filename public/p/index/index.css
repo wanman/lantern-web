@@ -1,4 +1,8 @@
 #index-page {    
+
+    .radio {
+        padding: 2em;
+    }
     .radio + .radio {
         margin-left: 0em;
     }

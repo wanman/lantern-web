@@ -21,7 +21,7 @@ window.page = (function() {
 
         if ($data.connection == 1) {
             console.log("[index] storing wifi credentials...");
-            self.vm.$http.post(self.base_uri + "/api/network", {
+            self.vm.$http.post(self.base_uri + "/api/config/ssid", {
                 "ssid": $data.network_ssid,
                 "pass": $data.network_pass
             }).then(function(response) {
