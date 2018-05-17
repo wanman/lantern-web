@@ -43,7 +43,7 @@ body {
 }
 
 input[type="checkbox"], input[type="radio"] {
-    margin-right: 1em;
+    margin-right: 0.5em;
 }
 
 h1, h2 {

@@ -20,7 +20,7 @@ block content
                         p.card-header-title Show locations that have at least one of the following:
                     .card-content
                         .content.is-clearfix
-                            ul
+                            ul.supply-list
                                 li.supply(
                                     v-for="r in c_docs" 
                                     v-on:click="toggleCategory" 
@@ -42,13 +42,14 @@ block content
         ul#venues(v-if="venues.length")
             li.box(v-bind:class="r._id" v-for="r in venues")
                 h3 {{ r.title }}
-                ul
-                    li.supply(
+                ul.supply-list.is-clearfix
+                    li(
                         v-for="c in r.$child"
                         v-bind:class="c._id"
                         v-bind:style="makeCategoryStyle(c)"
                         )
-                p Last Updated: {{ moment(r.updated_at).fromNow() }}
+                footer
+                    p Last Updated: {{ moment(r.updated_at).fromNow() }}
 
 
 block styles

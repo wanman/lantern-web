@@ -1,7 +1,13 @@
 #index-page {    
+    
+    input[type="checkbox"], input[type="radio"] {
+        margin-right: 0.5em;
+        height: 22px;
+        width: 22px;
+    }
 
     .radio {
-        padding: 2em;
+        padding: 1em;
     }
     .radio + .radio {
         margin-left: 0em;
