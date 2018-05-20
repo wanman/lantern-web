@@ -44,7 +44,7 @@ window.page = (function() {
         importer.all();
 
         setTimeout(function() {
-            window.location = "/p/browse/browse.html";
+            window.location = "/browse/browse.html";
         }, 2500);
 
     }
@@ -58,7 +58,7 @@ window.page = (function() {
         network_pass: "",
         processing: false,
         warning: ""
-    }
+    };
 
     opts.watch = {
         connection: function(val) {

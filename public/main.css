@@ -58,15 +58,3 @@ h1 {
 section {
     padding: #{$body-line-height/3}em;
 }
-
-#map {
-    min-height: 200px;
-    margin: -3em;
-
-    a.mapboxgl-ctrl-logo {
-        display: none;
-    }
-    .mapboxgl-ctrl-attrib  {
-        display: none;
-    }
-}

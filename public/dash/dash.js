@@ -23,8 +23,6 @@ window.page = (function() {
     opts.methods = {
         loadTestData: function() {
             var importer = new LanternImport(self.stor);
-            console.log(importer);
-
             for (var idx in types) {
                 var type = types[idx];
                 importer[types[idx].slug]();

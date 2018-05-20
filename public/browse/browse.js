@@ -68,7 +68,7 @@ window.page = (function() {
             return style.join("; ");
         },
         handleShowReportView: function() {
-            window.location = "/p/report/report.html";
+            window.location = "/report/report.html";
         },
         handleCloseFilterView: function() {
             self.vm.$data.show_filter = false;
@@ -96,7 +96,7 @@ window.page = (function() {
 
 
         if (!self.vm.$data.c_docs.length) {
-            window.location.href = "/p/index/index.html";
+            window.location.href = "/";
         }
         
         console.log("[browse] rendering map");

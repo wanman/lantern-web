@@ -31,8 +31,6 @@ window.LanternImport = function(stor) {
         supply_doc.push("parent", id);
         supply_doc.push("tag", "c:wtr");
         supply_doc.save();
-        console.log(supply_doc);
-
     }
 
 
@@ -48,7 +46,7 @@ window.LanternImport = function(stor) {
         addCategory("Donations", "dnt", "50c1b6", "e3f5f3");
         addCategory("Power", "pwr", "f45d90", "f2dae2");
         addCategory("Equipment", "eqp", "4aaddb", "e8f4fa");
-    }
+    };
 
 
     /**
@@ -61,14 +59,19 @@ window.LanternImport = function(stor) {
         addSupplyStation("v:css", "Central City Supply Station", "u4pruydq");
         addSupplyStation("v:ost", "OXFAM Supply Truck", "u4pruyed");
         addSupplyStation("v:rcm", "Red Cross Morristown HQ", "u4pruyqr");
-    }
+    };
+
+
+    self.supply = function() {
+        // supplies to be added directly along-side venues
+    };
 
     self.route = function() {
         //console.log(" adding default geo routes"); 
         var doc = new LanternDocument("r:test-route", stor);
         doc.set("geo", ['u4pruydq', 'u4pruyde']);
         doc.save();
-    }
+    };
 
 
     self.note = function() {
@@ -76,19 +79,19 @@ window.LanternImport = function(stor) {
         var doc = new LanternDocument("n:test-note", stor);
         doc.push("tag", "v:test-place");
         doc.save();
-    }
+    };
 
     self.all = function() {
         self.category();
         self.venue();
         self.route();
         self.note();
-    }
+    };
 
 
 
     //------------------------------------------------------------------------
     return self;
-}
+};
 
     

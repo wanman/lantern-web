@@ -3,7 +3,7 @@ window.page = (function() {
     var opts = {};
     opts.beforeMount = function() {
         if (!self.vm.$data.c_docs.length) {
-            window.location.href = "/p/setup/setup.html";
+            window.location.href = "/";
         }
     };
 
@@ -20,7 +20,7 @@ window.page = (function() {
             console.log("[report] report a condition");
 
         }
-    }
+    };
 
     var self = new LanternPage("report", opts, ["c"]);
     return self;
