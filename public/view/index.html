@@ -1,0 +1,20 @@
+---
+id: "index"
+---
+
+extends ../_layouts/_mock.pug
+
+block content
+    script.
+        function nextImage(img) {
+            var next_num = Number(img.getAttribute('id'))+1;
+            if (next_num == "18") {
+                next_num = 1;
+            }
+
+            img.setAttribute('id', next_num); 
+            img.setAttribute('src', './screen/' + next_num + '.png')
+        }
+
+    .mock
+        img(id="1" src="./screen/1.png" onclick="nextImage(this)")

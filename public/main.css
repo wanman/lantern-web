@@ -63,3 +63,13 @@ h1 {
 section {
     padding: #{$body-line-height/3}em;
 }
+
+.mock {
+    text-align: center;
+    height: 100%;
+    margin: -1.5em;
+    img {    
+        margin: auto;
+        border: 1px solid $border;
+    }
+}

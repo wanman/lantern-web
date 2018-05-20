@@ -44,7 +44,7 @@ window.page = (function() {
         importer.all();
 
         setTimeout(function() {
-            window.location = "/browse/browse.html";
+            window.location = "/view/";
         }, 2500);
 
     }
