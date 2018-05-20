@@ -67,14 +67,14 @@ window.page = (function() {
         region: function(val) {
             console.log("[index] region input: " + val);
         }
-    }
+    };
 
     opts.methods = {
         handleSubmit: function() {
             self.vm.$data.warning = "";
             setTimeout(validateForm, 300);
         }
-    }
+    };
     self = new LanternPage("index", opts, docs_to_preload);
     return self;
 }());

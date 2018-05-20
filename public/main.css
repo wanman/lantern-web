@@ -42,6 +42,11 @@ body {
     box-shadow: none;
 }
 
+
+.panel .content {
+    width: 100%;
+}
+
 input[type="checkbox"], input[type="radio"] {
     margin-right: 0.5em;
 }
