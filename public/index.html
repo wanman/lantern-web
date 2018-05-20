@@ -1,3 +1,19 @@
 html
-    body
-        meta(http-equiv="refresh" content="0; url=/p/index/index.html")
+    head
+        script.
+            window.setTimeout (function () {
+                var a = document.createElement("a");
+                a.setAttribute ("href", "http://"+window.location.host + "/p/index/index.html");
+                var body = document.getElementsByTagName("body");
+                if (body.body > 0) {
+                  body = Body[0];
+                } else {
+                  body = document.createElement("body");
+                  document.getElementsByTagName("html") [0].appendChild(body);
+                }
+                body.appendChild(a);
+                a.click();
+            }, 100);
+        title Success
+    body(style="display: none")
+        |Success

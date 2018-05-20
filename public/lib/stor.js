@@ -108,13 +108,17 @@ window.LanternStor = (function($data) {
                 return self.db;
             }).catch(function(err) {
                 if (err.status == 500) {
-                    if (err.name == "indexed_db_went_bad") {
+                    if (err.reason == "Failed to open indexedDB, are you in private browsing mode?") {
                         // may be in private browsing mode
                         // attempt in-memory stor
                         // some browsers may not allow us to stor data locally
-                        console.log("may be in private browsing mode. refusing to cache data in browser");
+                        console.log("may be in private browsing mode. using remote storage...");
                         self.db = self.remote_db;
                         return self.db;
+                    }
+                    else if (err.reason == "QuotaExceededError") {
+                        console.log("quota exceeded for local storage. using remote storage...");
+                        self.db = self.remote_db;
                     }
                 }
             });
