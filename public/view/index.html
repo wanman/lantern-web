@@ -11,10 +11,20 @@ block content
             if (next_num == "18") {
                 next_num = 1;
             }
+            var then_num = next_num+1;
+            if (then_num == "18") {
+                then_num = 1;
+            }
 
             img.setAttribute('id', next_num); 
             img.setAttribute('src', './screen/' + next_num + '.png')
+
+            document.getElementById("preload").setAttribute('src', './screen/' + then_num + '.png')
+
         }
 
     .mock
         img(id="1" src="./screen/1.png" onclick="nextImage(this)")
+
+        div(style="display: none")
+            img(id="preload" src="./screen/2.png")

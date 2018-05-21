@@ -45,7 +45,7 @@ window.page = (function() {
 
         setTimeout(function() {
             window.location = "/view/";
-        }, 2500);
+        }, 1000);
 
     }
 
