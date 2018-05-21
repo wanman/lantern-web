@@ -19,9 +19,6 @@ window.page = (function() {
             return;
         }
 
-        self.user.set("status", $data.connection);
-        self.user.save();
-
         if ($data.connection == 1) {
             console.log("[index] storing wifi credentials...");
             self.vm.$http.post(self.base_uri + "/api/config/ssid", {
@@ -41,15 +38,9 @@ window.page = (function() {
     }
 
     function completeSetup() {
-        self.stor.sync();
-        console.log("[index] importing data for region: " + self.vm.$data.region);
-        var importer = new LanternImport(self.stor);
-        importer.all();
-
         setTimeout(function() {
-            window.location = "/welcome/welcome.html";
-        }, 1000);
-
+            window.location = "/welcome/welcome.html?cn="+self.vm.$data.connection+"&rg="+self.vm.$data.region;
+        }, 300);
     }
 
     var opts = {};
@@ -76,7 +67,7 @@ window.page = (function() {
         handleSubmit: function() {
             self.vm.$data.warning = "";
             self.vm.$data.processing = true;
-            setTimeout(validateForm, 300);
+            setTimeout(validateForm, 150);
         }
     };
     self = new LanternPage("index", opts, docs_to_preload);

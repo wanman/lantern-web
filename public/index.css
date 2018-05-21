@@ -1,14 +1,18 @@
 #index-page {
 
     .logo {
-        width: 60px;
+        width: 50px;
+        margin-bottom: 0.5em;
     }
     .intro {
-        padding: 2em;
+        font-size: 0.9em;
+        margin: auto;
+        margin-bottom: 2em;
+        max-width: 550px;
     }
 
     form {
-        max-width: 500px;
+        max-width: 550px;
         margin: auto;
     }
     label {
@@ -22,10 +26,10 @@
     }
 
     .select {
-        margin: 1em 0em;
+        margin: 0.4em 0em;
     }
     .radio {
-        padding: 1.5em;
+        padding: 1.3em;
     }
     .radio + .radio {
         margin-left: 0em;
