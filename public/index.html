@@ -12,19 +12,16 @@ block content
 
     div#index-app(v-cloak)
         
+        img.logo(src="/media/logo.png")
+
+        p.intro  You are about to join a local information exchange for your region. No internet access is available, however you will have access to a map to find nearby supplies and offer help to those nearby.
+
         <!-- prompt for wifi credentials -->
         form.panel(@submit.prevent="handleSubmit")
 
             p.panel-heading(v-if="!warning")
             .panel-heading.has-text-weight-normal.is-size-6.has-background-warning(v-if="warning") {{ warning }}
-            .panel-block
-                .select.is-rounded
-                    select(v-model="region")
-                        option(disabled value="") Choose region...
-                        option(value="use") US - South East
-                        option(value="usw") US - South West
-                        option(value="une") US - North East
-                        option(value="unw") US - North West
+         
 
             label.radio.panel-block
                 input(type="radio" value="1" name="connection" v-model="connection") 
@@ -32,6 +29,8 @@ block content
             
             // prompt for valid wi-fi credentials if available
             #wifi-creds.panel-block(v-if="connection == 1")
+
+                p By securely sharing your wireless network, you will help neighbors get access to up-to-date information from outside your region:
                 input.input(type="text" placeholder="WiFi SSID" v-model="network_ssid")
 
                 input.input(type="password" placeholder="WiFi Password" v-model="network_pass")
@@ -44,7 +43,14 @@ block content
                 input(type="radio" value="-1" name="connection" v-model="connection") 
                 | I am offline
 
-
+            .panel-block
+                .select.is-rounded
+                    select(v-model="region")
+                        option(disabled value="") Choose region...
+                        option(value="use") US - South East
+                        option(value="usw") US - South West
+                        option(value="une") US - North East
+                        option(value="unw") US - North West
             .panel-block
                 a.button.is-primary(@click="handleSubmit" :class="processing ? 'is-loading' : ''") Sign In
                     

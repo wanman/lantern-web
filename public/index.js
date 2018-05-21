@@ -5,16 +5,19 @@ window.page = (function() {
 
     function validateForm() {
         var $data = self.vm.$data;
-        if ($data.region == "") {
-            $data.warning = "Please select your geographical region";
-            return;
-        }
-        else if ($data.connection == null) {
-            $data.warning = "Please enter your connection type";
-            return;
-        } 
         
         $data.processing = true;
+
+        if ($data.connection == null) {
+            $data.warning = "Please enter your connection type";
+            $data.processing = false;
+            return;
+        }
+        else if ($data.region == "") {
+            $data.warning = "Please select your geographical region";
+            $data.processing = false;
+            return;
+        }
 
         self.user.set("status", $data.connection);
         self.user.save();
@@ -44,7 +47,7 @@ window.page = (function() {
         importer.all();
 
         setTimeout(function() {
-            window.location = "/view/";
+            window.location = "/welcome/welcome.html";
         }, 1000);
 
     }
@@ -72,6 +75,7 @@ window.page = (function() {
     opts.methods = {
         handleSubmit: function() {
             self.vm.$data.warning = "";
+            self.vm.$data.processing = true;
             setTimeout(validateForm, 300);
         }
     };

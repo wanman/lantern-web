@@ -1,0 +1,14 @@
+doctype html
+html(lang="en")
+    head
+        title=title
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet" type="text/css" href="/main.css")
+        block styles
+
+    body(id=id+"-page")
+        // map is empty by default - only certain pages will fill this region
+        #map
+        .content
+            block content
