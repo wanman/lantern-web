@@ -99,29 +99,48 @@ window.LanternStor = (function($data) {
             });
     }
 
-
     function pickDatabase() {
         if (self.db) return Promise.resolve(self.db);
-        return self.local_db.info()
-            .then(function (result) {
-                self.db = self.local_db;
-                return self.db;
-            }).catch(function(err) {
-                if (err.status == 500) {
-                    if (err.reason == "Failed to open indexedDB, are you in private browsing mode?") {
-                        // may be in private browsing mode
-                        // attempt in-memory stor
-                        // some browsers may not allow us to stor data locally
-                        console.log("may be in private browsing mode. using remote storage...");
-                        self.db = self.remote_db;
-                        return self.db;
-                    }
-                    else if (err.reason == "QuotaExceededError") {
-                        console.log("quota exceeded for local storage. using remote storage...");
-                        self.db = self.remote_db;
-                    }
+
+        return new Promise(function(resolve, reject) {
+
+            // fall-back for older devices that might not know how to handle indexDB
+            var timer = setTimeout(function() {
+                console.log("timed out looking for local db. use remote storage...");
+                if (!self.db) {
+                    self.db = self.remote_db;
+                    resolve(self.db);
                 }
-            });
+            }, 300);
+
+            self.local_db.info()
+                .then(function (result) {
+                    clearTimeout(timer);
+                    self.db = self.local_db;
+                    resolve(self.db);
+                }).catch(function(err) {
+                    clearTimeout(timer);
+                    
+                    if (err.status == 500) {
+                        if (err.reason == "Failed to open indexedDB, are you in private browsing mode?") {
+                            // may be in private browsing mode
+                            // attempt in-memory stor
+                            // some browsers may not allow us to stor data locally
+                            console.log("may be in private browsing mode. using remote storage...");
+                            self.db = self.remote_db;
+                        }
+                        else if (err.reason == "QuotaExceededError") {
+                            console.log("quota exceeded for local storage. using remote storage...");
+                            self.db = self.remote_db;
+                        }
+                        resolve(self.db);
+                    }
+                    else {
+                        clearTimeout(timer);
+                        reject(err);
+                    }
+                });
+        });
     }
 
     //------------------------------------------------------------------------
