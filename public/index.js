@@ -18,6 +18,9 @@ window.page = (function() {
             $data.processing = false;
             return;
         }
+        
+        self.user.set("status", $data.connection);
+        self.user.save();
 
         if ($data.connection == 1) {
             console.log("[index] storing wifi credentials...");
@@ -38,8 +41,15 @@ window.page = (function() {
     }
 
     function completeSetup() {
+
+        self.stor.sync();
+        console.log("[index] importing data for region: " + self.vm.$data.region);
+        var importer = new LanternImport(self.stor);
+        importer.all();
+
+        
         setTimeout(function() {
-            window.location = "/welcome/welcome.html?cn="+self.vm.$data.connection+"&rg="+self.vm.$data.region;
+            window.location = "/browse/browse.html";
         }, 300);
     }
 

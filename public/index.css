@@ -1,15 +1,5 @@
 #index-page {
 
-    .logo {
-        width: 50px;
-        margin-bottom: 0.5em;
-    }
-    .intro {
-        font-size: 0.9em;
-        margin: auto;
-        margin-bottom: 2em;
-        max-width: 550px;
-    }
 
     form {
         max-width: 550px;
