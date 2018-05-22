@@ -49,7 +49,7 @@ window.page = (function() {
 
         
         setTimeout(function() {
-            window.location = "/browse/browse.html";
+            window.location = "/view/";
         }, 300);
     }
 
