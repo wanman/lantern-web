@@ -16,6 +16,7 @@ window.LanternImport = function(stor) {
             "color": color, 
             "background-color": background_color}
         );
+        doc.set("$ia", new Date());
         doc.save();
     }
     
@@ -23,6 +24,7 @@ window.LanternImport = function(stor) {
         var venue_doc = new LanternDocument(id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
+        venue_doc.set("$ia", new Date());
         venue_doc.save();
 
         var supply_id = "s:wtr-" + Math.round((Math.random()*100000));
@@ -30,6 +32,7 @@ window.LanternImport = function(stor) {
         supply_doc.set("status", 1);
         supply_doc.push("parent", id);
         supply_doc.push("tag", "c:wtr");
+        supply_doc.set("$ia", new Date());
         supply_doc.save();
     }
 
@@ -70,6 +73,7 @@ window.LanternImport = function(stor) {
         //console.log(" adding default geo routes"); 
         var doc = new LanternDocument("r:test-route", stor);
         doc.set("geo", ['u4pruydq', 'u4pruyde']);
+        doc.set("$ia", new Date());
         doc.save();
     };
 
@@ -78,6 +82,7 @@ window.LanternImport = function(stor) {
         //console.log(" adding default notes");
         var doc = new LanternDocument("n:test-note", stor);
         doc.push("tag", "v:test-place");
+        doc.set("$ia", new Date());
         doc.save();
     };
 
