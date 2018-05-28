@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Lantern Network</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="/media/favicon/apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/media/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/media/favicon/favicon-16x16.png">
+        <link rel="mask-icon" href="/media/favicon/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <link rel="stylesheet" type="text/css" href="/main.css">
+        <link rel="stylesheet" type="text/css" href="/browse/browse.css">
+    </head>
+    <body id="browse-page">
+        <!-- map is empty by default - only certain pages will fill this region-->
+        <div id="map"></div>
+        <div class="content">
+            <div id="browse-app" v-cloak>
+                <div id="button-bar">
+                    <div class="button" id="report-button" @click="handleShowReportView">Contribute</div>
+                    <div id="filter-view" v-if="show_filter">
+                        <div class="card">
+                            <header class="card-header"> 
+                                <p class="card-header-title">Show locations that have at least one of the following:</p>
+                            </header>
+                            <div class="card-content">
+                                <div class="content is-clearfix">
+                                    <ul class="supply-list">
+                                        <li class="supply" v-for="r in c_docs" v-on:click="toggleCategory" v-bind:class="makeCategoryClass(r)" v-bind:id="r._id" v-bind:style="makeCategoryStyle(r)">{{ r.title }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <footer class="card-footer"><a class="card-footer-item" @click="handleCloseFilterView">Done</a></footer>
+                        </div>
+                    </div>
+                    <div class="button" id="filter-button" @click="handleToggleFilterView">Filter</div>
+                </div>
+                <p v-if="!venues.length">There are no supply stations or vehicles reported yet. Please check back soon.</p>
+                <ul id="venues" v-if="venues.length">
+                    <li class="box" v-bind:class="r._id" v-for="r in venues">
+                        <h3>{{ r.title }}</h3>
+                        <ul class="supply-list is-clearfix">
+                            <li v-for="c in r.$child" v-bind:class="c._id" v-bind:style="makeCategoryStyle(c)"></li>
+                        </ul>
+                        <footer>
+                            <p>Last Updated: {{ moment(r.updated_at).fromNow() }}</p>
+                        </footer>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script src="/lib/vendor.js"></script>
+        <script src="/lib/lantern.js"></script>
+        <script src="/browse/browse.js"></script>
+    </body>
+</html>

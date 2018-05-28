@@ -1,0 +1,9 @@
+cloud:
+    build: .
+    restart: always
+    ports:
+        - 80
+    environment:
+        - CLOUD=true
+    labels:
+        - triton.cns.services=lantern

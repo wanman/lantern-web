@@ -1,0 +1,33 @@
+#index-page form {
+  max-width: 550px;
+  margin: auto; }
+
+#index-page label {
+  text-align: left; }
+
+#index-page input[type="checkbox"], #index-page input[type="radio"] {
+  margin-right: 0.5em;
+  height: 22px;
+  width: 22px; }
+
+#index-page .select {
+  margin: 0.4em 0em; }
+
+#index-page .radio {
+  padding: 1.3em; }
+
+#index-page .radio + .radio {
+  margin-left: 0em; }
+
+#index-page #wifi-creds {
+  display: block; }
+  #index-page #wifi-creds p {
+    text-align: left;
+    padding: 1em;
+    font-size: 0.9em; }
+  #index-page #wifi-creds input {
+    margin: 0.25em; }
+
+#index-page .button {
+  width: 10em; }
+
