@@ -1,3 +1,5 @@
+__base = "../";
+
 window.page = (function() {
 
     var self;

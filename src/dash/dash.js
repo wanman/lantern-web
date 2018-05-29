@@ -1,5 +1,3 @@
-__base = "../";
-
 window.page = (function() {
 
 

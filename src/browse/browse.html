@@ -1,0 +1,59 @@
+---
+id: "browse"
+---
+
+extends ../_layouts/_master.pug
+
+block content
+    
+    #browse-app(v-cloak)
+        
+
+        #button-bar
+            #report-button.button(@click="handleShowReportView") Contribute
+
+     
+
+            #filter-view(v-if="show_filter")
+                .card
+                    header.card-header 
+                        p.card-header-title Show locations that have at least one of the following:
+                    .card-content
+                        .content.is-clearfix
+                            ul.supply-list
+                                li.supply(
+                                    v-for="r in c_docs" 
+                                    v-on:click="toggleCategory" 
+                                    v-bind:class="makeCategoryClass(r)"
+                                    v-bind:id="r._id" 
+                                    v-bind:style="makeCategoryStyle(r)"
+                                    )="{{ r.title }}"
+                    footer.card-footer
+                        a.card-footer-item(@click="handleCloseFilterView") Done
+
+            #filter-button.button(@click="handleToggleFilterView") Filter
+
+
+
+
+
+        p(v-if="!venues.length") There are no supply stations or vehicles reported yet. Please check back soon.
+
+        ul#venues(v-if="venues.length")
+            li.box(v-bind:class="r._id" v-for="r in venues")
+                h3 {{ r.title }}
+                ul.supply-list.is-clearfix
+                    li(
+                        v-for="c in r.$child"
+                        v-bind:class="c._id"
+                        v-bind:style="makeCategoryStyle(c)"
+                        )
+                footer
+                    p Last Updated: {{ moment(r.updated_at).fromNow() }}
+
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/browse/browse.css")
+
+block scripts
+    script(src="/browse/browse.js")
