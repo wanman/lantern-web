@@ -6,8 +6,12 @@ TAG?=latest
 .PHONY: build
 
 build:
-    triton-compose build
+	docker-compose build
 
 run:
-    triton profile set-current lantern
-    triton-compose up -d
+	docker-compose up
+	
+deploy:
+	triton profile set-current lantern
+	triton-compose build
+	triton-compose up -d
