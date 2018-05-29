@@ -1,13 +1,11 @@
-# Guide here:
-# https://github.com/KyleAMathews/docker-nginx
+FROM node:carbon
 
-# Build docker file
-# docker build -t CONTAINERNAME .
+WORKDIR /opt/lantern/app
+COPY package*.json ./
+RUN npm install
+COPY public ./public
+COPY main.js .
+COPY lib ./lib
+EXPOSE 80
 
-# Build from this repo's image
-FROM kyma/docker-nginx
-
-# Add src.
-COPY build/ /var/www
-
-CMD 'nginx'
+CMD ["npm", "start"]
