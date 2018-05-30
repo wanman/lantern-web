@@ -1,11 +1,8 @@
 FROM node:carbon
-
-WORKDIR /opt/lantern/app
-COPY package*.json ./
+WORKDIR /opt/lantern/
+RUN ls 
+RUN mkdir ./db
+COPY app /opt/lantern
 RUN npm install
-COPY public ./public
-COPY main.js .
-COPY lib ./lib
 EXPOSE 80
-
 CMD ["npm", "start"]
