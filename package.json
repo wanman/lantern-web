@@ -3,6 +3,7 @@
     "version": "0.0.6",
     "dependencies": {
         "express": "*",
+        "body-parser": "*",
         "pouchdb-core": "*",
         "pouchdb-replication": "*",
         "pouchdb-adapter-http": "*",
