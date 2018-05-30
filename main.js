@@ -1,3 +1,12 @@
+/**
+* Lantern HTTP Server
+*
+* We serve web applications and the PouchDB at the same origin.
+* This allows easy access to the database through javascript.
+* Useful for hosting on a Raspberry Pi or cloud environment.
+*
+**/
+
 var express = require("express");
 var path = require("path");
 var fs = require("fs");
@@ -32,6 +41,17 @@ fs.readdir("./routes", function(err, files) {
     files.forEach(function(file) {
         require("./routes/" + file)(serv);
     });
+});
+
+/*
+* Check for additional routes (e.g. device-specific controls)
+*/
+fs.readdir("../../routes", function(err, files) {
+    if (!err) {
+        files.forEach(function(file) {
+            require("../../routes/" + file)(serv);
+        });   
+    }
 });
 
 /*
