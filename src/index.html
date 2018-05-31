@@ -1,60 +1,19 @@
 ---
-id: "index"
+id: "hotspot"
 ---
 
-extends _layouts/_master.pug
+extends _layouts/_captive.pug
 
 block content
 
-    // this landing page ensures the lantern is setup for required use cases
-    // after leaving this page, the user should have an operational database
-    // wifi credentials may be added if the user has working internet access
+    img.logo(src="/media/logo.png")
 
-    div#index-app(v-cloak)
-        
-        <!-- prompt for wifi credentials -->
-        form.panel(@submit.prevent="handleSubmit")
+    p.intro  You are about to join a local information exchange for your region. Internet is unavailable, however you will have access to a map to find nearby supplies and offer help to those nearby.
 
-            p.panel-heading(v-if="!warning")
-            .panel-heading.has-text-weight-normal.is-size-6.has-background-warning(v-if="warning") {{ warning }}
-         
+    p.intro To begin, please type <span>lantern.local</span> in the address bar of your web browser or push the button below:
+    
+    a.button(id="continue-btn" href="/") Continue
 
-            label.radio.panel-block
-                input(type="radio" value="1" name="connection" v-model="connection") 
-                | I have a working wireless internet connection
-            
-            // prompt for valid wi-fi credentials if available
-            #wifi-creds.panel-block(v-if="connection == 1")
-
-                p By securely sharing your wireless network, you will help neighbors get access to up-to-date information from outside your region:
-                input.input(type="text" placeholder="WiFi SSID" v-model="network_ssid")
-
-                input.input(type="password" placeholder="WiFi Password" v-model="network_pass")
-        
-            label.radio.panel-block
-                input(type="radio" value="0" name="connection" v-model="connection") 
-                | My internet is unreliable
-
-            label.radio.panel-block
-                input(type="radio" value="-1" name="connection" v-model="connection") 
-                | I am offline
-
-            .panel-block
-                .select.is-rounded
-                    select(v-model="region")
-                        option(disabled value="") Choose region...
-                        option(value="use") US - South East
-                        option(value="usw") US - South West
-                        option(value="une") US - North East
-                        option(value="unw") US - North West
-            .panel-block
-                a.button.is-primary(@click="handleSubmit" :class="processing ? 'is-loading' : ''") Sign In
-                    
-                
-
-block styles
-    link(rel="stylesheet" type="text/css" href="/index.css")
-
-block scripts
-    script(src="/index.js")
-
+    script.
+        var el = document.getElementById("continue-btn");
+        el.href = window.location.protocol +"//" + window.location.host + "/browse/browse.html";

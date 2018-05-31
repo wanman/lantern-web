@@ -23,7 +23,7 @@ window.page = (function() {
         self.user.save();
 
         if ($data.connection == 1) {
-            console.log("[index] storing wifi credentials...");
+            console.log("[settings] storing wifi credentials...");
             self.vm.$http.post(self.base_uri + "/api/config/ssid", {
                 "ssid": $data.network_ssid,
                 "pass": $data.network_pass
@@ -43,7 +43,7 @@ window.page = (function() {
     function completeSetup() {
 
         self.stor.sync();
-        console.log("[index] importing data for region: " + self.vm.$data.region);
+        console.log("[settings] importing data for region: " + self.vm.$data.region);
         var importer = new LanternImport(self.stor);
         importer.all();
 
@@ -66,10 +66,10 @@ window.page = (function() {
 
     opts.watch = {
         connection: function(val) {
-            console.log("[index] connection input: " + val);
+            console.log("[settings] connection input: " + val);
         },
         region: function(val) {
-            console.log("[index] region input: " + val);
+            console.log("[settings] region input: " + val);
         }
     };
 
@@ -80,6 +80,6 @@ window.page = (function() {
             setTimeout(validateForm, 150);
         }
     };
-    self = new LanternPage("index", opts, docs_to_preload);
+    self = new LanternPage("settings", opts, docs_to_preload);
     return self;
 }());

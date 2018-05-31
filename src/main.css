@@ -12,6 +12,7 @@ $card-shadow: 0 2px 10px rgba($black, 0.10), 0 0 0 1px rgba($black, 0.05);
 @import "bulma/sass/elements/icon";
 @import "bulma/sass/elements/button";
 @import "bulma/sass/elements/form";
+@import "bulma/sass/components/navbar";
 @import "bulma/sass/components/panel";
 @import "bulma/sass/components/card";
 @import "bulma/sass/components/modal";
