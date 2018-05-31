@@ -1,23 +1,33 @@
----
-id: "report"
----
-
-extends ../_layouts/_master.pug
-
-block content
-    section#report-app(v-cloak)
-        h1 Help Us Map Your Region
-        ul
-
-            li
-                a.box(@click="handleReportSupply") Report Supply Locations
-            li
-                a.box(@click="handleReportShelter") Report Safe Shelters
-            li
-                a.box(@click="handleReportCondition") Report Dangerous Area  
-
-block styles
-    link(rel="stylesheet" type="text/css" href="/report/report.css")
-
-block scripts
-    script(src="/report/report.js")
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Lantern Network</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="/media/favicon/apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/media/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/media/favicon/favicon-16x16.png">
+        <link rel="mask-icon" href="/media/favicon/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <link rel="stylesheet" type="text/css" href="/main.css">
+        <link rel="stylesheet" type="text/css" href="/report/report.css">
+    </head>
+    <body id="report-page">
+        <!-- map is empty by default - only certain pages will fill this region-->
+        <div id="map"></div>
+        <div class="content">
+            <section id="report-app" v-cloak>
+                <h1>Help Us Map Your Region</h1>
+                <ul>
+                    <li><a class="box" @click="handleReportSupply">Report Supply Locations</a></li>
+                    <li><a class="box" @click="handleReportShelter">Report Safe Shelters</a></li>
+                    <li><a class="box" @click="handleReportCondition">Report Dangerous Area  </a></li>
+                </ul>
+            </section>
+        </div>
+        <script src="/lib/vendor.js"></script>
+        <script src="/lib/lantern.js"></script>
+        <script src="/report/report.js"></script>
+    </body>
+</html>
