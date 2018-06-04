@@ -1,0 +1,28 @@
+---
+id: "channels"
+---
+
+extends ../_layouts/_master.pug
+
+block content
+    #channels-view
+        h1 What do you need most today?
+        h2(v-if="listening_user_count > 0") {{ pluralize(listening_user_count) }} Are Listening
+
+        ul.item-list(v-cloak)
+            li.item(
+                v-for="r in categories" 
+                v-bind:id="r._id" 
+                v-bind:class="makeCategoryClass(r)"
+               @click="toggleCategory" 
+                )
+                    .icon(
+                    v-bind:style="makeCategoryStyle(r)"
+                    )
+                    .title {{ r.title }}
+                
+block styles
+    link(rel="stylesheet" type="text/css" href="/channels/channels.css")
+
+block scripts
+    script(src="/channels/channels.js")

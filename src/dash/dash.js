@@ -20,7 +20,7 @@ window.page = (function() {
         {key: "i", slug: "item", docs: []},
         {key: "n", slug: "note", docs: []}
     ]);
-
+    self.addData("show_network_status", -1);
 
     //------------------------------------------------------------------------
     self.addHelper("loadTestData", function() {

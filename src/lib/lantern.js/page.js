@@ -121,7 +121,6 @@ window.LanternPage = (function(id) {
     * Setup global view helpers
     */
     opts.methods.toggleNavigation = function(el) {
-        console.log("TOGGLE NAV",el.target);
         self.view.$data.showNavMenu = !self.view.$data.showNavMenu;
     };
 

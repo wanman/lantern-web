@@ -1,10 +1,11 @@
 window.page = (function() {
-    var self;   
-    var docs_to_preload = [];
+    
+    var self = new LanternPage("settings");
 
 
+    //------------------------------------------------------------------------
     function validateForm() {
-        var $data = self.vm.$data;
+        var $data = self.view.$data;
         
         $data.processing = true;
 
@@ -24,7 +25,7 @@ window.page = (function() {
 
         if ($data.connection == 1) {
             console.log("[settings] storing wifi credentials...");
-            self.vm.$http.post(self.base_uri + "/api/config/ssid", {
+            self.view.$http.post(self.base_uri + "/api/config/ssid", {
                 "ssid": $data.network_ssid,
                 "pass": $data.network_pass
             }).then(function(response) {
@@ -43,7 +44,7 @@ window.page = (function() {
     function completeSetup() {
 
         self.stor.sync();
-        console.log("[settings] importing data for region: " + self.vm.$data.region);
+        console.log("[settings] importing data for region: " + self.view.$data.region);
         var importer = new LanternImport(self.stor);
         importer.all();
 
@@ -52,34 +53,37 @@ window.page = (function() {
             window.location = "/browse/browse.html";
         }, 1000);
     }
+    
 
-    var opts = {};
 
-    opts.data = {
-        connection: null,
-        region: "",
-        network_ssid: "",
-        network_pass: "",
-        processing: false,
-        warning: ""
-    };
+    //------------------------------------------------------------------------
+    self.addData("connection", null);
+    self.addData("region", "");
+    self.addData("network_ssid", "");
+    self.addData("network_pass", "");
+    self.addData("processing", false);
+    self.addData("warning", "");
+    self.addData("show_network_status", -1);
 
-    opts.watch = {
-        connection: function(val) {
-            console.log("[settings] connection input: " + val);
-        },
-        region: function(val) {
-            console.log("[settings] region input: " + val);
-        }
-    };
+    
 
-    opts.methods = {
-        handleSubmit: function() {
-            self.vm.$data.warning = "";
-            self.vm.$data.processing = true;
-            setTimeout(validateForm, 150);
-        }
-    };
-    self = new LanternPage("settings", opts, docs_to_preload);
+    //------------------------------------------------------------------------
+    self.addHelper("handleSubmit", function() {
+        self.view.$data.warning = "";
+        self.view.$data.processing = true;
+        setTimeout(validateForm, 150);
+    });
+
+
+
+    //------------------------------------------------------------------------
+
+    self.render()
+        .then(self.connect)
+        .then(function() {
+            console.log("[settings] init");
+        });
+        
+
     return self;
 }());

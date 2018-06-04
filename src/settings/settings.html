@@ -15,7 +15,7 @@ block content
         <!-- prompt for wifi credentials -->
         form.panel(@submit.prevent="handleSubmit")
 
-            p.panel-heading(v-if="!warning")
+            p.panel-heading(v-if="!warning") Device Settings
             .panel-heading.has-text-weight-normal.is-size-6.has-background-warning(v-if="warning") {{ warning }}
          
 
@@ -48,13 +48,13 @@ block content
                         option(value="une") US - North East
                         option(value="unw") US - North West
             .panel-block
-                a.button.is-primary(@click="handleSubmit" :class="processing ? 'is-loading' : ''") Sign In
+                a.button.is-primary(@click="handleSubmit" :class="processing ? 'is-loading' : ''") Save
                     
                 
 
 block styles
-    link(rel="stylesheet" type="text/css" href="/settings.css")
+    link(rel="stylesheet" type="text/css" href="/settings/settings.css")
 
 block scripts
-    script(src="/settings.js")
+    script(src="/settings/settings.js")
 

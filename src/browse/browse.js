@@ -30,19 +30,11 @@ window.page = (function() {
                 setTimeout(loadZones, 300);
             }
             else {
-                self.stor.getManyByType("c").then(function(categories) {
-                    addManyCategoriesToView(categories, self.view);
-                    self.stor.getManyByType("i").then(function(items) {
-                        addManyZonesToView(zones, items, self.view);
-                    });
+               
+                self.stor.getManyByType("i").then(function(items) {
+                    addManyZonesToView(zones, items, self.view);
                 });
             }
-        });
-    }
-
-    function addManyCategoriesToView(categories, view) {
-        categories.forEach(function(category) {
-            view.$data.categories.push(category.toJSONFriendly());
         });
     }
 
@@ -66,11 +58,11 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.addData("zones", []);
-    self.addData("categories", []);
     self.addData("show_filter", false);
     self.addData("show_report", false);
     self.addData("show_zones", true);
     self.addData("loaded", 0);
+    self.addData("show_network_status", -1);
 
 
 
@@ -86,59 +78,6 @@ window.page = (function() {
 
     self.addHelper("handleZoneSelect", function(zone) {
         console.log(zone);
-    });
-
-    self.addHelper("toggleCategory", function(evt) {
-        var el = evt.target;
-        var cat = el.getAttribute("id");
-        console.log("[browse] clicked: " + cat);
-
-        // do optimistic UI updates and then listen for sync to confirm
-        if (self.user.has("tag", cat)) {
-            self.user.pop("tag", cat);
-            el.classList.remove("active");
-        }
-        else {
-            el.classList.add("active");
-            self.user.push("tag", cat);
-        }
-        self.user.save();
-    });
-
-    self.addHelper("makeCategoryClass", function(cat) {
-        var cls = "";
-        var user = self.user;
-        if (user && user.has("tag", cat._id)) {
-            cls += "active ";
-        }
-        return cls;
-    });
-
-
-    self.addHelper("makeCategoryStyle", function(cat) {
-        var obj;
-
-        if (!cat) {
-            return;
-        }
-
-        if (typeof(cat) == "string") {
-            obj = self.stor.getCached(cat);
-        }
-        else {
-            obj = cat;
-        }
-
-        if (obj.hasOwnProperty("parent")) {
-            // must be a specific supply
-            obj = self.stor.getCached(obj.tag[0]);
-        }
-
-        var doc = new LanternDocument(obj, self.stor);
-        var style = ["color: #" + doc.get("style","color")];
-        style.push("background-color: #" + doc.get("style", "background-color"));
-        style.push("border-color: #" + doc.get("style", "color"));
-        return style.join("; ");
     });
 
     self.addHelper("handleReportSupply", function() {

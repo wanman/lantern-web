@@ -25,12 +25,30 @@ html(lang="en")
                         span(aria-hidden="true")
                         span(aria-hidden="true")
 
-            // map is empty by default - only certain pages will fill this region
-            #map
+            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="show_network_status !== 0")
+                p(v-if="show_network_status === -1") Offline
+                p(v-if="show_network_status === 1") Connected to Lantern
 
-            // main page content
-            .content
-                block content
+            section
+                nav.global(v-if="showNavMenu" v-cloak)
+                    ul
+                        li
+                            a(href="/browse/browse.html") Map
+                        li
+                            a(href="/channels/channels.html") Goals
+                        li
+                            a(href="/status/status.html") Connections
+                        li
+                            a(href="/settings/settings.html") Settings
+                        li
+                            a(href="/dash/dash.html") Admin
+
+                // map is empty by default - only certain pages will fill this region
+                #map
+
+                // main page content
+                .page-content
+                    block content
 
             script(src="/lib/vendor.js")
             script(src="/lib/lantern.js")

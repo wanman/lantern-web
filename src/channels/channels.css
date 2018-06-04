@@ -1,0 +1,56 @@
+$light-border: #f2f2f2;
+
+html, body {
+    background: #FFF;
+}
+
+#channels-view {
+
+    h1 {
+        margin-top: 5em;
+    }
+    
+    h2 {
+        margin-bottom: 3em;
+    }
+
+    ul {
+        margin: 1em;
+
+        li {
+            float: left;
+            display: block;
+            background: #FFF;
+            width: 33.33%;
+            height: 100px;
+            text-align: center;
+            padding: 2em;
+            border-right: 1px solid $light-border;
+            border-bottom: 1px solid $light-border;
+        }
+
+        li.active {
+            .title {
+                font-weight: bold;
+            }
+        }
+
+        li:hover {
+            cursor: pointer;
+        }
+
+
+        // implied borders for "grid"
+
+        li:nth-child(3n+0) {
+            border-right: 0px;
+        }
+
+        li:nth-child(3n) + li:nth-last-child(2),
+            li:nth-child(3n) + li:nth-last-child(2)+ li,
+            li:nth-child(3n):nth-last-child(4)~ li,
+            li:nth-child(3n) + li:nth-last-child(1)
+            {border-bottom: none }
+
+    }
+}
