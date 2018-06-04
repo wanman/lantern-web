@@ -5,24 +5,33 @@ id: "browse"
 extends ../_layouts/_master.pug
 
 block content
-    
-    #browse-app(v-cloak)
-        
 
+    // report view
+    #report-view(v-if="show_report" v-cloak)
+        h1 Help Us Map Your Region
+        ul
+            li.box(@click="handleReportSupply") Report Supply Locations
+            li.box(@click="handleReportShelter") Report Safe Shelters
+            li.box(@click="handleReportCondition") Report Dangerous Area  
+        .button(@click="handleToggleReportView") Cancel
+
+
+
+    // zones view
+    #zones-view(v-if="show_zones")
         #button-bar
-            #report-button.button(@click="handleShowReportView") Contribute
 
-     
+            #report-button.button(@click="handleToggleReportView") Report
 
-            #filter-view(v-if="show_filter")
+            #filter-view(v-if="show_filter" v-cloak)
                 .card
                     header.card-header 
                         p.card-header-title Show locations that have at least one of the following:
                     .card-content
-                        .content.is-clearfix
-                            ul.supply-list
-                                li.supply(
-                                    v-for="r in c_docs" 
+                        .is-clearfix
+                            ul.item-list
+                                li.item(
+                                    v-for="r in categories" 
                                     v-on:click="toggleCategory" 
                                     v-bind:class="makeCategoryClass(r)"
                                     v-bind:id="r._id" 
@@ -35,21 +44,23 @@ block content
 
 
 
+        #zones(v-cloak)
+            progress.progress(v-if="loaded < 100 && loaded > 0" v-bind:value="loaded" max=100)
 
+            p(v-if="loaded >= 100 && !zones.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
 
-        p(v-if="!venues.length") There are no supply stations or vehicles reported yet. Please check back soon.
-
-        ul#venues(v-if="venues.length")
-            li.box(v-bind:class="r._id" v-for="r in venues")
-                h3 {{ r.title }}
-                ul.supply-list.is-clearfix
-                    li(
-                        v-for="c in r.$child"
-                        v-bind:class="c._id"
-                        v-bind:style="makeCategoryStyle(c)"
-                        )
-                footer
-                    p Last Updated: {{ moment(r.updated_at).fromNow() }}
+            ul(v-if="loaded >= 100 && zones.length")
+                li.box(v-bind:class="r._id" v-for="r in zones" @click="handleZoneSelect(r)")
+                    h3 {{ r.title }}
+                    ul.item-list.is-clearfix
+                        li(
+                            v-for="c in r.child"
+                            v-bind:class="c._id"
+                            v-bind:style="makeCategoryStyle(c)"
+                            )
+                    footer
+                        p Distance: 1km
+                        p Last Updated: {{ moment(moment(r.updated_at)).short(true) }}
 
 
 block styles

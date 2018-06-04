@@ -13,12 +13,25 @@ html(lang="en")
         link(rel="stylesheet" type="text/css" href="/lib/lantern.css")
         block styles
 
-    body(id=id+"-page")
-        // map is empty by default - only certain pages will fill this region
-        #map
-        .content
-            block content
+    body
+        div(id=id+"-page")
+            // global navigation
+            nav.navbar.is-fixed-top(role="navigation" aria-label="main navigation")
+                .navbar-brand
+                    .navbar-item
+                        span Lantern Network
+                    a.navbar-burger(role="button" aria-label="menu" aria-expanded="false"  @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']" )
+                        span(aria-hidden="true")
+                        span(aria-hidden="true")
+                        span(aria-hidden="true")
 
-        script(src="/lib/vendor.js")
-        script(src="/lib/lantern.js")
-        block scripts
+            // map is empty by default - only certain pages will fill this region
+            #map
+
+            // main page content
+            .content
+                block content
+
+            script(src="/lib/vendor.js")
+            script(src="/lib/lantern.js")
+            block scripts
