@@ -10,8 +10,12 @@ block content
         h1(v-if="personalizing" v-cloak) Personalizing Map
         h1(v-if="!personalizing" v-cloak) What are you searching for?
         div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
-            h2(v-cloak v-if="network_status !== 'OFL' && listening_user_count > 0") {{ pluralize(listening_user_count) }} Are Listening
-            h2(v-cloak v-if="network_status === 'OFL'") Connect to a Lantern to send data
+            h2(v-cloak v-if="network_status === 'OFL'") 
+                | Connect to a Lantern to send data
+            h2(v-cloak v-if="network_status !== 'OFL' && u_docs.length >= 2") 
+                | {{ pluralize(u_docs.length - 1) }} Listening
+            h2(v-cloak v-if="network_status !== 'OFL' && u_docs.length <= 1") 
+                | Waiting for Users To Join Network
 
         ul.item-list(v-cloak)
             li.item(

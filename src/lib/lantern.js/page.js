@@ -1,7 +1,9 @@
 window.LanternPage = (function(id) {
 
     var opts = {
-        data: {},
+        data: {
+            network_status: null
+        },
         methods: {}
     };
 
@@ -91,29 +93,6 @@ window.LanternPage = (function(id) {
     };
 
     /**
-    * Determine our level of network connection
-    */
-    self.getNetworkStatus = function() {
-        return self.stor.isLanternAvailable()
-            .then(function(lantern_available) {
-                if (lantern_available) {
-                    return "LNT";
-                }
-                else {
-                    return self.stor.isCloudAvailable()
-                        .then(function(cloud_available) {
-                            if (cloud_available) {
-                                return "ONL";
-                            }
-                            else {
-                                return "OFL";
-                            }
-                        });
-                }
-            });
-    };
-
-    /**
     * Add in data from PouchDB and identify network status
     */
     self.connect = function() {
@@ -122,11 +101,20 @@ window.LanternPage = (function(id) {
 
         self.stor = new LanternStor(opts.data);
         return self.stor.setup()
-            .then(self.getNetworkStatus)
-            .then(function(network_status) {
-                // update view with actual network status
-                console.log("[page] network status = " + network_status);
-                self.view.$data.network_status = network_status;
+            .then(self.stor.syncWithCloud)
+            .then(self.stor.syncWithLantern)
+            .then(function() {
+                setTimeout(function() {
+                    if (self.stor.lantern_connected) {
+                        self.view.$data.network_status = "LNT";
+                    }
+                    else if (self.stor.cloud_connected) {
+                        self.view.$data.network_status = "ONL";
+                    }
+                    else {
+                        self.view.$data.network_status = "OFL";
+                    }
+                }, 500);
             })
             .then(getOrCreateUser)
             .then(function(user) {
@@ -134,6 +122,9 @@ window.LanternPage = (function(id) {
                 self.user = user;
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
+
+                // draw listening user count
+                return self.stor.getManyByType("u");
             });
     };
 

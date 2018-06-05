@@ -14,6 +14,8 @@ window.LanternStor = (function($data) {
             skip_setup: true,
             withCredentials: false        
         }),
+        cloud_connected: null,
+        lantern_connected: null,
         db: null
     };
 
@@ -132,6 +134,26 @@ window.LanternStor = (function($data) {
                     }
                 });
         });
+    }
+
+    /**
+    * Slowly backs off and slows down attempts to connect
+    */
+    function backOffCloudSync(delay) {
+        console.log("[stor] delaying cloud sync retry: " + delay);
+        self.cloud_connected = -1;
+        if (delay === 0) {
+          return 3000;
+        }
+        return delay * 3;
+    }
+     function backOffLanternSync(delay) {
+        console.log("[stor] delaying lantern sync retry: " + delay);
+        self.lantern_connected = -1;
+        if (delay === 0) {
+          return 3000;
+        }
+        return delay * 3;
     }
 
     //------------------------------------------------------------------------
@@ -270,16 +292,26 @@ window.LanternStor = (function($data) {
     * Sync our in-browser database with the one on a physical device over wifi
     */
     self.syncWithLantern = function(continuous) {
+        console.log("[stor] trying sync with lantern");
         if (self.db.adapter == "http") {
             console.log("[stor] skipping sync since target is lantern already");
             return;
         }
-        else {
-            console.log("[stor] starting sync with lantern");
-        }
         self.browser_db.sync(self.lantern_db, {
             live: continuous || false,
-            retry: true
+            retry: true,
+            back_off_function: backOffLanternSync
+        })
+        .on('complete', function() {
+            console.log("[stor] started lantern sync");
+            self.lantern_connected = true;
+        })
+        .on('paused', function() {
+            self.lantern_connected = false;
+        })
+        .on('active', function() {
+            console.log("[stor] resumed lantern sync");
+            self.lantern_connected = true;
         })
         .on('change', function (info) {
             if (info.change.docs) {
@@ -301,10 +333,22 @@ window.LanternStor = (function($data) {
     * Sync our in-browser database with the one in the cloud
     */
     self.syncWithCloud = function(continuous) {
-       console.log("[stor] starting sync with cloud");
+        console.log("[stor] trying sync with cloud");
         self.browser_db.sync(self.cloud_db, {
             live: continuous || false,
-            retry: true
+            retry: true,
+            back_off_function: backOffCloudSync
+        })
+        .on('complete', function() {
+            console.log("[stor] started cloud sync");
+            self.cloud_connected = true;
+        })
+        .on('paused', function() {
+            self.cloud_connected = false;
+        })
+        .on('active', function() {
+            console.log("[stor] resumed cloud sync");
+            self.cloud_connected = true;
         })
         .on('change', function (info) {
             if (info.change.docs) {

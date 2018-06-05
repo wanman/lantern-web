@@ -25,7 +25,7 @@ html(lang="en")
                         span(aria-hidden="true")
                         span(aria-hidden="true")
 
-            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="network_status !== 0")
+            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="network_status")
                 .navbar-brand
                     .navbar-item
                         span(v-if="network_status === 'OFL'") Offline

@@ -80,9 +80,7 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.addData("item_tags", []);
-    self.addData("listening_user_count", 0);
     self.addData("personalizing", false);
-    self.addData("network_status", -1);
 
 
 
@@ -96,16 +94,6 @@ window.page = (function() {
                 tags.forEach(function(tag) {
                     if (tag.has("tag", "i")) {
                         self.view.$data.item_tags.push(tag.toJSONFriendly());
-                    }
-                });
-            });
-
-            // draw listening user count
-            self.stor.getManyByType("u").then(function(users) {
-                self.view.listening_user_count = 0;
-                users.forEach(function(user) {
-                    if (user.id != self.user.id) {
-                        self.view.listening_user_count++;
                     }
                 });
             });
