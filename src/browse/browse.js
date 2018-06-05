@@ -30,18 +30,19 @@ window.page = (function() {
                 setTimeout(loadZones, 300);
             }
             else {
+                //async load in tags we can use for reporting
+                self.stor.getManyByType("t")
+                    .then(function(tags) {
+                        tags.forEach(function(tag) {
+                            if (tag.has("tag", "z")) {
+                                self.view.$data.zone_tags.push(tag.toJSONFriendly());
+                            }
+                        });
+                    });
+                    
                 // cache items for future association with zones
                 self.stor.getManyByType("i").then(function(items) {
                     self.view.$data.loaded = 100;
-                    //async load in tags we can use for reporting
-                    self.stor.getManyByType("t")
-                        .then(function(tags) {
-                            tags.forEach(function(tag) {
-                                if (tag.has("tag", "z")) {
-                                    self.view.$data.zone_tags.push(tag.toJSONFriendly());
-                                }
-                            });
-                        });
                 });
 
             }

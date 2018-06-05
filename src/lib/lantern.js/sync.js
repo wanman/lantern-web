@@ -1,33 +1,48 @@
 window.LanternSync = function LanternSync(src, dest, label, continuous, status_fn, change_fn) {
+    var reset_delay;
 
     function setStatus(status) {
         self[label + "_connected"] = status;
+        if (status == true) {
+            reset_delay = true;
+        }
         if (status_fn && typeof(status_fn) == "function") {
             status_fn(self[label + "_connected"]);
         }
     }
 
+    // @todo expore pouchdb bug where this may be run twice
+    function backOffSync(delay) {
+        if (reset_delay) {
+            console.log("[stor] " + label + " do reset delay");
+            reset_delay = false;
+            return 0;
+        }
+        
+        console.log("[stor] delaying " + label + " sync retry: " + delay);
+        if (delay === 0) {
+          return 3000;
+        }
+        return delay * 3;
+    }
+
     src.sync(dest, {
         live: continuous || false,
         retry: true,
-        back_off_function: function backOffSync(delay) {
-            console.log("[stor] delaying " + label + " sync retry: " + delay);
-            self.lantern_connected = false;
-            if (delay === 0) {
-              return 3000;
-            }
-            return delay * 3;
-        }
+        back_off_function: backOffSync
     })
     .on('complete', function() {
         console.log("[stor] started " + label + " sync");
         setStatus(true);
     })
-    .on('paused', function() {
-        console.log("[stor] paused " + label + " sync");
+    .on('paused', function(err) {
+        if (err) {
+            console.log("[stor] lost connection with " + label);
+            setStatus(false);
+        }
     })
     .on('active', function() {
-        console.log("[stor] resumed " + label + " sync");
+        console.log("[stor] active " + label + " sync");
         setStatus(true);
     })
     .on('change', function (info) {

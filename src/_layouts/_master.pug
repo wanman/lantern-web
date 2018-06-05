@@ -25,7 +25,7 @@ html(lang="en")
                         span(aria-hidden="true")
                         span(aria-hidden="true")
 
-            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="cloud_connected !== null && lantern_connected !== null")
+            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="cloud_connected !== null || lantern_connected !== null")
                 .navbar-brand
                     .navbar-item
                         span(v-if="!cloud_connected && !lantern_connected") Offline
