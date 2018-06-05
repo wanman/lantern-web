@@ -75,7 +75,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.addData("categories", []);
     self.addData("listening_user_count", 0);
-    self.addData("show_network_status", -1);
+    self.addData("network_status", -1);
 
 
 

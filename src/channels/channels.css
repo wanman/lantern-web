@@ -22,7 +22,6 @@ html, body {
             display: block;
             background: #FFF;
             width: 33.33%;
-            height: 100px;
             text-align: center;
             padding: 2em;
             border-right: 1px solid $light-border;
@@ -51,6 +50,15 @@ html, body {
             li:nth-child(3n):nth-last-child(4)~ li,
             li:nth-child(3n) + li:nth-last-child(1)
             {border-bottom: none }
+
+
+
+        // icons
+        .icon {
+            border-radius: 4em;
+            margin-bottom: 0.8em;
+            padding: 2em;
+        }
 
     }
 }

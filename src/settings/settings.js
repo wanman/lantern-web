@@ -63,7 +63,7 @@ window.page = (function() {
     self.addData("network_pass", "");
     self.addData("processing", false);
     self.addData("warning", "");
-    self.addData("show_network_status", -1);
+    self.addData("network_status", -1);
 
     
 

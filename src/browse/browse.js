@@ -62,7 +62,7 @@ window.page = (function() {
     self.addData("show_report", false);
     self.addData("show_zones", true);
     self.addData("loaded", 0);
-    self.addData("show_network_status", -1);
+    self.addData("network_status", -1);
 
 
 

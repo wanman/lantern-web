@@ -6,8 +6,9 @@ extends ../_layouts/_master.pug
 
 block content
     #channels-view
-        h1 What do you need most today?
-        h2(v-if="listening_user_count > 0") {{ pluralize(listening_user_count) }} Are Listening
+        h1 What are you searching for?
+        h2(v-cloak v-if="network_status !== -1 && listening_user_count > 0") {{ pluralize(listening_user_count) }} Are Listening
+        h2(v-cloak v-if="network_status === -1") Connect to a Lantern to send data
 
         ul.item-list(v-cloak)
             li.item(

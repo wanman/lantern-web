@@ -25,9 +25,9 @@ html(lang="en")
                         span(aria-hidden="true")
                         span(aria-hidden="true")
 
-            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="show_network_status !== 0")
-                p(v-if="show_network_status === -1") Offline
-                p(v-if="show_network_status === 1") Connected to Lantern
+            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="network_status !== 0")
+                p(v-if="network_status === -1") Offline
+                p(v-if="network_status === 1") Connected to Lantern
 
             section
                 nav.global(v-if="showNavMenu" v-cloak)
