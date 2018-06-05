@@ -122,7 +122,7 @@ window.LanternPage = (function(id) {
                 self.user = user;
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
-                sync();
+                //sync();
             })
             .then(function() {
                 // draw listening user count

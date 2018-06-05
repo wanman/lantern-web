@@ -15,6 +15,7 @@ html(lang="en")
 
     body
         div(id=id+"-page")
+            
             // global navigation
             nav.navbar.is-fixed-top(v-cloak role="navigation" aria-label="main navigation")
                 .navbar-brand
@@ -32,6 +33,7 @@ html(lang="en")
                         span(v-if="cloud_connected") Online
                         span(v-if="lantern_connected") Connected to Lantern
 
+
             section
                 nav.global(v-if="showNavMenu" v-cloak)
                     ul
@@ -44,8 +46,6 @@ html(lang="en")
                         li
                             a(href="/dash/dash.html") Admin
 
-                // map is empty by default - only certain pages will fill this region
-                #map
 
                 // main page content
                 .page-content

@@ -1,0 +1,7 @@
+#map {
+    min-height: 200px;
+
+    // free to remove attribution
+    // https://groups.google.com/forum/#!msg/leaflet-js/fA6M7fbchOs/JTNVhqdc7JcJ
+    .leaflet-control-attribution {display: none;}
+}

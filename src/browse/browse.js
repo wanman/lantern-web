@@ -8,15 +8,8 @@ window.page = (function() {
     function importSampleData() {
         var imp = new LanternImport(self.stor);
         imp.all();
-        self.view.$data.loading = 20;
     }
 
-    /*
-    * Adjust progress bar
-    */
-    function loadProgress(inc) {
-        self.view.$data.loaded += inc;
-    }
 
     /*
     * Make sure we have zones to work with
@@ -42,7 +35,7 @@ window.page = (function() {
                     
                 // cache items for future association with zones
                 self.stor.getManyByType("i").then(function(items) {
-                    self.view.$data.loaded = 100;
+                    self.view.$data.loaded = true;
                 });
 
             }
@@ -50,15 +43,25 @@ window.page = (function() {
     }
 
 
-
+    /**
+    * Display the map for the user based on approx. location
+    */
+    function renderMap() {
+        var map_mgr = new LanternMapManager();
+        setTimeout(function() {
+            self.view.$data.show_map = true;
+        }, 2000);
+    }
 
     //------------------------------------------------------------------------
     self.addData("zone_tags", []);
     self.addData("show_filter", false);
     self.addData("show_report", false);
     self.addData("show_zones", true);
-    self.addData("loaded", 0);
+    self.addData("show_map", false);
+    self.addData("loaded", false);
     self.addData("network_status", -1);
+    self.addData("prompt_for_map", false);
 
 
 
@@ -80,6 +83,7 @@ window.page = (function() {
         console.log("[browse] report a " + tag.title);
     });    
 
+    self.addHelper("handleShowMap", renderMap);
 
     self.addHelper("handleCloseFilterView", function() {
         self.view.$data.show_filter = false;
@@ -88,16 +92,24 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.render()
         .then(self.connect)
+        .then(loadZones)
         .then(function() {
-            // display progress bar
-            var iv = setInterval(function() {
-                loadProgress(3);
-                if (self.view.$data.loaded >= 100) {
-                    clearInterval(iv);
-                }
-            }, 20);
-        })
-        .then(loadZones);
+            // auto-show map if permission granted
+            if (navigator) {
+                navigator.permissions.query({'name': 'geolocation'})
+                    .then( function(permission) {
+                        if (permission.state == "granted") {
+                            renderMap();
+                        }
+                        else {
+                            self.view.$data.prompt_for_map = true;
+                        }
+                    });
+            }
+            else {
+                self.view.$data.prompt_for_map = false;
+            }
+        });
 
     return self; 
 }());

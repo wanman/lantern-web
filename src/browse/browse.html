@@ -18,20 +18,22 @@ block content
 
 
 
+
+    // map is empty by default - only certain pages will fill this region
+    #map(v-if="show_map")
+
     // zones view
     #zones-view(v-if="show_zones")
 
-
-
-
         #button-bar
             #report-button.button(@click="handleToggleReportView") Report
+            #map-button.button(v-if="!show_map && prompt_for_map" @click="handleShowMap") Show Map
 
 
         #zones(v-cloak)
-            p(v-if="loaded >= 100 && !z_docs.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
+            p(v-if="loaded && !z_docs.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
 
-            ul(v-if="loaded >= 100 && z_docs.length")
+            ul(v-if="loaded && z_docs.length")
                 li(v-bind:data-id="zone._id" v-for="zone in z_docs")
                     h4 {{ zone.title }}
                     h5 2km
@@ -41,7 +43,9 @@ block content
 
 
 block styles
+    link(rel="stylesheet" type="text/css" href="/lib/map.css")
     link(rel="stylesheet" type="text/css" href="/browse/browse.css")
 
 block scripts
+    script(src="/lib/map.js")
     script(src="/browse/browse.js")
