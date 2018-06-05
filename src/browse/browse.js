@@ -30,9 +30,9 @@ window.page = (function() {
                 setTimeout(loadZones, 300);
             }
             else {
-               
                 self.stor.getManyByType("i").then(function(items) {
                     addManyZonesToView(zones, items, self.view);
+                    self.view.$data.loaded = 100;
                 });
             }
         });

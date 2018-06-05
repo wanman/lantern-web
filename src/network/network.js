@@ -1,6 +1,6 @@
 window.page = (function() {
     
-    var self = new LanternPage("settings");
+    var self = new LanternPage("network");
 
 
     //------------------------------------------------------------------------
@@ -24,7 +24,7 @@ window.page = (function() {
         self.user.save();
 
         if ($data.connection == 1) {
-            console.log("[settings] storing wifi credentials...");
+            console.log("[network] storing wifi credentials...");
             self.view.$http.post(self.base_uri + "/api/config/ssid", {
                 "ssid": $data.network_ssid,
                 "pass": $data.network_pass
@@ -44,7 +44,7 @@ window.page = (function() {
     function completeSetup() {
 
         self.stor.sync();
-        console.log("[settings] importing data for region: " + self.view.$data.region);
+        console.log("[network] importing data for region: " + self.view.$data.region);
         var importer = new LanternImport(self.stor);
         importer.all();
 
@@ -81,7 +81,7 @@ window.page = (function() {
     self.render()
         .then(self.connect)
         .then(function() {
-            console.log("[settings] init");
+            console.log("[network] init");
         });
         
 

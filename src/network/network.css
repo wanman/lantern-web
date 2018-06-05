@@ -1,5 +1,9 @@
-#settings-page .content {
+#network-page {
 
+    .panel {
+        margin: 2em;
+        margin-top: 5em;
+    }
 
     form {
         max-width: 550px;

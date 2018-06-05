@@ -1,5 +1,5 @@
 ---
-id: "settings"
+id: "network"
 ---
 
 extends ../_layouts/_master.pug
@@ -10,7 +10,7 @@ block content
     // after leaving this page, the user should have an operational database
     // wifi credentials may be added if the user has working internet access
 
-    div#settings-app(v-cloak)
+    div(v-cloak)
         
         <!-- prompt for wifi credentials -->
         form.panel(@submit.prevent="handleSubmit")
@@ -53,8 +53,8 @@ block content
                 
 
 block styles
-    link(rel="stylesheet" type="text/css" href="/settings/settings.css")
+    link(rel="stylesheet" type="text/css" href="/network/network.css")
 
 block scripts
-    script(src="/settings/settings.js")
+    script(src="/network/network.js")
 

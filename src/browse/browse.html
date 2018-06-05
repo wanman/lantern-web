@@ -22,13 +22,15 @@ block content
 
     // zones view
     #zones-view(v-if="show_zones")
+
+
+
+
         #button-bar
             #report-button.button(@click="handleToggleReportView") Report
 
 
         #zones(v-cloak)
-            progress.progress(v-if="loaded < 100 && loaded > 0" v-bind:value="loaded" max=100)
-
             p(v-if="loaded >= 100 && !zones.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
 
             ul(v-if="loaded >= 100 && zones.length")
