@@ -57,7 +57,13 @@ window.page = (function() {
             el.classList.add("active");
             self.user.push("tag", cat);
         }
-        self.user.save();
+
+        self.view.$data.personalizing = true;
+        self.user.save().then(function() {
+            setTimeout(function() {
+                self.view.$data.personalizing = false;
+            }, 1000);
+        });
     });
 
     self.addHelper("pluralize", function(count) {
@@ -75,6 +81,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.addData("categories", []);
     self.addData("listening_user_count", 0);
+    self.addData("personalizing", false);
     self.addData("network_status", -1);
 
 

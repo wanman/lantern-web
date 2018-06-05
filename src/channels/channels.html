@@ -6,7 +6,9 @@ extends ../_layouts/_master.pug
 
 block content
     #channels-view
-        h1 What are you searching for?
+
+        h1(v-if="personalizing" v-cloak) Personalizing Map
+        h1(v-if="!personalizing" v-cloak) What are you searching for?
         h2(v-cloak v-if="network_status !== -1 && listening_user_count > 0") {{ pluralize(listening_user_count) }} Are Listening
         h2(v-cloak v-if="network_status === -1") Connect to a Lantern to send data
 
@@ -19,7 +21,7 @@ block content
                 )
                     .icon(
                     v-bind:style="makeCategoryStyle(r)"
-                    )
+                    ) {{ r.title[0].toUpperCase() }}
                     .title {{ r.title }}
                 
 block styles

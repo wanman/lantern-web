@@ -56,8 +56,10 @@ html, body {
         // icons
         .icon {
             border-radius: 4em;
+            font-weight: bold;
+            font-size: 1.5em;
             margin-bottom: 0.8em;
-            padding: 2em;
+            padding: 1.5em;
         }
 
     }
