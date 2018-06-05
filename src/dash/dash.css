@@ -1,4 +1,11 @@
-#dash-app {
+html, body {
+    background: #FFF;
+}
+
+#dash-page {
+    #doc-summary {
+        padding: 2em;
+    }
     .tag {
         width: 9em;
     }

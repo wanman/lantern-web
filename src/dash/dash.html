@@ -6,14 +6,15 @@ id: "dash"
 extends ../_layouts/_master.pug
 
 block content
-
-    div#dash-app(v-cloak)
-
-        .actions
-            .button.is-primary(v-on:click="loadTestData") Load Test Data
-            .button.is-danger.is-outlined(v-on:click="removeAllDocs") Remove All Docs
+    
+    
+    .actions
+        .button.is-primary(v-on:click="loadTestData") Load Test Data
+        .button.is-danger.is-outlined(v-on:click="removeAllDocs") Remove All Docs
+    
         
-        
+    #doc-summary(v-cloak)
+
         a.tags.has-addons(v-for="item in types") 
             span.tag {{ item.slug }}
             span.tag.is-primary {{ pluralize(item.docs.length) }}

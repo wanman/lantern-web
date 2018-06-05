@@ -14,11 +14,11 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.addData("types", [
+        {key: "t", slug: "tag", docs: []},
         {key: "z", slug: "zone", docs: []},
-        {key: "r", slug: "route", docs: []},
-        {key: "c", slug: "category", docs: []},
         {key: "i", slug: "item", docs: []},
-        {key: "n", slug: "note", docs: []}
+        {key: "r", slug: "route", docs: []},
+        {key: "n", slug: "note", docs: []},
     ]);
     self.addData("network_status", -1);
 
@@ -26,7 +26,12 @@ window.page = (function() {
     self.addHelper("loadTestData", function() {
         var importer = new LanternImport(self.stor);
         self.view.$data.types.forEach(function(type) {
-            importer[type.slug]();
+            if (!importer[type.slug]) {
+                console.log("[dash] missing importer for " + type.slug);
+            }
+            else {
+                importer[type.slug]();
+            }
         });
     });
 

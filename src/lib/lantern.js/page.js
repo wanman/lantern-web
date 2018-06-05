@@ -12,6 +12,10 @@ window.LanternPage = (function(id) {
     };
 
 
+    // initialize arrays for each type of doc
+    (["z", "i", "t", "r", "n", "u"]).forEach(function(type) {
+        opts.data[type+"_docs"] = [];
+    });
 
     //------------------------------------------------------------------------
 

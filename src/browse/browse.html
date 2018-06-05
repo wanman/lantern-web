@@ -10,12 +10,8 @@ block content
     nav#report-view(v-if="show_report" v-cloak)
         h1 Help Us Map Your Region
         ul
-            li
-                a(@click="handleReportSupply") Report Supply Locations
-            li
-                a(@click="handleReportShelter") Report Safe Shelters
-            li
-                a(@click="handleReportCondition") Report Dangerous Area  
+            li(v-for="tag in t_docs" v-if="tag.tag.indexOf('z') !== -1")
+                a(@click="handleZoneTag(tag)") {{ tag.title }}
         
         .action-panel
             .button(@click="handleToggleReportView") Cancel

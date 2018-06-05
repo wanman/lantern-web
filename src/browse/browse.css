@@ -35,6 +35,9 @@
         }
     }
 
+    #report-view {
+        overflow-y: scroll;
+    }
 
     .action-panel {
         margin: 2em;

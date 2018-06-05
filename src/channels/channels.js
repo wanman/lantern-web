@@ -79,7 +79,7 @@ window.page = (function() {
 
 
     //------------------------------------------------------------------------
-    self.addData("categories", []);
+    self.addData("item_tags", []);
     self.addData("listening_user_count", 0);
     self.addData("personalizing", false);
     self.addData("network_status", -1);
@@ -92,9 +92,11 @@ window.page = (function() {
         .then(function() {
 
             // draw category grid
-            self.stor.getManyByType("c").then(function(categories) {  
-                categories.forEach(function(category) {
-                    self.view.$data.categories.push(category.toJSONFriendly());
+            self.stor.getManyByType("t").then(function(tags) {  
+                tags.forEach(function(tag) {
+                    if (tag.get("tag").indexOf("z")) {
+                        self.view.$data.item_tags.push(tag.toJSONFriendly());
+                    }
                 });
             });
 

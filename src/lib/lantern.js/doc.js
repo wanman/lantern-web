@@ -124,8 +124,11 @@ window.LanternDocument = (function(id,stor) {
     };
 
     self.save = function() {
-        self.set("updated_at", new Date());
 
+        if (self.has("created_at")) {
+            self.set("updated_at", new Date());
+        }
+        
         return stor.upsert(self.id, function(doc) {
             for (var idx in self.data) {
                 doc[idx] = self.data[idx];

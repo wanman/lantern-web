@@ -7,9 +7,12 @@ window.LanternImport = function(stor) {
     * Save an interest to the database for future use in the interface.
     * Allows for dynamically adding new interests over over time.
     */
-    function addCategory(title, slug, color, background_color) {
-        var doc = new LanternDocument("c:"+slug, stor);
+    function addTag(slug, title, valid_doc_types, color, background_color) {
+        var doc = new LanternDocument("t:"+slug, stor);
         doc.set("title", title);
+        valid_doc_types.forEach(function(type) {
+            doc.push("tag", type);
+        });
         doc.set("style", {
             "color": color, 
             "background-color": background_color}
@@ -18,35 +21,48 @@ window.LanternImport = function(stor) {
         doc.save();
     }
     
-    function addZone(id, title, geo) {
-        var venue_doc = new LanternDocument(id, stor);
+    function addZone(id, title, geo, tag) {
+        var venue_doc = new LanternDocument("z:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
+        venue_doc.push("tag", tag);
         venue_doc.set("$ia", new Date());
         venue_doc.save();
 
         var supply_id = "i:wtr-" + Math.round((Math.random()*100000));
         var supply_doc = new LanternDocument(supply_id, stor);
         supply_doc.set("status", 1);
-        supply_doc.push("parent", id);
-        supply_doc.push("tag", "c:wtr");
+        supply_doc.push("parent", venue_doc.id);
+        supply_doc.push("tag", "wtr");
         supply_doc.set("$ia", new Date());
         supply_doc.save();
     }
 
+    function addKind(id, title) {
+        var kind_doc = new LanternDocument("k:" +id, stor);
+        kind_doc.set("title", title);
+        kind_doc.set("$ia", new Date());
+        kind_doc.save();
+    }
 
 
     //------------------------------------------------------------------------
-    self.category = function() {
-        console.log("[import] adding default resource categories");
-        addCategory("Shelter", "shr", "ffcc54", "fff7ef");
-        addCategory("Water", "wtr", "78aef9", "e9f2fe");
-        addCategory("Fuel", "ful", "c075c9", "f5e9f6");
-        addCategory("Internet", "net", "73cc72", "e8f7e8");
-        addCategory("Medical", "med", "ff844d", "ffebe2");
-        addCategory("Donations", "dnt", "50c1b6", "e3f5f3");
-        addCategory("Power", "pwr", "f45d90", "f2dae2");
-        addCategory("Equipment", "eqp", "4aaddb", "e8f4fa");
+    self.tag = function() {
+        console.log("[import] adding default item tags");
+        addTag("shr", "Shelter", ["i"], "ffcc54", "fff7ef");
+        addTag("wtr", "Water", ["i"], "78aef9", "e9f2fe");
+        addTag("ful", "Fuel", ["i"], "c075c9", "f5e9f6");
+        addTag("net", "Internet", ["i"], "73cc72", "e8f7e8");
+        addTag("med", "Medical", ["i"], "ff844d", "ffebe2");
+        addTag("dnt", "Donations", ["i"], "50c1b6", "e3f5f3");
+        addTag("pwr", "Power", ["i"], "f45d90", "f2dae2");
+        addTag("eqp", "Equipment", ["i"], "4aaddb", "e8f4fa");
+
+
+        console.log("[import] adding default zone tags");
+        addTag("sup", "Supply Location", ["z"]);
+        addTag("str", "Safe Shelter", ["z"]);
+        addTag("dgr", "Dangerous Area", ["z"]);
     };
 
 
@@ -57,11 +73,10 @@ window.LanternImport = function(stor) {
     */
     self.zone = function() {
         console.log("[import] adding default venues");
-        addZone("z:css", "Central City Shelter", "u4pruydq");
-        addZone("z:aic", "AI's Cafe", "u4pruydr");
-        addZone("z:rcm", "Red Cross HQ", "u4pruyqr");
+        addZone("css", "Central City Shelter", "u4pruydq", "str");
+        addZone("aic", "AI's Cafe", "u4pruydr", "sup");
+        addZone("rcm", "Red Cross HQ", "u4pruyqr", "str");
     };
-
 
     self.item = function() {
         // items to be added directly along-side zones
@@ -85,10 +100,11 @@ window.LanternImport = function(stor) {
     };
 
     self.all = function() {
-        self.category();
-        self.zone();
-        self.route();
-        self.note();
+        self.tag(); // accepted tags for various types of docs
+        self.zone(); // items placed in specific zones
+        self.item(); // dummy for consistency, see zone()
+        self.route(); // routes between zones
+        self.note(); // notes related to items or zones or routes
     };
 
 

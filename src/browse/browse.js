@@ -32,15 +32,19 @@ window.page = (function() {
             else {
                 // cache items for future association with zones
                 self.stor.getManyByType("i").then(function(items) {
-
                     items.forEach(function(item) {
                         self.view.$data.items.push(item.toJSONFriendly());
                     });
-
                     zones.forEach(function(zone) {
                         self.view.$data.zones.push(zone.toJSONFriendly());
                         self.view.$data.loaded = 100;
                     });
+                    
+                    //async load in tags we can use for reporting
+                    self.stor.getManyByType("t")
+                        .then(function(tags) {
+                            console.log(tags);
+                        });
                 });
 
             }
@@ -75,17 +79,9 @@ window.page = (function() {
         console.log(zone);
     });
 
-    self.addHelper("handleReportSupply", function() {
-        console.log("[report] report a supply");
+    self.addHelper("handleZoneTag", function(tag) {
+        console.log("[browse] report a " + tag.title);
     });    
-
-    self.addHelper("handleReportShelter", function() {
-        console.log("[report] report a shelter");
-    });
-
-    self.addHelper("handleReportCondition", function() {
-        console.log("[report] report a condition");
-    });
 
 
     self.addHelper("handleCloseFilterView", function() {
