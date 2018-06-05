@@ -149,4 +149,8 @@ h1 {
 #status-footer {
     background: $background;
     border-top: 1px solid $light-border;
+    span {
+        padding: 0em 2em;
+        border-right: 1px solid $light-border;
+    }
 }

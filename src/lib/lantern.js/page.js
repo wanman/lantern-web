@@ -2,7 +2,8 @@ window.LanternPage = (function(id) {
 
     var opts = {
         data: {
-            network_status: null
+            cloud_connected: null,
+            lantern_connected: null
         },
         methods: {}
     };
@@ -67,6 +68,22 @@ window.LanternPage = (function(id) {
     }
 
 
+    function sync() {
+
+        // make sure we tell the system we're awake
+        self.user.set("updated_at",new Date());
+        self.user.save();
+
+
+        self.stor.syncWithCloud(function(status) {
+            self.view.$data.cloud_connected = status;
+        });
+        self.stor.syncWithLantern(function(status) {
+            self.view.$data.lantern_connected = status;
+        });
+    }
+
+
 
     //------------------------------------------------------------------------
     /** 
@@ -97,32 +114,17 @@ window.LanternPage = (function(id) {
     */
     self.connect = function() {
         
-        var network_status = 0; // start with unknown status
-
         self.stor = new LanternStor(opts.data);
         return self.stor.setup()
-            .then(self.stor.syncWithCloud)
-            .then(self.stor.syncWithLantern)
-            .then(function() {
-                setTimeout(function() {
-                    if (self.stor.lantern_connected) {
-                        self.view.$data.network_status = "LNT";
-                    }
-                    else if (self.stor.cloud_connected) {
-                        self.view.$data.network_status = "ONL";
-                    }
-                    else {
-                        self.view.$data.network_status = "OFL";
-                    }
-                }, 500);
-            })
             .then(getOrCreateUser)
             .then(function(user) {
                 // make sure we have an anonymous user all the time
                 self.user = user;
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
-
+                sync();
+            })
+            .then(function() {
                 // draw listening user count
                 return self.stor.getManyByType("u");
             });

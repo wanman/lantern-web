@@ -16,7 +16,7 @@ html(lang="en")
     body
         div(id=id+"-page")
             // global navigation
-            nav.navbar.is-fixed-top(role="navigation" aria-label="main navigation")
+            nav.navbar.is-fixed-top(v-cloak role="navigation" aria-label="main navigation")
                 .navbar-brand
                     .navbar-item
                         span Lantern Network
@@ -25,12 +25,12 @@ html(lang="en")
                         span(aria-hidden="true")
                         span(aria-hidden="true")
 
-            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="network_status")
+            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="cloud_connected !== null && lantern_connected !== null")
                 .navbar-brand
                     .navbar-item
-                        span(v-if="network_status === 'OFL'") Offline
-                        span(v-if="network_status === 'LNT'") Connected to Lantern
-                        span(v-if="network_status === 'ONL'") Online
+                        span(v-if="!cloud_connected && !lantern_connected") Offline
+                        span(v-if="cloud_connected") Online
+                        span(v-if="lantern_connected") Connected to Lantern
 
             section
                 nav.global(v-if="showNavMenu" v-cloak)
