@@ -82,6 +82,9 @@ window.page = (function() {
         .then(self.connect)
         .then(function() {
             console.log("[network] init");
+            self.stor.getManyByType("d").then(function(devices) {
+                console.log(devices);
+            });
         });
         
 

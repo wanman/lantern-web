@@ -2,7 +2,6 @@ window.page = (function() {
 
     var self = new LanternPage("browse");
 
-
     /**
     * Construct sample documents for demonstration purposes
     */
@@ -26,38 +25,34 @@ window.page = (function() {
         self.stor.getManyByType("z").then(function(zones) {
             if (zones.length === 0) {
                 // if we have zero zones, we probably are missing data
+                console.log("[browse] importing sample data...");
                 importSampleData();
                 setTimeout(loadZones, 300);
             }
             else {
+                // cache items for future association with zones
                 self.stor.getManyByType("i").then(function(items) {
-                    addManyZonesToView(zones, items, self.view);
-                    self.view.$data.loaded = 100;
+
+                    items.forEach(function(item) {
+                        self.view.$data.items.push(item.toJSONFriendly());
+                    });
+
+                    zones.forEach(function(zone) {
+                        self.view.$data.zones.push(zone.toJSONFriendly());
+                        self.view.$data.loaded = 100;
+                    });
                 });
+
             }
         });
     }
 
-    /**
-    * Nesting items within zones with friendly JSON
-    */
-    function addManyZonesToView(zones, items, view) {
-        zones.forEach(function(zone) {
-            // does the item have a parent that is the zone?
-            items.forEach(function(item) {
-                if (item.get("parent") == zone.get("_id")) {
-                    // keep a child array within the zone object
-                    zone.push("child", item.toJSONFriendly());
-                }
-            });
-            view.$data.zones.push(zone.toJSONFriendly());
-        });
-    }
 
 
 
     //------------------------------------------------------------------------
     self.addData("zones", []);
+    self.addData("items", []);
     self.addData("show_filter", false);
     self.addData("show_report", false);
     self.addData("show_zones", true);

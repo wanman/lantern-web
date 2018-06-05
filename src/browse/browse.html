@@ -16,7 +16,9 @@ block content
                 a(@click="handleReportShelter") Report Safe Shelters
             li
                 a(@click="handleReportCondition") Report Dangerous Area  
-        .button(@click="handleToggleReportView") Cancel
+        
+        .action-panel
+            .button(@click="handleToggleReportView") Cancel
 
 
 
@@ -34,11 +36,12 @@ block content
             p(v-if="loaded >= 100 && !zones.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
 
             ul(v-if="loaded >= 100 && zones.length")
-                li.box(v-bind:class="r._id" v-for="r in zones" @click="handleZoneSelect(r)")
-                    h3 {{ r.title }}
-                    footer
-                        p Distance: 1km
+                li(v-bind:data-id="r._id" v-for="r in zones")
+                    h4 {{ r.title }}
+                    h5 2km
+                    .box(v-for="item in items" v-if="item.parent == r._id" @click="handleZoneSelect(r)" v-bind:data-id="item._id")
                         p Last Updated: {{ moment(moment(r.updated_at)).short(true) }}
+
 
 
 block styles
