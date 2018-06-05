@@ -117,6 +117,7 @@ window.LanternStor = (function($data) {
                             // attempt in-memory stor
                             // some browsers may not allow us to stor data locally
                             console.log("may be in private browsing mode. using remote storage...");
+                            // @todo default to cloud if lanter not available and we have internet
                             self.db = self.lantern_db;
                         }
                         else if (err.reason == "QuotaExceededError") {
@@ -143,7 +144,6 @@ window.LanternStor = (function($data) {
                 );
             });
     };
-
 
     self.get = function() {
         console.log("[stor] get: " + arguments[0]);
@@ -236,6 +236,39 @@ window.LanternStor = (function($data) {
     };
 
 
+
+    /**
+    * Check if we're connected to cloud instance (and therefore internet)
+    */
+    self.isCloudAvailable = function() {
+        return self.cloud_db.info().then(function(results) {
+            return true;
+        })
+        .catch(function() {
+            return false;
+        });
+    };
+
+
+
+
+    /**
+    * Check if we're connected to a Lantern device
+    */
+    self.isLanternAvailable = function() {
+        return self.lantern_db.info().then(function(results) {
+            return true;
+        })
+        .catch(function() {
+            return false;
+        });
+    };
+
+
+
+    /**
+    * Sync our in-browser database with the one on a physical device over wifi
+    */
     self.syncWithLantern = function(continuous) {
         if (self.db.adapter == "http") {
             console.log("[stor] skipping sync since target is lantern already");
@@ -264,6 +297,9 @@ window.LanternStor = (function($data) {
         return;
     };
 
+    /**
+    * Sync our in-browser database with the one in the cloud
+    */
     self.syncWithCloud = function(continuous) {
        console.log("[stor] starting sync with cloud");
         self.browser_db.sync(self.cloud_db, {
@@ -285,7 +321,6 @@ window.LanternStor = (function($data) {
         });
         return;
     };
-
 
 
 

@@ -91,19 +91,53 @@ window.LanternPage = (function(id) {
     };
 
     /**
-    * Add in data from PouchDB
+    * Determine our level of network connection
+    */
+    self.getNetworkStatus = function() {
+        return self.stor.isLanternAvailable()
+            .then(function(lantern_available) {
+                if (lantern_available) {
+                    return "LNT";
+                }
+                else {
+                    return self.stor.isCloudAvailable()
+                        .then(function(cloud_available) {
+                            if (cloud_available) {
+                                return "ONL";
+                            }
+                            else {
+                                return "OFL";
+                            }
+                        });
+                }
+            });
+    };
+
+    /**
+    * Add in data from PouchDB and identify network status
     */
     self.connect = function() {
+        
+        var network_status = 0; // start with unknown status
+
         self.stor = new LanternStor(opts.data);
         return self.stor.setup()
+            .then(self.getNetworkStatus)
+            .then(function(network_status) {
+                // update view with actual network status
+                console.log("[page] network status = " + network_status);
+                self.view.$data.network_status = network_status;
+            })
             .then(getOrCreateUser)
             .then(function(user) {
+                // make sure we have an anonymous user all the time
                 self.user = user;
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
-                return self.stor;
             });
     };
+
+
 
     /**
     * Points to the right server for processing requests

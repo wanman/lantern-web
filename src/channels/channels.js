@@ -62,7 +62,7 @@ window.page = (function() {
         self.user.save().then(function() {
             setTimeout(function() {
                 self.view.$data.personalizing = false;
-            }, 1000);
+            }, 1500);
         });
     });
 
