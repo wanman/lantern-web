@@ -10,7 +10,7 @@ block content
     nav#report-view(v-if="show_report" v-cloak)
         h1 Help Us Map Your Region
         ul
-            li(v-for="tag in t_docs" v-if="tag.tag.indexOf('z') !== -1")
+            li(v-for="tag in zone_tags")
                 a(@click="handleZoneTag(tag)") {{ tag.title }}
         
         .action-panel
@@ -29,14 +29,14 @@ block content
 
 
         #zones(v-cloak)
-            p(v-if="loaded >= 100 && !zones.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
+            p(v-if="loaded >= 100 && !z_docs.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
 
-            ul(v-if="loaded >= 100 && zones.length")
-                li(v-bind:data-id="r._id" v-for="r in zones")
-                    h4 {{ r.title }}
+            ul(v-if="loaded >= 100 && z_docs.length")
+                li(v-bind:data-id="zone._id" v-for="zone in z_docs")
+                    h4 {{ zone.title }}
                     h5 2km
-                    .box(v-for="item in items" v-if="item.parent == r._id" @click="handleZoneSelect(r)" v-bind:data-id="item._id")
-                        p Last Updated: {{ moment(moment(r.updated_at)).short(true) }}
+                    .box(v-for="item in i_docs" v-if="item.parent == zone._id" @click="handleZoneSelect(zone)" v-bind:data-id="item._id")
+                        p Last Updated: {{ moment(moment(zone.updated_at)).short(true) }}
 
 
 

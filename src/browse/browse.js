@@ -32,18 +32,15 @@ window.page = (function() {
             else {
                 // cache items for future association with zones
                 self.stor.getManyByType("i").then(function(items) {
-                    items.forEach(function(item) {
-                        self.view.$data.items.push(item.toJSONFriendly());
-                    });
-                    zones.forEach(function(zone) {
-                        self.view.$data.zones.push(zone.toJSONFriendly());
-                        self.view.$data.loaded = 100;
-                    });
-                    
+                    self.view.$data.loaded = 100;
                     //async load in tags we can use for reporting
                     self.stor.getManyByType("t")
                         .then(function(tags) {
-                            console.log(tags);
+                            tags.forEach(function(tag) {
+                                if (tag.has("tag", "z")) {
+                                    self.view.$data.zone_tags.push(tag.toJSONFriendly());
+                                }
+                            });
                         });
                 });
 
@@ -55,8 +52,7 @@ window.page = (function() {
 
 
     //------------------------------------------------------------------------
-    self.addData("zones", []);
-    self.addData("items", []);
+    self.addData("zone_tags", []);
     self.addData("show_filter", false);
     self.addData("show_report", false);
     self.addData("show_zones", true);

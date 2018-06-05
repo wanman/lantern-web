@@ -94,7 +94,7 @@ window.page = (function() {
             // draw category grid
             self.stor.getManyByType("t").then(function(tags) {  
                 tags.forEach(function(tag) {
-                    if (tag.get("tag").indexOf("z")) {
+                    if (tag.has("tag", "i")) {
                         self.view.$data.item_tags.push(tag.toJSONFriendly());
                     }
                 });
