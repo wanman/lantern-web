@@ -20,10 +20,15 @@ block content
 
     #map-selector-view(v-if="show_map_selector")
         h1 Drag Pin And Adjust Radius
+        .card 
+            #map
+        .button.is-primary Next
 
 
 block styles
+    link(rel="stylesheet" type="text/css" href="/lib/map.css")
     link(rel="stylesheet" type="text/css" href="/add/add.css")
 
 block scripts
+    script(src="/lib/map.js")
     script(src="/add/add.js")

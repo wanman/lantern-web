@@ -13,7 +13,46 @@ window.page = (function() {
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
+    
 
+
+    function askForLocation() {
+
+        function geo_success(position) {
+            console.log("[add] found position", position);
+            renderMap(position.coords.latitude, position.coords.longitude);
+        }
+
+        function geo_error() {
+            console.log("[add] no position available");
+        }
+
+        console.log("[add] asking for location");
+        var geo_options = {
+          enableHighAccuracy: true, 
+          maximumAge        : 30000, 
+          timeout           : 27000
+        };
+
+        navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
+    }
+
+
+    function renderMap(lat, lon) {
+        console.log("[add] showing map");
+        map = new LanternMapManager(lat, lon);
+        map.setPosition(lat, lon, 12);
+    }
+
+    function setupMapSelector(tag, label) {
+        console.log("[add] " + label + " form");
+        new_doc.push("tag", "adr");
+        console.log(new_doc);
+        self.view.$data.show_input_selector = false;
+        self.view.$data.show_subcategory_selector = false;
+        self.view.$data.show_map_selector = true;
+        askForLocation();
+    }
 
 
     //------------------------------------------------------------------------
@@ -26,30 +65,15 @@ window.page = (function() {
     });
 
     self.addHelper("presentAddressForm", function() {
-        console.log("[add] address form");
-        new_doc.push("tag", "adr");
-        console.log(new_doc);
-        self.view.$data.show_input_selector = false;
-        self.view.$data.show_subcategory_selector = false;
-        self.view.$data.show_map_selector = true;
+        setupMapSelector("adr", "address");
     });
 
     self.addHelper("presentAreaForm", function() {
-        console.log("[add] area form");
-        new_doc.push("tag", "ara");
-        console.log(new_doc);
-        self.view.$data.show_input_selector = false;
-        self.view.$data.show_subcategory_selector = false;
-        self.view.$data.show_map_selector = true;
+        setupMapSelector("ara", "area");
     });
 
     self.addHelper("presentLineForm", function() {
-        console.log("[add] line form");
-        new_doc.push("tag", "lne");
-        console.log(new_doc);
-        self.view.$data.show_input_selector = false;
-        self.view.$data.show_subcategory_selector = false;
-        self.view.$data.show_map_selector = true;
+        setupMapSelector("lne", "line");
     });
 
 

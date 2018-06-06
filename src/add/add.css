@@ -14,9 +14,19 @@
         cursor: pointer;
     }
 
+    .card {
+        margin: 3em auto;
+        max-width: 20em;
+        border-radius: 1em;
+        overflow: hidden;
+    }
 
     #subcategory-view, #input-selector-view, #map-selector-view {
         padding: 2em;
+        text-align:  center;
+        .button {
+            width: 20em;
+        }
     }
 
 

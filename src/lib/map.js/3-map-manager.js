@@ -21,12 +21,11 @@ window.LanternMapManager = function(lat, lon) {
         L.polygon(coords).addTo(self.map);
     };
     
-    self.setPosition = function(lat, lon) {
+    self.setPosition = function(lat, lon, zoom) {
         console.log("[map] set position to:" + lat, lon);
-        self.map.setView([lat, lon], 7);
+        self.map.setView([lat, lon], zoom || 7);
     };
 
-    self.setPosition(lat, lon);
 
 
     //------------------------------------------------------------------------

@@ -82,29 +82,26 @@ window.page = (function() {
         setTimeout(function() {
 
             map = new LanternMapManager(lat, lon);
+            map.setPosition(lat, lon);
 
-            map.map.on("load", function() {
+            console.log("[browse] map loaded");
 
-                console.log("[browse] map loaded");
+            // add markers to map
+            self.view.$data.m_docs.forEach(function(marker) {
+                var coords = [];
+                for (var idx in marker.geo) {
+                    var c = Geohash.decode(marker.geo[idx]);
+                    coords.push(c);
+                }
 
-                // add markers to map
-                self.view.$data.m_docs.forEach(function(marker) {
-                    var coords = [];
-                    for (var idx in marker.geo) {
-                        var c = Geohash.decode(marker.geo[idx]);
-                        coords.push(c);
-                    }
-
-                    if (coords.length == 1) {
-                        // point
-                        map.addPoint(coords[0]);
-                    }
-                    else {
-                        // draw a shape
-                        map.addPolygon(coords);
-                    }
-                });
-
+                if (coords.length == 1) {
+                    // point
+                    map.addPoint(coords[0]);
+                }
+                else {
+                    // draw a shape
+                    map.addPolygon(coords);
+                }
             });
 
         }, 300);
