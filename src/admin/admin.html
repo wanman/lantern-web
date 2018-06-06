@@ -1,5 +1,5 @@
 ---
-id: "dash"
+id: "admin"
 ---
 
 
@@ -15,13 +15,13 @@ block content
         
     #doc-summary(v-cloak)
 
-        a.tags.has-addons(v-for="item in types") 
+        a.tags.has-addons(v-for="item in types" @click="handleSelectType(item)") 
             span.tag {{ item.slug }}
-            span.tag.is-primary {{ pluralize(item.docs.length) }}
+            span.tag.is-primary {{ getDocCount(item) }}
 
 
 block styles
-    link(rel="stylesheet" type="text/css" href="/dash/dash.css")
+    link(rel="stylesheet" type="text/css" href="/admin/admin.css")
 
 block scripts
-    script(src="/dash/dash.js")
+    script(src="/admin/admin.js")

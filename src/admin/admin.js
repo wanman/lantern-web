@@ -2,25 +2,16 @@ window.page = (function() {
 
 
 
-    var self = new LanternPage("dash");
-
-    function display(type) {
-        self.view.$data[type.key+"_docs"] = [];
-        self.stor.getManyByType(type.key)
-            .then(function(docs) {
-                type.docs = docs;
-            });
-    }
+    var self = new LanternPage("admin");
 
     //------------------------------------------------------------------------
     self.addData("types", [
-        {key: "t", slug: "tag", docs: []},
-        {key: "z", slug: "zone", docs: []},
-        {key: "i", slug: "item", docs: []},
-        {key: "r", slug: "route", docs: []},
-        {key: "n", slug: "note", docs: []},
+        {key: "t", slug: "tag"},
+        {key: "z", slug: "zone"},
+        {key: "i", slug: "item"},
+        {key: "r", slug: "route"},
+        {key: "n", slug: "note"},
     ]);
-    self.addData("network_status", -1);
 
     //------------------------------------------------------------------------
     self.addHelper("loadTestData", function() {
@@ -35,11 +26,20 @@ window.page = (function() {
         });
     });
 
+    self.addHelper("handleSelectType", function(type) {
+        var docs = self.view.$data[type.key +"_docs"];
+        docs.forEach(function(doc) {
+            console.log(JSON.stringify(doc));
+        });
+    });
+
     self.addHelper("removeAllDocs", function() {
         self.stor.removeAll();
     });
 
-    self.addHelper("pluralize", function(count) {
+    self.addHelper("getDocCount", function(type) {
+
+        var count = self.view.$data[type.key + "_docs"].length;
         if (count === 0) {
             return 'No Docs';
         } 
@@ -57,7 +57,7 @@ window.page = (function() {
         .then(self.connect)
         .then(function() {
             self.view.$data.types.forEach(function(type) {
-                display(type);
+                self.stor.getManyByType(type.key);
             });
         });
 
