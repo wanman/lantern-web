@@ -20,12 +20,33 @@ block content
                 li.box(@click="presentLineForm") A Line
 
         #map-selector-view(v-if="show_map_selector")
-            h1 Drag Pin And Adjust Radius
+            div(v-if="!lock_doc")
+                h1(v-if="area_radius") Drag Pin And Adjust Radius
+                h1(v-if="!area_radius") Drag Pin
+                h2 {{ category.title }}
+            div(v-if="lock_doc")
+                h1 Preview
+                h2 {{ category.title }}
             .card 
                 #map
-                input.slider.is-fullwidth(v-if="area_radius > 0" step="5" min="1" max="5000" v-model="area_radius" type="range")
-            .button.is-primary(@click="handleSaveMarker") Next
+                p(v-if="lock_doc && lantern_connected") This is a preview of your report. If you choose to submit, it will be added to the Lantern map for your community to see.
 
+
+                p(v-if="lock_doc && !lantern_connected") This is a preview of your report. Since you are offline, your report will be automatically shared once you reconnect to a Lantern or the internet.
+
+
+                input.slider.is-fullwidth(v-if="!lock_doc && area_radius > 0" step="5" min="1" max="5000" v-model="area_radius" type="range")
+
+
+            .button.is-primary(v-if="!lock_doc" @click="handleButtonPush") Next
+            .button.is-primary(v-if="lock_doc & lantern_connected" @click="handleButtonPush") Send Now
+            .button.is-primary(v-if="lock_doc & !lantern_connected" @click="handleButtonPush") Send When Possible
+
+        #success-view(v-if="show_success")
+            h1 Thank you!
+            p(v-if="lantern_connected") Your contribution was successfully saved to the map.
+            p(v-if="!lantern_connected") Your contribution was successfully saved to the map and will be uploaded once you connect to a Lantern or the internet.
+            .button(@click="handleReturnToMap") Return to Map
 
 block styles
     link(rel="stylesheet" type="text/css" href="/lib/map.css")

@@ -1,7 +1,8 @@
 #browse-page {
   margin-top: 3.25rem; }
   #browse-page h1 {
-    margin-top: 2em;
+    margin-top: 2em; }
+  #browse-page h2 {
     margin-bottom: 2em; }
   #browse-page h4, #browse-page h5 {
     margin: 3px;
@@ -13,9 +14,9 @@
     font-weight: normal; }
   #browse-page .box:hover {
     cursor: pointer; }
-  #browse-page #zones-view {
+  #browse-page #markers-view {
     padding: 2em; }
-    #browse-page #zones-view h3 {
+    #browse-page #markers-view h3 {
       text-align: left;
       font-weight: bold; }
   #browse-page #report-view {

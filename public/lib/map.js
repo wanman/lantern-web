@@ -14190,9 +14190,7 @@ exports.map = createMap;
 }(function (TileLayerOffline, ControlOffline) {
 }));
 
-window.LanternMapManager = function() {
-    
-    var did_render = false;
+window.LanternMapManager = function(lat, lon) {
 
     var self = {
         map: L.map('map')
@@ -14204,50 +14202,30 @@ window.LanternMapManager = function() {
 
     self.map.zoomControl.remove();
 
-    function render(lat, lon) {
-        if (did_render) {
-            return;
-        }
-
-        did_render = true;
-    }
-
-
-    function geo_success(position) {
-        console.log("[map] found position", position);
-        self.setPosition(position.coords.latitude, position.coords.longitude);
-    }
-
-    function geo_error() {
-        console.log("[map] no position available");
-    }
-
-    var geo_options = {
-      enableHighAccuracy: true, 
-      maximumAge        : 30000, 
-      timeout           : 27000
-    };
-
     //------------------------------------------------------------------------
-    self.addPoint = function(coords) {
+    self.addPoint = function(coords, opts) {
         console.log("[map] adding point: ", coords);
-        L.marker(coords).addTo(self.map);
+        return L.marker(coords, opts || {}).addTo(self.map);
     };
     
-    self.addPolygon = function(coords) {
-        console.log("[map] adding polygon: ",coords);
-        L.polygon(coords).addTo(self.map);
+    self.addPolygon = function(coords, opts) {
+        console.log("[map] adding polygon: ", coords);
+        return L.polygon(coords, opts || {}).addTo(self.map);
+    };
+
+    self.addCircle = function(coords, opts) {
+        console.log("[map] adding circle: ", coords);
+        return L.circle(coords, opts || {}).addTo(self.map);
     };
     
-    self.setPosition = function(lat, lon) {
+    self.setPosition = function(lat, lon, zoom) {
         console.log("[map] set position to:" + lat, lon);
-        self.map.setView([lat, lon], 7);
+        self.map.setView([lat, lon], zoom || 7);
     };
 
 
 
     //------------------------------------------------------------------------
-    var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
 
     return self;
 };

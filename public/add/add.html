@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Lantern Network</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="/media/favicon/apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/media/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/media/favicon/favicon-16x16.png">
+        <link rel="mask-icon" href="/media/favicon/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
+        <link rel="stylesheet" type="text/css" href="/lib/map.css">
+        <link rel="stylesheet" type="text/css" href="/add/add.css">
+    </head>
+    <body>
+        <div id="add-page">
+            <!-- global navigation-->
+            <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <div class="navbar-item"><span>Lantern Network</span></div><a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+                </div>
+            </nav>
+            <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null">
+                <div class="navbar-brand">
+                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected">Online</span><span v-if="lantern_connected">Connected to Lantern</span></div>
+                </div>
+            </nav>
+            <section>
+                <nav class="global" v-if="showNavMenu" v-cloak>
+                    <ul>
+                        <li><a href="/browse/browse.html">Map</a></li>
+                        <li><a href="/channels/channels.html">Search</a></li>
+                        <li><a href="/network/network.html">Network</a></li>
+                        <li><a href="/admin/admin.html">Admin</a></li>
+                    </ul>
+                </nav>
+                <!-- main page content-->
+                <div class="page-content">
+                    <div v-cloak>
+                        <div id="subcategory-view" v-if="show_subcategory_selector">
+                            <h1>{{ category.title }}</h1>
+                            <h2>Pick Best Description</h2>
+                            <ul>
+                                <li class="box" v-for="sc in subcategories" @click="handleShowInputSelector(sc)">{{sc.title}}</li>
+                            </ul>
+                        </div>
+                        <div id="input-selector-view" v-if="show_input_selector">
+                            <h1>Select Condition Coverage</h1>
+                            <ul>
+                                <li class="box" @click="presentAddressForm">An Address</li>
+                                <li class="box" @click="presentAreaForm">An Area</li>
+                                <li class="box" @click="presentLineForm">A Line</li>
+                            </ul>
+                        </div>
+                        <div id="map-selector-view" v-if="show_map_selector">
+                            <div v-if="!lock_doc">
+                                <h1 v-if="area_radius">Drag Pin And Adjust Radius</h1>
+                                <h1 v-if="!area_radius">Drag Pin</h1>
+                                <h2>{{ category.title }}</h2>
+                            </div>
+                            <div v-if="lock_doc">
+                                <h1>Preview</h1>
+                                <h2>{{ category.title }}</h2>
+                            </div>
+                            <div class="card"> 
+                                <div id="map"></div>
+                                <p v-if="lock_doc &amp;&amp; lantern_connected">This is a preview of your report. If you choose to submit, it will be added to the Lantern map for your community to see.</p>
+                                <p v-if="lock_doc &amp;&amp; !lantern_connected">This is a preview of your report. Since you are offline, your report will be automatically shared once you reconnect to a Lantern or the internet.</p>
+                                <input class="slider is-fullwidth" v-if="!lock_doc &amp;&amp; area_radius &gt; 0" step="5" min="1" max="5000" v-model="area_radius" type="range">
+                            </div>
+                            <div class="button is-primary" v-if="!lock_doc" @click="handleButtonPush">Next</div>
+                            <div class="button is-primary" v-if="lock_doc &amp; lantern_connected" @click="handleButtonPush">Send Now</div>
+                            <div class="button is-primary" v-if="lock_doc &amp; !lantern_connected" @click="handleButtonPush">Send When Possible</div>
+                        </div>
+                        <div id="success-view" v-if="show_success">
+                            <h1>Thank you!</h1>
+                            <p v-if="lantern_connected">Your contribution was successfully saved to the map.</p>
+                            <p v-if="!lantern_connected">Your contribution was successfully saved to the map and will be uploaded once you connect to a Lantern or the internet.</p>
+                            <div class="button" @click="handleReturnToMap">Return to Map</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <script src="/lib/vendor.js"></script>
+            <script src="/lib/lantern.js"></script>
+            <script src="/lib/map.js"></script>
+            <script src="/add/add.js"></script>
+        </div>
+    </body>
+</html>

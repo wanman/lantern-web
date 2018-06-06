@@ -24,7 +24,7 @@ window.page = (function() {
                 setTimeout(loadMarkers, 300);
             }
             else {
-
+                console.log(markers);
                 //async load in categories we can use for reporting
                 self.stor.getManyByType("c")
                     .then(function(categories) {

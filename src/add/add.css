@@ -16,11 +16,18 @@
 
     .card {
         margin: 3em auto;
-        max-width: 20em;
+        max-width: 22em;
         border-radius: 1em;
         overflow: hidden;
 
+        p {
+            padding: 2em;
+            font-size: small;
+            font-weight: normal;
+        }
+
     }
+
     .button {
         max-width: 14em;
     }
@@ -39,5 +46,11 @@
             max-width: 19em;
         }
     }
-
+    #success-view {
+        padding: 3em;
+        text-align: center;
+        .button {
+            margin-top: 3em;
+        }
+    }
 }

@@ -19,7 +19,9 @@ window.LanternDocument = (function(id,stor) {
         owner: "ou",        // user array
         editor: "eu",       // user array
         geo: "gp",          // geohash array
-        tag: "tg",          // category or other tags
+        radius: "rd",       // geographic radius
+        category: "ct",     // category tag
+        tag: "tg",          // other tags
         style: "sl",        // css styles,
         parent: "pt",       // parent document reference
         child: "cd"         // child document reference
@@ -218,12 +220,10 @@ window.LanternImport = function(stor) {
     * Save an interest to the database for future use in the interface.
     * Allows for dynamically adding new interests over over time.
     */
-    function addTag(slug, title, valid_doc_types, color, background_color) {
-        var doc = new LanternDocument("t:"+slug, stor);
+    function addCategory(slug, title, tag, color, background_color) {
+        var doc = new LanternDocument("c:"+slug, stor);
         doc.set("title", title);
-        valid_doc_types.forEach(function(type) {
-            doc.push("tag", type);
-        });
+        doc.push("tag", tag);
         doc.set("style", {
             "color": color, 
             "background-color": background_color}
@@ -231,12 +231,13 @@ window.LanternImport = function(stor) {
         doc.set("$ia", new Date());
         doc.save();
     }
+
     
-    function addZone(id, title, geo, tag) {
-        var venue_doc = new LanternDocument("z:"+id, stor);
+    function addMarker(id, title, geo, cat) {
+        var venue_doc = new LanternDocument("m:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
-        venue_doc.push("tag", tag);
+        venue_doc.push("category", cat);
         venue_doc.set("$ia", new Date());
         venue_doc.save();
 
@@ -244,7 +245,7 @@ window.LanternImport = function(stor) {
         var supply_doc = new LanternDocument(supply_id, stor);
         supply_doc.set("status", 1);
         supply_doc.push("parent", venue_doc.id);
-        supply_doc.push("tag", "wtr");
+        supply_doc.push("category", "wtr");
         supply_doc.set("$ia", new Date());
         supply_doc.save();
 
@@ -253,7 +254,7 @@ window.LanternImport = function(stor) {
         var net_doc = new LanternDocument(net_id, stor);
         net_doc.set("status", 1);
         net_doc.push("parent", venue_doc.id);
-        net_doc.push("tag", "net");
+        net_doc.push("category", "net");
         net_doc.set("$ia", new Date());
         net_doc.save();
     }
@@ -267,22 +268,31 @@ window.LanternImport = function(stor) {
 
 
     //------------------------------------------------------------------------
-    self.tag = function() {
-        console.log("[import] adding default item tags");
-        addTag("shr", "Shelter", ["i"], "ffcc54", "fff7ef");
-        addTag("wtr", "Water", ["i"], "78aef9", "e9f2fe");
-        addTag("ful", "Fuel", ["i"], "c075c9", "f5e9f6");
-        addTag("net", "Internet", ["i"], "73cc72", "e8f7e8");
-        addTag("med", "Medical", ["i"], "ff844d", "ffebe2");
-        addTag("dnt", "Donations", ["i"], "50c1b6", "e3f5f3");
-        addTag("pwr", "Power", ["i"], "f45d90", "f2dae2");
-        addTag("eqp", "Equipment", ["i"], "4aaddb", "e8f4fa");
+    self.category = function() {
+        console.log("[import] adding default item categories");
+        addCategory("shr", "Shelter", "itm", "ffcc54", "fff7ef");
+        addCategory("wtr", "Water", "itm", "78aef9", "e9f2fe");
+        addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6");
+        addCategory("net", "Internet", "itm", "73cc72", "e8f7e8");
+        addCategory("med", "Medical", "itm", "ff844d", "ffebe2");
+        addCategory("dnt", "Donations", "itm", "50c1b6", "e3f5f3");
+        addCategory("pwr", "Power", "itm", "f45d90", "f2dae2");
+        addCategory("eqp", "Equipment", "itm", "4aaddb", "e8f4fa");
 
 
-        console.log("[import] adding default zone tags");
-        addTag("sup", "Supply Location", ["z"]);
-        addTag("str", "Safe Shelter", ["z"]);
-        addTag("dgr", "Dangerous Area", ["z"]);
+        console.log("[import] adding default Marker categories");
+        addCategory("dgr", "Dangerous Area", "mrk");
+        addCategory("rdc", "Road Conditions", "mrk");
+        addCategory("str", "Safe Shelter", "mrk");
+        addCategory("sup", "Supply Location", "mrk");
+
+
+        console.log("[import] adding sub-categories for Markers");
+        addCategory("rdb", "Road Debris", "dgr");
+        addCategory("fld", "Flooding", "dgr");
+        addCategory("cst", "Construction", "dgr");
+        addCategory("cba", "Closed by Authorities", "dgr");
+        addCategory("dst", "Destroyed", "dgr");
     };
 
 
@@ -291,15 +301,15 @@ window.LanternImport = function(stor) {
     * Allows for tracking population size and resource distribution
     * against meaningful points in a town.
     */
-    self.zone = function() {
+    self.marker = function() {
         console.log("[import] adding default venues");
-        addZone("css", "Central City Shelter", "drs4b7s", "str");
-        addZone("aic", "AI's Cafe", "drs4b77", "sup");
-        addZone("rcm", "Red Cross HQ", "drs4b75", "str");
+        addMarker("css", "Central City Shelter", "drs4b7s", "str");
+        addMarker("aic", "AI's Cafe", "drs4b77", "sup");
+        addMarker("rcm", "Red Cross HQ", "drs4b75", "str");
     };
 
     self.item = function() {
-        // items to be added directly along-side zones
+        // items to be added directly along-side Markers
     };
 
     self.route = function() {
@@ -320,11 +330,11 @@ window.LanternImport = function(stor) {
     };
 
     self.all = function() {
-        self.tag(); // accepted tags for various types of docs
-        self.zone(); // items placed in specific zones
-        self.item(); // dummy for consistency, see zone()
-        self.route(); // routes between zones
-        self.note(); // notes related to items or zones or routes
+        self.category(); // accepted categories for various types of docs
+        self.marker(); // items placed in specific Markers
+        self.item(); // dummy for consistency, see Marker()
+        self.route(); // routes between Markers
+        self.note(); // notes related to items or Markers or routes
     };
 
 
@@ -352,7 +362,8 @@ window.LanternPage = (function(id) {
 
 
     // initialize arrays for each type of doc
-    (["z", "i", "t", "r", "n", "u"]).forEach(function(type) {
+    // only these document types will ever be accepted by the system
+    (["m", "i", "c", "r", "n", "u"]).forEach(function(type) {
         opts.data[type+"_docs"] = [];
     });
 

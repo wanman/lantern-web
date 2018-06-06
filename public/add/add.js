@@ -1,3 +1,5 @@
+__base = "../";
+
 window.page = (function() {
     var self = new LanternPage("add");
 
@@ -205,3 +207,4 @@ window.page = (function() {
 
     return self;
 }());
+

@@ -1,0 +1,33 @@
+#add-page {
+  margin-top: 3.25rem; }
+  #add-page h2 {
+    margin-bottom: 2em; }
+  #add-page .box:first-child {
+    margin-top: 1em; }
+  #add-page .box:hover {
+    cursor: pointer; }
+  #add-page .card {
+    margin: 3em auto;
+    max-width: 22em;
+    border-radius: 1em;
+    overflow: hidden; }
+    #add-page .card p {
+      padding: 2em;
+      font-size: small;
+      font-weight: normal; }
+  #add-page .button {
+    max-width: 14em; }
+  #add-page #subcategory-view, #add-page #input-selector-view, #add-page #map-selector-view {
+    padding: 2em;
+    text-align: center; }
+    #add-page #subcategory-view .button, #add-page #input-selector-view .button, #add-page #map-selector-view .button {
+      width: 20em; }
+  #add-page #map-selector-view input {
+    margin: 2em auto;
+    max-width: 19em; }
+  #add-page #success-view {
+    padding: 3em;
+    text-align: center; }
+    #add-page #success-view .button {
+      margin-top: 3em; }
+

@@ -35,7 +35,7 @@ block content
             p(v-if="loaded && !m_docs.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
 
             ul(v-if="loaded && m_docs.length")
-                li(v-bind:data-id="marker._id" v-for="marker in m_docs")
+                li(v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title")
                     h4 {{ marker.title }}
                     h5 2km
                     .box(v-for="item in i_docs" v-if="item.parent == marker._id" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id")
