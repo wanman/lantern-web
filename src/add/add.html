@@ -1,0 +1,29 @@
+---
+id: "add"
+---
+
+extends ../_layouts/_master.pug
+
+block content
+    #subcategory-view(v-if="show_subcategory_selector")
+        h1 {{ category.title }}
+        h2 Pick Best Description
+        ul
+            li.box(v-for="sc in subcategories" @click="handleShowInputSelector(sc)") {{sc.title}}
+
+    #input-selector-view(v-if="show_input_selector")
+        h1 Select Condition Coverage
+        ul
+            li.box(@click="presentAddressForm") An Address
+            li.box(@click="presentAreaForm") An Area
+            li.box(@click="presentLineForm") A Line
+
+    #map-selector-view(v-if="show_map_selector")
+        h1 Drag Pin And Adjust Radius
+
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/add/add.css")
+
+block scripts
+    script(src="/add/add.js")

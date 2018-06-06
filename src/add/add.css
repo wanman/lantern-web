@@ -1,0 +1,23 @@
+#add-page {
+    
+    margin-top: 3.25rem;
+    
+    h2 {
+
+        margin-bottom: 2em;
+    }
+
+    .box:first-child {
+        margin-top: 1em;
+    }
+    .box:hover {
+        cursor: pointer;
+    }
+
+
+    #subcategory-view, #input-selector-view, #map-selector-view {
+        padding: 2em;
+    }
+
+
+}

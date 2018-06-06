@@ -7,7 +7,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.addData("types", [
         {key: "c", slug: "category"},
-        {key: "z", slug: "zone"},
+        {key: "m", slug: "marker"},
         {key: "i", slug: "item"},
         {key: "r", slug: "route"},
         {key: "n", slug: "note"},
@@ -39,14 +39,19 @@ window.page = (function() {
 
     self.addHelper("getDocCount", function(type) {
 
-        var count = self.view.$data[type.key + "_docs"].length;
-        if (count === 0) {
-            return 'No Docs';
-        } 
-        else if (count === 1) {
-            return '1 Doc';
-        } else {
-            return count + ' Docs';
+        try {
+            var count = self.view.$data[type.key + "_docs"].length;
+            if (count === 0) {
+                return 'No Docs';
+            } 
+            else if (count === 1) {
+                return '1 Doc';
+            } else {
+                return count + ' Docs';
+            }
+        }
+        catch(e) {
+            console.log("can't get document count for ", type, e);
         }
     });
 

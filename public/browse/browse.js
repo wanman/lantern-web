@@ -59,7 +59,7 @@ window.page = (function() {
             console.log("[browse] map loaded");
 
             // add zones to map
-            self.view.$data.z_docs.forEach(function(zone) {
+            self.view.$data.m_docs.forEach(function(zone) {
                 var coords = [];
                 for (var idx in zone.geo) {
                     var c = Geohash.decode(zone.geo[idx]);

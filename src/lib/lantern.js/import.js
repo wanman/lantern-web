@@ -20,8 +20,8 @@ window.LanternImport = function(stor) {
     }
 
     
-    function addZone(id, title, geo, cat) {
-        var venue_doc = new LanternDocument("z:"+id, stor);
+    function addMarker(id, title, geo, cat) {
+        var venue_doc = new LanternDocument("m:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
         venue_doc.push("category", cat);
@@ -67,14 +67,14 @@ window.LanternImport = function(stor) {
         addCategory("eqp", "Equipment", "itm", "4aaddb", "e8f4fa");
 
 
-        console.log("[import] adding default zone categories");
-        addCategory("dgr", "Dangerous Area", "zne");
-        addCategory("rdc", "Road Conditions", "zne");
-        addCategory("str", "Safe Shelter", "zne");
-        addCategory("sup", "Supply Location", "zne");
+        console.log("[import] adding default Marker categories");
+        addCategory("dgr", "Dangerous Area", "mrk");
+        addCategory("rdc", "Road Conditions", "mrk");
+        addCategory("str", "Safe Shelter", "mrk");
+        addCategory("sup", "Supply Location", "mrk");
 
 
-        console.log("[import] adding sub-categories for zones");
+        console.log("[import] adding sub-categories for Markers");
         addCategory("rdb", "Road Debris", "dgr");
         addCategory("fld", "Flooding", "dgr");
         addCategory("cst", "Construction", "dgr");
@@ -88,15 +88,15 @@ window.LanternImport = function(stor) {
     * Allows for tracking population size and resource distribution
     * against meaningful points in a town.
     */
-    self.zone = function() {
+    self.marker = function() {
         console.log("[import] adding default venues");
-        addZone("css", "Central City Shelter", "drs4b7s", "str");
-        addZone("aic", "AI's Cafe", "drs4b77", "sup");
-        addZone("rcm", "Red Cross HQ", "drs4b75", "str");
+        addMarker("css", "Central City Shelter", "drs4b7s", "str");
+        addMarker("aic", "AI's Cafe", "drs4b77", "sup");
+        addMarker("rcm", "Red Cross HQ", "drs4b75", "str");
     };
 
     self.item = function() {
-        // items to be added directly along-side zones
+        // items to be added directly along-side Markers
     };
 
     self.route = function() {
@@ -118,10 +118,10 @@ window.LanternImport = function(stor) {
 
     self.all = function() {
         self.category(); // accepted categories for various types of docs
-        self.zone(); // items placed in specific zones
-        self.item(); // dummy for consistency, see zone()
-        self.route(); // routes between zones
-        self.note(); // notes related to items or zones or routes
+        self.marker(); // items placed in specific Markers
+        self.item(); // dummy for consistency, see Marker()
+        self.route(); // routes between Markers
+        self.note(); // notes related to items or Markers or routes
     };
 
 

@@ -16,7 +16,8 @@ window.LanternPage = (function(id) {
 
 
     // initialize arrays for each type of doc
-    (["z", "i", "c", "r", "n", "u"]).forEach(function(type) {
+    // only these document types will ever be accepted by the system
+    (["m", "i", "c", "r", "n", "u"]).forEach(function(type) {
         opts.data[type+"_docs"] = [];
     });
 
