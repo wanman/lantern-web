@@ -1,7 +1,16 @@
 window.LanternMapManager = function() {
-
-    var self = {};
+    
     var did_render = false;
+
+    var self = {
+        map: L.map('map')
+    };
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: false
+    }).addTo(self.map);
+
+    self.map.zoomControl.remove();
 
     function render(lat, lon) {
         if (did_render) {
@@ -9,23 +18,16 @@ window.LanternMapManager = function() {
         }
 
         did_render = true;
-        var map = L.map('map').setView([lat, lon], 10);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: false
-        }).addTo(map);
-
-        // L.marker([51.5, -0.09]).addTo(map)
-        //     .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-        //     .openPopup();
     }
 
 
     function geo_success(position) {
-        render(position.coords.latitude, position.coords.longitude);
+        console.log("[map] found position", position);
+        self.setPosition(position.coords.latitude, position.coords.longitude);
     }
 
     function geo_error() {
-        console.log("no position available");
+        console.log("[map] no position available");
     }
 
     var geo_options = {
@@ -34,6 +36,25 @@ window.LanternMapManager = function() {
       timeout           : 27000
     };
 
+    //------------------------------------------------------------------------
+    self.addPoint = function(coords) {
+        console.log("[map] adding point: ", coords);
+        L.marker(coords).addTo(self.map);
+    };
+    
+    self.addPolygon = function(coords) {
+        console.log("[map] adding polygon: ",coords);
+        L.polygon(coords).addTo(self.map);
+    };
+    
+    self.setPosition = function(lat, lon) {
+        console.log("[map] set position to:" + lat, lon);
+        self.map.setView([lat, lon], 7);
+    };
+
+
+
+    //------------------------------------------------------------------------
     var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
 
     return self;

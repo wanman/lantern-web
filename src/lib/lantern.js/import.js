@@ -29,13 +29,22 @@ window.LanternImport = function(stor) {
         venue_doc.set("$ia", new Date());
         venue_doc.save();
 
-        var supply_id = "i:wtr-" + Math.round((Math.random()*100000));
+        var supply_id = "i:wtr-1-" + id;
         var supply_doc = new LanternDocument(supply_id, stor);
         supply_doc.set("status", 1);
         supply_doc.push("parent", venue_doc.id);
         supply_doc.push("tag", "wtr");
         supply_doc.set("$ia", new Date());
         supply_doc.save();
+
+
+        var net_id = "i:net-1-" + id;
+        var net_doc = new LanternDocument(net_id, stor);
+        net_doc.set("status", 1);
+        net_doc.push("parent", venue_doc.id);
+        net_doc.push("tag", "net");
+        net_doc.set("$ia", new Date());
+        net_doc.save();
     }
 
     function addKind(id, title) {
@@ -73,9 +82,9 @@ window.LanternImport = function(stor) {
     */
     self.zone = function() {
         console.log("[import] adding default venues");
-        addZone("css", "Central City Shelter", "u4pruydq", "str");
-        addZone("aic", "AI's Cafe", "u4pruydr", "sup");
-        addZone("rcm", "Red Cross HQ", "u4pruyqr", "str");
+        addZone("css", "Central City Shelter", "drs4b7s", "str");
+        addZone("aic", "AI's Cafe", "drs4b77", "sup");
+        addZone("rcm", "Red Cross HQ", "drs4b75", "str");
     };
 
     self.item = function() {
@@ -85,7 +94,7 @@ window.LanternImport = function(stor) {
     self.route = function() {
         console.log("[import] adding default geo routes"); 
         var doc = new LanternDocument("r:test-route", stor);
-        doc.set("geo", ['u4pruydq', 'u4pruyde']);
+        doc.set("geo", ['drs4b77e8', 'drs4b77e9']);
         doc.set("$ia", new Date());
         doc.save();
     };

@@ -1,6 +1,7 @@
 window.page = (function() {
 
     var self = new LanternPage("browse");
+    var map;
 
     /**
     * Construct sample documents for demonstration purposes
@@ -15,7 +16,7 @@ window.page = (function() {
     * Make sure we have zones to work with
     */
     function loadZones() {
-        self.stor.getManyByType("z").then(function(zones) {
+        return self.stor.getManyByType("z").then(function(zones) {
             if (zones.length === 0) {
                 // if we have zero zones, we probably are missing data
                 console.log("[browse] importing sample data...");
@@ -23,6 +24,7 @@ window.page = (function() {
                 setTimeout(loadZones, 300);
             }
             else {
+
                 //async load in tags we can use for reporting
                 self.stor.getManyByType("t")
                     .then(function(tags) {
@@ -32,7 +34,6 @@ window.page = (function() {
                             }
                         });
                     });
-                    
                 // cache items for future association with zones
                 self.stor.getManyByType("i").then(function(items) {
                     self.view.$data.loaded = true;
@@ -47,10 +48,37 @@ window.page = (function() {
     * Display the map for the user based on approx. location
     */
     function renderMap() {
-        var map_mgr = new LanternMapManager();
-        setTimeout(function() {
-            self.view.$data.show_map = true;
-        }, 2000);
+        console.log("[browse] showing map");
+        self.view.$data.show_map = true;
+        map = new LanternMapManager();
+
+        map.map.on("load", function() {
+
+            console.log("[browse] map loaded");
+
+            // add zones to map
+            self.view.$data.z_docs.forEach(function(zone) {
+                var coords = [];
+                for (var idx in zone.geo) {
+                    var c = Geohash.decode(zone.geo[idx]);
+                    coords.push(c);
+                }
+
+                if (coords.length == 1) {
+                    // point
+                    map.addPoint(coords[0]);
+                }
+                else {
+                    // draw a shape
+                    map.addPolygon(coords);
+                }
+            });
+
+        });
+
+        map.map.fitWorld();
+
+
     }
 
     //------------------------------------------------------------------------
@@ -75,8 +103,8 @@ window.page = (function() {
         self.view.$data.show_filter = !self.view.$data.show_filter;
     });
 
-    self.addHelper("handleZoneSelect", function(zone) {
-        console.log(zone);
+    self.addHelper("handleItemSelect", function(item,zone) {
+        console.log(item, zone);
     });
 
     self.addHelper("handleZoneTag", function(tag) {

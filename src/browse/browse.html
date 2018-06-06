@@ -20,13 +20,13 @@ block content
 
 
     // map is empty by default - only certain pages will fill this region
-    #map(v-if="show_map")
+    #map
 
     // zones view
     #zones-view(v-if="show_zones")
 
         #button-bar
-            #report-button.button(@click="handleToggleReportView") Report
+            #report-button.button(@click="handleToggleReportView") +
             #map-button.button(v-if="!show_map && prompt_for_map" @click="handleShowMap") Show Map
 
 
@@ -37,7 +37,7 @@ block content
                 li(v-bind:data-id="zone._id" v-for="zone in z_docs")
                     h4 {{ zone.title }}
                     h5 2km
-                    .box(v-for="item in i_docs" v-if="item.parent == zone._id" @click="handleZoneSelect(zone)" v-bind:data-id="item._id")
+                    .box(v-for="item in i_docs" v-if="item.parent == zone._id" @click="handleItemSelect(item, zone)" v-bind:data-id="item._id")
                         p Last Updated: {{ moment(moment(zone.updated_at)).short(true) }}
 
 
