@@ -2,6 +2,7 @@ window.page = (function() {
     var self = new LanternPage("add");
 
     var new_doc;
+    var markers = [];
 
     //------------------------------------------------------------------------
     function getParameterByName(name, url) {
@@ -16,11 +17,11 @@ window.page = (function() {
     
 
 
-    function askForLocation() {
+    function askForLocation(fn) {
 
         function geo_success(position) {
             console.log("[add] found position", position);
-            renderMap(position.coords.latitude, position.coords.longitude);
+            renderMap(position.coords.latitude, position.coords.longitude, fn);
         }
 
         function geo_error() {
@@ -38,10 +39,11 @@ window.page = (function() {
     }
 
 
-    function renderMap(lat, lon) {
+    function renderMap(lat, lon, fn) {
         console.log("[add] showing map");
         map = new LanternMapManager(lat, lon);
         map.setPosition(lat, lon, 12);
+        fn(map);
     }
 
     function setupMapSelector(tag, label) {
@@ -51,7 +53,33 @@ window.page = (function() {
         self.view.$data.show_input_selector = false;
         self.view.$data.show_subcategory_selector = false;
         self.view.$data.show_map_selector = true;
-        askForLocation();
+        askForLocation(function(map) {
+            console.log("[add] map visible", map);
+            var center = map.map.getCenter();
+
+            if (tag != "ara") {
+
+                markers.push(map.addPoint({lat: center.lat, lon: center.lng}, {
+                    draggable: true
+                }));
+            }
+            else {
+                markers.push(map.addCircle({lat: center.lat, lon: center.lng},{
+                    radius: 1000,
+                    color: "#72A2EF",
+                    fillColor: '#72A2E5',
+                    opacity: 0.9,
+                    draggable: true
+                }));
+            }
+
+
+            if (tag == "lne") {
+                markers.push(map.addPoint({lat: center.lat-0.01, lon: center.lng-0.01}, {
+                    draggable: true
+                }));
+            }
+        });
     }
 
 
@@ -69,13 +97,32 @@ window.page = (function() {
     });
 
     self.addHelper("presentAreaForm", function() {
+        self.view.$data.area_radius = 1000;
+        self.view.$watch("area_radius", function(new_val, old_val) {
+            if (markers[0]) {
+                markers[0].setRadius(new_val);
+            }
+        });
         setupMapSelector("ara", "area");
+
     });
 
     self.addHelper("presentLineForm", function() {
         setupMapSelector("lne", "line");
     });
 
+    self.addHelper("handleSaveMarker", function() {
+        markers.forEach(function(marker) {
+            var coords = marker.getLatLng();
+            console.log(coords);
+            var hash = Geohash.encode(coords.lat, coords.lng, 10);
+            new_doc.push("geo", hash);
+            if (marker.getRadius) {
+                new_doc.set("radius", marker.getRadius());
+            }
+            console.log(new_doc);
+        });
+    });
 
     //------------------------------------------------------------------------
  
@@ -84,6 +131,7 @@ window.page = (function() {
     self.addData("show_subcategory_selector", false);
     self.addData("show_input_selector", false);
     self.addData("show_map_selector", false);
+    self.addData("area_radius", 0);
 
     //------------------------------------------------------------------------
     

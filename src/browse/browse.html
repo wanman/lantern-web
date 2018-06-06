@@ -9,7 +9,7 @@ block content
     // report view
     nav#report-view(v-if="show_report" v-cloak)
         h1 Help Us Map Your Region
-        h2 Select A Category
+        h2 What to report?
         ul
             li(v-for="category in marker_categories")
                 a(@click="handleMarkerCategory(category)") {{ category.title }}
@@ -21,12 +21,12 @@ block content
 
 
     // map is empty by default - only certain pages will fill this region
-    #map(v-if="show_map")
+    #map(v-cloak v-if="show_map")
 
     // markers view
     #markers-view(v-if="show_markers")
 
-        #button-bar
+        #button-bar(v-cloak)
             #report-button.button(@click="handleToggleReportView") +
             #map-button.button(v-if="!show_map && prompt_for_map" @click="handleShowMap") Show Map
 

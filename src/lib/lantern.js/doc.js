@@ -17,6 +17,7 @@ window.LanternDocument = (function(id,stor) {
         owner: "ou",        // user array
         editor: "eu",       // user array
         geo: "gp",          // geohash array
+        radius: "rd",       // geographic radius
         category: "ct",     // category tag
         tag: "tg",          // other tags
         style: "sl",        // css styles,

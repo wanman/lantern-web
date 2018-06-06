@@ -11,14 +11,19 @@ window.LanternMapManager = function(lat, lon) {
     self.map.zoomControl.remove();
 
     //------------------------------------------------------------------------
-    self.addPoint = function(coords) {
+    self.addPoint = function(coords, opts) {
         console.log("[map] adding point: ", coords);
-        L.marker(coords).addTo(self.map);
+        return L.marker(coords, opts || {}).addTo(self.map);
     };
     
-    self.addPolygon = function(coords) {
-        console.log("[map] adding polygon: ",coords);
-        L.polygon(coords).addTo(self.map);
+    self.addPolygon = function(coords, opts) {
+        console.log("[map] adding polygon: ", coords);
+        return L.polygon(coords, opts || {}).addTo(self.map);
+    };
+
+    self.addCircle = function(coords, opts) {
+        console.log("[map] adding circle: ", coords);
+        return L.circle(coords, opts || {}).addTo(self.map);
     };
     
     self.setPosition = function(lat, lon, zoom) {
