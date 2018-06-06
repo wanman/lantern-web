@@ -11,11 +11,10 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
-        <link rel="stylesheet" type="text/css" href="/lib/map.css">
-        <link rel="stylesheet" type="text/css" href="/browse/browse.css">
+        <link rel="stylesheet" type="text/css" href="/channels/channels.css">
     </head>
     <body>
-        <div id="browse-page">
+        <div id="channels-page">
             <!-- global navigation-->
             <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation">
                 <div class="navbar-brand">
@@ -38,43 +37,29 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <!-- report view-->
-                    <nav id="report-view" v-if="show_report" v-cloak>
-                        <h1>Help Us Map Your Region</h1>
-                        <ul>
-                            <li v-for="tag in zone_tags"><a @click="handleZoneTag(tag)">{{ tag.title }}</a></li>
+                    <div id="channels-view">
+                        <h1 v-if="personalizing" v-cloak>Personalizing Map</h1>
+                        <h1 v-if="!personalizing" v-cloak>What are you searching for?</h1>
+                        <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
+                            <h2 v-cloak v-if="!lantern_connected">
+                                 Connect to a Lantern to send data</h2>
+                            <h2 v-cloak v-if="lantern_connected &amp;&amp; u_docs.length &gt;= 2">
+                                 {{ pluralize(u_docs.length - 1) }} Listening</h2>
+                            <h2 v-cloak v-if="lantern_connected &amp;&amp; u_docs.length &lt;= 1">
+                                 Waiting for Users To Join Network</h2>
+                        </div>
+                        <ul class="item-list" v-cloak>
+                            <li class="item" v-for="tag in item_tags" v-bind:id="tag._id" v-bind:class="makeCategoryClass(tag)" @click="toggleCategory">
+                                <div class="icon" v-bind:style="makeCategoryStyle(tag)">{{ tag.title[0].toUpperCase() }}</div>
+                                <div class="title">{{ tag.title }}</div>
+                            </li>
                         </ul>
-                        <div class="action-panel">
-                            <div class="button" @click="handleToggleReportView">Cancel</div>
-                        </div>
-                    </nav>
-                    <!-- map is empty by default - only certain pages will fill this region-->
-                    <div id="map"></div>
-                    <!-- zones view-->
-                    <div id="zones-view" v-if="show_zones">
-                        <div id="button-bar">
-                            <div class="button" id="report-button" @click="handleToggleReportView">+</div>
-                            <div class="button" id="map-button" v-if="!show_map &amp;&amp; prompt_for_map" @click="handleShowMap">Show Map</div>
-                        </div>
-                        <div id="zones" v-cloak>
-                            <p v-if="loaded &amp;&amp; !z_docs.length">There are no supply stations or vehicles reported yet. Please check back soon.</p>
-                            <ul v-if="loaded &amp;&amp; z_docs.length">
-                                <li v-bind:data-id="zone._id" v-for="zone in z_docs">
-                                    <h4>{{ zone.title }}</h4>
-                                    <h5>2km</h5>
-                                    <div class="box" v-for="item in i_docs" v-if="item.parent == zone._id" @click="handleItemSelect(item, zone)" v-bind:data-id="item._id">
-                                        <p>Last Updated: {{ moment(moment(zone.updated_at)).short(true) }}</p>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </section>
             <script src="/lib/vendor.js"></script>
             <script src="/lib/lantern.js"></script>
-            <script src="/lib/map.js"></script>
-            <script src="/browse/browse.js"></script>
+            <script src="/channels/channels.js"></script>
         </div>
     </body>
 </html>

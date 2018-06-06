@@ -2,122 +2,144 @@ __base = "../";
 
 window.page = (function() {
 
-    var self;
-    var opts = {};
+    var self = new LanternPage("browse");
+    var map;
 
-    function addVenue(venue_doc) {
-        venue_doc.$child = [];
-        self.vm.$data.venues.push(venue_doc);
-        // @todo more efficient search
-        for (var idy in self.vm.$data.s_docs) {
-            var supply_doc = self.vm.$data.s_docs[idy];
-            if (supply_doc.parent == venue_doc._id) {
-                venue_doc.$child.push(supply_doc);
-            }
-        }
+    /**
+    * Construct sample documents for demonstration purposes
+    */
+    function importSampleData() {
+        var imp = new LanternImport(self.stor);
+        imp.all();
     }
 
 
-    opts.methods = {
-      
-        toggleCategory: function(evt) {
-            var el = evt.target;
-            var cat = el.getAttribute("id");
-            console.log("[browse] clicked: " + cat);
-
-            // do optimistic UI updates and then listen for sync to confirm
-            if (self.user.has("tag", cat)) {
-                self.user.pop("tag", cat);
-                el.classList.remove("active");
+    /*
+    * Make sure we have zones to work with
+    */
+    function loadZones() {
+        return self.stor.getManyByType("z").then(function(zones) {
+            if (zones.length === 0) {
+                // if we have zero zones, we probably are missing data
+                console.log("[browse] importing sample data...");
+                importSampleData();
+                setTimeout(loadZones, 300);
             }
             else {
-                el.classList.add("active");
-                self.user.push("tag", cat);
+
+                //async load in tags we can use for reporting
+                self.stor.getManyByType("t")
+                    .then(function(tags) {
+                        tags.forEach(function(tag) {
+                            if (tag.has("tag", "z")) {
+                                self.view.$data.zone_tags.push(tag.toJSONFriendly());
+                            }
+                        });
+                    });
+                // cache items for future association with zones
+                self.stor.getManyByType("i").then(function(items) {
+                    self.view.$data.loaded = true;
+                });
+
             }
-            self.user.save();
-        },
-        makeCategoryClass: function(cat) {
-            var cls = "";
-            var user = self.user;
-            if (user && user.has("tag", cat._id)) {
-                cls += "active ";
-            }
-            return cls;
-        },
-        makeCategoryStyle: function(cat) {
-            var obj;
-
-            if (!cat) {
-                return;
-            }
-
-            if (typeof(cat) == "string") {
-                obj = self.stor.getCached(cat);
-            }
-            else {
-                obj = cat;
-            }
-
-            if (obj.hasOwnProperty("parent")) {
-                // must be a specific supply
-                obj = self.stor.getCached(obj.tag[0]);
-            }
-
-            var doc = new LanternDocument(obj, self.stor);
-            var style = ["color: #" + doc.get("style","color")];
-            style.push("background-color: #" + doc.get("style", "background-color"));
-            style.push("border-color: #" + doc.get("style", "color"));
-            return style.join("; ");
-        },
-        handleShowReportView: function() {
-            window.location = "/report/report.html";
-        },
-        handleCloseFilterView: function() {
-            self.vm.$data.show_filter = false;
-        },
-        handleToggleFilterView: function() {
-            self.vm.$data.show_filter = !self.vm.$data.show_filter;
-        }
-    };
-
-
-    opts.data = {
-        venues: [],
-        show_filter: false
-    };
-
-    var preload = ["v", "c", "u", "s"];
-
-    for (var idx in preload) {
-        opts.data[preload[idx] +"_docs"] = [];
+        });
     }
 
 
-    opts.beforeMount = function() {
-        console.log("[browse] check for data");
+    /**
+    * Display the map for the user based on approx. location
+    */
+    function renderMap() {
+        console.log("[browse] showing map");
+        self.view.$data.show_map = true;
+        map = new LanternMapManager();
 
+        map.map.on("load", function() {
 
-        if (!self.vm.$data.c_docs.length) {
-            window.location.href = "/";
-        }
-        
-        console.log("[browse] rendering map");
-    
-        mapboxgl.accessToken = 'pk.eyJ1IjoiamYiLCJhIjoiY2poN3g4bGI3MGN0NzJ3dnQyMWhmNHlrMSJ9._Xs4n5t5UPMip2qPKBF1-w';
+            console.log("[browse] map loaded");
 
-        var map = new mapboxgl.Map({
-            container: "map",
-            style: 'mapbox://styles/mapbox/light-v9',
-            center: [ -73.212074, 44.475883],
-            zoom: 4
+            // add zones to map
+            self.view.$data.z_docs.forEach(function(zone) {
+                var coords = [];
+                for (var idx in zone.geo) {
+                    var c = Geohash.decode(zone.geo[idx]);
+                    coords.push(c);
+                }
+
+                if (coords.length == 1) {
+                    // point
+                    map.addPoint(coords[0]);
+                }
+                else {
+                    // draw a shape
+                    map.addPolygon(coords);
+                }
+            });
+
         });
 
-        for (var idx in self.vm.$data.v_docs) {
-            addVenue(self.vm.$data.v_docs[idx]);
-        }
-    };
+        map.map.fitWorld();
 
 
-    self = new LanternPage("browse", opts, preload);
-    return self;
+    }
+
+    //------------------------------------------------------------------------
+    self.addData("zone_tags", []);
+    self.addData("show_filter", false);
+    self.addData("show_report", false);
+    self.addData("show_zones", true);
+    self.addData("show_map", false);
+    self.addData("loaded", false);
+    self.addData("network_status", -1);
+    self.addData("prompt_for_map", false);
+
+
+
+    //------------------------------------------------------------------------
+    self.addHelper("handleToggleReportView", function() {
+        self.view.$data.show_report = !self.view.$data.show_report;
+        self.view.$data.show_zones = !self.view.$data.show_report;
+    });
+
+    self.addHelper("handleToggleFilterView", function() {
+        self.view.$data.show_filter = !self.view.$data.show_filter;
+    });
+
+    self.addHelper("handleItemSelect", function(item,zone) {
+        console.log(item, zone);
+    });
+
+    self.addHelper("handleZoneTag", function(tag) {
+        console.log("[browse] report a " + tag.title);
+    });    
+
+    self.addHelper("handleShowMap", renderMap);
+
+    self.addHelper("handleCloseFilterView", function() {
+        self.view.$data.show_filter = false;
+    });
+
+    //------------------------------------------------------------------------
+    self.render()
+        .then(self.connect)
+        .then(loadZones)
+        .then(function() {
+            // auto-show map if permission granted
+            if (navigator) {
+                navigator.permissions.query({'name': 'geolocation'})
+                    .then( function(permission) {
+                        if (permission.state == "granted") {
+                            renderMap();
+                        }
+                        else {
+                            self.view.$data.prompt_for_map = true;
+                        }
+                    });
+            }
+            else {
+                self.view.$data.prompt_for_map = false;
+            }
+        });
+
+    return self; 
 }());

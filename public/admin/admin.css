@@ -1,0 +1,14 @@
+html, body {
+  background: #FFF; }
+
+#admin-page #doc-summary {
+  padding: 2em; }
+
+#admin-page .tag {
+  width: 9em; }
+
+#admin-page .actions {
+  border-bottom: 1px solid #EEE;
+  padding: 1em;
+  margin-bottom: 1em; }
+

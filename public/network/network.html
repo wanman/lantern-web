@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Lantern Network</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="/media/favicon/apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/media/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/media/favicon/favicon-16x16.png">
+        <link rel="mask-icon" href="/media/favicon/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
+        <link rel="stylesheet" type="text/css" href="/network/network.css">
+    </head>
+    <body>
+        <div id="network-page">
+            <!-- global navigation-->
+            <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    <div class="navbar-item"><span>Lantern Network</span></div><a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+                </div>
+            </nav>
+            <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null">
+                <div class="navbar-brand">
+                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected">Online</span><span v-if="lantern_connected">Connected to Lantern</span></div>
+                </div>
+            </nav>
+            <section>
+                <nav class="global" v-if="showNavMenu" v-cloak>
+                    <ul>
+                        <li><a href="/browse/browse.html">Map</a></li>
+                        <li><a href="/channels/channels.html">Search</a></li>
+                        <li><a href="/network/network.html">Network</a></li>
+                        <li><a href="/admin/admin.html">Admin</a></li>
+                    </ul>
+                </nav>
+                <!-- main page content-->
+                <div class="page-content">
+                    <!-- this landing page ensures the lantern is setup for required use cases-->
+                    <!-- after leaving this page, the user should have an operational database-->
+                    <!-- wifi credentials may be added if the user has working internet access-->
+                    <div v-cloak><!-- prompt for wifi credentials -->
+                        <form class="panel" @submit.prevent="handleSubmit">
+                            <p class="panel-heading" v-if="!warning">Device Settings</p>
+                            <div class="panel-heading has-text-weight-normal is-size-6 has-background-warning" v-if="warning">{{ warning }}</div>
+                            <label class="radio panel-block">
+                                <input type="radio" value="1" name="connection" v-model="connection">I have a working wireless internet connection
+                            </label>
+                            <!-- prompt for valid wi-fi credentials if available-->
+                            <div class="panel-block" id="wifi-creds" v-if="connection == 1">
+                                <p>By securely sharing your wireless network, you will help neighbors get access to up-to-date information from outside your region:</p>
+                                <input class="input" type="text" placeholder="WiFi SSID" v-model="network_ssid">
+                                <input class="input" type="password" placeholder="WiFi Password" v-model="network_pass">
+                            </div>
+                            <label class="radio panel-block">
+                                <input type="radio" value="0" name="connection" v-model="connection">My internet is unreliable
+                            </label>
+                            <label class="radio panel-block">
+                                <input type="radio" value="-1" name="connection" v-model="connection">I am offline
+                            </label>
+                            <div class="panel-block">
+                                <div class="select is-rounded">
+                                    <select v-model="region">
+                                        <option disabled value="">Choose region...</option>
+                                        <option value="use">US - South East</option>
+                                        <option value="usw">US - South West</option>
+                                        <option value="une">US - North East</option>
+                                        <option value="unw">US - North West</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="panel-block"><a class="button is-primary" @click="handleSubmit" :class="processing ? 'is-loading' : ''">Save</a></div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <script src="/lib/vendor.js"></script>
+            <script src="/lib/lantern.js"></script>
+            <script src="/network/network.js"></script>
+        </div>
+    </body>
+</html>

@@ -11,11 +11,10 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
-        <link rel="stylesheet" type="text/css" href="/lib/map.css">
-        <link rel="stylesheet" type="text/css" href="/browse/browse.css">
+        <link rel="stylesheet" type="text/css" href="/admin/admin.css">
     </head>
     <body>
-        <div id="browse-page">
+        <div id="admin-page">
             <!-- global navigation-->
             <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation">
                 <div class="navbar-brand">
@@ -38,43 +37,16 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <!-- report view-->
-                    <nav id="report-view" v-if="show_report" v-cloak>
-                        <h1>Help Us Map Your Region</h1>
-                        <ul>
-                            <li v-for="tag in zone_tags"><a @click="handleZoneTag(tag)">{{ tag.title }}</a></li>
-                        </ul>
-                        <div class="action-panel">
-                            <div class="button" @click="handleToggleReportView">Cancel</div>
-                        </div>
-                    </nav>
-                    <!-- map is empty by default - only certain pages will fill this region-->
-                    <div id="map"></div>
-                    <!-- zones view-->
-                    <div id="zones-view" v-if="show_zones">
-                        <div id="button-bar">
-                            <div class="button" id="report-button" @click="handleToggleReportView">+</div>
-                            <div class="button" id="map-button" v-if="!show_map &amp;&amp; prompt_for_map" @click="handleShowMap">Show Map</div>
-                        </div>
-                        <div id="zones" v-cloak>
-                            <p v-if="loaded &amp;&amp; !z_docs.length">There are no supply stations or vehicles reported yet. Please check back soon.</p>
-                            <ul v-if="loaded &amp;&amp; z_docs.length">
-                                <li v-bind:data-id="zone._id" v-for="zone in z_docs">
-                                    <h4>{{ zone.title }}</h4>
-                                    <h5>2km</h5>
-                                    <div class="box" v-for="item in i_docs" v-if="item.parent == zone._id" @click="handleItemSelect(item, zone)" v-bind:data-id="item._id">
-                                        <p>Last Updated: {{ moment(moment(zone.updated_at)).short(true) }}</p>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="actions">
+                        <div class="button is-primary" v-on:click="loadTestData">Load Test Data</div>
+                        <div class="button is-danger is-outlined" v-on:click="removeAllDocs">Remove All Docs</div>
                     </div>
+                    <div id="doc-summary" v-cloak><a class="tags has-addons" v-for="item in types" @click="handleSelectType(item)"> <span class="tag">{{ item.slug }}</span><span class="tag is-primary">{{ getDocCount(item) }}</span></a></div>
                 </div>
             </section>
             <script src="/lib/vendor.js"></script>
             <script src="/lib/lantern.js"></script>
-            <script src="/lib/map.js"></script>
-            <script src="/browse/browse.js"></script>
+            <script src="/admin/admin.js"></script>
         </div>
     </body>
 </html>
