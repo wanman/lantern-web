@@ -25,12 +25,12 @@ window.page = (function() {
             }
             else {
 
-                //async load in tags we can use for reporting
-                self.stor.getManyByType("t")
-                    .then(function(tags) {
-                        tags.forEach(function(tag) {
-                            if (tag.has("tag", "z")) {
-                                self.view.$data.zone_tags.push(tag.toJSONFriendly());
+                //async load in categories we can use for reporting
+                self.stor.getManyByType("c")
+                    .then(function(categories) {
+                        categories.forEach(function(cat) {
+                            if (cat.has("tag", "zne")) {
+                                self.view.$data.zone_categories.push(cat.toJSONFriendly());
                             }
                         });
                     });
@@ -112,7 +112,7 @@ window.page = (function() {
     }
 
     //------------------------------------------------------------------------
-    self.addData("zone_tags", []);
+    self.addData("zone_categories", []);
     self.addData("show_filter", false);
     self.addData("show_report", false);
     self.addData("show_zones", true);
@@ -138,8 +138,8 @@ window.page = (function() {
         console.log(item, zone);
     });
 
-    self.addHelper("handleZoneTag", function(tag) {
-        console.log("[browse] report a " + tag.title);
+    self.addHelper("handleZoneCategory", function(cat) {
+        console.log("[browse] report a " + cat.title);
     });    
 
     self.addHelper("handleShowMap", askForLocation);

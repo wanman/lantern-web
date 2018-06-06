@@ -17,7 +17,8 @@ window.LanternDocument = (function(id,stor) {
         owner: "ou",        // user array
         editor: "eu",       // user array
         geo: "gp",          // geohash array
-        tag: "tg",          // category or other tags
+        category: "ct",     // category tag
+        tag: "tg",          // other tags
         style: "sl",        // css styles,
         parent: "pt",       // parent document reference
         child: "cd"         // child document reference

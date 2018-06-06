@@ -9,9 +9,10 @@ block content
     // report view
     nav#report-view(v-if="show_report" v-cloak)
         h1 Help Us Map Your Region
+        h2 Select A Category
         ul
-            li(v-for="tag in zone_tags")
-                a(@click="handleZoneTag(tag)") {{ tag.title }}
+            li(v-for="category in zone_categories")
+                a(@click="handleZoneCategory(category)") {{ category.title }}
         
         .action-panel
             .button(@click="handleToggleReportView") Cancel

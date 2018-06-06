@@ -6,7 +6,7 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.addData("types", [
-        {key: "t", slug: "tag"},
+        {key: "c", slug: "category"},
         {key: "z", slug: "zone"},
         {key: "i", slug: "item"},
         {key: "r", slug: "route"},
