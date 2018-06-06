@@ -44,40 +44,70 @@ window.page = (function() {
     }
 
 
+    function askForLocation() {
+
+        function geo_success(position) {
+            console.log("[browse] found position", position);
+            renderMap(position.coords.latitude, position.coords.longitude);
+        }
+
+        function geo_error() {
+            console.log("[browse] no position available");
+        }
+
+        console.log("[browse] asking for location");
+        var geo_options = {
+          enableHighAccuracy: true, 
+          maximumAge        : 30000, 
+          timeout           : 27000
+        };
+
+        navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
+        var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
+    }
+
+
     /**
     * Display the map for the user based on approx. location
     */
-    function renderMap() {
+    function renderMap(lat, lon) {
+        if (self.view.$data.show_map) {
+            // already showing map
+            return;
+        }
+
         console.log("[browse] showing map");
         self.view.$data.show_map = true;
-        map = new LanternMapManager();
 
-        map.map.on("load", function() {
+        setTimeout(function() {
 
-            console.log("[browse] map loaded");
+            map = new LanternMapManager(lat, lon);
 
-            // add zones to map
-            self.view.$data.z_docs.forEach(function(zone) {
-                var coords = [];
-                for (var idx in zone.geo) {
-                    var c = Geohash.decode(zone.geo[idx]);
-                    coords.push(c);
-                }
+            map.map.on("load", function() {
 
-                if (coords.length == 1) {
-                    // point
-                    map.addPoint(coords[0]);
-                }
-                else {
-                    // draw a shape
-                    map.addPolygon(coords);
-                }
+                console.log("[browse] map loaded");
+
+                // add zones to map
+                self.view.$data.z_docs.forEach(function(zone) {
+                    var coords = [];
+                    for (var idx in zone.geo) {
+                        var c = Geohash.decode(zone.geo[idx]);
+                        coords.push(c);
+                    }
+
+                    if (coords.length == 1) {
+                        // point
+                        map.addPoint(coords[0]);
+                    }
+                    else {
+                        // draw a shape
+                        map.addPolygon(coords);
+                    }
+                });
+
             });
 
-        });
-
-        map.map.fitWorld();
-
+        }, 300);
 
     }
 
@@ -90,6 +120,7 @@ window.page = (function() {
     self.addData("loaded", false);
     self.addData("network_status", -1);
     self.addData("prompt_for_map", false);
+    self.addData("geolocation", null);
 
 
 
@@ -111,7 +142,7 @@ window.page = (function() {
         console.log("[browse] report a " + tag.title);
     });    
 
-    self.addHelper("handleShowMap", renderMap);
+    self.addHelper("handleShowMap", askForLocation);
 
     self.addHelper("handleCloseFilterView", function() {
         self.view.$data.show_filter = false;
@@ -123,16 +154,22 @@ window.page = (function() {
         .then(loadZones)
         .then(function() {
             // auto-show map if permission granted
-            if (navigator) {
-                navigator.permissions.query({'name': 'geolocation'})
-                    .then( function(permission) {
-                        if (permission.state == "granted") {
-                            renderMap();
-                        }
-                        else {
-                            self.view.$data.prompt_for_map = true;
-                        }
-                    });
+            if (navigator && navigator.geolocation) {
+                if (!navigator.permissions) {
+                    self.view.$data.prompt_for_map = true;
+                }
+                else {
+
+                    navigator.permissions.query({'name': 'geolocation'})
+                        .then( function(permission) {
+                            if (permission.state == "granted") {
+                                askForLocation();
+                            }
+                            else {
+                                self.view.$data.prompt_for_map = true;
+                            }
+                        });
+                }
             }
             else {
                 self.view.$data.prompt_for_map = false;

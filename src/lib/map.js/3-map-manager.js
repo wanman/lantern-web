@@ -1,6 +1,4 @@
-window.LanternMapManager = function() {
-    
-    var did_render = false;
+window.LanternMapManager = function(lat, lon) {
 
     var self = {
         map: L.map('map')
@@ -11,30 +9,6 @@ window.LanternMapManager = function() {
     }).addTo(self.map);
 
     self.map.zoomControl.remove();
-
-    function render(lat, lon) {
-        if (did_render) {
-            return;
-        }
-
-        did_render = true;
-    }
-
-
-    function geo_success(position) {
-        console.log("[map] found position", position);
-        self.setPosition(position.coords.latitude, position.coords.longitude);
-    }
-
-    function geo_error() {
-        console.log("[map] no position available");
-    }
-
-    var geo_options = {
-      enableHighAccuracy: true, 
-      maximumAge        : 30000, 
-      timeout           : 27000
-    };
 
     //------------------------------------------------------------------------
     self.addPoint = function(coords) {
@@ -52,10 +26,10 @@ window.LanternMapManager = function() {
         self.map.setView([lat, lon], 7);
     };
 
+    self.setPosition(lat, lon);
 
 
     //------------------------------------------------------------------------
-    var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
 
     return self;
 };
