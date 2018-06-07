@@ -164,7 +164,7 @@ h1 {
     }
 }
 
-#index-page {
+#index-page, #welcome-page {
     background: #FFF;
     text-align: center;
     border-bottom: 1px solid $light-border;

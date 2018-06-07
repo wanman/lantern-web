@@ -4319,12 +4319,12 @@ h1 {
   #status-footer span:last-child {
     border-right: 0px; }
 
-#index-page {
+#index-page, #welcome-page {
   background: #FFF;
   text-align: center;
   border-bottom: 1px solid #f2f2f2;
   border-top: 1px solid #FFF; }
-  #index-page .page-content {
+  #index-page .page-content, #welcome-page .page-content {
     padding: 2em;
     margin-top: 2em;
     margin-bottom: 2em; }

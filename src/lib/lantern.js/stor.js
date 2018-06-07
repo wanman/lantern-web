@@ -1,6 +1,6 @@
 window.LanternStor = (function($data) {
 
-    var cloud_uri = "http://app.lantern.works/db/lantern";
+    var cloud_uri = "https://lantern.global/db/lantern";
     var lantern_uri = window.location.origin + "/db/lantern";
 
     var self = {

@@ -487,6 +487,20 @@ window.LanternPage = (function(id) {
             "localhost:8080" :  window.location.host);
     };
 
+    
+    /**
+    * Get a query parameter value
+    */
+    self.getURIParameterByName = function(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    };
+    
 
 
     //------------------------------------------------------------------------
@@ -511,7 +525,7 @@ window.LanternPage = (function(id) {
 
 window.LanternStor = (function($data) {
 
-    var cloud_uri = "http://app.lantern.works/db/lantern";
+    var cloud_uri = "https://lantern.global/db/lantern";
     var lantern_uri = window.location.origin + "/db/lantern";
 
     var self = {

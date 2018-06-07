@@ -1,0 +1,18 @@
+---
+id: "welcome"
+---
+
+extends _layouts/_captive.pug
+
+block content
+
+    img.logo(src="/media/logo.png")
+
+    p.intro  You are about to try out a demo of the <a href="https://lantern.works">Lantern Network</a>. Data is for experimentation purposes only and should not be relied upon or considered accurate.
+
+    p.intro To begin, please push the button below: 
+    a.button(id="continue-btn" href="/") Continue
+
+    script.
+        var el = document.getElementById("continue-btn");
+        el.href = window.location.protocol +"//" + window.location.host + "/browse/browse.html";

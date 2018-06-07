@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Lantern Network</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
+    </head>
+    <body id="welcome-page">
+        <div class="page-content"><img class="logo" src="/media/logo.png">
+            <p class="intro"> You are about to try out a demo of the <a href="https://lantern.works">Lantern Network</a>. Data is for experimentation purposes only and should not be relied upon or considered accurate.</p>
+            <p class="intro">To begin, please push the button below: </p><a class="button" id="continue-btn" href="/">Continue</a>
+            <script>
+                var el = document.getElementById("continue-btn");
+                el.href = window.location.protocol +"//" + window.location.host + "/browse/browse.html";
+            </script>
+        </div>
+    </body>
+</html>

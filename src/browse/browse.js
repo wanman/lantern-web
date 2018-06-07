@@ -131,7 +131,7 @@ window.page = (function() {
     });
 
     self.addHelper("handleItemSelect", function(item, marker) {
-        console.log(item, marker);
+        window.location = "/detail/detail.html?mrk=" + marker._id + "&itm=" + item._id;
     });
 
     self.addHelper("handleMarkerCategory", function(cat) {
