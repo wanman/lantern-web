@@ -1,47 +1,6 @@
 #network-page {
 
-    .panel {
-        margin: 2em;
-        margin-top: 5em;
-    }
-
-    form {
-        max-width: 550px;
-        margin: auto;
-    }
-    label {
-        text-align: left;
-    }
-
-    input[type="checkbox"], input[type="radio"] {
-        margin-right: 0.5em;
-        height: 22px;
-        width: 22px;
-    }
-
-    .select {
-        margin: 0.4em 0em;
-    }
-    .radio {
-        padding: 1.3em;
-    }
-    .radio + .radio {
-        margin-left: 0em;
-    }
-
-    #wifi-creds {
-        display: block;
-        p {
-            text-align: left;
-            padding: 1em;
-            font-size: 0.9em;
-        }
-        input {
-            margin: 0.25em;
-        }
-    }
-
-    .button {
-        width: 10em;
-    }
+   #device-view {
+        padding: 2em;
+   }
 }

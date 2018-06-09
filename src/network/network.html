@@ -5,51 +5,11 @@ id: "network"
 extends ../_layouts/_master.pug
 
 block content
-
-    // this landing page ensures the lantern is setup for required use cases
-    // after leaving this page, the user should have an operational database
-    // wifi credentials may be added if the user has working internet access
-
-    div(v-cloak)
-        
-        <!-- prompt for wifi credentials -->
-        form.panel(@submit.prevent="handleSubmit")
-
-            p.panel-heading(v-if="!warning") Device Settings
-            .panel-heading.has-text-weight-normal.is-size-6.has-background-warning(v-if="warning") {{ warning }}
-         
-
-            label.radio.panel-block
-                input(type="radio" value="1" name="connection" v-model="connection") 
-                | I have a working wireless internet connection
-            
-            // prompt for valid wi-fi credentials if available
-            #wifi-creds.panel-block(v-if="connection == 1")
-
-                p By securely sharing your wireless network, you will help neighbors get access to up-to-date information from outside your region:
-                input.input(type="text" placeholder="WiFi SSID" v-model="network_ssid")
-
-                input.input(type="password" placeholder="WiFi Password" v-model="network_pass")
-        
-            label.radio.panel-block
-                input(type="radio" value="0" name="connection" v-model="connection") 
-                | My internet is unreliable
-
-            label.radio.panel-block
-                input(type="radio" value="-1" name="connection" v-model="connection") 
-                | I am offline
-
-            .panel-block
-                .select.is-rounded
-                    select(v-model="region")
-                        option(disabled value="") Choose region...
-                        option(value="use") US - South East
-                        option(value="usw") US - South West
-                        option(value="une") US - North East
-                        option(value="unw") US - North West
-            .panel-block
-                a.button.is-primary(@click="handleSubmit" :class="processing ? 'is-loading' : ''") Save
-                    
+    #device-view(v-cloak)
+        h1 Devices
+        p(v-if="d_docs.length == 0") Sorry, there are no known devices on the network right now. Please check back soon.
+        ul(v-for="device in d_docs" v-if="d_docs.length")
+            li {{ device._id }}
                 
 
 block styles
