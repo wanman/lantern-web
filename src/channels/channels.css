@@ -7,15 +7,15 @@ html, body {
 #channels-view {
 
     h1 {
-        margin-top: 5em;
+        padding: 0em 1em;
     }
     
     h2 {
-        margin-bottom: 3em;
+        padding: 0em 1em;
+        margin-bottom: 1em;
     }
 
     ul {
-        margin: 1em;
 
         li {
             float: left;
@@ -23,7 +23,7 @@ html, body {
             background: #FFF;
             width: 33.33%;
             text-align: center;
-            padding: 2em;
+            padding: 1em 0em;
             border-right: 1px solid $light-border;
             border-bottom: 1px solid $light-border;
         }

@@ -8,26 +8,27 @@ block content
     #channels-view
 
         h1(v-if="personalizing" v-cloak) Personalizing Map
-        h1(v-if="!personalizing" v-cloak) What are you searching for?
+        h1(v-if="!personalizing" v-cloak) What do you need most?
+
         div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
-            h2(v-cloak v-if="!lantern_connected") 
+            h2(v-cloak v-if="!lantern_connected && !cloud_connected") 
                 | Connect to a Lantern to send data
-            h2(v-cloak v-if="lantern_connected && u_docs.length >= 2") 
+            h2(v-cloak v-if="(lantern_connected || cloud_connected) && u_docs.length >= 2") 
                 | {{ pluralize(u_docs.length - 1) }} Listening
-            h2(v-cloak v-if="lantern_connected && u_docs.length <= 1") 
+            h2(v-cloak v-if="(lantern_connected || cloud_connected) && u_docs.length <= 1") 
                 | Waiting for Users To Join Network
 
         ul.item-list(v-cloak)
             li.item(
-                v-for="tag in item_tags" 
-                v-bind:id="tag._id" 
-                v-bind:class="makeCategoryClass(tag)"
+                v-for="cat in item_categories" 
+                v-bind:id="cat._id" 
+                v-bind:class="makeCategoryClass(cat)"
                @click="toggleCategory" 
                 )
                     .icon(
-                    v-bind:style="makeCategoryStyle(tag)"
-                    ) {{ tag.title[0].toUpperCase() }}
-                    .title {{ tag.title }}
+                    v-bind:style="makeCategoryStyle(cat)"
+                    ) {{ cat.title[0].toUpperCase() }}
+                    .title {{ cat.title }}
                 
 block styles
     link(rel="stylesheet" type="text/css" href="/channels/channels.css")

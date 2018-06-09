@@ -1,11 +1,9 @@
 #browse-page {
 
-    margin-top: 3.25rem;
-    
-    h1 {
-        margin-top: 2em;
+    .page-content {
+        margin-top: 0px; // allow map to come to top
     }
-
+    
     h2 {
 
         margin-bottom: 2em;
@@ -16,34 +14,37 @@
         color: #79828b;
     }
 
-    h4 {
-        margin-top: 3em;
-        font-weight: bold;
+    .panel {
+        margin-top: 3em
     }
 
     h5 {
         font-weight: normal;
     }
 
-    .box:hover {
+    .panel-block:hover {
+        background: #FAFAFA;
         cursor: pointer;
     }
 
+    .category {
+        border-radius: 2em;
+        width: 2em;
+        height: 2em;
+        margin-right: 1em;
+        text-transform: uppercase;
+        font-weight: bold;
+        text-align: center;
+        padding: 0.3em;
+    }
+
     #markers-view {
-        padding: 2em;
+        padding: 0em 1.5em 1.5em;
         h3 {
             text-align: left;
             font-weight: bold;
         }
     }
 
-    #report-view {
-        overflow-y: scroll;
-    }
-
-    .action-panel {
-        margin: 2em;
-        text-align: center;
-    }
 
 }

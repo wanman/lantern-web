@@ -6,18 +6,6 @@ extends ../_layouts/_master.pug
 
 block content
 
-    // report view
-    nav#report-view(v-if="show_report" v-cloak)
-        h1 Help Us Map Your Region
-        h2 What to report?
-        ul
-            li(v-for="category in marker_categories")
-                a(@click="handleMarkerCategory(category)") {{ category.title }}
-        
-        .action-panel
-            .button(@click="handleToggleReportView") Cancel
-
-
 
 
     // map is empty by default - only certain pages will fill this region
@@ -26,20 +14,17 @@ block content
     // markers view
     #markers-view(v-if="show_markers")
 
-        #button-bar(v-cloak)
-            #report-button.button(@click="handleToggleReportView") +
-            #map-button.button(v-if="!show_map && prompt_for_map" @click="handleShowMap") Show Map
-
 
         #markers(v-cloak)
             p(v-if="loaded && !m_docs.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
 
-            ul(v-if="loaded && m_docs.length")
-                li(v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title")
-                    h4 {{ marker.title }}
-                    h5 2km
-                    .box(v-for="item in i_docs" v-if="item.parent == marker._id" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id")
-                        p Last Updated: {{ moment(moment(marker.updated_at)).short(true) }}
+            div(v-if="loaded && m_docs.length")
+                .panel(v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title")
+                    .panel-heading(@click="handleMarkerSelect(marker)")
+                        h4 {{ marker.title }}
+                    .panel-block(v-for="item in i_docs" v-if="item.parent == marker._id" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id")
+                        .category(v-bind:style="makeCategoryStyle(item.category)") {{ getCategoryName(item)[0] }}
+                        p {{ getCategoryName(item) }}
 
 
 
