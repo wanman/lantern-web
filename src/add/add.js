@@ -139,11 +139,24 @@ window.page = (function() {
         window.location = "/browse/browse.html";
     });
     
+
+    self.addHelper("handleCancelReport", function() {
+        window.history.go(-1);
+    });
+
+    self.addHelper("handleMarkerCategory", function(cat) {
+        console.log("[browse] report a " + cat.title);
+        window.location = "/add/add.html?ct="+cat._id;
+    });    
+
+    
     //------------------------------------------------------------------------
  
     self.addData("category", null);
     self.addData("subcategories", []);
+    self.addData("marker_categories", []);
     self.addData("show_subcategory_selector", false);
+    self.addData("show_report", false);
     self.addData("show_input_selector", false);
     self.addData("show_map_selector", false);
     self.addData("show_success", false);
@@ -154,43 +167,51 @@ window.page = (function() {
     
     var param = self.getURIParameterByName("ct");
 
-    if(!param) {
-        // missing category
-        // @todo let user know and offer next step recovery
-        window.location = "/";
-        return;
-    }
-
     self.render()
         .then(self.connect)
         .then(function() {
-            
-            new_doc = new LanternDocument( "m:" + Math.round(Math.random()*100000), self.stor);
-            new_doc.push("category", param);
+                
+            if (!param) {
 
+                //async load in categories we can use for reporting
+                self.stor.getManyByType("c")
+                    .then(function(categories) {
+                        categories.forEach(function(cat) {
+                            if (cat.has("tag", "mrk")) {
+                                self.view.$data.marker_categories.push(cat.toJSONFriendly());
+                                self.view.$data.show_report = true;
+                            }
+                        });
+                    });
+            }
+            else {
 
-            self.stor.get(param).then(function(result) {
-                console.log(result);
-                self.view.$data.category  = result.toJSONFriendly();
-                self.stor.getManyByType("c").then(function(results) {
+                new_doc = new LanternDocument( "m:" + Math.round(Math.random()*100000), self.stor);
+                new_doc.push("category", param);
 
-                    results.forEach(function(cat) {
-                        // find subcategories
-                        if (cat.has("tag", param.split(":")[1])) {
-                            self.view.$data.subcategories.push(cat.toJSONFriendly());
-                        }
-                    });  
+                self.stor.get(param).then(function(result) {
+                    console.log(result);
+                    self.view.$data.category  = result.toJSONFriendly();
+                    self.stor.getManyByType("c").then(function(results) {
 
-                     if (self.view.$data.subcategories == 0 ) {
-                        console.log("[add] no available subcategories for category:", param);
-                        console.log("[add] skipping ahead to input selector...");
-                        self.view.$data.show_input_selector = true;
-                    }   
-                    else {
-                        self.view.$data.show_subcategory_selector = true;
-                    }        
+                        results.forEach(function(cat) {
+                            // find subcategories
+                            if (cat.has("tag", param.split(":")[1])) {
+                                self.view.$data.subcategories.push(cat.toJSONFriendly());
+                            }
+                        });  
+
+                         if (self.view.$data.subcategories == 0 ) {
+                            console.log("[add] no available subcategories for category:", param);
+                            console.log("[add] skipping ahead to input selector...");
+                            self.view.$data.show_input_selector = true;
+                        }   
+                        else {
+                            self.view.$data.show_subcategory_selector = true;
+                        }        
+                    });
                 });
-            });
+            }
         });
 
     return self;

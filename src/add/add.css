@@ -1,10 +1,9 @@
 #add-page {
     
-    margin-top: 3.25rem;
-    
-    h2 {
 
-        margin-bottom: 2em;
+
+    h2 {
+        margin-bottom: 1em;
     }
 
     .box:first-child {
@@ -15,7 +14,7 @@
     }
 
     .card {
-        margin: 3em auto;
+        margin: 0em auto 1em;
         max-width: 22em;
         border-radius: 1em;
         overflow: hidden;
@@ -32,8 +31,23 @@
         max-width: 14em;
     }
 
+    #report-view {
+        h1 {
+            margin-top: 1em;
+        }
+
+        overflow-y: scroll;
+
+        .action-panel {
+            margin: 2em;
+            text-align: center;
+        }
+
+    }
+
+
     #subcategory-view, #input-selector-view, #map-selector-view {
-        padding: 2em;
+        padding: 0em 1em;
         text-align:  center;
         .button {
             width: 20em;

@@ -6,6 +6,21 @@ extends ../_layouts/_master.pug
 
 block content
     div(v-cloak)
+
+
+        // report view
+        nav#report-view(v-if="show_report")
+            h1 Help Us Map Your Region
+            h2 What to report?
+            ul
+                li(v-for="category in marker_categories")
+                    a(@click="handleMarkerCategory(category)") {{ category.title }}
+            
+            .action-panel
+                .button(@click="handleCancelReport") Cancel
+
+
+
         #subcategory-view(v-if="show_subcategory_selector")
             h1 {{ category.title }}
             h2 Pick Best Description
