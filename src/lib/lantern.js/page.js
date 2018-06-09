@@ -17,7 +17,7 @@ window.LanternPage = (function(id) {
 
     // initialize arrays for each type of doc
     // only these document types will ever be accepted by the system
-    (["m", "i", "c", "r", "n", "u"]).forEach(function(type) {
+    (["m", "i", "c", "r", "n", "u", "d"]).forEach(function(type) {
         opts.data[type+"_docs"] = [];
     });
 
@@ -69,19 +69,22 @@ window.LanternPage = (function(id) {
     }
 
 
-    function sync() {
+    function sync(continuous) {
 
         // make sure we tell the system we're awake
         self.user.set("updated_at",new Date());
         self.user.save();
 
 
-        self.stor.syncWithCloud(function(status) {
+        self.stor.syncWithCloud(continuous, function(status) {
             self.view.$data.cloud_connected = status;
         });
-        self.stor.syncWithLantern(function(status) {
-            self.view.$data.lantern_connected = status;
-        });
+
+        if (window.location.host != "lantern.global") {
+            self.stor.syncWithLantern(continuous, function(status) {
+                self.view.$data.lantern_connected = status;
+            });
+        }
     }
 
 
@@ -123,7 +126,8 @@ window.LanternPage = (function(id) {
                 self.user = user;
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
-                //sync();
+                // device wifi or local testing
+                sync(true);
             })
             .then(function() {
                 // draw listening user count
@@ -136,9 +140,9 @@ window.LanternPage = (function(id) {
     /**
     * Points to the right server for processing requests
     */
-    self.makeURI = function(uri) {
+    self.getBaseURI = function(uri) {
         return "http://" + (window.location.host == "localhost:3000" ? 
-            "localhost:8080" :  window.location.host);
+            "localhost" :  window.location.host);
     };
 
     
@@ -153,7 +157,7 @@ window.LanternPage = (function(id) {
         if (!results) return null;
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, " "));
-    };
+    };    
     
 
 

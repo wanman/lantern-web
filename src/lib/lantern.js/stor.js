@@ -6,7 +6,7 @@ window.LanternStor = (function($data) {
     var self = {
         cache: {},        
         browser_db: new PouchDB("lantern"),
-        lantern_db: new PouchDB(lantern_uri.replace(":3000", ":8080"), {
+        lantern_db: new PouchDB(lantern_uri.replace(":3000", ""), {
             skip_setup: true,
             withCredentials: false        
         }),
@@ -276,13 +276,13 @@ window.LanternStor = (function($data) {
     /**
     * Sync our in-browser database with the one on a physical device over wifi
     */
-    self.syncWithLantern = function(status_fn) {
+    self.syncWithLantern = function(continuous, status_fn) {
         console.log("[stor] trying sync with lantern");
         if (self.db.adapter == "http") {
             console.log("[stor] skipping sync since target is lantern already");
             return;
         }
-        LanternSync(self.browser_db, self.lantern_db, "lantern", true, status_fn, function(changed_doc) {
+        LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
         });
         return;
@@ -291,9 +291,9 @@ window.LanternStor = (function($data) {
     /**
     * Sync our in-browser database with the one in the cloud
     */
-    self.syncWithCloud = function(status_fn) {
+    self.syncWithCloud = function(continuous, status_fn) {
         console.log("[stor] trying sync with cloud");
-        LanternSync(self.browser_db, self.cloud_db, "cloud", true, status_fn, function(changed_doc) {
+        LanternSync(self.browser_db, self.cloud_db, "cloud", continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
 
         });
