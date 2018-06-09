@@ -17,11 +17,10 @@ html(lang="en")
         div(id=id+"-page")
             
             // global navigation
-            nav.navbar.is-fixed-top(v-cloak role="navigation" aria-label="main navigation")
+            nav.navbar.is-fixed-top(v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']" )
                 .navbar-brand
                     .navbar-item
-                        span Lantern Network
-                    a.navbar-burger(role="button" aria-label="menu" aria-expanded="false"  @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']" )
+                    a.navbar-burger(role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]"  @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']" )
                         span(aria-hidden="true")
                         span(aria-hidden="true")
                         span(aria-hidden="true")
@@ -38,9 +37,11 @@ html(lang="en")
                 nav.global(v-if="showNavMenu" v-cloak)
                     ul
                         li
-                            a(href="/browse/browse.html") Map
+                            a(href="/browse/browse.html") Home
                         li
-                            a(href="/channels/channels.html") Search
+                            a(href="/channels/channels.html") Requests
+                        li
+                            a(href="/add/add.html") Contribute
                         li
                             a(href="/network/network.html") Network
                         li

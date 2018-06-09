@@ -6,12 +6,35 @@ html, body {
     #doc-summary {
         padding: 2em;
     }
+
+
+    form {
+        input, button {
+            width: 100%;
+            margin: 0.5em 0em;
+        }
+    }
+
+
     .tag {
         width: 9em;
     }
     .actions {
-        border-bottom: 1px solid #EEE;
+        border-top: 1px solid #EEE;
         padding: 1em;
         margin-bottom: 1em;
+
+        .button {
+            float: left;
+            margin-right: 1em;
+        }
+        .button:last-child {
+            margin-right: 0px;
+        }
+    }
+
+    .connection {
+        border-bottom: 1px solid #EEE;
+        padding: 1em;
     }
 }
