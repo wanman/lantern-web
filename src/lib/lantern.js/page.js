@@ -196,6 +196,7 @@ window.LanternPage = (function(id) {
     * Extract background and stroke colors from database
     */
     self.addHelper("makeCategoryStyle", function(cat) {
+        if (!cat) return;
         var doc = new LanternDocument(cat, self.stor);
         var style = ["color: #" + doc.get("style","color")];
         style.push("background-color: #" + doc.get("style", "background-color"));
@@ -207,6 +208,7 @@ window.LanternPage = (function(id) {
     * Extract icon from database
     */
     self.addHelper("makeCategoryIconClass", function(category) {
+        if (!category) return;
         return "fas fa-" + (category.icon || "circle") + " fa-lg";
     });
 

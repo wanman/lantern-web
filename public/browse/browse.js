@@ -30,7 +30,7 @@ window.page = (function() {
                 self.stor.getManyByType("c").then(function() {
                     // cache items for future association with markers
                     self.stor.getManyByType("i").then(function(items) {
-                        self.view.$data.loaded = true;
+                        self.view.$data.page_loading = false;
                     });
                 });
 
@@ -99,7 +99,6 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
 
-    self.addData("loaded", false);
     self.addData("show_map", null);
     self.addData("geolocation", null);
 
@@ -128,7 +127,10 @@ window.page = (function() {
 
     self.addHelper("getCategoryName", function(item) {
         var id = "c:" + item.category[0];
-        return self.stor.getCached(id).title;
+        var category = self.stor.getCached(id);
+        if (category) {
+            return category.title;
+        }
     });
 
 

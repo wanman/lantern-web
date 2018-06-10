@@ -256,14 +256,14 @@ window.LanternImport = function(stor) {
 
       
         for (var i=0;  i<3; i++) {
-            var item_cat = categories[Math.round(Math.random()*categories.length)];
-            console.log("CATEGORY", item_cat);
+            var item_cat = categories[Math.round(Math.random()*categories.length-1)];
             var item_id = "i:" + item_cat + "-1-" + id;
             var doc = new LanternDocument(item_id, stor);
             doc.set("status", 1);
             doc.push("parent", venue_doc.id);
             doc.push("category", item_cat);
             doc.set("$ia", new Date());
+            console.log(doc);
             doc.save();
         }
 
@@ -283,7 +283,7 @@ window.LanternImport = function(stor) {
 
 
         console.log("[import] adding default Marker categories");
-        addCategory("shr", "Shelter", "mrk");
+        addCategory("str", "Shelter", "mrk");
         addCategory("sfe", "Safe Area", "mrk");
         addCategory("sup", "Supply Location", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
@@ -308,8 +308,9 @@ window.LanternImport = function(stor) {
     self.marker = function() {
         console.log("[import] adding default venues");
         addMarker("css", "Central City Shelter", "drs4b7s", "str");
-        addMarker("aic", "AI's Cafe", "drs4b77", "sup");
+        addMarker("aic", "AI's Cafe", "drs4b77", "sfe");
         addMarker("rcm", "Red Cross HQ", "drs4b75", "str");
+        addMarker("hsf", "High School Field House", "drs4b74", "str");
     };
 
     self.item = function() {
@@ -546,6 +547,7 @@ window.LanternPage = (function(id) {
     * Extract background and stroke colors from database
     */
     self.addHelper("makeCategoryStyle", function(cat) {
+        if (!cat) return;
         var doc = new LanternDocument(cat, self.stor);
         var style = ["color: #" + doc.get("style","color")];
         style.push("background-color: #" + doc.get("style", "background-color"));
@@ -557,6 +559,7 @@ window.LanternPage = (function(id) {
     * Extract icon from database
     */
     self.addHelper("makeCategoryIconClass", function(category) {
+        if (!category) return;
         return "fas fa-" + (category.icon || "circle") + " fa-lg";
     });
 
