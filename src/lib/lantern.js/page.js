@@ -83,7 +83,6 @@ window.LanternPage = (function(id) {
         self.user.set("updated_at",new Date());
         self.user.save();
 
-
         self.stor.syncWithCloud(continuous, function(status) {
             self.view.$data.cloud_connected = status;
         });
@@ -126,7 +125,7 @@ window.LanternPage = (function(id) {
     */
     self.connect = function() {
         
-        self.stor = new LanternStor(opts.data);
+        self.stor = new LanternStor(opts.data, self.getBaseURI());
         return self.stor.setup()
             .then(getOrCreateUser)
             .then(function(user) {
@@ -148,9 +147,9 @@ window.LanternPage = (function(id) {
     /**
     * Points to the right server for processing requests
     */
-    self.getBaseURI = function(uri) {
+    self.getBaseURI = function() {
         return "http://" + (window.location.host == "localhost:3000" ? 
-            "localhost" :  window.location.host);
+            "localhost:8080" :  window.location.host);
     };
 
     
@@ -167,7 +166,9 @@ window.LanternPage = (function(id) {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     };    
 
-
+    /**
+    * Extract a category object from meaningful input such as a tag
+    */
     self.addHelper("getCategory", function(arg) {
         if (!arg) {
             return;
@@ -188,7 +189,6 @@ window.LanternPage = (function(id) {
         else {
             console.log("cannot make category style for", arg);
         }
-        console.log("FOUND OBJ", obj)
         return obj;
     });
 
@@ -207,7 +207,6 @@ window.LanternPage = (function(id) {
     * Extract icon from database
     */
     self.addHelper("makeCategoryIconClass", function(category) {
-        console.log(category);
         return "fas fa-" + (category.icon || "circle") + " fa-lg";
     });
 

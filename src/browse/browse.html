@@ -7,9 +7,16 @@ extends ../_layouts/_master.pug
 block content
 
 
-
+    #map-spacer(v-if="show_map === true")
+    
     // map is empty by default - only certain pages will fill this region
-    #map(v-cloak v-if="show_map")
+    #map(v-cloak v-if="show_map === true")
+
+    #map-prompt(v-cloak v-if="prompt_for_map && show_map === false")
+        a(@click="handleShowMap")
+            span.icon
+                i.fas.fa-map
+            span Show Map
 
     // markers view
     #markers-view(v-if="show_markers")

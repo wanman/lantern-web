@@ -15,6 +15,21 @@ window.page = (function() {
 
 
 
+    //------------------------------------------------------------------------
+    self.addHelper("makeItemStyle", function(item) {
+        var category = self.stor.getCached("c:"+item.category[0]);
+        var style = "border-color: #" +  category.style["color"];
+        if (item._id == self.view.$data.item._id) {
+            style += "; border-width: 2px;";
+        }
+        return style;
+    });
+
+    self.addHelper("handleSelectItem", function(item) {
+        self.view.$data.item = item;
+    });
+
+
 
     //------------------------------------------------------------------------
     self.render()
@@ -49,10 +64,14 @@ window.page = (function() {
             if (item_id) {
                 self.stor.get(item_id).then(function(doc) {
                     self.view.$data.item = doc.toJSONFriendly();
+                    self.view.$data.page_loading = false;
                 })
                 .catch(function(err) {
                     console.log("[detail] could not get: " + item_id, err);
                 });
+            }
+            else {
+                self.view.$data.page_loading = false;
             }
         });
 

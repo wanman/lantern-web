@@ -11,7 +11,7 @@ $box-radius: 4px;
 $box-shadow: 0 2px 8px rgba($black, 0.05), 0 0 0 1px rgba($black, 0.05);
 $card-shadow: 0 2px 10px rgba($black, 0.02), 0 0 0 1px rgba($black, 0.02);
 $panel-shadow: 0 2px 10px rgba($black, 0.02), 0 0 0 1px rgba($black, 0.02);
-$panel-item-border: #f2f2f2;
+$panel-item-border: 1px solid rgba($black, 0.05);
 @import "bulma/sass/base/_all";
 @import "bulma/sass/elements/box";
 @import "bulma/sass/elements/tag";
@@ -40,6 +40,9 @@ body {
     background: $background;
 }
 
+.page-content {
+    margin-bottom: 3.25rem;
+}
 .fas {
     margin-right: 0.75em;
 }
@@ -50,9 +53,6 @@ body {
 .button.fas {
     margin-left: 0.75em;
 }
-nav .icon {
-
-}
 nav .fas {
     color: #3273dc;
 }
@@ -61,21 +61,34 @@ a:active .icon i {
     color: $text;
 }
 
+.navbar {
+
+    background: rgba(255,255,255,0.9);
+
+    .icon {
+        margin-right: 1em;
+    }
+}
+
 section nav {
+
     position: fixed;
     top: 0px;
     left: 0px;
     width: 100%;
     height: 100%;
-    background: rgba(255,255,255,0.95);
     z-index: 1002;
-
+    
+    background: #FFF;
     li a {
-        padding: 2em;
+        padding: 1.5em;
+        padding-right: 1em;
         border-top: 1px solid $light;
         width: 100%;
         display: block;
-
+    }
+    .icon {
+        margin-right: 2em;
     }
 }
 
@@ -83,7 +96,6 @@ section nav {
     margin-top: 3.25rem;
     overflow-y: scroll;
     padding-bottom: 1em;
-    margin-bottom: 3.25rem;
 }
 
 
@@ -128,6 +140,8 @@ section nav.global {
     .panel-block {
         padding: 1em;
     }
+
+    border-radius: 4px;
     box-shadow: $panel-shadow;
 }
 
@@ -166,7 +180,9 @@ h1 {
     padding: #{$body-line-height/2}em;
 }
 
-
+nav.global {
+    background: #FFF;
+}
 .mock {
     text-align: center;
     height: 100%;
@@ -182,11 +198,8 @@ h1 {
     border-top: 1px solid $light-border;
     border-bottom: 0px;
     span {
+        font-size: small;
         padding: 0em 1em;
-        border-right: 1px solid $light-border;
-    }
-    span:last-child {
-        border-right: 0px;
     }
 
     .icon i {

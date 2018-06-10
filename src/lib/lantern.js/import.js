@@ -70,13 +70,14 @@ window.LanternImport = function(stor) {
         addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6", "gas-pump");
         addCategory("net", "Internet", "itm", "73cc72", "e8f7e8", "globe");
         addCategory("med", "Medical", "itm", "ff844d", "ffebe2", "prescription-bottle-alt");
-        addCategory("dnt", "Donations", "itm", "50c1b6", "e3f5f3", "tshirt");
+        addCategory("dnt", "Donation", "itm", "50c1b6", "e3f5f3", "tshirt");
         addCategory("pwr", "Power", "itm", "f45d90", "f2dae2", "plug");
         addCategory("eqp", "Equipment", "itm", "ffcc54", "fff7ef", "toolbox");
 
 
         console.log("[import] adding default Marker categories");
-        addCategory("sfe", "Safe Zone / Shelter", "mrk");
+        addCategory("shr", "Shelter", "mrk");
+        addCategory("sfe", "Safe Area", "mrk");
         addCategory("sup", "Supply Location", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("rdc", "Road Conditions", "mrk");

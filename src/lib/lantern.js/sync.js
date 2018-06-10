@@ -2,12 +2,11 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     var reset_delay;
 
     function setStatus(status) {
-        self[label + "_connected"] = status;
         if (status == true) {
             reset_delay = true;
         }
         if (status_fn && typeof(status_fn) == "function") {
-            status_fn(self[label + "_connected"]);
+            status_fn(status);
         }
     }
 

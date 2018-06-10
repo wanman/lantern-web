@@ -5,13 +5,14 @@ id: "detail"
 extends ../_layouts/_master.pug
 
 block content
-    div(v-cloak)
-        .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id")
+    div(v-cloak v-if="!page_loading")
+        .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)")
 
             span.icon.is-large(v-bind:style="makeCategoryStyle(getCategory(item.category))") 
                 i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
 
             p {{ getCategory(item.category).title }}
+            p Available
             p {{ moment(moment(marker.updated_at)).short(true) }} ago
 
 block styles

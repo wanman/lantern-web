@@ -1,13 +1,18 @@
 
+
+$background: #f9fafb;
+
 html, body {
-    background: #FFF;
+    background: #f9fafb;
 }
 
 #add-page {
     
-
+    h1 {
+        margin-top: 0.5em;
+    }
     h2 {
-        margin-bottom: 1em;
+        margin-bottom: 2em;
     }
 
     .box:first-child {
@@ -31,44 +36,61 @@ html, body {
 
     }
 
+    .page-content {
+        ul a .icon {
+            float: right;
+            margin-top: -0.75em;   
+            margin-right: 0px;     
+        }
+    }
+
     .button {
         max-width: 14em;
     }
 
+
+    .action-panel {
+        text-align: center;
+        margin-top: 2em;   
+    }
+    
     #report-view {
+
         h1 {
             margin-top: 1em;
         }
 
         overflow-y: scroll;
 
-        .action-panel {
-            margin: 2em;
-            text-align: center;
-        }
 
     }
 
 
     #subcategory-view, #input-selector-view, #map-selector-view {
-        padding: 0em 1em;
-        text-align:  center;
         .button {
             width: 20em;
         }
     }
 
+    #input-selector-view {
+        padding: 1em;
+    }
+
     #map-selector-view {
+        padding: 0em 2em;
         input {
             margin: 2em auto;
             max-width: 19em;
         }
+
     }
     #success-view {
+        background: $background;
         padding: 3em;
         text-align: center;
         .button {
-            margin-top: 3em;
+            margin-top: 3em;    
+            .icon {margin-left: 0.75em;}
         }
     }
 }
