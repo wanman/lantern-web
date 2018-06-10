@@ -7,14 +7,23 @@ window.LanternImport = function(stor) {
     * Save an interest to the database for future use in the interface.
     * Allows for dynamically adding new interests over over time.
     */
-    function addCategory(slug, title, tag, color, background_color) {
+    function addCategory(slug, title, tag, color, background_color, icon) {
         var doc = new LanternDocument("c:"+slug, stor);
         doc.set("title", title);
         doc.push("tag", tag);
-        doc.set("style", {
-            "color": color, 
-            "background-color": background_color}
-        );
+
+        if (background_color && color) {
+
+            doc.set("style", {
+                "color": color, 
+                "background-color": background_color}
+            );
+        }
+
+        if (icon) {
+            doc.set("icon", icon);
+        }
+
         doc.set("$ia", new Date());
         doc.save();
     }
@@ -57,21 +66,21 @@ window.LanternImport = function(stor) {
     //------------------------------------------------------------------------
     self.category = function() {
         console.log("[import] adding default item categories");
-        addCategory("shr", "Shelter", "itm", "ffcc54", "fff7ef");
-        addCategory("wtr", "Water", "itm", "78aef9", "e9f2fe");
-        addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6");
-        addCategory("net", "Internet", "itm", "73cc72", "e8f7e8");
-        addCategory("med", "Medical", "itm", "ff844d", "ffebe2");
-        addCategory("dnt", "Donations", "itm", "50c1b6", "e3f5f3");
-        addCategory("pwr", "Power", "itm", "f45d90", "f2dae2");
-        addCategory("eqp", "Equipment", "itm", "4aaddb", "e8f4fa");
+        addCategory("wtr", "Water", "itm", "78aef9", "e9f2fe", "tint");
+        addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6", "gas-pump");
+        addCategory("net", "Internet", "itm", "73cc72", "e8f7e8", "globe");
+        addCategory("med", "Medical", "itm", "ff844d", "ffebe2", "prescription-bottle-alt");
+        addCategory("dnt", "Donations", "itm", "50c1b6", "e3f5f3", "tshirt");
+        addCategory("pwr", "Power", "itm", "f45d90", "f2dae2", "plug");
+        addCategory("eqp", "Equipment", "itm", "ffcc54", "fff7ef", "toolbox");
 
 
         console.log("[import] adding default Marker categories");
+        addCategory("sfe", "Safe Zone / Shelter", "mrk");
+        addCategory("sup", "Supply Location", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("rdc", "Road Conditions", "mrk");
-        addCategory("str", "Safe Shelter", "mrk");
-        addCategory("sup", "Supply Location", "mrk");
+        addCategory("pwo", "Power Outage", "mrk");
 
 
         console.log("[import] adding sub-categories for Markers");

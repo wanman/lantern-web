@@ -3,9 +3,17 @@ window.LanternPage = (function(id) {
     var opts = {
         data: {
             cloud_connected: null,
-            lantern_connected: null
+            lantern_connected: null,
+            page_title: "",
+            page_loading: true,
+            allow_back_button: false
         },
-        methods: {}
+        methods: {
+            handleGoBack: function() {
+                window.history.go(-1);
+            }
+
+        }
     };
 
     var self = {
@@ -160,39 +168,48 @@ window.LanternPage = (function(id) {
     };    
 
 
+    self.addHelper("getCategory", function(arg) {
+        if (!arg) {
+            return;
+        }
+        var obj;
+        if (typeof(arg) == "string") {
+            obj = self.stor.getCached(arg);
+        }
+        else if (arg.hasOwnProperty("category")) {
+            obj = self.stor.getCached(obj.category[0]);
+        }
+        else if (typeof(arg[0]) == "string") {
+            obj = self.stor.getCached("c:"+arg[0]);
+        }
+        else if (arg.hasOwnProperty("style")) {
+            obj = arg;
+        }
+        else {
+            console.log("cannot make category style for", arg);
+        }
+        console.log("FOUND OBJ", obj)
+        return obj;
+    });
+
     /**
     * Extract background and stroke colors from database
     */
     self.addHelper("makeCategoryStyle", function(cat) {
-        var obj;
-
-
-
-        if (!cat) {
-            return;
-        }
-
-        if (typeof(cat) == "string") {
-            obj = self.stor.getCached(cat);
-        }
-        else if (cat.hasOwnProperty("parent")) {
-            obj = self.stor.getCached(obj.category[0]);
-        }
-        else if (typeof(cat[0]) == "string") {
-            obj = self.stor.getCached("c:"+cat[0]);
-        }
-        else {
-            console.log("cannot make category style for", cat);
-        }
-
-
-        var doc = new LanternDocument(obj, self.stor);
+        var doc = new LanternDocument(cat, self.stor);
         var style = ["color: #" + doc.get("style","color")];
         style.push("background-color: #" + doc.get("style", "background-color"));
         style.push("border-color: #" + doc.get("style", "color"));
         return style.join("; ");
     });
     
+    /**
+    * Extract icon from database
+    */
+    self.addHelper("makeCategoryIconClass", function(category) {
+        console.log(category);
+        return "fas fa-" + (category.icon || "circle") + " fa-lg";
+    });
 
 
     //------------------------------------------------------------------------

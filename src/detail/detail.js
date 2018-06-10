@@ -13,12 +13,6 @@ window.page = (function() {
     self.addData("marker", {});
     self.addData("item", {});
 
-    
-    
-    //------------------------------------------------------------------------
-    self.addHelper("getCategoryName", function(item) {
-        return self.stor.getCached("c:" + item.category[0]).title;
-    });
 
 
 
@@ -26,6 +20,7 @@ window.page = (function() {
     self.render()
         .then(self.connect)
         .then(function() {
+            self.view.$data.allow_back_button = true;
             return self.stor.getManyByType("c");
         })
         .then(function() {
@@ -45,11 +40,18 @@ window.page = (function() {
                     }
                 }
                 self.view.$data.marker = doc.toJSONFriendly();
+                self.view.$data.page_title = doc.get("title");
+            })
+            .catch(function(err) {
+                console.log("[detail] could not get: " + marker_id, err);
             });
 
             if (item_id) {
                 self.stor.get(item_id).then(function(doc) {
                     self.view.$data.item = doc.toJSONFriendly();
+                })
+                .catch(function(err) {
+                    console.log("[detail] could not get: " + item_id, err);
                 });
             }
         });

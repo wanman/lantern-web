@@ -1,20 +1,17 @@
 #detail-page {
     .box {
-        margin: 1em;    
+        margin: 1em;
+        .icon {
+            border-radius: 4em;
+            font-weight: bold;
+            width: 4em;
+            height: 4em;
+            text-align: center;
+            i {
+                margin: auto;
+            }
+            margin-right: 1em;
+            float: left
+        }
     }
-
-    .category {
-        border-radius: 2em;
-        width: 3em;
-        height: 3em;
-        margin-right: 1em;
-        text-transform: uppercase;
-        font-weight: bold;
-        text-align: center;
-        font-size: 1.2em;
-        padding: 0.8em;
-        float: left;
-
-    }
-
 }

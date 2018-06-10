@@ -5,11 +5,17 @@ id: "network"
 extends ../_layouts/_master.pug
 
 block content
-    #device-view(v-cloak)
-        h1 Devices
+    #device-view(v-cloak v-if="!page_loading")
+        h1 Lantern Devices
         p(v-if="d_docs.length == 0") Sorry, there are no known devices on the network right now. Please check back soon.
         ul(v-for="device in d_docs" v-if="d_docs.length")
-            li {{ device._id }}
+            li.box {{ device._id }}
+
+    #user-view(v-cloak v-if="!page_loading")
+        h1 Users
+        p(v-if="u_docs.length == 0") Sorry, there are no known users on the network right now. Please check back soon.
+        ul(v-for="user in u_docs" v-if="u_docs.length")
+            li.box {{ user._id }}
                 
 
 block styles

@@ -15,6 +15,7 @@ window.LanternDocument = (function(id,stor) {
         // public data for all sync and broadcast
         title: "tt",        // title or name of object
         text: "tx",         // text or label for object
+        icon: "ic",         // icon to describe object
         status: "st",       // level or quantity
         owner: "ou",        // user array
         editor: "eu",       // user array
@@ -220,14 +221,23 @@ window.LanternImport = function(stor) {
     * Save an interest to the database for future use in the interface.
     * Allows for dynamically adding new interests over over time.
     */
-    function addCategory(slug, title, tag, color, background_color) {
+    function addCategory(slug, title, tag, color, background_color, icon) {
         var doc = new LanternDocument("c:"+slug, stor);
         doc.set("title", title);
         doc.push("tag", tag);
-        doc.set("style", {
-            "color": color, 
-            "background-color": background_color}
-        );
+
+        if (background_color && color) {
+
+            doc.set("style", {
+                "color": color, 
+                "background-color": background_color}
+            );
+        }
+
+        if (icon) {
+            doc.set("icon", icon);
+        }
+
         doc.set("$ia", new Date());
         doc.save();
     }
@@ -270,21 +280,21 @@ window.LanternImport = function(stor) {
     //------------------------------------------------------------------------
     self.category = function() {
         console.log("[import] adding default item categories");
-        addCategory("shr", "Shelter", "itm", "ffcc54", "fff7ef");
-        addCategory("wtr", "Water", "itm", "78aef9", "e9f2fe");
-        addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6");
-        addCategory("net", "Internet", "itm", "73cc72", "e8f7e8");
-        addCategory("med", "Medical", "itm", "ff844d", "ffebe2");
-        addCategory("dnt", "Donations", "itm", "50c1b6", "e3f5f3");
-        addCategory("pwr", "Power", "itm", "f45d90", "f2dae2");
-        addCategory("eqp", "Equipment", "itm", "4aaddb", "e8f4fa");
+        addCategory("wtr", "Water", "itm", "78aef9", "e9f2fe", "tint");
+        addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6", "gas-pump");
+        addCategory("net", "Internet", "itm", "73cc72", "e8f7e8", "globe");
+        addCategory("med", "Medical", "itm", "ff844d", "ffebe2", "prescription-bottle-alt");
+        addCategory("dnt", "Donations", "itm", "50c1b6", "e3f5f3", "tshirt");
+        addCategory("pwr", "Power", "itm", "f45d90", "f2dae2", "plug");
+        addCategory("eqp", "Equipment", "itm", "ffcc54", "fff7ef", "toolbox");
 
 
         console.log("[import] adding default Marker categories");
+        addCategory("sfe", "Safe Zone / Shelter", "mrk");
+        addCategory("sup", "Supply Location", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("rdc", "Road Conditions", "mrk");
-        addCategory("str", "Safe Shelter", "mrk");
-        addCategory("sup", "Supply Location", "mrk");
+        addCategory("pwo", "Power Outage", "mrk");
 
 
         console.log("[import] adding sub-categories for Markers");
@@ -349,9 +359,17 @@ window.LanternPage = (function(id) {
     var opts = {
         data: {
             cloud_connected: null,
-            lantern_connected: null
+            lantern_connected: null,
+            page_title: "",
+            page_loading: true,
+            allow_back_button: false
         },
-        methods: {}
+        methods: {
+            handleGoBack: function() {
+                window.history.go(-1);
+            }
+
+        }
     };
 
     var self = {
@@ -363,7 +381,7 @@ window.LanternPage = (function(id) {
 
     // initialize arrays for each type of doc
     // only these document types will ever be accepted by the system
-    (["m", "i", "c", "r", "n", "u"]).forEach(function(type) {
+    (["m", "i", "c", "r", "n", "u", "d"]).forEach(function(type) {
         opts.data[type+"_docs"] = [];
     });
 
@@ -415,19 +433,22 @@ window.LanternPage = (function(id) {
     }
 
 
-    function sync() {
+    function sync(continuous) {
 
         // make sure we tell the system we're awake
         self.user.set("updated_at",new Date());
         self.user.save();
 
 
-        self.stor.syncWithCloud(function(status) {
+        self.stor.syncWithCloud(continuous, function(status) {
             self.view.$data.cloud_connected = status;
         });
-        self.stor.syncWithLantern(function(status) {
-            self.view.$data.lantern_connected = status;
-        });
+
+        if (window.location.host != "lantern.global") {
+            self.stor.syncWithLantern(continuous, function(status) {
+                self.view.$data.lantern_connected = status;
+            });
+        }
     }
 
 
@@ -469,7 +490,8 @@ window.LanternPage = (function(id) {
                 self.user = user;
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
-                //sync();
+                // device wifi or local testing
+                sync(true);
             })
             .then(function() {
                 // draw listening user count
@@ -482,9 +504,9 @@ window.LanternPage = (function(id) {
     /**
     * Points to the right server for processing requests
     */
-    self.makeURI = function(uri) {
+    self.getBaseURI = function(uri) {
         return "http://" + (window.location.host == "localhost:3000" ? 
-            "localhost:8080" :  window.location.host);
+            "localhost" :  window.location.host);
     };
 
     
@@ -499,8 +521,51 @@ window.LanternPage = (function(id) {
         if (!results) return null;
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, " "));
-    };
+    };    
+
+
+    self.addHelper("getCategory", function(arg) {
+        if (!arg) {
+            return;
+        }
+        var obj;
+        if (typeof(arg) == "string") {
+            obj = self.stor.getCached(arg);
+        }
+        else if (arg.hasOwnProperty("category")) {
+            obj = self.stor.getCached(obj.category[0]);
+        }
+        else if (typeof(arg[0]) == "string") {
+            obj = self.stor.getCached("c:"+arg[0]);
+        }
+        else if (arg.hasOwnProperty("style")) {
+            obj = arg;
+        }
+        else {
+            console.log("cannot make category style for", arg);
+        }
+        console.log("FOUND OBJ", obj)
+        return obj;
+    });
+
+    /**
+    * Extract background and stroke colors from database
+    */
+    self.addHelper("makeCategoryStyle", function(cat) {
+        var doc = new LanternDocument(cat, self.stor);
+        var style = ["color: #" + doc.get("style","color")];
+        style.push("background-color: #" + doc.get("style", "background-color"));
+        style.push("border-color: #" + doc.get("style", "color"));
+        return style.join("; ");
+    });
     
+    /**
+    * Extract icon from database
+    */
+    self.addHelper("makeCategoryIconClass", function(category) {
+        console.log(category);
+        return "fas fa-" + (category.icon || "circle") + " fa-lg";
+    });
 
 
     //------------------------------------------------------------------------
@@ -531,7 +596,7 @@ window.LanternStor = (function($data) {
     var self = {
         cache: {},        
         browser_db: new PouchDB("lantern"),
-        lantern_db: new PouchDB(lantern_uri.replace(":3000", ":8080"), {
+        lantern_db: new PouchDB(lantern_uri.replace(":3000", ""), {
             skip_setup: true,
             withCredentials: false        
         }),
@@ -801,13 +866,13 @@ window.LanternStor = (function($data) {
     /**
     * Sync our in-browser database with the one on a physical device over wifi
     */
-    self.syncWithLantern = function(status_fn) {
+    self.syncWithLantern = function(continuous, status_fn) {
         console.log("[stor] trying sync with lantern");
         if (self.db.adapter == "http") {
             console.log("[stor] skipping sync since target is lantern already");
             return;
         }
-        LanternSync(self.browser_db, self.lantern_db, "lantern", true, status_fn, function(changed_doc) {
+        LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
         });
         return;
@@ -816,9 +881,9 @@ window.LanternStor = (function($data) {
     /**
     * Sync our in-browser database with the one in the cloud
     */
-    self.syncWithCloud = function(status_fn) {
+    self.syncWithCloud = function(continuous, status_fn) {
         console.log("[stor] trying sync with cloud");
-        LanternSync(self.browser_db, self.cloud_db, "cloud", true, status_fn, function(changed_doc) {
+        LanternSync(self.browser_db, self.cloud_db, "cloud", continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
 
         });

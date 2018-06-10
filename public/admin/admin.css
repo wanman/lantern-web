@@ -4,11 +4,24 @@ html, body {
 #admin-page #doc-summary {
   padding: 2em; }
 
+#admin-page form input, #admin-page form button {
+  width: 100%;
+  margin: 0.5em 0em; }
+
 #admin-page .tag {
   width: 9em; }
 
 #admin-page .actions {
-  border-bottom: 1px solid #EEE;
+  border-top: 1px solid #EEE;
   padding: 1em;
   margin-bottom: 1em; }
+  #admin-page .actions .button {
+    float: left;
+    margin-right: 1em; }
+  #admin-page .actions .button:last-child {
+    margin-right: 0px; }
+
+#admin-page .connection {
+  border-bottom: 1px solid #EEE;
+  padding: 1em; }
 

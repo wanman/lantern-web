@@ -1,6 +1,10 @@
+
+html, body {
+    background: #FFF;
+}
+
 #add-page {
     
-
 
     h2 {
         margin-bottom: 1em;

@@ -1,7 +1,4 @@
-
-section nav.global {
-    top: 3.25rem;
-}@import "bulma/sass/utilities/_all";
+@import "bulma/sass/utilities/_all";
 $text: #595959;
 $background: #f9fafb;
 $border: #c6c8cd;
@@ -14,6 +11,7 @@ $box-radius: 4px;
 $box-shadow: 0 2px 8px rgba($black, 0.05), 0 0 0 1px rgba($black, 0.05);
 $card-shadow: 0 2px 10px rgba($black, 0.02), 0 0 0 1px rgba($black, 0.02);
 $panel-shadow: 0 2px 10px rgba($black, 0.02), 0 0 0 1px rgba($black, 0.02);
+$panel-item-border: #f2f2f2;
 @import "bulma/sass/base/_all";
 @import "bulma/sass/elements/box";
 @import "bulma/sass/elements/tag";
@@ -42,6 +40,26 @@ body {
     background: $background;
 }
 
+.fas {
+    margin-right: 0.75em;
+}
+
+.fas.fa-3x {
+    margin-right: 0em;
+}
+.button.fas {
+    margin-left: 0.75em;
+}
+nav .icon {
+
+}
+nav .fas {
+    color: #3273dc;
+}
+
+a:active .icon i {
+    color: $text;
+}
 
 section nav {
     position: fixed;
@@ -69,8 +87,18 @@ section nav {
 }
 
 
+section nav.global {
+    top: 3.25rem;
+}
+
+
+.navbar .navbar-burger {
+    display: block;
+}
+
 .navbar.is-fixed-top {
     z-index: 1001;
+    border-bottom: 1px solid $light-border;
 }
 
 .card {
@@ -96,6 +124,10 @@ section nav {
     .panel-heading {
         background: #FFF;
     }
+
+    .panel-block {
+        padding: 1em;
+    }
     box-shadow: $panel-shadow;
 }
 
@@ -113,10 +145,6 @@ section nav.global {
     margin: auto;
     margin-bottom: 2em;
     max-width: 400px;
-}
-
-nav.navbar.is-inactive {
-    background: rgba(255,255,255,0);
 }
 
 .intro span {
@@ -159,6 +187,10 @@ h1 {
     }
     span:last-child {
         border-right: 0px;
+    }
+
+    .icon i {
+        color: $text;
     }
 }
 

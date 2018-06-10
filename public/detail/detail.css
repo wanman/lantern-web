@@ -1,1 +1,13 @@
+#detail-page .box {
+  margin: 1em; }
+  #detail-page .box .icon {
+    border-radius: 4em;
+    font-weight: bold;
+    width: 4em;
+    height: 4em;
+    text-align: center;
+    margin-right: 1em;
+    float: left; }
+    #detail-page .box .icon i {
+      margin: auto; }
 

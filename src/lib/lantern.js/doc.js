@@ -13,6 +13,7 @@ window.LanternDocument = (function(id,stor) {
         // public data for all sync and broadcast
         title: "tt",        // title or name of object
         text: "tx",         // text or label for object
+        icon: "ic",         // icon to describe object
         status: "st",       // level or quantity
         owner: "ou",        // user array
         editor: "eu",       // user array

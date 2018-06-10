@@ -1,9 +1,5 @@
 #browse-page {
 
-    .page-content {
-        margin-top: 0px; // allow map to come to top
-    }
-    
     h2 {
 
         margin-bottom: 2em;
@@ -27,15 +23,19 @@
         cursor: pointer;
     }
 
-    .category {
-        border-radius: 2em;
-        width: 2em;
-        height: 2em;
-        margin-right: 1em;
-        text-transform: uppercase;
-        font-weight: bold;
-        text-align: center;
-        padding: 0.3em;
+    .panel {
+          .icon {
+            border-radius: 4em;
+            font-weight: bold;
+            width: 4em;
+            height: 4em;
+            text-align: center;
+            i {
+                margin: auto;
+            }
+            margin-right: 1em;
+            float: left
+        }
     }
 
     #markers-view {

@@ -1,37 +1,6 @@
-#network-page .panel {
-  margin: 2em;
-  margin-top: 5em; }
+#network-page #device-view {
+  padding: 2em; }
 
-#network-page form {
-  max-width: 550px;
-  margin: auto; }
-
-#network-page label {
-  text-align: left; }
-
-#network-page input[type="checkbox"], #network-page input[type="radio"] {
-  margin-right: 0.5em;
-  height: 22px;
-  width: 22px; }
-
-#network-page .select {
-  margin: 0.4em 0em; }
-
-#network-page .radio {
-  padding: 1.3em; }
-
-#network-page .radio + .radio {
-  margin-left: 0em; }
-
-#network-page #wifi-creds {
-  display: block; }
-  #network-page #wifi-creds p {
-    text-align: left;
-    padding: 1em;
-    font-size: 0.9em; }
-  #network-page #wifi-creds input {
-    margin: 0.25em; }
-
-#network-page .button {
-  width: 10em; }
+#network-page .box {
+  margin: 1em; }
 

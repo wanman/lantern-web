@@ -135,6 +135,9 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.render()
+        .then(function() {
+            self.view.$data.page_title = "Nearby";
+        })
         .then(self.connect)
         .then(loadMarkers)
         .then(function() {

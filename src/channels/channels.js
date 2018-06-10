@@ -62,6 +62,9 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.render()
+        .then(function() {
+            self.view.$data.page_title = "Requests";
+        })
         .then(self.connect)
         .then(function() {
 

@@ -11,47 +11,48 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
+        <link rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css">
         <link rel="stylesheet" type="text/css" href="/channels/channels.css">
     </head>
     <body>
         <div id="channels-page">
             <!-- global navigation-->
-            <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation">
+            <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']">
                 <div class="navbar-brand">
-                    <div class="navbar-item"><span>Lantern Network</span></div><a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+                    <div class="navbar-item"> <span class="icon is-medium" v-if="allow_back_button" @click="handleGoBack"><i class="fas fa-arrow-left fa-md"></i></span><span>{{ page_title }}</span></div><a class="navbar-burger" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
                 </div>
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null">
                 <div class="navbar-brand">
-                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected">Online</span><span v-if="lantern_connected">Connected to Lantern</span></div>
+                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Connected to Lantern</span></div>
                 </div>
             </nav>
             <section>
                 <nav class="global" v-if="showNavMenu" v-cloak>
                     <ul>
-                        <li><a href="/browse/browse.html">Map</a></li>
-                        <li><a href="/channels/channels.html">Search</a></li>
-                        <li><a href="/network/network.html">Network</a></li>
-                        <li><a href="/admin/admin.html">Admin</a></li>
+                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Home</a></li>
+                        <li><a href="/channels/channels.html"> <span class="icon"><i class="fas fa-box-open"></i></span>Requests</a></li>
+                        <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
+                        <li><a href="/network/network.html"> <span class="icon"><i class="fas fa-broadcast-tower"></i></span>Network</a></li>
+                        <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
                     </ul>
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
                     <div id="channels-view">
                         <h1 v-if="personalizing" v-cloak>Personalizing Map</h1>
-                        <h1 v-if="!personalizing" v-cloak>What are you searching for?</h1>
+                        <h1 v-if="!personalizing" v-cloak>What do you need most?</h1>
                         <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
-                            <h2 v-cloak v-if="!lantern_connected">
+                            <h2 v-cloak v-if="!lantern_connected &amp;&amp; !cloud_connected">
                                  Connect to a Lantern to send data</h2>
-                            <h2 v-cloak v-if="lantern_connected &amp;&amp; u_docs.length &gt;= 2">
+                            <h2 v-cloak v-if="(lantern_connected || cloud_connected) &amp;&amp; u_docs.length &gt;= 2">
                                  {{ pluralize(u_docs.length - 1) }} Listening</h2>
-                            <h2 v-cloak v-if="lantern_connected &amp;&amp; u_docs.length &lt;= 1">
+                            <h2 v-cloak v-if="(lantern_connected || cloud_connected) &amp;&amp; u_docs.length &lt;= 1">
                                  Waiting for Users To Join Network</h2>
                         </div>
                         <ul class="item-list" v-cloak>
-                            <li class="item" v-for="tag in item_tags" v-bind:id="tag._id" v-bind:class="makeCategoryClass(tag)" @click="toggleCategory">
-                                <div class="icon" v-bind:style="makeCategoryStyle(tag)">{{ tag.title[0].toUpperCase() }}</div>
-                                <div class="title">{{ tag.title }}</div>
+                            <li class="item" v-for="cat in item_categories" v-bind:id="cat._id" v-bind:class="makeCategoryClass(cat)" @click="toggleCategory"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)"></i></span>
+                                <div class="title">{{ cat.title }}</div>
                             </li>
                         </ul>
                     </div>

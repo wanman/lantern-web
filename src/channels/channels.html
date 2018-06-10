@@ -25,9 +25,12 @@ block content
                 v-bind:class="makeCategoryClass(cat)"
                @click="toggleCategory" 
                 )
-                    .icon(
+                    span.icon.is-large(
                     v-bind:style="makeCategoryStyle(cat)"
-                    ) {{ cat.title[0].toUpperCase() }}
+                    ) 
+                        i(v-bind:class="makeCategoryIconClass(cat)")
+
+
                     .title {{ cat.title }}
                 
 block styles

@@ -92,6 +92,9 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.render()
+        .then(function() {
+            self.view.$data.page_title = "Admin";
+        })
         .then(self.connect)
         .then(function() {
             self.view.$data.types.forEach(function(type) {

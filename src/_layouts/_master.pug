@@ -11,6 +11,7 @@ html(lang="en")
         meta(name="msapplication-TileColor", content="#da532c")
         meta(name="theme-color", content="#ffffff")
         link(rel="stylesheet" type="text/css" href="/lib/lantern.css")
+        link(rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css")
         block styles
 
     body
@@ -19,7 +20,10 @@ html(lang="en")
             // global navigation
             nav.navbar.is-fixed-top(v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']" )
                 .navbar-brand
-                    .navbar-item
+                    .navbar-item 
+                        span.icon.is-medium(v-if="allow_back_button" @click="handleGoBack")
+                            i.fas.fa-arrow-left.fa-md
+                        span {{ page_title }}
                     a.navbar-burger(role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]"  @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']" )
                         span(aria-hidden="true")
                         span(aria-hidden="true")
@@ -29,23 +33,44 @@ html(lang="en")
                 .navbar-brand
                     .navbar-item
                         span(v-if="!cloud_connected && !lantern_connected") Offline
-                        span(v-if="cloud_connected") Online
-                        span(v-if="lantern_connected") Connected to Lantern
+                        span(v-if="cloud_connected") 
+                            span.icon
+                                    i.fas.fa-cloud
+                            | Online
+                        span(v-if="lantern_connected") 
+                            span.icon
+                                    i.fas.fa-wifi
+                            | Connected to Lantern
 
 
             section
                 nav.global(v-if="showNavMenu" v-cloak)
                     ul
                         li
-                            a(href="/browse/browse.html") Home
+                            a(href="/browse/browse.html") 
+                                span.icon
+                                    i.fas.fa-map
+                                | Home
                         li
-                            a(href="/channels/channels.html") Requests
+                            a(href="/channels/channels.html") 
+                                span.icon
+                                    i.fas.fa-box-open
+                                | Requests
                         li
-                            a(href="/add/add.html") Contribute
+                            a(href="/add/add.html") 
+                                span.icon
+                                    i.fas.fa-plus-circle
+                                | Contribute
                         li
-                            a(href="/network/network.html") Network
+                            a(href="/network/network.html") 
+                                span.icon
+                                    i.fas.fa-broadcast-tower
+                                | Network
                         li
-                            a(href="/admin/admin.html") Admin
+                            a(href="/admin/admin.html") 
+                                span.icon
+                                    i.fas.fa-database
+                                | Admin
 
 
                 // main page content

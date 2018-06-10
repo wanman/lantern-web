@@ -5,31 +5,7 @@ window.page = (function() {
     var self = new LanternPage("channels");
 
     //------------------------------------------------------------------------
-    self.addHelper("makeCategoryStyle", function(cat) {
-        var obj;
 
-        if (!cat) {
-            return;
-        }
-
-        if (typeof(cat) == "string") {
-            obj = self.stor.getCached(cat);
-        }
-        else {
-            obj = cat;
-        }
-
-        if (obj.hasOwnProperty("parent")) {
-            // must be a specific supply
-            obj = self.stor.getCached(obj.tag[0]);
-        }
-
-        var doc = new LanternDocument(obj, self.stor);
-        var style = ["color: #" + doc.get("style","color")];
-        style.push("background-color: #" + doc.get("style", "background-color"));
-        style.push("border-color: #" + doc.get("style", "color"));
-        return style.join("; ");
-    });
 
     self.addHelper("makeCategoryClass", function(cat) {
         var cls = "";
@@ -81,21 +57,24 @@ window.page = (function() {
 
 
     //------------------------------------------------------------------------
-    self.addData("item_tags", []);
+    self.addData("item_categories", []);
     self.addData("personalizing", false);
 
 
 
     //------------------------------------------------------------------------
     self.render()
+        .then(function() {
+            self.view.$data.page_title = "Requests";
+        })
         .then(self.connect)
         .then(function() {
 
             // draw category grid
-            self.stor.getManyByType("t").then(function(tags) {  
-                tags.forEach(function(tag) {
-                    if (tag.has("tag", "i")) {
-                        self.view.$data.item_tags.push(tag.toJSONFriendly());
+            self.stor.getManyByType("c").then(function(categories) {  
+                categories.forEach(function(cat) {
+                    if (cat.has("tag", "itm")) {
+                        self.view.$data.item_categories.push(cat.toJSONFriendly());
                     }
                 });
             });

@@ -23,7 +23,10 @@ block content
                     .panel-heading(@click="handleMarkerSelect(marker)")
                         h4 {{ marker.title }}
                     .panel-block(v-for="item in i_docs" v-if="item.parent == marker._id" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id")
-                        .category(v-bind:style="makeCategoryStyle(item.category)") {{ getCategoryName(item)[0] }}
+                        
+                        span.icon.is-large(v-bind:style="makeCategoryStyle(getCategory(item.category))") 
+                            i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
+
                         p {{ getCategoryName(item) }}
 
 

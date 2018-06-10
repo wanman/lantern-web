@@ -27,18 +27,11 @@ window.page = (function() {
             }
             else {
                 console.log(markers);
-                //async load in categories we can use for reporting
-                self.stor.getManyByType("c")
-                    .then(function(categories) {
-                        categories.forEach(function(cat) {
-                            if (cat.has("tag", "mrk")) {
-                                self.view.$data.marker_categories.push(cat.toJSONFriendly());
-                            }
-                        });
+                self.stor.getManyByType("c").then(function() {
+                    // cache items for future association with markers
+                    self.stor.getManyByType("i").then(function(items) {
+                        self.view.$data.loaded = true;
                     });
-                // cache items for future association with markers
-                self.stor.getManyByType("i").then(function(items) {
-                    self.view.$data.loaded = true;
                 });
 
             }
@@ -53,8 +46,8 @@ window.page = (function() {
             renderMap(position.coords.latitude, position.coords.longitude);
         }
 
-        function geo_error() {
-            console.log("[browse] no position available");
+        function geo_error(err) {
+            console.log("[browse] no position available", err);
         }
 
         console.log("[browse] asking for location");
@@ -111,9 +104,6 @@ window.page = (function() {
     }
 
     //------------------------------------------------------------------------
-    self.addData("marker_categories", []);
-    self.addData("show_filter", false);
-    self.addData("show_report", false);
     self.addData("show_markers", true);
     self.addData("show_map", false);
     self.addData("loaded", false);
@@ -123,32 +113,33 @@ window.page = (function() {
 
 
     //------------------------------------------------------------------------
-    self.addHelper("handleToggleReportView", function() {
-        self.view.$data.show_report = !self.view.$data.show_report;
-        self.view.$data.show_markers = !self.view.$data.show_report;
-    });
-
-    self.addHelper("handleToggleFilterView", function() {
-        self.view.$data.show_filter = !self.view.$data.show_filter;
-    });
 
     self.addHelper("handleItemSelect", function(item, marker) {
         window.location = "/detail/detail.html?mrk=" + marker._id + "&itm=" + item._id;
     });
 
-    self.addHelper("handleMarkerCategory", function(cat) {
-        console.log("[browse] report a " + cat.title);
-        window.location = "/add/add.html?ct="+cat._id;
-    });    
+    self.addHelper("handleMarkerSelect", function(marker) {
+        window.location = "/detail/detail.html?mrk=" + marker._id;
+    });
+
 
     self.addHelper("handleShowMap", askForLocation);
 
     self.addHelper("handleCloseFilterView", function() {
         self.view.$data.show_filter = false;
+    }); 
+
+    self.addHelper("getCategoryName", function(item) {
+        var id = "c:" + item.category[0];
+        return self.stor.getCached(id).title;
     });
+
 
     //------------------------------------------------------------------------
     self.render()
+        .then(function() {
+            self.view.$data.page_title = "Nearby";
+        })
         .then(self.connect)
         .then(loadMarkers)
         .then(function() {
@@ -158,7 +149,6 @@ window.page = (function() {
                     self.view.$data.prompt_for_map = true;
                 }
                 else {
-
                     navigator.permissions.query({'name': 'geolocation'})
                         .then( function(permission) {
                             if (permission.state == "granted") {

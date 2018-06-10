@@ -11,34 +11,47 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
+        <link rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css">
         <link rel="stylesheet" type="text/css" href="/lib/map.css">
         <link rel="stylesheet" type="text/css" href="/add/add.css">
     </head>
     <body>
         <div id="add-page">
             <!-- global navigation-->
-            <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation">
+            <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']">
                 <div class="navbar-brand">
-                    <div class="navbar-item"><span>Lantern Network</span></div><a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+                    <div class="navbar-item"> <span class="icon is-medium" v-if="allow_back_button" @click="handleGoBack"><i class="fas fa-arrow-left fa-md"></i></span><span>{{ page_title }}</span></div><a class="navbar-burger" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
                 </div>
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null">
                 <div class="navbar-brand">
-                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected">Online</span><span v-if="lantern_connected">Connected to Lantern</span></div>
+                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Connected to Lantern</span></div>
                 </div>
             </nav>
             <section>
                 <nav class="global" v-if="showNavMenu" v-cloak>
                     <ul>
-                        <li><a href="/browse/browse.html">Map</a></li>
-                        <li><a href="/channels/channels.html">Search</a></li>
-                        <li><a href="/network/network.html">Network</a></li>
-                        <li><a href="/admin/admin.html">Admin</a></li>
+                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Home</a></li>
+                        <li><a href="/channels/channels.html"> <span class="icon"><i class="fas fa-box-open"></i></span>Requests</a></li>
+                        <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
+                        <li><a href="/network/network.html"> <span class="icon"><i class="fas fa-broadcast-tower"></i></span>Network</a></li>
+                        <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
                     </ul>
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
                     <div v-cloak>
+                        <!-- report view-->
+                        <nav id="report-view" v-if="show_report">
+                            <h1>Help Us Map Your Region</h1>
+                            <h2>What to report?</h2>
+                            <ul>
+                                <li v-for="category in marker_categories"><a @click="handleMarkerCategory(category)">{{ category.title }}</a></li>
+                            </ul>
+                            <div class="action-panel">
+                                <div class="button" @click="handleCancelReport">Cancel</div>
+                            </div>
+                        </nav>
                         <div id="subcategory-view" v-if="show_subcategory_selector">
                             <h1>{{ category.title }}</h1>
                             <h2>Pick Best Description</h2>
@@ -66,7 +79,7 @@
                             </div>
                             <div class="card"> 
                                 <div id="map"></div>
-                                <p v-if="lock_doc &amp;&amp; lantern_connected">This is a preview of your report. If you choose to submit, it will be added to the Lantern map for your community to see.</p>
+                                <p v-if="lock_doc &amp;&amp; lantern_connected">This is a preview of your report. If you choose to submit, it will be added to a shared map for people near you to see and verify.</p>
                                 <p v-if="lock_doc &amp;&amp; !lantern_connected">This is a preview of your report. Since you are offline, your report will be automatically shared once you reconnect to a Lantern or the internet.</p>
                                 <input class="slider is-fullwidth" v-if="!lock_doc &amp;&amp; area_radius &gt; 0" step="5" min="1" max="5000" v-model="area_radius" type="range">
                             </div>
@@ -74,11 +87,11 @@
                             <div class="button is-primary" v-if="lock_doc &amp; lantern_connected" @click="handleButtonPush">Send Now</div>
                             <div class="button is-primary" v-if="lock_doc &amp; !lantern_connected" @click="handleButtonPush">Send When Possible</div>
                         </div>
-                        <div id="success-view" v-if="show_success">
+                        <div id="success-view" v-if="show_success"><span class="icon is-large"><i class="fas fa-check-circle fa-3x"></i></span>
                             <h1>Thank you!</h1>
                             <p v-if="lantern_connected">Your contribution was successfully saved to the map.</p>
                             <p v-if="!lantern_connected">Your contribution was successfully saved to the map and will be uploaded once you connect to a Lantern or the internet.</p>
-                            <div class="button" @click="handleReturnToMap">Return to Map</div>
+                            <div class="button" @click="handleReturnToMap"> <span>Return to Map</span><span class="icon is-small"><i class="fas fa-long-arrow-right"></i></span></div>
                         </div>
                     </div>
                 </div>

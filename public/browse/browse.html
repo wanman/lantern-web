@@ -11,63 +11,51 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
+        <link rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css">
         <link rel="stylesheet" type="text/css" href="/lib/map.css">
         <link rel="stylesheet" type="text/css" href="/browse/browse.css">
     </head>
     <body>
         <div id="browse-page">
             <!-- global navigation-->
-            <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation">
+            <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']">
                 <div class="navbar-brand">
-                    <div class="navbar-item"><span>Lantern Network</span></div><a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+                    <div class="navbar-item"> <span class="icon is-medium" v-if="allow_back_button" @click="handleGoBack"><i class="fas fa-arrow-left fa-md"></i></span><span>{{ page_title }}</span></div><a class="navbar-burger" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
                 </div>
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null">
                 <div class="navbar-brand">
-                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected">Online</span><span v-if="lantern_connected">Connected to Lantern</span></div>
+                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Connected to Lantern</span></div>
                 </div>
             </nav>
             <section>
                 <nav class="global" v-if="showNavMenu" v-cloak>
                     <ul>
-                        <li><a href="/browse/browse.html">Map</a></li>
-                        <li><a href="/channels/channels.html">Search</a></li>
-                        <li><a href="/network/network.html">Network</a></li>
-                        <li><a href="/admin/admin.html">Admin</a></li>
+                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Home</a></li>
+                        <li><a href="/channels/channels.html"> <span class="icon"><i class="fas fa-box-open"></i></span>Requests</a></li>
+                        <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
+                        <li><a href="/network/network.html"> <span class="icon"><i class="fas fa-broadcast-tower"></i></span>Network</a></li>
+                        <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
                     </ul>
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <!-- report view-->
-                    <nav id="report-view" v-if="show_report" v-cloak>
-                        <h1>Help Us Map Your Region</h1>
-                        <h2>What to report?</h2>
-                        <ul>
-                            <li v-for="category in marker_categories"><a @click="handleMarkerCategory(category)">{{ category.title }}</a></li>
-                        </ul>
-                        <div class="action-panel">
-                            <div class="button" @click="handleToggleReportView">Cancel</div>
-                        </div>
-                    </nav>
                     <!-- map is empty by default - only certain pages will fill this region-->
                     <div id="map" v-cloak v-if="show_map"></div>
                     <!-- markers view-->
                     <div id="markers-view" v-if="show_markers">
-                        <div id="button-bar" v-cloak>
-                            <div class="button" id="report-button" @click="handleToggleReportView">+</div>
-                            <div class="button" id="map-button" v-if="!show_map &amp;&amp; prompt_for_map" @click="handleShowMap">Show Map</div>
-                        </div>
                         <div id="markers" v-cloak>
                             <p v-if="loaded &amp;&amp; !m_docs.length">There are no supply stations or vehicles reported yet. Please check back soon.</p>
-                            <ul v-if="loaded &amp;&amp; m_docs.length">
-                                <li v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title">
-                                    <h4>{{ marker.title }}</h4>
-                                    <h5>2km</h5>
-                                    <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id">
-                                        <p>Last Updated: {{ moment(moment(marker.updated_at)).short(true) }}</p>
+                            <div v-if="loaded &amp;&amp; m_docs.length">
+                                <div class="panel" v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title">
+                                    <div class="panel-heading" @click="handleMarkerSelect(marker)">
+                                        <h4>{{ marker.title }}</h4>
                                     </div>
-                                </li>
-                            </ul>
+                                    <div class="panel-block" v-for="item in i_docs" v-if="item.parent == marker._id" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
+                                        <p>{{ getCategoryName(item) }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
