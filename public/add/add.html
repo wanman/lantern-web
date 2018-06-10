@@ -25,7 +25,7 @@
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null">
                 <div class="navbar-brand">
-                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Connected to Lantern</span></div>
+                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern X12</span></div>
                 </div>
             </nav>
             <section>
@@ -46,19 +46,19 @@
                             <h1>Help Us Map Your Region</h1>
                             <h2>What to report?</h2>
                             <ul>
-                                <li v-for="category in marker_categories"><a @click="handleMarkerCategory(category)">{{ category.title }}</a></li>
+                                <li v-for="category in marker_categories"><a @click="handleMarkerCategory(category)"> <span>{{ category.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></a></li>
                             </ul>
                             <div class="action-panel">
                                 <div class="button" @click="handleCancelReport">Cancel</div>
                             </div>
                         </nav>
-                        <div id="subcategory-view" v-if="show_subcategory_selector">
+                        <nav id="subcategory-view" v-if="show_subcategory_selector">
                             <h1>{{ category.title }}</h1>
                             <h2>Pick Best Description</h2>
                             <ul>
-                                <li class="box" v-for="sc in subcategories" @click="handleShowInputSelector(sc)">{{sc.title}}</li>
+                                <li v-for="sc in subcategories" @click="handleShowInputSelector(sc)"> <a><span>{{sc.title}}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></a></li>
                             </ul>
-                        </div>
+                        </nav>
                         <div id="input-selector-view" v-if="show_input_selector">
                             <h1>Select Condition Coverage</h1>
                             <ul>
@@ -71,27 +71,29 @@
                             <div v-if="!lock_doc">
                                 <h1 v-if="area_radius">Drag Pin And Adjust Radius</h1>
                                 <h1 v-if="!area_radius">Drag Pin</h1>
-                                <h2>{{ category.title }}</h2>
                             </div>
                             <div v-if="lock_doc">
                                 <h1>Preview</h1>
-                                <h2>{{ category.title }}</h2>
                             </div>
                             <div class="card"> 
                                 <div id="map"></div>
                                 <p v-if="lock_doc &amp;&amp; lantern_connected">This is a preview of your report. If you choose to submit, it will be added to a shared map for people near you to see and verify.</p>
                                 <p v-if="lock_doc &amp;&amp; !lantern_connected">This is a preview of your report. Since you are offline, your report will be automatically shared once you reconnect to a Lantern or the internet.</p>
-                                <input class="slider is-fullwidth" v-if="!lock_doc &amp;&amp; area_radius &gt; 0" step="5" min="1" max="5000" v-model="area_radius" type="range">
+                                <input class="slider is-fullwidth" v-if="map_loaded &amp;&amp; !lock_doc &amp;&amp; area_radius &gt; 0" step="5" min="1" max="5000" v-model="area_radius" type="range">
                             </div>
-                            <div class="button is-primary" v-if="!lock_doc" @click="handleButtonPush">Next</div>
-                            <div class="button is-primary" v-if="lock_doc &amp; lantern_connected" @click="handleButtonPush">Send Now</div>
-                            <div class="button is-primary" v-if="lock_doc &amp; !lantern_connected" @click="handleButtonPush">Send When Possible</div>
+                            <div class="action-panel" v-if="map_loaded">
+                                <div class="button is-primary" v-if="!lock_doc" @click="handleButtonPush">Next</div>
+                                <div class="button is-primary" v-if="lock_doc &amp; lantern_connected" @click="handleButtonPush">Send Now</div>
+                                <div class="button is-primary" v-if="lock_doc &amp; !lantern_connected" @click="handleButtonPush">Send When Possible</div>
+                            </div>
                         </div>
                         <div id="success-view" v-if="show_success"><span class="icon is-large"><i class="fas fa-check-circle fa-3x"></i></span>
                             <h1>Thank you!</h1>
                             <p v-if="lantern_connected">Your contribution was successfully saved to the map.</p>
                             <p v-if="!lantern_connected">Your contribution was successfully saved to the map and will be uploaded once you connect to a Lantern or the internet.</p>
-                            <div class="button" @click="handleReturnToMap"> <span>Return to Map</span><span class="icon is-small"><i class="fas fa-long-arrow-right"></i></span></div>
+                            <div class="action-panel">
+                                <div class="button" @click="handleReturnToMap"> <span>Return to Map</span><span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>
+                            </div>
                         </div>
                     </div>
                 </div>

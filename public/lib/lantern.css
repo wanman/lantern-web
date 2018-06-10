@@ -3697,13 +3697,13 @@ a.navbar-item,
 .panel-heading,
 .panel-tabs,
 .panel-block {
-  border-bottom: #f2f2f2;
-  border-left: #f2f2f2;
-  border-right: #f2f2f2; }
+  border-bottom: 1px solid rgba(10, 10, 10, 0.05);
+  border-left: 1px solid rgba(10, 10, 10, 0.05);
+  border-right: 1px solid rgba(10, 10, 10, 0.05); }
   .panel-heading:first-child,
   .panel-tabs:first-child,
   .panel-block:first-child {
-    border-top: #f2f2f2; }
+    border-top: 1px solid rgba(10, 10, 10, 0.05); }
 
 .panel-heading {
   background-color: #f9fafb;
@@ -4720,6 +4720,9 @@ body {
   letter-spacing: 0.06em;
   background: #f9fafb; }
 
+.page-content {
+  margin-bottom: 3.25rem; }
+
 .fas {
   margin-right: 0.75em; }
 
@@ -4735,25 +4738,32 @@ nav .fas {
 a:active .icon i {
   color: #595959; }
 
+.navbar {
+  background: rgba(255, 255, 255, 0.9); }
+  .navbar .icon {
+    margin-right: 1em; }
+
 section nav {
   position: fixed;
   top: 0px;
   left: 0px;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  z-index: 1002; }
+  z-index: 1002;
+  background: #FFF; }
   section nav li a {
-    padding: 2em;
+    padding: 1.5em;
+    padding-right: 1em;
     border-top: 1px solid whitesmoke;
     width: 100%;
     display: block; }
+  section nav .icon {
+    margin-right: 2em; }
 
 .page-content {
   margin-top: 3.25rem;
   overflow-y: scroll;
-  padding-bottom: 1em;
-  margin-bottom: 3.25rem; }
+  padding-bottom: 1em; }
 
 section nav.global {
   top: 3.25rem; }
@@ -4776,6 +4786,7 @@ section nav.global {
 .panel {
   font-size: small;
   background: #FFF;
+  border-radius: 4px;
   box-shadow: 0 2px 10px rgba(10, 10, 10, 0.02), 0 0 0 1px rgba(10, 10, 10, 0.02); }
   .panel h4 {
     font-size: small; }
@@ -4815,6 +4826,9 @@ h1 {
   font-size: 1.15em;
   padding: 0.75em; }
 
+nav.global {
+  background: #FFF; }
+
 .mock {
   text-align: center;
   height: 100%;
@@ -4828,10 +4842,8 @@ h1 {
   border-top: 1px solid #f2f2f2;
   border-bottom: 0px; }
   #status-footer span {
-    padding: 0em 1em;
-    border-right: 1px solid #f2f2f2; }
-  #status-footer span:last-child {
-    border-right: 0px; }
+    font-size: small;
+    padding: 0em 1em; }
   #status-footer .icon i {
     color: #595959; }
 

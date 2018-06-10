@@ -251,29 +251,22 @@ window.LanternImport = function(stor) {
         venue_doc.set("$ia", new Date());
         venue_doc.save();
 
-        var supply_id = "i:wtr-1-" + id;
-        var supply_doc = new LanternDocument(supply_id, stor);
-        supply_doc.set("status", 1);
-        supply_doc.push("parent", venue_doc.id);
-        supply_doc.push("category", "wtr");
-        supply_doc.set("$ia", new Date());
-        supply_doc.save();
 
+        var categories = ["wtr", "ful", "net", "med", "dnt", "pwr", "eqp"];
 
-        var net_id = "i:net-1-" + id;
-        var net_doc = new LanternDocument(net_id, stor);
-        net_doc.set("status", 1);
-        net_doc.push("parent", venue_doc.id);
-        net_doc.push("category", "net");
-        net_doc.set("$ia", new Date());
-        net_doc.save();
-    }
+      
+        for (var i=0;  i<3; i++) {
+            var item_cat = categories[Math.round(Math.random()*categories.length)];
+            console.log("CATEGORY", item_cat);
+            var item_id = "i:" + item_cat + "-1-" + id;
+            var doc = new LanternDocument(item_id, stor);
+            doc.set("status", 1);
+            doc.push("parent", venue_doc.id);
+            doc.push("category", item_cat);
+            doc.set("$ia", new Date());
+            doc.save();
+        }
 
-    function addKind(id, title) {
-        var kind_doc = new LanternDocument("k:" +id, stor);
-        kind_doc.set("title", title);
-        kind_doc.set("$ia", new Date());
-        kind_doc.save();
     }
 
 
@@ -284,13 +277,14 @@ window.LanternImport = function(stor) {
         addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6", "gas-pump");
         addCategory("net", "Internet", "itm", "73cc72", "e8f7e8", "globe");
         addCategory("med", "Medical", "itm", "ff844d", "ffebe2", "prescription-bottle-alt");
-        addCategory("dnt", "Donations", "itm", "50c1b6", "e3f5f3", "tshirt");
+        addCategory("dnt", "Donation", "itm", "50c1b6", "e3f5f3", "tshirt");
         addCategory("pwr", "Power", "itm", "f45d90", "f2dae2", "plug");
         addCategory("eqp", "Equipment", "itm", "ffcc54", "fff7ef", "toolbox");
 
 
         console.log("[import] adding default Marker categories");
-        addCategory("sfe", "Safe Zone / Shelter", "mrk");
+        addCategory("shr", "Shelter", "mrk");
+        addCategory("sfe", "Safe Area", "mrk");
         addCategory("sup", "Supply Location", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("rdc", "Road Conditions", "mrk");
@@ -439,7 +433,6 @@ window.LanternPage = (function(id) {
         self.user.set("updated_at",new Date());
         self.user.save();
 
-
         self.stor.syncWithCloud(continuous, function(status) {
             self.view.$data.cloud_connected = status;
         });
@@ -482,7 +475,7 @@ window.LanternPage = (function(id) {
     */
     self.connect = function() {
         
-        self.stor = new LanternStor(opts.data);
+        self.stor = new LanternStor(opts.data, self.getBaseURI());
         return self.stor.setup()
             .then(getOrCreateUser)
             .then(function(user) {
@@ -504,9 +497,9 @@ window.LanternPage = (function(id) {
     /**
     * Points to the right server for processing requests
     */
-    self.getBaseURI = function(uri) {
+    self.getBaseURI = function() {
         return "http://" + (window.location.host == "localhost:3000" ? 
-            "localhost" :  window.location.host);
+            "localhost:8080" :  window.location.host);
     };
 
     
@@ -523,7 +516,9 @@ window.LanternPage = (function(id) {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     };    
 
-
+    /**
+    * Extract a category object from meaningful input such as a tag
+    */
     self.addHelper("getCategory", function(arg) {
         if (!arg) {
             return;
@@ -544,7 +539,6 @@ window.LanternPage = (function(id) {
         else {
             console.log("cannot make category style for", arg);
         }
-        console.log("FOUND OBJ", obj)
         return obj;
     });
 
@@ -563,7 +557,6 @@ window.LanternPage = (function(id) {
     * Extract icon from database
     */
     self.addHelper("makeCategoryIconClass", function(category) {
-        console.log(category);
         return "fas fa-" + (category.icon || "circle") + " fa-lg";
     });
 
@@ -588,11 +581,10 @@ window.LanternPage = (function(id) {
 });
 
 
-window.LanternStor = (function($data) {
+window.LanternStor = (function($data, uri) {
 
     var cloud_uri = "https://lantern.global/db/lantern";
-    var lantern_uri = window.location.origin + "/db/lantern";
-
+    var lantern_uri = uri + "/db/lantern";
     var self = {
         cache: {},        
         browser_db: new PouchDB("lantern"),
@@ -867,7 +859,7 @@ window.LanternStor = (function($data) {
     * Sync our in-browser database with the one on a physical device over wifi
     */
     self.syncWithLantern = function(continuous, status_fn) {
-        console.log("[stor] trying sync with lantern");
+        //console.log("[stor] trying sync with lantern");
         if (self.db.adapter == "http") {
             console.log("[stor] skipping sync since target is lantern already");
             return;
@@ -882,7 +874,7 @@ window.LanternStor = (function($data) {
     * Sync our in-browser database with the one in the cloud
     */
     self.syncWithCloud = function(continuous, status_fn) {
-        console.log("[stor] trying sync with cloud");
+        //console.log("[stor] trying sync with cloud");
         LanternSync(self.browser_db, self.cloud_db, "cloud", continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
 
@@ -898,12 +890,11 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     var reset_delay;
 
     function setStatus(status) {
-        self[label + "_connected"] = status;
         if (status == true) {
             reset_delay = true;
         }
         if (status_fn && typeof(status_fn) == "function") {
-            status_fn(self[label + "_connected"]);
+            status_fn(status);
         }
     }
 

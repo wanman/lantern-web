@@ -25,7 +25,7 @@
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null">
                 <div class="navbar-brand">
-                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Connected to Lantern</span></div>
+                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern X12</span></div>
                 </div>
             </nav>
             <section>
@@ -40,9 +40,10 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <div v-cloak>
-                        <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
+                    <div v-cloak v-if="!page_loading">
+                        <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
                             <p>{{ getCategory(item.category).title }}</p>
+                            <p>Available</p>
                             <p>{{ moment(moment(marker.updated_at)).short(true) }} ago</p>
                         </div>
                     </div>

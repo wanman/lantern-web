@@ -1,5 +1,7 @@
 #detail-page .box {
-  margin: 1em; }
+  min-height: 7em;
+  margin: 1em;
+  border: 0px solid; }
   #detail-page .box .icon {
     border-radius: 4em;
     font-weight: bold;

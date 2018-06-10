@@ -5,22 +5,26 @@ id: "browse"
 extends ../_layouts/_master.pug
 
 block content
-
-
-    #map-spacer(v-if="show_map === true")
     
-    // map is empty by default - only certain pages will fill this region
-    #map(v-cloak v-if="show_map === true")
 
-    #map-prompt(v-cloak v-if="prompt_for_map && show_map === false")
-        a(@click="handleShowMap")
-            span.icon
-                i.fas.fa-map
-            span Show Map
+    #map-prompt
+        .buttons.has-addons
+            span.button(@click="handleShowList" v-bind:class="show_map ? '' : 'is-info is-selected'")
+                span.icon
+                    i.fas.fa-list
+                span List
+            span.button(@click="handleShowMap" v-bind:class="show_map ? 'is-info is-selected' : ''")
+                span.icon
+                    i.fas.fa-map
+                span Map
+
+
+    // map is empty by default - only certain pages will fill this region
+    #map(v-cloak v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
+
 
     // markers view
-    #markers-view(v-if="show_markers")
-
+    #markers-view(v-if="!show_map")
 
         #markers(v-cloak)
             p(v-if="loaded && !m_docs.length" ) There are no supply stations or vehicles reported yet. Please check back soon.

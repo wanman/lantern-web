@@ -48,6 +48,7 @@ window.page = (function() {
         self.view.$data.show_map_selector = true;
         askForLocation(function() {
             console.log("[add] map visible", map);
+            self.view.$data.map_loaded = true;
             var center = map.map.getCenter();
 
             if (tag != "ara") {
@@ -78,9 +79,10 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.addHelper("handleShowInputSelector", function(subcategory) {
-        console.log(subcategory);
+        console.log("[add] selected subcategory: " + subcategory.title);
+        self.view.$data.page_title = "Report " + subcategory.title;
         new_doc.push("category", subcategory._id);
-        
+        console.log(new_doc);
         self.view.$data.show_subcategory_selector = false;
         self.view.$data.show_input_selector = true;
     });
@@ -162,6 +164,7 @@ window.page = (function() {
     self.addData("show_input_selector", false);
     self.addData("show_map_selector", false);
     self.addData("show_success", false);
+    self.addData("map_loaded", false);
     self.addData("area_radius", 0);
     self.addData("lock_doc", false); // for preview before saving
 
@@ -172,9 +175,9 @@ window.page = (function() {
     self.render()
         .then(self.connect)
         .then(function() {
-                
+            
             if (!param) {
-
+                self.view.$data.page_title = "Contribute";
                 //async load in categories we can use for reporting
                 self.stor.getManyByType("c")
                     .then(function(categories) {
@@ -192,15 +195,24 @@ window.page = (function() {
                 new_doc.push("category", param);
 
                 self.stor.get(param).then(function(result) {
-                    console.log(result);
                     self.view.$data.category  = result.toJSONFriendly();
+                    self.view.$data.page_title = "Report " + result.get("title");
+                    self.view.$data.allow_back_button = true;
                     self.stor.getManyByType("c").then(function(results) {
-
                         results.forEach(function(cat) {
-                            // find subcategories
-                            if (cat.has("tag", param.split(":")[1])) {
-                                self.view.$data.subcategories.push(cat.toJSONFriendly());
+                            if (result.id == "c:sup") {
+                                // special case for supplies
+                                if (cat.has("tag", "itm")) {
+                                    self.view.$data.subcategories.push(cat.toJSONFriendly());
+                                }
                             }
+                            else {
+                                // find subcategories
+                                if (cat.has("tag", param.split(":")[1])) {
+                                    self.view.$data.subcategories.push(cat.toJSONFriendly());
+                                }
+                            }
+                            
                         });  
 
                          if (self.view.$data.subcategories == 0 ) {

@@ -40,7 +40,6 @@ window.page = (function() {
 
 
     function askForLocation() {
-
         function geo_success(position) {
             console.log("[browse] found position", position);
             renderMap(position.coords.latitude, position.coords.longitude);
@@ -52,7 +51,7 @@ window.page = (function() {
 
         console.log("[browse] asking for location");
         var geo_options = {
-          enableHighAccuracy: true, 
+          enableHighAccuracy: false, 
           maximumAge        : 30000, 
           timeout           : 27000
         };
@@ -61,53 +60,47 @@ window.page = (function() {
         var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
     }
 
-
     /**
     * Display the map for the user based on approx. location
     */
     function renderMap(lat, lon) {
-        if (self.view.$data.show_map) {
+        if (map) {
             // already showing map
             return;
         }
 
         console.log("[browse] showing map");
-        self.view.$data.show_map = true;
 
-        setTimeout(function() {
 
-            map = new LanternMapManager(lat, lon);
-            map.setPosition(lat, lon);
+        map = new LanternMapManager(lat, lon);
+        map.setPosition(lat, lon);
 
-            console.log("[browse] map loaded");
+        console.log("[browse] map loaded");
 
-            // add markers to map
-            self.view.$data.m_docs.forEach(function(marker) {
-                var coords = [];
-                for (var idx in marker.geo) {
-                    var c = Geohash.decode(marker.geo[idx]);
-                    coords.push(c);
-                }
+        // add markers to map
+        self.view.$data.m_docs.forEach(function(marker) {
+            var coords = [];
+            for (var idx in marker.geo) {
+                var c = Geohash.decode(marker.geo[idx]);
+                coords.push(c);
+            }
 
-                if (coords.length == 1) {
-                    // point
-                    map.addPoint(coords[0]);
-                }
-                else {
-                    // draw a shape
-                    map.addPolygon(coords);
-                }
-            });
-
-        }, 300);
+            if (coords.length == 1) {
+                // point
+                map.addPoint(coords[0]);
+            }
+            else {
+                // draw a shape
+                map.addPolygon(coords);
+            }
+        });
 
     }
 
     //------------------------------------------------------------------------
-    self.addData("show_markers", true);
-    self.addData("show_map", false);
+
     self.addData("loaded", false);
-    self.addData("prompt_for_map", false);
+    self.addData("show_map", null);
     self.addData("geolocation", null);
 
 
@@ -123,11 +116,15 @@ window.page = (function() {
     });
 
 
-    self.addHelper("handleShowMap", askForLocation);
+    self.addHelper("handleShowMap", function(evt) {
+        self.view.$data.show_map = true;
+        askForLocation();
+    });
 
-    self.addHelper("handleCloseFilterView", function() {
-        self.view.$data.show_filter = false;
-    }); 
+    self.addHelper("handleShowList", function(evt) {
+        self.view.$data.show_map = false;
+    });
+
 
     self.addHelper("getCategoryName", function(item) {
         var id = "c:" + item.category[0];
@@ -141,29 +138,7 @@ window.page = (function() {
             self.view.$data.page_title = "Nearby";
         })
         .then(self.connect)
-        .then(loadMarkers)
-        .then(function() {
-            // auto-show map if permission granted
-            if (navigator && navigator.geolocation) {
-                if (!navigator.permissions) {
-                    self.view.$data.prompt_for_map = true;
-                }
-                else {
-                    navigator.permissions.query({'name': 'geolocation'})
-                        .then( function(permission) {
-                            if (permission.state == "granted") {
-                                askForLocation();
-                            }
-                            else {
-                                self.view.$data.prompt_for_map = true;
-                            }
-                        });
-                }
-            }
-            else {
-                self.view.$data.prompt_for_map = false;
-            }
-        });
+        .then(loadMarkers);
 
     return self; 
 }());

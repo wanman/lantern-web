@@ -14220,7 +14220,7 @@ window.LanternMapManager = function(lat, lon) {
     
     self.setPosition = function(lat, lon, zoom) {
         console.log("[map] set position to:" + lat, lon);
-        self.map.setView([lat, lon], zoom || 7);
+        self.map.setView([lat, lon], zoom || 11);
     };
 
 
