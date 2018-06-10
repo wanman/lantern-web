@@ -37,29 +37,22 @@ window.LanternImport = function(stor) {
         venue_doc.set("$ia", new Date());
         venue_doc.save();
 
-        var supply_id = "i:wtr-1-" + id;
-        var supply_doc = new LanternDocument(supply_id, stor);
-        supply_doc.set("status", 1);
-        supply_doc.push("parent", venue_doc.id);
-        supply_doc.push("category", "wtr");
-        supply_doc.set("$ia", new Date());
-        supply_doc.save();
 
+        var categories = ["wtr", "ful", "net", "med", "dnt", "pwr", "eqp"];
 
-        var net_id = "i:net-1-" + id;
-        var net_doc = new LanternDocument(net_id, stor);
-        net_doc.set("status", 1);
-        net_doc.push("parent", venue_doc.id);
-        net_doc.push("category", "net");
-        net_doc.set("$ia", new Date());
-        net_doc.save();
-    }
+      
+        for (var i=0;  i<3; i++) {
+            var item_cat = categories[Math.round(Math.random()*categories.length)];
+            console.log("CATEGORY", item_cat);
+            var item_id = "i:" + item_cat + "-1-" + id;
+            var doc = new LanternDocument(item_id, stor);
+            doc.set("status", 1);
+            doc.push("parent", venue_doc.id);
+            doc.push("category", item_cat);
+            doc.set("$ia", new Date());
+            doc.save();
+        }
 
-    function addKind(id, title) {
-        var kind_doc = new LanternDocument("k:" +id, stor);
-        kind_doc.set("title", title);
-        kind_doc.set("$ia", new Date());
-        kind_doc.save();
     }
 
 
