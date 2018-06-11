@@ -8,7 +8,7 @@ block content
     
 
     #map-prompt
-        .buttons.has-addons
+        .buttons.has-addons.is-centered
             span.button(@click="handleShowList" v-bind:class="show_map ? '' : 'is-info is-selected'")
                 span.icon
                     i.fas.fa-list
@@ -20,7 +20,12 @@ block content
 
 
     // map is empty by default - only certain pages will fill this region
-    #map(v-cloak v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
+    #map(v-cloak v-if="!map_err" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
+
+    #map-err(v-if="show_map && map_err")
+        p.box.is-error Unable to load the map at this time. Please ensure your browser has permission to access your location and reload the page.
+
+
 
 
     // markers view

@@ -65,9 +65,6 @@ a:active .icon i {
 
     background: rgba(255,255,255,0.9);
 
-    .icon {
-        margin-right: 1em;
-    }
 }
 
 section nav {
@@ -83,12 +80,9 @@ section nav {
     li a {
         padding: 1.5em;
         padding-right: 1em;
-        border-top: 1px solid $light;
+        border-top: 1px solid $light-border;
         width: 100%;
         display: block;
-    }
-    .icon {
-        margin-right: 2em;
     }
 }
 
@@ -183,6 +177,11 @@ h1 {
 nav.global {
     background: #FFF;
 }
+
+.navbar-burger {
+    margin-left: 0em;
+}
+
 .mock {
     text-align: center;
     height: 100%;
@@ -192,6 +191,24 @@ nav.global {
         border: 1px solid $border;
     }
 }
+
+#back-btn {
+    height: 3.25rem;
+    width: 3.25rem;
+    margin: -0.7em;
+    margin-right: 0.5em;
+    text-align: center;
+    i {
+        margin: 0;
+    }
+
+}
+
+#back-btn:hover {
+    cursor:  pointer;
+    background: $light;
+}
+
 
 #status-footer {
     background: rgba(255,255,255,0.9);

@@ -17,4 +17,8 @@
 
         border: 0px solid;
     }
+
+    .box:hover {
+        cursor: pointer;
+    }
 }

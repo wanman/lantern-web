@@ -9,31 +9,38 @@ block content
 
 
         // report view
-        nav#report-view(v-if="show_report")
+        #report-view(v-if="show_report")
             h1 Help Us Map Your Region
             h2 What to report?
             ul
-                li(v-for="category in marker_categories")
-                    a(@click="handleMarkerCategory(category)") 
-                        span {{ category.title }}
-                        span.icon.is-large
-                            i.fas.fa-angle-right
-                
-            .action-panel
-                .button(@click="handleCancelReport") Cancel
+                li(v-for="category in marker_categories" @click="handleMarkerCategory(category)")
+                    span {{ category.title }}
+                    span.icon.is-large
+                        i.fas.fa-angle-right
+         
 
-
-
-        nav#subcategory-view(v-if="show_subcategory_selector")
+        #subcategory-view(v-if="show_subcategory_selector")
             h1 {{ category.title }}
             h2 Pick Best Description
             ul
                 li(v-for="sc in subcategories" @click="handleShowInputSelector(sc)") 
-                    a
-                        span {{sc.title}}
+                
+                    span {{sc.title}}
 
-                        span.icon.is-large
-                            i.fas.fa-angle-right
+                    span.icon.is-large
+                        i.fas.fa-angle-right
+
+
+
+        #marker-selector-view(v-if="show_marker_selector")
+            h1 {{ category.title }}
+            h2 Select Closest Venue
+            ul
+                li(v-for="marker in m_docs" @click="handleSelectMarkerForItem(marker)") 
+                    span {{ marker.title }}
+
+                    span.icon.is-large
+                        i.fas.fa-angle-right
 
         #input-selector-view(v-if="show_input_selector")
             h1 Select Condition Coverage

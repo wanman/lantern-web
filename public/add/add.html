@@ -19,13 +19,13 @@
         <div id="add-page">
             <!-- global navigation-->
             <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']">
-                <div class="navbar-brand">
-                    <div class="navbar-item"> <span class="icon is-medium" v-if="allow_back_button" @click="handleGoBack"><i class="fas fa-arrow-left fa-md"></i></span><span>{{ page_title }}</span></div><a class="navbar-burger" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+                <div class="navbar-brand"><a class="navbar-burger" v-if="!allow_back_button" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+                    <div class="navbar-item"><span class="icon is-medium" id="back-btn" v-if="allow_back_button" @click="handleGoBack" role="button"><i class="fas fa-arrow-left fa-md"></i></span><span>{{ page_title }}</span></div>
                 </div>
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null">
                 <div class="navbar-brand">
-                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected">Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern X12</span></div>
+                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected"> <span class="icon"><i class="fas fa-wifi" style="color: #DDD;"></i></span>Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern X12</span></div>
                 </div>
             </nav>
             <section>
@@ -42,23 +42,27 @@
                 <div class="page-content">
                     <div v-cloak>
                         <!-- report view-->
-                        <nav id="report-view" v-if="show_report">
+                        <div id="report-view" v-if="show_report">
                             <h1>Help Us Map Your Region</h1>
                             <h2>What to report?</h2>
                             <ul>
-                                <li v-for="category in marker_categories"><a @click="handleMarkerCategory(category)"> <span>{{ category.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></a></li>
+                                <li v-for="category in marker_categories" @click="handleMarkerCategory(category)"><span>{{ category.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
-                            <div class="action-panel">
-                                <div class="button" @click="handleCancelReport">Cancel</div>
-                            </div>
-                        </nav>
-                        <nav id="subcategory-view" v-if="show_subcategory_selector">
+                        </div>
+                        <div id="subcategory-view" v-if="show_subcategory_selector">
                             <h1>{{ category.title }}</h1>
                             <h2>Pick Best Description</h2>
                             <ul>
-                                <li v-for="sc in subcategories" @click="handleShowInputSelector(sc)"> <a><span>{{sc.title}}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></a></li>
+                                <li v-for="sc in subcategories" @click="handleShowInputSelector(sc)"> <span>{{sc.title}}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
-                        </nav>
+                        </div>
+                        <div id="marker-selector-view" v-if="show_marker_selector">
+                            <h1>{{ category.title }}</h1>
+                            <h2>Select Closest Venue</h2>
+                            <ul>
+                                <li v-for="marker in m_docs" @click="handleSelectMarkerForItem(marker)"> <span>{{ marker.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
+                            </ul>
+                        </div>
                         <div id="input-selector-view" v-if="show_input_selector">
                             <h1>Select Condition Coverage</h1>
                             <ul>

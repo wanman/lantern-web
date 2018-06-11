@@ -5,6 +5,9 @@ id: "detail"
 extends ../_layouts/_master.pug
 
 block content
+
+    #map
+
     div(v-cloak v-if="!page_loading")
         .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)")
 

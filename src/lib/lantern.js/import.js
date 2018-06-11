@@ -43,6 +43,11 @@ window.LanternImport = function(stor) {
       
         for (var i=0;  i<3; i++) {
             var item_cat = categories[Math.round(Math.random()*categories.length-1)];
+            
+            if (!item_cat) {
+                return;
+            }
+            
             var item_id = "i:" + item_cat + "-1-" + id;
             var doc = new LanternDocument(item_id, stor);
             doc.set("status", 1);
@@ -68,9 +73,8 @@ window.LanternImport = function(stor) {
 
 
         console.log("[import] adding default Marker categories");
-        addCategory("str", "Shelter", "mrk");
         addCategory("sfe", "Safe Area", "mrk");
-        addCategory("sup", "Supply Location", "mrk");
+        addCategory("sup", "Supply", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("rdc", "Road Conditions", "mrk");
         addCategory("pwo", "Power Outage", "mrk");
@@ -92,10 +96,10 @@ window.LanternImport = function(stor) {
     */
     self.marker = function() {
         console.log("[import] adding default venues");
-        addMarker("css", "Central City Shelter", "drs4b7s", "str");
+        addMarker("css", "Central City Shelter", "drs4b7s", "sfe");
         addMarker("aic", "AI's Cafe", "drs4b77", "sfe");
-        addMarker("rcm", "Red Cross HQ", "drs4b75", "str");
-        addMarker("hsf", "High School Field House", "drs4b74", "str");
+        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
+        addMarker("hsf", "High School Field House", "drs4b74", "sfe");
     };
 
     self.item = function() {

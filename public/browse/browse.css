@@ -38,10 +38,11 @@
   #browse-page #map-prompt .field {
     margin: auto; }
   #browse-page #map-prompt .button {
-    padding: 1em 2em; }
-  #browse-page #map-prompt .buttons {
-    width: 55%;
-    margin: auto; }
+    padding: 0em 3em; }
+
+#browse-page #map-err {
+  margin-top: 3.25rem;
+  padding: 2em; }
 
 #browse-page #map {
   position: fixed !important;

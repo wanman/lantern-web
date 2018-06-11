@@ -13,3 +13,6 @@
     #detail-page .box .icon i {
       margin: auto; }
 
+#detail-page .box:hover {
+  cursor: pointer; }
+

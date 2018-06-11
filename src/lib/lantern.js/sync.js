@@ -12,6 +12,10 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
 
     // @todo expore pouchdb bug where this may be run twice
     function backOffSync(delay) {
+        
+        setStatus(false);
+
+
         if (reset_delay) {
             console.log("[stor] " + label + " do reset delay");
             reset_delay = false;

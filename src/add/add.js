@@ -79,10 +79,42 @@ window.page = (function() {
     self.addHelper("handleShowInputSelector", function(subcategory) {
         console.log("[add] selected subcategory: " + subcategory.title);
         self.view.$data.page_title = "Report " + subcategory.title;
-        new_doc.push("category", subcategory._id);
+        new_doc.push("category", subcategory._id.split(":")[1]);
+
+
         console.log(new_doc);
+
+
         self.view.$data.show_subcategory_selector = false;
-        self.view.$data.show_input_selector = true;
+
+        // supply locations get special treatment, as they must be connected
+        // to a pre-defined marker
+        if (new_doc.has("tag", "sup")) {
+            self.stor.getManyByType("m").then(function() {
+                self.view.$data.show_marker_selector = true;
+            });
+        }
+        else {
+            self.view.$data.show_input_selector = true;
+
+        }
+    });
+
+    self.addHelper("handleSelectMarkerForItem", function(marker) {
+        console.log("[add] selected marker", marker, new_doc);
+
+        new_doc.id = "i:" + new_doc.get("category") + "-" + Math.round(Math.random()*100);
+        new_doc.set("status", 1);
+        new_doc.push("parent", marker._id);
+        new_doc.set("$ia", new Date());
+        new_doc.save().then(function() {
+            self.view.$data.show_marker_selector = false;
+            self.view.$data.show_success = true;
+        });
+    });
+
+    self.addHelper("handleAddSafeArea", function() {
+        console.log("[add] add safe area...");
     });
 
     self.addHelper("presentAddressForm", function() {
@@ -165,6 +197,7 @@ window.page = (function() {
     self.addData("map_loaded", false);
     self.addData("area_radius", 0);
     self.addData("lock_doc", false); // for preview before saving
+    self.addData("show_marker_selector", false);
 
     //------------------------------------------------------------------------
     
@@ -190,7 +223,7 @@ window.page = (function() {
             else {
 
                 new_doc = new LanternDocument( "m:" + Math.round(Math.random()*100000), self.stor);
-                new_doc.push("category", param);
+                new_doc.push("tag", param.split(":")[1]);
 
                 self.stor.get(param).then(function(result) {
                     self.view.$data.category  = result.toJSONFriendly();

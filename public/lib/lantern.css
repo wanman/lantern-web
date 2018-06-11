@@ -4740,8 +4740,6 @@ a:active .icon i {
 
 .navbar {
   background: rgba(255, 255, 255, 0.9); }
-  .navbar .icon {
-    margin-right: 1em; }
 
 section nav {
   position: fixed;
@@ -4754,11 +4752,9 @@ section nav {
   section nav li a {
     padding: 1.5em;
     padding-right: 1em;
-    border-top: 1px solid whitesmoke;
+    border-top: 1px solid #f2f2f2;
     width: 100%;
     display: block; }
-  section nav .icon {
-    margin-right: 2em; }
 
 .page-content {
   margin-top: 3.25rem;
@@ -4829,6 +4825,9 @@ h1 {
 nav.global {
   background: #FFF; }
 
+.navbar-burger {
+  margin-left: 0em; }
+
 .mock {
   text-align: center;
   height: 100%;
@@ -4836,6 +4835,19 @@ nav.global {
   .mock img {
     margin: auto;
     border: 1px solid #c6c8cd; }
+
+#back-btn {
+  height: 3.25rem;
+  width: 3.25rem;
+  margin: -0.7em;
+  margin-right: 0.5em;
+  text-align: center; }
+  #back-btn i {
+    margin: 0; }
+
+#back-btn:hover {
+  cursor: pointer;
+  background: whitesmoke; }
 
 #status-footer {
   background: rgba(255, 255, 255, 0.9);

@@ -257,13 +257,17 @@ window.LanternImport = function(stor) {
       
         for (var i=0;  i<3; i++) {
             var item_cat = categories[Math.round(Math.random()*categories.length-1)];
+            
+            if (!item_cat) {
+                return;
+            }
+            
             var item_id = "i:" + item_cat + "-1-" + id;
             var doc = new LanternDocument(item_id, stor);
             doc.set("status", 1);
             doc.push("parent", venue_doc.id);
             doc.push("category", item_cat);
             doc.set("$ia", new Date());
-            console.log(doc);
             doc.save();
         }
 
@@ -283,9 +287,8 @@ window.LanternImport = function(stor) {
 
 
         console.log("[import] adding default Marker categories");
-        addCategory("str", "Shelter", "mrk");
         addCategory("sfe", "Safe Area", "mrk");
-        addCategory("sup", "Supply Location", "mrk");
+        addCategory("sup", "Supply", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("rdc", "Road Conditions", "mrk");
         addCategory("pwo", "Power Outage", "mrk");
@@ -307,10 +310,10 @@ window.LanternImport = function(stor) {
     */
     self.marker = function() {
         console.log("[import] adding default venues");
-        addMarker("css", "Central City Shelter", "drs4b7s", "str");
+        addMarker("css", "Central City Shelter", "drs4b7s", "sfe");
         addMarker("aic", "AI's Cafe", "drs4b77", "sfe");
-        addMarker("rcm", "Red Cross HQ", "drs4b75", "str");
-        addMarker("hsf", "High School Field House", "drs4b74", "str");
+        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
+        addMarker("hsf", "High School Field House", "drs4b74", "sfe");
     };
 
     self.item = function() {
@@ -492,6 +495,71 @@ window.LanternPage = (function(id) {
                 return self.stor.getManyByType("u");
             });
     };
+
+
+
+
+
+    /**
+    * Display the map for the user based on approx. location
+    */
+    self.renderMap= function(lat, lon) {
+        if (map) {
+            // already showing map
+            return;
+        }
+
+        console.log("[browse] showing map");
+
+
+        map = new LanternMapManager(lat, lon);
+        map.setPosition(lat, lon);
+
+        console.log("[browse] map loaded");
+
+        // add markers to map
+        self.view.$data.m_docs.forEach(function(marker) {
+            var coords = [];
+            for (var idx in marker.geo) {
+                var c = Geohash.decode(marker.geo[idx]);
+                coords.push(c);
+            }
+
+            if (coords.length == 1) {
+                // point
+                map.addPoint(coords[0]);
+            }
+            else {
+                // draw a shape
+                map.addPolygon(coords);
+            }
+        });
+
+    };
+    
+    self.askForLocation = function() {
+        function geo_success(position) {
+            console.log("[browse] found position", position);
+            self.view.$data.map_err = false;
+            self.renderMap(position.coords.latitude, position.coords.longitude);
+        }
+
+        function geo_error(err) {
+            console.log("[browse] no position available", err);
+            self.view.$data.map_err = true;
+        }
+
+        console.log("[browse] asking for location");
+        var geo_options = {
+          enableHighAccuracy: false, 
+          maximumAge        : 30000, 
+          timeout           : 27000
+        };
+
+        navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
+        var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
+    };
+
 
 
 
@@ -903,6 +971,10 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
 
     // @todo expore pouchdb bug where this may be run twice
     function backOffSync(delay) {
+        
+        setStatus(false);
+
+
         if (reset_delay) {
             console.log("[stor] " + label + " do reset delay");
             reset_delay = false;

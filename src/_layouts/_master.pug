@@ -20,19 +20,27 @@ html(lang="en")
             // global navigation
             nav.navbar.is-fixed-top(v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']" )
                 .navbar-brand
-                    .navbar-item 
-                        span.icon.is-medium(v-if="allow_back_button" @click="handleGoBack")
-                            i.fas.fa-arrow-left.fa-md
-                        span {{ page_title }}
-                    a.navbar-burger(role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]"  @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']" )
+
+                    a.navbar-burger(v-if="!allow_back_button" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]"  @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']" )
                         span(aria-hidden="true")
                         span(aria-hidden="true")
                         span(aria-hidden="true")
 
+                    .navbar-item
+                        span#back-btn.icon.is-medium(v-if="allow_back_button" @click="handleGoBack" role="button")
+                            i.fas.fa-arrow-left.fa-md
+                        span {{ page_title }}
+                   
+
             nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="cloud_connected !== null || lantern_connected !== null")
                 .navbar-brand
                     .navbar-item
-                        span(v-if="!cloud_connected && !lantern_connected") Offline
+                        span(v-if="!cloud_connected && !lantern_connected") 
+
+                            span.icon
+                                    i.fas.fa-wifi(style="color: #DDD")
+                            | Offline
+
                         span(v-if="cloud_connected") 
                             span.icon
                                     i.fas.fa-cloud

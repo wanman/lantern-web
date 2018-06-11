@@ -144,6 +144,71 @@ window.LanternPage = (function(id) {
 
 
 
+
+
+    /**
+    * Display the map for the user based on approx. location
+    */
+    self.renderMap= function(lat, lon) {
+        if (map) {
+            // already showing map
+            return;
+        }
+
+        console.log("[browse] showing map");
+
+
+        map = new LanternMapManager(lat, lon);
+        map.setPosition(lat, lon);
+
+        console.log("[browse] map loaded");
+
+        // add markers to map
+        self.view.$data.m_docs.forEach(function(marker) {
+            var coords = [];
+            for (var idx in marker.geo) {
+                var c = Geohash.decode(marker.geo[idx]);
+                coords.push(c);
+            }
+
+            if (coords.length == 1) {
+                // point
+                map.addPoint(coords[0]);
+            }
+            else {
+                // draw a shape
+                map.addPolygon(coords);
+            }
+        });
+
+    };
+    
+    self.askForLocation = function() {
+        function geo_success(position) {
+            console.log("[browse] found position", position);
+            self.view.$data.map_err = false;
+            self.renderMap(position.coords.latitude, position.coords.longitude);
+        }
+
+        function geo_error(err) {
+            console.log("[browse] no position available", err);
+            self.view.$data.map_err = true;
+        }
+
+        console.log("[browse] asking for location");
+        var geo_options = {
+          enableHighAccuracy: false, 
+          maximumAge        : 30000, 
+          timeout           : 27000
+        };
+
+        navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
+        var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
+    };
+
+
+
+
     /**
     * Points to the right server for processing requests
     */

@@ -59,15 +59,15 @@ $panel-shadow: 0 2px 10px rgba(#000000, 0.02), 0 0 0 1px rgba(#000000, 0.02);
         }
 
         .button {
-            padding: 1em 2em;
+            padding: 0em 3em;
         }
 
-        .buttons {
-            width: 55%;
-            margin: auto;
-        }
     }
 
+    #map-err {
+        margin-top: 3.25rem;
+        padding: 2em;
+    }
 
     #map {
         position: fixed !important;

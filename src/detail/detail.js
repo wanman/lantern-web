@@ -36,6 +36,8 @@ window.page = (function() {
         .then(self.connect)
         .then(function() {
             self.view.$data.allow_back_button = true;
+            self.askForLocation();
+
             return self.stor.getManyByType("c");
         })
         .then(function() {
@@ -73,7 +75,7 @@ window.page = (function() {
             else {
                 self.view.$data.page_loading = false;
             }
-        });
+        })
 
     return self;
 })();

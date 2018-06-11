@@ -23,10 +23,25 @@ html, body {
     font-size: small;
     font-weight: normal; }
 
-#add-page .page-content ul a .icon {
-  float: right;
-  margin-top: -0.75em;
-  margin-right: 0px; }
+#add-page .page-content ul li {
+  color: #3273dc;
+  background: #FFF;
+  padding: 1.5em;
+  padding-right: 1em;
+  border-top: 1px solid #f2f2f2;
+  width: 100%;
+  display: block; }
+  #add-page .page-content ul li .icon {
+    float: right;
+    margin-top: -0.75em;
+    margin-right: 0px; }
+
+#add-page .page-content ul li:last-child {
+  border-bottom: 1px solid #f2f2f2; }
+
+#add-page .page-content ul li:hover {
+  cursor: pointer;
+  background: #FAFAFA; }
 
 #add-page .button {
   max-width: 14em; }
