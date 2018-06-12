@@ -42,9 +42,7 @@
                     <div id="user-view" v-cloak v-if="!page_loading">
                         <h1>Users</h1>
                         <p v-if="u_docs.length == 0">Sorry, there are no known users on the network right now. Please check back soon.</p>
-                        <ul v-for="user in u_docs" v-if="u_docs.length">
-                            <li class="box">{{ user._id }}</li>
-                        </ul>
+                        <p v-if="u_docs.length &gt; 0">{{ pluralize(u_docs.length) }} Active</p>
                     </div>
                     <div id="device-view" v-cloak v-if="!page_loading">
                         <h1>Devices</h1>

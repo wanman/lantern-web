@@ -1,4 +1,5 @@
 window.LanternDocument = (function(id,stor) {
+ 
 
     // used to preserve keyspace when storing and sending low-bandwidth
     var REG = {
@@ -12,6 +13,7 @@ window.LanternDocument = (function(id,stor) {
 
         // public data for all sync and broadcast
         title: "tt",        // title or name of object
+        slug: "sg",         // slug for object
         text: "tx",         // text or label for object
         icon: "ic",         // icon to describe object
         status: "st",       // level or quantity
@@ -140,7 +142,7 @@ window.LanternDocument = (function(id,stor) {
             if (!self.has("created_at")) {
                 self.set("created_at", new Date());
             }
-            console.log("[doc] saved " + self.id, self.toJSON());
+            console.log("[doc] saved " + self.id);
             return doc;
         })
         .catch(function(err) {
@@ -206,7 +208,8 @@ window.LanternDocument = (function(id,stor) {
         self.id = id;
     }
 
-    
+    // random identifiers for new docs to avoid sync conflicts
+    self.id = self.id.replace("%%", Math.round(Math.random() * 1000));
 
     return self;
 });

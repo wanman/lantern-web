@@ -6,7 +6,9 @@ id: "admin"
 extends ../_layouts/_master.pug
 
 block content
-    
+        
+
+
     .connection(v-if="lantern_connected" v-cloak)
 
         .notification.is-warning.has-text-weight-normal.is-size-6(v-cloak v-if="warning") {{ warning }}
@@ -33,7 +35,6 @@ block content
         .button.is-primary(v-on:click="loadTestData") Load Test Data
         .button.is-danger.is-outlined(v-on:click="removeAllDocs") Clear Data
     
-        
 
 block styles
     link(rel="stylesheet" type="text/css" href="/admin/admin.css")

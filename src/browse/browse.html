@@ -19,35 +19,37 @@ block content
                 span Map
 
 
-    // map is empty by default - only certain pages will fill this region
-    #map(v-cloak v-if="!map_err" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
+    div(v-if="!page_loading" v-cloak)
 
-    #map-err(v-if="show_map && map_err")
-        p.box.is-error Unable to load the map at this time. Please ensure your browser has permission to access your location and reload the page.
+        // map is empty by default - only certain pages will fill this region
+        #map(v-if="!map_err" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
+
+        #map-err(v-if="show_map && map_err")
+            p Unable to load the map at this time. Please ensure your browser has permission to access your location and reload the page.
 
 
 
 
-    // markers view
-    #markers-view(v-if="!page_loading && !show_map")
-        
-        #markers(v-cloak)
+        // markers view
+        #markers-view(v-if="!show_map")
+            
+            #markers
 
-            p(v-if="!m_docs.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
+                p(v-if="!m_docs.length" ) There are no supply stations or vehicles reported yet. Please check back soon.
 
-            div(v-if="m_docs.length")
+                div(v-if="m_docs.length")
 
-                .panel(v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title")
-                    
-                    .panel-heading(@click="handleMarkerSelect(marker)")
-                        h4 {{ marker.title }}
+                    .panel(v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title")
+                        
+                        .panel-heading(@click="handleMarkerSelect(marker)")
+                            h4 {{ marker.title }}
 
-                    .panel-block(v-for="item in i_docs" v-if="item.parent == marker._id && item.category[0]" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id")
+                        .panel-block(v-for="item in i_docs" v-if="item.parent == marker._id && item.category[0]" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id")
 
-                        span.icon.is-large(v-bind:style="makeCategoryStyle(getCategory(item.category))") 
-                            i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
+                            span.icon.is-large(v-bind:style="makeCategoryStyle(getCategory(item.category))") 
+                                i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
 
-                        p {{ getCategoryName(item) }}
+                            p {{ getCategoryName(item) }}
 
 
 

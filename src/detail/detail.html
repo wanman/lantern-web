@@ -5,8 +5,14 @@ id: "detail"
 extends ../_layouts/_master.pug
 
 block content
+    
+    #map-prompt(v-if="!show_map" @click="handleShowMap")
+        span.icon
+            i.fas.fa-map
+        span Show Map
 
-    #map
+
+    #map(v-bind:style="'display:'  + (show_map ? 'block' : 'none')")
 
     div(v-cloak v-if="!page_loading")
         .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)")

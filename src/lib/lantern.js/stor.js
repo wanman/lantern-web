@@ -152,7 +152,7 @@ window.LanternStor = (function($data, uri) {
     };
 
     self.get = function() {
-        console.log("[stor] get: " + arguments[0]);
+        //console.log("[stor] get: " + arguments[0]);
         return self.db.get.apply(self.db, arguments)
             .then(function(data) {
                 var doc = new LanternDocument(data, self);
@@ -163,7 +163,6 @@ window.LanternStor = (function($data, uri) {
 
 
     self.getManyByType = function(type) {
-        console.log("[stor] loading type: " + type);
         var params = {
             startkey: type+':', 
             endkey: type + ":\ufff0", 
@@ -171,7 +170,11 @@ window.LanternStor = (function($data, uri) {
         };
         return self.db.allDocs(params)
             .then(function(result) {
+
+                console.log("[stor] loading type: " + type + " (" + result.rows.length + ")");
+
                 return Promise.all(result.rows.map(function(result) {
+
                     var doc = new LanternDocument(result.doc, self);
                     refreshDocInCache(doc);
                     return doc;

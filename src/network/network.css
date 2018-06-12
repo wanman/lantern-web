@@ -1,5 +1,8 @@
 #network-page {
-
+   #user-view {
+        padding: 2em;
+        text-align: center;
+   }
    #device-view {
         padding: 2em;
    }

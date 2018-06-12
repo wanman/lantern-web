@@ -1,4 +1,12 @@
 #detail-page {
+
+    #map-prompt {
+        background: #FFF;
+        border-bottom: 1px solid #EEE;
+        color: #3273dc;
+        padding: 1em;
+        text-align: center;
+    }
     .box {
         min-height: 7em;
         margin: 1em;

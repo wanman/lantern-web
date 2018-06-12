@@ -31,6 +31,7 @@ window.page = (function() {
         {key: "i", slug: "item"},
         {key: "r", slug: "route"},
         {key: "n", slug: "note"},
+        {key: "u", slug: "user"}
     ]);
 
     self.addData("warning", "");

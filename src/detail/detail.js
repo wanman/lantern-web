@@ -10,6 +10,7 @@ window.page = (function() {
     }
 
     //------------------------------------------------------------------------
+    self.addData("show_map", false);
     self.addData("marker", {});
     self.addData("item", {});
 
@@ -31,13 +32,23 @@ window.page = (function() {
 
 
 
+    self.addHelper("handleShowMap", function(evt) {
+        self.view.$data.show_map = true;
+        self.renderMap().then(function() {
+            console.log("[detail] showing map");
+            if (self.view.$data.marker) {
+                var coords = Geohash.decode(self.view.$data.marker.geo[0]);
+                self.map.setPosition(coords.lat, coords.lon);
+                console.log(coords);
+            }
+        });
+    });
+
     //------------------------------------------------------------------------
     self.render()
         .then(self.connect)
         .then(function() {
             self.view.$data.allow_back_button = true;
-            self.askForLocation();
-
             return self.stor.getManyByType("c");
         })
         .then(function() {

@@ -14190,10 +14190,10 @@ exports.map = createMap;
 }(function (TileLayerOffline, ControlOffline) {
 }));
 
-window.LanternMapManager = function(lat, lon) {
+window.LanternMapManager = function() {
 
     var self = {
-        map: L.map('map')
+        map: L.map('map').fitWorld()
     };
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

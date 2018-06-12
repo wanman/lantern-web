@@ -1,12 +1,14 @@
 window.LanternPage = (function(id) {
 
+
     var opts = {
         data: {
             cloud_connected: null,
             lantern_connected: null,
             page_title: "",
             page_loading: true,
-            allow_back_button: false
+            allow_back_button: false,
+            user: null
         },
         methods: {
             handleGoBack: function() {
@@ -19,7 +21,8 @@ window.LanternPage = (function(id) {
     var self = {
         stor: null,
         user: null,
-        view: null
+        view: null,
+        map: null
     };
 
 
@@ -58,7 +61,7 @@ window.LanternPage = (function(id) {
     */
     function getUser() {
         return self.stor.get("u:"+getUserId()).then(function(doc) {
-            console.log("[user] found", doc.get("_id"));
+            //console.log("[user] found", doc.get("_id"));
             self.view.$data.user = doc.toJSONFriendly();
             return doc;
         });
@@ -124,7 +127,6 @@ window.LanternPage = (function(id) {
     * Add in data from PouchDB and identify network status
     */
     self.connect = function() {
-        
         self.stor = new LanternStor(opts.data, self.getBaseURI());
         return self.stor.setup()
             .then(getOrCreateUser)
@@ -134,11 +136,7 @@ window.LanternPage = (function(id) {
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
                 // device wifi or local testing
-                sync(true);
-            })
-            .then(function() {
-                // draw listening user count
-                return self.stor.getManyByType("u");
+                //sync(true);
             });
     };
 
@@ -149,61 +147,66 @@ window.LanternPage = (function(id) {
     /**
     * Display the map for the user based on approx. location
     */
-    self.renderMap= function(lat, lon) {
-        if (map) {
-            // already showing map
-            return;
-        }
+    self.renderMap = function() {
 
-        console.log("[browse] showing map");
+        return new Promise(function(resolve, reject) {
 
-
-        map = new LanternMapManager(lat, lon);
-        map.setPosition(lat, lon);
-
-        console.log("[browse] map loaded");
-
-        // add markers to map
-        self.view.$data.m_docs.forEach(function(marker) {
-            var coords = [];
-            for (var idx in marker.geo) {
-                var c = Geohash.decode(marker.geo[idx]);
-                coords.push(c);
+            if (self.map) {
+                return resolve();
             }
+            
+            self.map = new LanternMapManager();
+            // add markers to map
+            self.view.$data.m_docs.forEach(function(marker) {
+                var coords = [];
+                
+                for (var idx in marker.geo) {
+                    var c = Geohash.decode(marker.geo[idx]);
+                    coords.push(c);
+                }
 
-            if (coords.length == 1) {
-                // point
-                map.addPoint(coords[0]);
-            }
-            else {
-                // draw a shape
-                map.addPolygon(coords);
-            }
+                if (coords.length == 1) {
+                    // point
+                    console.log("[page] draw marker: ", marker._id);
+                    self.map.addPoint(coords[0]);
+                }
+                else {
+                    // draw a shape
+                    console.log("[page] draw polygon: ", marker._id);
+                    self.map.addPolygon(coords);
+                }
+            });
+            resolve();
         });
 
     };
     
     self.askForLocation = function() {
-        function geo_success(position) {
-            console.log("[browse] found position", position);
-            self.view.$data.map_err = false;
-            self.renderMap(position.coords.latitude, position.coords.longitude);
-        }
+        return new Promise(function(resolve, reject) {
 
-        function geo_error(err) {
-            console.log("[browse] no position available", err);
-            self.view.$data.map_err = true;
-        }
+            function geo_success(position) {
+                console.log("[page] found position", position);
+                self.view.$data.map_err = false;
+                resolve(position);
+            }
 
-        console.log("[browse] asking for location");
-        var geo_options = {
-          enableHighAccuracy: false, 
-          maximumAge        : 30000, 
-          timeout           : 27000
-        };
+            function geo_error(err) {
+                console.log("[page] geo error", err);
+                self.view.$data.map_err = true;
+                reject("no location available");
+            }
 
-        navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
-        var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
+            console.log("[page] asking for location");
+            var geo_options = {
+              enableHighAccuracy: false, 
+              maximumAge        : 30000, 
+              timeout           : 27000
+            };
+
+            navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
+            //var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
+
+        });
     };
 
 

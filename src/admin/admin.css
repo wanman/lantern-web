@@ -15,6 +15,12 @@ html, body {
         }
     }
 
+    #user-view {
+        margin-top: 2em;
+        border-top: 1px solid #EEE;
+        border-bottom: 1px solid #EEE;
+        padding: 1em;
+    }
 
     .tag {
         width: 9em;

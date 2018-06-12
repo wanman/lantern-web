@@ -7,7 +7,7 @@ extends ../_layouts/_master.pug
 block content
     #channels-view
 
-        h1(v-if="personalizing" v-cloak) Personalizing Map
+        h1(v-if="personalizing" v-cloak) Personalizing Map&hellip;
         h1(v-if="!personalizing" v-cloak) What do you need most?
 
         div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
@@ -18,19 +18,17 @@ block content
             h2(v-cloak v-if="(lantern_connected || cloud_connected) && u_docs.length <= 1") 
                 | Waiting for Users To Join Network
 
-        ul.item-list(v-cloak)
+        ul.item-list(v-cloak v-if="user")
             li.item(
                 v-for="cat in item_categories" 
                 v-bind:id="cat._id" 
-                v-bind:class="makeCategoryClass(cat)"
-               @click="toggleCategory" 
+                v-bind:class="user.tag && user.tag.indexOf(cat.slug) != -1 ? 'active' : ''"
+               @click="toggleCategory(cat)" 
                 )
                     span.icon.is-large(
                     v-bind:style="makeCategoryStyle(cat)"
                     ) 
                         i(v-bind:class="makeCategoryIconClass(cat)")
-
-
                     .title {{ cat.title }}
                 
 block styles

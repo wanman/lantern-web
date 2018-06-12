@@ -7,35 +7,15 @@ window.page = (function() {
     //------------------------------------------------------------------------
 
 
-    self.addHelper("makeCategoryClass", function(cat) {
-        var cls = "";
-        var user = self.user;
-        if (user && user.has("tag", cat._id)) {
-            cls += "active ";
-        }
-        return cls;
-    });
-
-
-    self.addHelper("toggleCategory", function(evt) {
-        var el = evt.target;
-        if (!el.getAttribute("id")) {
-            el = el.parentElement;
-        }
-        
-        var cat = el.getAttribute("id");
-        console.log("[browse] clicked: " + cat);
-
+    self.addHelper("toggleCategory", function(cat) {
+        var cat_label = cat._id.substr(2, cat._id.length);
         // do optimistic UI updates and then listen for sync to confirm
-        if (self.user.has("tag", cat)) {
-            self.user.pop("tag", cat);
-            el.classList.remove("active");
+        if (self.user.has("tag", cat_label)) {
+            self.user.pop("tag", cat_label);
         }
         else {
-            el.classList.add("active");
-            self.user.push("tag", cat);
+            self.user.push("tag", cat_label);
         }
-
         self.view.$data.personalizing = true;
         self.user.save().then(function() {
             setTimeout(function() {
@@ -69,9 +49,8 @@ window.page = (function() {
         })
         .then(self.connect)
         .then(function() {
-
             // draw category grid
-            self.stor.getManyByType("c").then(function(categories) {  
+            return self.stor.getManyByType("c").then(function(categories) {  
                 categories.forEach(function(cat) {
                     if (cat.has("tag", "itm")) {
                         self.view.$data.item_categories.push(cat.toJSONFriendly());
@@ -79,6 +58,10 @@ window.page = (function() {
                 });
             });
 
+        })
+        .then(function() {
+            // draw listening user count
+            return self.stor.getManyByType("u");
         });
         
     return self;

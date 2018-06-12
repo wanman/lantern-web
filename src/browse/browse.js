@@ -1,7 +1,7 @@
 window.page = (function() {
 
     var self = new LanternPage("browse");
-    var map;
+
 
     /**
     * Construct sample documents for demonstration purposes
@@ -57,7 +57,13 @@ window.page = (function() {
 
     self.addHelper("handleShowMap", function(evt) {
         self.view.$data.show_map = true;
-        self.askForLocation();
+        self.renderMap()
+            .then(self.askForLocation)
+            .then(function(position) {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+                self.map.setPosition(lat, lon);
+            });
     });
 
     self.addHelper("handleShowList", function(evt) {
@@ -77,7 +83,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.render()
         .then(function() {
-            self.view.$data.page_title = "Nearby";
+            self.view.$data.page_title = "Home";
         })
         .then(self.connect)
         .then(loadMarkers);

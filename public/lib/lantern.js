@@ -1,6 +1,7 @@
 __base = "../";
 
 window.LanternDocument = (function(id,stor) {
+ 
 
     // used to preserve keyspace when storing and sending low-bandwidth
     var REG = {
@@ -14,6 +15,7 @@ window.LanternDocument = (function(id,stor) {
 
         // public data for all sync and broadcast
         title: "tt",        // title or name of object
+        slug: "sg",         // slug for object
         text: "tx",         // text or label for object
         icon: "ic",         // icon to describe object
         status: "st",       // level or quantity
@@ -142,7 +144,7 @@ window.LanternDocument = (function(id,stor) {
             if (!self.has("created_at")) {
                 self.set("created_at", new Date());
             }
-            console.log("[doc] saved " + self.id, self.toJSON());
+            console.log("[doc] saved " + self.id);
             return doc;
         })
         .catch(function(err) {
@@ -208,7 +210,8 @@ window.LanternDocument = (function(id,stor) {
         self.id = id;
     }
 
-    
+    // random identifiers for new docs to avoid sync conflicts
+    self.id = self.id.replace("%%", Math.round(Math.random() * 1000));
 
     return self;
 });
@@ -223,6 +226,7 @@ window.LanternImport = function(stor) {
     */
     function addCategory(slug, title, tag, color, background_color, icon) {
         var doc = new LanternDocument("c:"+slug, stor);
+        doc.set("slug", slug);
         doc.set("title", title);
         doc.push("tag", tag);
 
@@ -244,7 +248,7 @@ window.LanternImport = function(stor) {
 
     
     function addMarker(id, title, geo, cat) {
-        var venue_doc = new LanternDocument("m:"+id, stor);
+        var venue_doc = new LanternDocument("m:"+id+":%%", stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
         venue_doc.push("category", cat);
@@ -253,17 +257,21 @@ window.LanternImport = function(stor) {
 
 
         var categories = ["wtr", "ful", "net", "med", "dnt", "pwr", "eqp"];
-
+        var used_categories = [];
       
-        for (var i=0;  i<3; i++) {
-            var item_cat = categories[Math.round(Math.random()*categories.length-1)];
-            
-            if (!item_cat) {
+        for (var i=0;  i<4; i++) {
+
+            var index = Math.round(Math.random()*categories.length-1);
+            var item_cat = categories[index];
+
+            if (!item_cat || used_categories.indexOf(item_cat) !== -1) {
                 return;
             }
+
+            used_categories.push(item_cat);
             
-            var item_id = "i:" + item_cat + "-1-" + id;
-            var doc = new LanternDocument(item_id, stor);
+            
+            var doc = new LanternDocument("i:" + item_cat + ":%%", stor);
             doc.set("status", 1);
             doc.push("parent", venue_doc.id);
             doc.push("category", item_cat);
@@ -276,7 +284,7 @@ window.LanternImport = function(stor) {
 
     //------------------------------------------------------------------------
     self.category = function() {
-        console.log("[import] adding default item categories");
+        //console.log("[import] adding default item categories");
         addCategory("wtr", "Water", "itm", "78aef9", "e9f2fe", "tint");
         addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6", "gas-pump");
         addCategory("net", "Internet", "itm", "73cc72", "e8f7e8", "globe");
@@ -286,15 +294,14 @@ window.LanternImport = function(stor) {
         addCategory("eqp", "Equipment", "itm", "ffcc54", "fff7ef", "toolbox");
 
 
-        console.log("[import] adding default Marker categories");
+        //console.log("[import] adding default Marker categories");
         addCategory("sfe", "Safe Area", "mrk");
         addCategory("sup", "Supply", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
-        addCategory("rdc", "Road Conditions", "mrk");
         addCategory("pwo", "Power Outage", "mrk");
 
 
-        console.log("[import] adding sub-categories for Markers");
+        //console.log("[import] adding sub-categories for Markers");
         addCategory("rdb", "Road Debris", "dgr");
         addCategory("fld", "Flooding", "dgr");
         addCategory("cst", "Construction", "dgr");
@@ -309,7 +316,7 @@ window.LanternImport = function(stor) {
     * against meaningful points in a town.
     */
     self.marker = function() {
-        console.log("[import] adding default venues");
+        //console.log("[import] adding default venues");
         addMarker("css", "Central City Shelter", "drs4b7s", "sfe");
         addMarker("aic", "AI's Cafe", "drs4b77", "sfe");
         addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
@@ -321,8 +328,8 @@ window.LanternImport = function(stor) {
     };
 
     self.route = function() {
-        console.log("[import] adding default geo routes"); 
-        var doc = new LanternDocument("r:test-route", stor);
+        //console.log("[import] adding default geo routes"); 
+        var doc = new LanternDocument("r:%%", stor);
         doc.set("geo", ['drs4b77e8', 'drs4b77e9']);
         doc.set("$ia", new Date());
         doc.save();
@@ -330,8 +337,8 @@ window.LanternImport = function(stor) {
 
 
     self.note = function() {
-        console.log("[import] adding default notes");
-        var doc = new LanternDocument("n:test-note", stor);
+        //console.log("[import] adding default notes");
+        var doc = new LanternDocument("n:%%", stor);
         doc.push("tag", "v:test-place");
         doc.set("$ia", new Date());
         doc.save();
@@ -354,13 +361,15 @@ window.LanternImport = function(stor) {
     
 window.LanternPage = (function(id) {
 
+
     var opts = {
         data: {
             cloud_connected: null,
             lantern_connected: null,
             page_title: "",
             page_loading: true,
-            allow_back_button: false
+            allow_back_button: false,
+            user: null
         },
         methods: {
             handleGoBack: function() {
@@ -373,7 +382,8 @@ window.LanternPage = (function(id) {
     var self = {
         stor: null,
         user: null,
-        view: null
+        view: null,
+        map: null
     };
 
 
@@ -412,7 +422,7 @@ window.LanternPage = (function(id) {
     */
     function getUser() {
         return self.stor.get("u:"+getUserId()).then(function(doc) {
-            console.log("[user] found", doc.get("_id"));
+            //console.log("[user] found", doc.get("_id"));
             self.view.$data.user = doc.toJSONFriendly();
             return doc;
         });
@@ -478,7 +488,6 @@ window.LanternPage = (function(id) {
     * Add in data from PouchDB and identify network status
     */
     self.connect = function() {
-        
         self.stor = new LanternStor(opts.data, self.getBaseURI());
         return self.stor.setup()
             .then(getOrCreateUser)
@@ -488,11 +497,7 @@ window.LanternPage = (function(id) {
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
                 // device wifi or local testing
-                sync(true);
-            })
-            .then(function() {
-                // draw listening user count
-                return self.stor.getManyByType("u");
+                //sync(true);
             });
     };
 
@@ -503,61 +508,66 @@ window.LanternPage = (function(id) {
     /**
     * Display the map for the user based on approx. location
     */
-    self.renderMap= function(lat, lon) {
-        if (map) {
-            // already showing map
-            return;
-        }
+    self.renderMap = function() {
 
-        console.log("[browse] showing map");
+        return new Promise(function(resolve, reject) {
 
-
-        map = new LanternMapManager(lat, lon);
-        map.setPosition(lat, lon);
-
-        console.log("[browse] map loaded");
-
-        // add markers to map
-        self.view.$data.m_docs.forEach(function(marker) {
-            var coords = [];
-            for (var idx in marker.geo) {
-                var c = Geohash.decode(marker.geo[idx]);
-                coords.push(c);
+            if (self.map) {
+                return resolve();
             }
+            
+            self.map = new LanternMapManager();
+            // add markers to map
+            self.view.$data.m_docs.forEach(function(marker) {
+                var coords = [];
+                
+                for (var idx in marker.geo) {
+                    var c = Geohash.decode(marker.geo[idx]);
+                    coords.push(c);
+                }
 
-            if (coords.length == 1) {
-                // point
-                map.addPoint(coords[0]);
-            }
-            else {
-                // draw a shape
-                map.addPolygon(coords);
-            }
+                if (coords.length == 1) {
+                    // point
+                    console.log("[page] draw marker: ", marker._id);
+                    self.map.addPoint(coords[0]);
+                }
+                else {
+                    // draw a shape
+                    console.log("[page] draw polygon: ", marker._id);
+                    self.map.addPolygon(coords);
+                }
+            });
+            resolve();
         });
 
     };
     
     self.askForLocation = function() {
-        function geo_success(position) {
-            console.log("[browse] found position", position);
-            self.view.$data.map_err = false;
-            self.renderMap(position.coords.latitude, position.coords.longitude);
-        }
+        return new Promise(function(resolve, reject) {
 
-        function geo_error(err) {
-            console.log("[browse] no position available", err);
-            self.view.$data.map_err = true;
-        }
+            function geo_success(position) {
+                console.log("[page] found position", position);
+                self.view.$data.map_err = false;
+                resolve(position);
+            }
 
-        console.log("[browse] asking for location");
-        var geo_options = {
-          enableHighAccuracy: false, 
-          maximumAge        : 30000, 
-          timeout           : 27000
-        };
+            function geo_error(err) {
+                console.log("[page] geo error", err);
+                self.view.$data.map_err = true;
+                reject("no location available");
+            }
 
-        navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
-        var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
+            console.log("[page] asking for location");
+            var geo_options = {
+              enableHighAccuracy: false, 
+              maximumAge        : 30000, 
+              timeout           : 27000
+            };
+
+            navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
+            //var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
+
+        });
     };
 
 
@@ -806,7 +816,7 @@ window.LanternStor = (function($data, uri) {
     };
 
     self.get = function() {
-        console.log("[stor] get: " + arguments[0]);
+        //console.log("[stor] get: " + arguments[0]);
         return self.db.get.apply(self.db, arguments)
             .then(function(data) {
                 var doc = new LanternDocument(data, self);
@@ -817,7 +827,6 @@ window.LanternStor = (function($data, uri) {
 
 
     self.getManyByType = function(type) {
-        console.log("[stor] loading type: " + type);
         var params = {
             startkey: type+':', 
             endkey: type + ":\ufff0", 
@@ -825,7 +834,11 @@ window.LanternStor = (function($data, uri) {
         };
         return self.db.allDocs(params)
             .then(function(result) {
+
+                console.log("[stor] loading type: " + type + " (" + result.rows.length + ")");
+
                 return Promise.all(result.rows.map(function(result) {
+
                     var doc = new LanternDocument(result.doc, self);
                     refreshDocInCache(doc);
                     return doc;

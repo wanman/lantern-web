@@ -9,6 +9,7 @@ window.LanternImport = function(stor) {
     */
     function addCategory(slug, title, tag, color, background_color, icon) {
         var doc = new LanternDocument("c:"+slug, stor);
+        doc.set("slug", slug);
         doc.set("title", title);
         doc.push("tag", tag);
 
@@ -30,7 +31,7 @@ window.LanternImport = function(stor) {
 
     
     function addMarker(id, title, geo, cat) {
-        var venue_doc = new LanternDocument("m:"+id, stor);
+        var venue_doc = new LanternDocument("m:"+id+":%%", stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
         venue_doc.push("category", cat);
@@ -39,17 +40,21 @@ window.LanternImport = function(stor) {
 
 
         var categories = ["wtr", "ful", "net", "med", "dnt", "pwr", "eqp"];
-
+        var used_categories = [];
       
-        for (var i=0;  i<3; i++) {
-            var item_cat = categories[Math.round(Math.random()*categories.length-1)];
-            
-            if (!item_cat) {
+        for (var i=0;  i<4; i++) {
+
+            var index = Math.round(Math.random()*categories.length-1);
+            var item_cat = categories[index];
+
+            if (!item_cat || used_categories.indexOf(item_cat) !== -1) {
                 return;
             }
+
+            used_categories.push(item_cat);
             
-            var item_id = "i:" + item_cat + "-1-" + id;
-            var doc = new LanternDocument(item_id, stor);
+            
+            var doc = new LanternDocument("i:" + item_cat + ":%%", stor);
             doc.set("status", 1);
             doc.push("parent", venue_doc.id);
             doc.push("category", item_cat);
@@ -62,7 +67,7 @@ window.LanternImport = function(stor) {
 
     //------------------------------------------------------------------------
     self.category = function() {
-        console.log("[import] adding default item categories");
+        //console.log("[import] adding default item categories");
         addCategory("wtr", "Water", "itm", "78aef9", "e9f2fe", "tint");
         addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6", "gas-pump");
         addCategory("net", "Internet", "itm", "73cc72", "e8f7e8", "globe");
@@ -72,15 +77,14 @@ window.LanternImport = function(stor) {
         addCategory("eqp", "Equipment", "itm", "ffcc54", "fff7ef", "toolbox");
 
 
-        console.log("[import] adding default Marker categories");
+        //console.log("[import] adding default Marker categories");
         addCategory("sfe", "Safe Area", "mrk");
         addCategory("sup", "Supply", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
-        addCategory("rdc", "Road Conditions", "mrk");
         addCategory("pwo", "Power Outage", "mrk");
 
 
-        console.log("[import] adding sub-categories for Markers");
+        //console.log("[import] adding sub-categories for Markers");
         addCategory("rdb", "Road Debris", "dgr");
         addCategory("fld", "Flooding", "dgr");
         addCategory("cst", "Construction", "dgr");
@@ -95,7 +99,7 @@ window.LanternImport = function(stor) {
     * against meaningful points in a town.
     */
     self.marker = function() {
-        console.log("[import] adding default venues");
+        //console.log("[import] adding default venues");
         addMarker("css", "Central City Shelter", "drs4b7s", "sfe");
         addMarker("aic", "AI's Cafe", "drs4b77", "sfe");
         addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
@@ -107,8 +111,8 @@ window.LanternImport = function(stor) {
     };
 
     self.route = function() {
-        console.log("[import] adding default geo routes"); 
-        var doc = new LanternDocument("r:test-route", stor);
+        //console.log("[import] adding default geo routes"); 
+        var doc = new LanternDocument("r:%%", stor);
         doc.set("geo", ['drs4b77e8', 'drs4b77e9']);
         doc.set("$ia", new Date());
         doc.save();
@@ -116,8 +120,8 @@ window.LanternImport = function(stor) {
 
 
     self.note = function() {
-        console.log("[import] adding default notes");
-        var doc = new LanternDocument("n:test-note", stor);
+        //console.log("[import] adding default notes");
+        var doc = new LanternDocument("n:%%", stor);
         doc.push("tag", "v:test-place");
         doc.set("$ia", new Date());
         doc.save();

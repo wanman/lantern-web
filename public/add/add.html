@@ -94,7 +94,7 @@
                         <div id="success-view" v-if="show_success"><span class="icon is-large"><i class="fas fa-check-circle fa-3x"></i></span>
                             <h1>Thank you!</h1>
                             <p v-if="lantern_connected">Your contribution was successfully saved to the map.</p>
-                            <p v-if="!lantern_connected">Your contribution was successfully saved to the map and will be uploaded once you connect to a Lantern or the internet.</p>
+                            <p v-if="!lantern_connected">Your contribution was successfully saved to the map and will be uploaded and verified once you connect to a Lantern or the internet.</p>
                             <div class="action-panel">
                                 <div class="button" @click="handleReturnToMap"> <span>Return to Map</span><span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>
                             </div>

@@ -43,22 +43,24 @@
                     <div id="map-prompt">
                         <div class="buttons has-addons is-centered"><span class="button" @click="handleShowList" v-bind:class="show_map ? '' : 'is-info is-selected'"><span class="icon"><i class="fas fa-list"></i></span><span>List</span></span><span class="button" @click="handleShowMap" v-bind:class="show_map ? 'is-info is-selected' : ''"><span class="icon"><i class="fas fa-map"></i></span><span>Map</span></span></div>
                     </div>
-                    <!-- map is empty by default - only certain pages will fill this region-->
-                    <div id="map" v-cloak v-if="!map_err" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')"></div>
-                    <div id="map-err" v-if="show_map &amp;&amp; map_err">
-                        <p class="box is-error">Unable to load the map at this time. Please ensure your browser has permission to access your location and reload the page.</p>
-                    </div>
-                    <!-- markers view-->
-                    <div id="markers-view" v-if="!page_loading &amp;&amp; !show_map">
-                        <div id="markers" v-cloak>
-                            <p v-if="!m_docs.length">There are no supply stations or vehicles reported yet. Please check back soon.</p>
-                            <div v-if="m_docs.length">
-                                <div class="panel" v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title">
-                                    <div class="panel-heading" @click="handleMarkerSelect(marker)">
-                                        <h4>{{ marker.title }}</h4>
-                                    </div>
-                                    <div class="panel-block" v-for="item in i_docs" v-if="item.parent == marker._id &amp;&amp; item.category[0]" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
-                                        <p>{{ getCategoryName(item) }}</p>
+                    <div v-if="!page_loading" v-cloak>
+                        <!-- map is empty by default - only certain pages will fill this region-->
+                        <div id="map" v-if="!map_err" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')"></div>
+                        <div id="map-err" v-if="show_map &amp;&amp; map_err">
+                            <p>Unable to load the map at this time. Please ensure your browser has permission to access your location and reload the page.</p>
+                        </div>
+                        <!-- markers view-->
+                        <div id="markers-view" v-if="!show_map">
+                            <div id="markers">
+                                <p v-if="!m_docs.length">There are no supply stations or vehicles reported yet. Please check back soon.</p>
+                                <div v-if="m_docs.length">
+                                    <div class="panel" v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title">
+                                        <div class="panel-heading" @click="handleMarkerSelect(marker)">
+                                            <h4>{{ marker.title }}</h4>
+                                        </div>
+                                        <div class="panel-block" v-for="item in i_docs" v-if="item.parent == marker._id &amp;&amp; item.category[0]" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
+                                            <p>{{ getCategoryName(item) }}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
