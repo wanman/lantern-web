@@ -7,6 +7,8 @@ window.page = (function() {
 
     self.addHelper("toggleCategory", function(cat) {
         var cat_label = cat._id.substr(2, cat._id.length);
+
+        console.log("[channel] toggle cat: " + cat_label);
         // do optimistic UI updates and then listen for sync to confirm
         if (self.user.has("tag", cat_label)) {
             self.user.pop("tag", cat_label);

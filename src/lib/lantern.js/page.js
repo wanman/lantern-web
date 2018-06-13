@@ -185,15 +185,11 @@ window.LanternPage = (function(id) {
         return new Promise(function(resolve, reject) {
 
             function geo_success(position) {
-                console.log("[page] found position", position);
-                self.view.$data.map_err = false;
                 resolve(position);
             }
 
             function geo_error(err) {
-                console.log("[page] geo error", err);
-                self.view.$data.map_err = true;
-                reject("no location available");
+                reject(err);
             }
 
             console.log("[page] asking for location");

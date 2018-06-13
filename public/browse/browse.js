@@ -41,7 +41,6 @@ window.page = (function() {
     //------------------------------------------------------------------------
 
     self.addData("show_map", null);
-    self.addData("map_err", null);
     self.addData("geolocation", null);
 
 
@@ -59,13 +58,19 @@ window.page = (function() {
 
     self.addHelper("handleShowMap", function(evt) {
         self.view.$data.show_map = true;
-        self.renderMap()
-            .then(self.askForLocation)
-            .then(function(position) {
-                var lat = position.coords.latitude;
-                var lon = position.coords.longitude;
-                self.map.setPosition(lat, lon);
-            });
+
+        setTimeout(function() {
+            self.renderMap()
+                .then(self.askForLocation)
+                .then(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+                    self.map.setPosition(lat, lon, 7);
+                })
+                .catch(function(err) {
+                    console.log("[browse] map error", err);
+                });
+        }, 100);
     });
 
     self.addHelper("handleShowList", function(evt) {
@@ -92,3 +97,4 @@ window.page = (function() {
 
     return self; 
 }());
+

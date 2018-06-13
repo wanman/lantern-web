@@ -1,3 +1,6 @@
+$background: #f9fafb;
+
+
 #detail-page {
 
     #map-prompt {
@@ -7,6 +10,12 @@
         padding: 1em;
         text-align: center;
     }
+
+    #map-prompt:hover {
+        background: $background;
+        cursor: pointer;
+    }
+
     .box {
         min-height: 7em;
         margin: 1em;

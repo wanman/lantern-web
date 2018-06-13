@@ -22,13 +22,7 @@ block content
     div(v-if="!page_loading" v-cloak)
 
         // map is empty by default - only certain pages will fill this region
-        #map(v-if="!map_err" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
-
-        #map-err(v-if="show_map && map_err")
-            p Unable to load the map at this time. Please ensure your browser has permission to access your location and reload the page.
-
-
-
+        #map(v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
 
         // markers view
         #markers-view(v-if="!show_map")

@@ -5,6 +5,10 @@
   padding: 1em;
   text-align: center; }
 
+#detail-page #map-prompt:hover {
+  background: #f9fafb;
+  cursor: pointer; }
+
 #detail-page .box {
   min-height: 7em;
   margin: 1em;

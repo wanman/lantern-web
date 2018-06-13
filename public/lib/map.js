@@ -14193,7 +14193,7 @@ exports.map = createMap;
 window.LanternMapManager = function() {
 
     var self = {
-        map: L.map('map').fitWorld()
+        map: L.map('map')
     };
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -14224,6 +14224,7 @@ window.LanternMapManager = function() {
     };
 
 
+    self.setPosition(38.42,-102.79, 3);
 
     //------------------------------------------------------------------------
 

@@ -45,10 +45,7 @@
                     </div>
                     <div v-if="!page_loading" v-cloak>
                         <!-- map is empty by default - only certain pages will fill this region-->
-                        <div id="map" v-if="!map_err" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')"></div>
-                        <div id="map-err" v-if="show_map &amp;&amp; map_err">
-                            <p>Unable to load the map at this time. Please ensure your browser has permission to access your location and reload the page.</p>
-                        </div>
+                        <div id="map" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')"></div>
                         <!-- markers view-->
                         <div id="markers-view" v-if="!show_map">
                             <div id="markers">

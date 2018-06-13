@@ -36,14 +36,16 @@ window.page = (function() {
 
     self.addHelper("handleShowMap", function(evt) {
         self.view.$data.show_map = true;
-        self.renderMap().then(function() {
-            console.log("[detail] showing map");
-            if (self.view.$data.marker) {
-                var coords = Geohash.decode(self.view.$data.marker.geo[0]);
-                self.map.setPosition(coords.lat, coords.lon);
-                console.log(coords);
-            }
-        });
+        setTimeout(function() {
+            self.renderMap().then(function() {
+                console.log("[detail] showing map");
+                if (self.view.$data.marker) {
+                    var coords = Geohash.decode(self.view.$data.marker.geo[0]);
+                    self.map.setPosition(coords.lat, coords.lon, 12);
+                    console.log(coords);
+                }
+            });
+        }, 100);
     });
 
     //------------------------------------------------------------------------
