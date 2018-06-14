@@ -12,7 +12,7 @@ block content
 
         div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
             h2(v-cloak v-if="!lantern_connected && !cloud_connected") 
-                | Select A Supply Type
+                | Tap A Circle Below
             h2(v-cloak v-if="(lantern_connected || cloud_connected) && u_docs.length >= 2") 
                 | {{ pluralize(u_docs.length - 1) }} Listening
             h2(v-cloak v-if="(lantern_connected || cloud_connected) && u_docs.length <= 1") 

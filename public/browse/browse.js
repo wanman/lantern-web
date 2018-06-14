@@ -34,6 +34,8 @@ window.page = (function() {
 
                         if (category_id) {
                             self.view.$data.allow_back_button = true;
+                            self.view.$data.page_title = "Safe Zones : " + 
+                                self.stor.getCached("c:" + category_id).title;
                         }
                         items.forEach(function(item) {
                             if (!category_id || item.has("category", category_id)) {

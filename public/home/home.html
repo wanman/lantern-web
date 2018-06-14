@@ -43,7 +43,7 @@
                         <h1 v-if="!personalizing" v-cloak>What do you need today?</h1>
                         <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
                             <h2 v-cloak v-if="!lantern_connected &amp;&amp; !cloud_connected">
-                                 Select A Supply Type</h2>
+                                 Tap A Circle Below</h2>
                             <h2 v-cloak v-if="(lantern_connected || cloud_connected) &amp;&amp; u_docs.length &gt;= 2">
                                  {{ pluralize(u_docs.length - 1) }} Listening</h2>
                             <h2 v-cloak v-if="(lantern_connected || cloud_connected) &amp;&amp; u_docs.length &lt;= 1">

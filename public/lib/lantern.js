@@ -256,7 +256,7 @@ window.LanternImport = function(stor) {
         venue_doc.save();
 
 
-        var categories = ["wtr", "ful", "net", "med", "dnt", "pwr", "eqp"];
+        var categories = ["wtr", "ful", "net", "med", "clo", "eat", "bed"];
         var used_categories = [];
       
         for (var i=0;  i<4; i++) {
@@ -289,9 +289,10 @@ window.LanternImport = function(stor) {
         addCategory("ful", "Fuel", "itm", "c075c9", "f5e9f6", "gas-pump");
         addCategory("net", "Internet", "itm", "73cc72", "e8f7e8", "globe");
         addCategory("med", "Medical", "itm", "ff844d", "ffebe2", "prescription-bottle-alt");
-        addCategory("dnt", "Donation", "itm", "50c1b6", "e3f5f3", "tshirt");
+        addCategory("clo", "Clothing", "itm", "50c1b6", "e3f5f3", "tshirt");
         addCategory("pwr", "Power", "itm", "f45d90", "f2dae2", "plug");
-        addCategory("eqp", "Equipment", "itm", "ffcc54", "fff7ef", "toolbox");
+        addCategory("eat", "Food", "itm", "ffcc54", "fff7ef", "utensils");
+        addCategory("bed", "Shelter", "itm", "FFB000", "fef7eb", "bed");
 
 
         //console.log("[import] adding default Marker categories");
@@ -321,6 +322,7 @@ window.LanternImport = function(stor) {
         addMarker("aic", "AJ's Cafe", "drs4b77", "sfe");
         addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
         addMarker("hsf", "High School Field House", "drs4b74", "sfe");
+        addMarker("cth", "UCG Hospital", "drs4b73", "sfe");
     };
 
     self.item = function() {
