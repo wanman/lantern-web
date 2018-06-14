@@ -48,7 +48,7 @@
                         <!-- markers view-->
                         <div id="markers-view" v-if="!show_map">
                             <div id="markers">
-                                <p v-if="!filtered_markers.length">No safe zones have been reported to match your search. Please check back soon.</p>
+                                <p v-if="!filtered_markers.length">No items have been reported to match your search yet. Please check back soon.</p>
                                 <div v-if="filtered_markers.length">
                                     <div class="panel" v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title &amp;&amp; filtered_markers.indexOf(marker._id) != -1">
                                         <div class="panel-heading" @click="handleMarkerSelect(marker)">

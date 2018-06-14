@@ -33,7 +33,6 @@ window.page = (function() {
                     self.stor.getManyByType("i").then(function(items) {
 
                         if (category_id) {
-                            self.view.$data.allow_back_button = true;
                             self.view.$data.page_title = "Places : " + 
                                 self.stor.getCached("c:" + category_id).title;
                         }

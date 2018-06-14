@@ -4,17 +4,61 @@
         <title>Lantern Network</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="/media/favicon/apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/media/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/media/favicon/favicon-16x16.png">
+        <link rel="mask-icon" href="/media/favicon/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
+        <link rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css">
+        <link rel="stylesheet" type="text/css" href="/index.css">
     </head>
-    <body id="index-page">
-        <div class="page-content"><img class="logo" src="/media/logo.png">
-            <p class="intro"> You are about to join a local information exchange for your region. Internet is unavailable, however you will have access to a map to find nearby supplies and offer help to those nearby. </p>
-            <p class="intro">This is a demo only. Data is for experimentation purposes only and should not be relied upon or considered accurate.</p>
-            <p class="intro">To begin, please type <span>lantern.local</span> in the address bar of your web browser or push the button below:</p><a class="button" id="continue-btn" href="/">Continue</a>
-            <script>
-                var el = document.getElementById("continue-btn");
-                el.href = window.location.protocol +"//" + window.location.host + "/browse/browse.html";
-            </script>
+    <body>
+        <div id="home-page">
+            <!-- global navigation-->
+            <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']">
+                <div class="navbar-brand"><a class="navbar-burger" v-if="!allow_back_button" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
+                    <div class="navbar-item"><span class="icon is-medium" id="back-btn" v-if="allow_back_button" @click="handleGoBack" role="button"><i class="fas fa-arrow-left fa-md"></i></span><span>{{ page_title }}</span></div>
+                </div>
+            </nav>
+            <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null">
+                <div class="navbar-brand">
+                    <div class="navbar-item"><span v-if="!cloud_connected &amp;&amp; !lantern_connected"> <span class="icon"><i class="fas fa-wifi" style="color: #DDD;"></i></span>Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern X12</span></div>
+                </div>
+            </nav>
+            <section>
+                <nav class="global" v-if="showNavMenu" v-cloak>
+                    <ul>
+                        <li><a href="/home/home.html"> <span class="icon"><i class="fas fa-home"></i></span>Home</a></li>
+                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Places</a></li>
+                        <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
+                        <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
+                    </ul>
+                </nav>
+                <!-- main page content-->
+                <div class="page-content">
+                    <div id="home-view" v-cloak>
+                        <h1 v-if="personalizing">Finding closest places&hellip;</h1>
+                        <h1 v-if="!page_loading &amp;&amp; !personalizing">{{ m_docs.length }} Places Reported</h1>
+                        <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
+                            <h2>What do you need today?</h2>
+                        </div>
+                        <ul class="item-list" v-if="user">
+                            <li class="item" v-for="cat in item_categories" v-bind:id="cat._id" v-bind:ref="cat.slug" @click="handleCategorySelect(cat)"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)"></i>
+                                    <div class="badge" v-bind:style="makeBadgeStyle(cat)">{{ cat.count }}</div></span>
+                                <div class="title">{{ cat.title }} </div>
+                            </li>
+                            <li class="item" @click="handleAllCategorySelect"><span class="icon is-large" style="background-color: #EEE;">{{i_docs.length}}</span>
+                                <div class="title">All</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            <script src="/lib/vendor.js"></script>
+            <script src="/lib/lantern.js"></script>
+            <script src="/index.js"></script>
         </div>
     </body>
 </html>

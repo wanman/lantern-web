@@ -1,4 +1,4 @@
-__base = "../";
+__base = "/";
 
 window.page = (function() {
 
@@ -27,7 +27,7 @@ window.page = (function() {
         self.user.save().then(function() {
             setTimeout(function() {
                 window.location = "/browse/browse.html?cat="+cat.slug;
-            }, 1500);
+            }, 1100);
         });
 
     });

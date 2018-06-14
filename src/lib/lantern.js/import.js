@@ -88,6 +88,7 @@ window.LanternImport = function(stor) {
         //console.log("[import] adding sub-categories for Markers");
         addCategory("rdb", "Road Debris", "dgr");
         addCategory("fld", "Flooding", "dgr");
+        addCategory("lte", "Looting", "dgr");
         addCategory("cst", "Construction", "dgr");
         addCategory("cba", "Closed by Authorities", "dgr");
         addCategory("dst", "Destroyed", "dgr");

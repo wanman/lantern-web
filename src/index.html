@@ -1,21 +1,34 @@
 ---
-id: "index"
+id: "home"
 ---
 
-extends _layouts/_captive.pug
+extends _layouts/_master.pug
 
 block content
+    #home-view(v-cloak)
 
-    img.logo(src="/media/logo.png")
+        h1(v-if="personalizing") Finding closest places&hellip;
+        h1(v-if="!page_loading && !personalizing") {{ m_docs.length }} Places Reported
 
-    p.intro  You are about to join a local information exchange for your region. Internet is unavailable, however you will have access to a map to find nearby supplies and offer help to those nearby. 
+        div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
+            h2 What do you need today?
 
-    p.intro This is a demo only. Data is for experimentation purposes only and should not be relied upon or considered accurate.
+        ul.item-list(v-if="user")
+            li.item(v-for="cat in item_categories" v-bind:id="cat._id" v-bind:ref="cat.slug" 
+               @click="handleCategorySelect(cat)" 
+                )
+                    span.icon.is-large(v-bind:style="makeCategoryStyle(cat)") 
+                        i(v-bind:class="makeCategoryIconClass(cat)")
+                        .badge(v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}
 
-    p.intro To begin, please type <span>lantern.local</span> in the address bar of your web browser or push the button below:
-    
-    a.button(id="continue-btn" href="/") Continue
+                    .title {{ cat.title }} 
+            li.item(@click="handleAllCategorySelect")
+                span.icon.is-large(style="background-color: #EEE")
+                    | {{i_docs.length}}
+                .title All
+                
+block styles
+    link(rel="stylesheet" type="text/css" href="/index.css")
 
-    script.
-        var el = document.getElementById("continue-btn");
-        el.href = window.location.protocol +"//" + window.location.host + "/browse/browse.html";
+block scripts
+    script(src="/index.js")
