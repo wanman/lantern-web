@@ -31,3 +31,13 @@ html, body {
   border-bottom: 1px solid #EEE;
   padding: 1em; }
 
+#admin-page #user-view {
+  padding: 2em;
+  text-align: center; }
+
+#admin-page #device-view {
+  padding: 2em; }
+
+#admin-page .box {
+  margin: 1em; }
+

@@ -49,14 +49,20 @@ block content
                 li.box(@click="presentAreaForm") An Area
                 li.box(@click="presentLineForm") A Line
 
+
         #map-selector-view(v-if="show_map_selector")
-            div(v-if="!lock_doc")
+
+      
+            div(v-if="map_loaded && !lock_doc")
                 h1(v-if="area_radius") Drag Pin And Adjust Radius
                 h1(v-if="!area_radius") Drag Pin
-            div(v-if="lock_doc")
+            div(v-if="map_loaded &&  lock_doc")
                 h1 Preview
+            div(v-if="!map_loaded")
+                h1 Loading Map&hellip;
             .card 
                 #map
+
                 p(v-if="lock_doc && lantern_connected") This is a preview of your report. If you choose to submit, it will be added to a shared map for people near you to see and verify.
 
 

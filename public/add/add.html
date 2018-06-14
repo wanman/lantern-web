@@ -31,10 +31,9 @@
             <section>
                 <nav class="global" v-if="showNavMenu" v-cloak>
                     <ul>
-                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Home</a></li>
-                        <li><a href="/channels/channels.html"> <span class="icon"><i class="fas fa-box-open"></i></span>Requests</a></li>
+                        <li><a href="/home/home.html"> <span class="icon"><i class="fas fa-home"></i></span>Home</a></li>
+                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Safe Zones</a></li>
                         <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
-                        <li><a href="/network/network.html"> <span class="icon"><i class="fas fa-broadcast-tower"></i></span>Network</a></li>
                         <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
                     </ul>
                 </nav>
@@ -72,12 +71,15 @@
                             </ul>
                         </div>
                         <div id="map-selector-view" v-if="show_map_selector">
-                            <div v-if="!lock_doc">
+                            <div v-if="map_loaded &amp;&amp; !lock_doc">
                                 <h1 v-if="area_radius">Drag Pin And Adjust Radius</h1>
                                 <h1 v-if="!area_radius">Drag Pin</h1>
                             </div>
-                            <div v-if="lock_doc">
+                            <div v-if="map_loaded &amp;&amp;  lock_doc">
                                 <h1>Preview</h1>
+                            </div>
+                            <div v-if="!map_loaded">
+                                <h1>Loading Map&hellip;</h1>
                             </div>
                             <div class="card"> 
                                 <div id="map"></div>

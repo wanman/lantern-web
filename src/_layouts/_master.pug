@@ -55,25 +55,22 @@ html(lang="en")
                 nav.global(v-if="showNavMenu" v-cloak)
                     ul
                         li
+                            a(href="/home/home.html") 
+                                span.icon
+                                    i.fas.fa-home
+                                | Home
+
+                        li
                             a(href="/browse/browse.html") 
                                 span.icon
                                     i.fas.fa-map
-                                | Home
-                        li
-                            a(href="/channels/channels.html") 
-                                span.icon
-                                    i.fas.fa-box-open
-                                | Requests
+                                | Safe Zones
+                       
                         li
                             a(href="/add/add.html") 
                                 span.icon
                                     i.fas.fa-plus-circle
                                 | Contribute
-                        li
-                            a(href="/network/network.html") 
-                                span.icon
-                                    i.fas.fa-broadcast-tower
-                                | Network
                         li
                             a(href="/admin/admin.html") 
                                 span.icon

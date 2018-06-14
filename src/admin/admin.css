@@ -43,4 +43,18 @@ html, body {
         border-bottom: 1px solid #EEE;
         padding: 1em;
     }
+
+    #user-view {
+        padding: 2em;
+        text-align: center;
+   }
+
+   #device-view {
+        padding: 2em;
+   }
+
+   .box {
+        margin: 1em;
+   }
+
 }

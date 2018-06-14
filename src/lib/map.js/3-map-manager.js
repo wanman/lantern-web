@@ -32,7 +32,7 @@ window.LanternMapManager = function() {
     };
 
 
-    self.setPosition(38.42,-102.79, 3);
+    self.setPosition(38.42,-102.79, 4);
 
     //------------------------------------------------------------------------
 

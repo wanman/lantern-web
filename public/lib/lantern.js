@@ -295,7 +295,7 @@ window.LanternImport = function(stor) {
 
 
         //console.log("[import] adding default Marker categories");
-        addCategory("sfe", "Safe Area", "mrk");
+        addCategory("sfe", "Safe Zone", "mrk");
         addCategory("sup", "Supply", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("pwo", "Power Outage", "mrk");
@@ -318,7 +318,7 @@ window.LanternImport = function(stor) {
     self.marker = function() {
         //console.log("[import] adding default venues");
         addMarker("css", "Central City Shelter", "drs4b7s", "sfe");
-        addMarker("aic", "AI's Cafe", "drs4b77", "sfe");
+        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe");
         addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
         addMarker("hsf", "High School Field House", "drs4b74", "sfe");
     };

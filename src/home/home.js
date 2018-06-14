@@ -1,29 +1,19 @@
-__base = "../";
-
 window.page = (function() {
 
-    var self = new LanternPage("channels");
+    var self = new LanternPage("home");
 
     //------------------------------------------------------------------------
 
 
-    self.addHelper("toggleCategory", function(cat) {
-        var cat_label = cat._id.substr(2, cat._id.length);
-
-        console.log("[channel] toggle cat: " + cat_label);
-        // do optimistic UI updates and then listen for sync to confirm
-        if (self.user.has("tag", cat_label)) {
-            self.user.pop("tag", cat_label);
-        }
-        else {
-            self.user.push("tag", cat_label);
-        }
+    self.addHelper("handleCategorySelect", function(cat) {
         self.view.$data.personalizing = true;
-        self.user.save().then(function() {
-            setTimeout(function() {
-                self.view.$data.personalizing = false;
-            }, 1500);
-        });
+        setTimeout(function() {
+            window.location = "/browse/browse.html?cat="+cat.slug;
+        }, 500);
+    });
+
+    self.addHelper("handleAllCategorySelect", function() {
+        window.location = "/browse/browse.html";
     });
 
     self.addHelper("pluralize", function(count) {
@@ -47,7 +37,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.render()
         .then(function() {
-            self.view.$data.page_title = "Requests";
+            self.view.$data.page_title = "Home";
         })
         .then(self.connect)
         .then(function() {

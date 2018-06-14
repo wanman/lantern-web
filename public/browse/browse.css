@@ -1,25 +1,30 @@
 #browse-page h2 {
   margin-bottom: 2em; }
 
-#browse-page h4, #browse-page h5 {
+#browse-page h3, #browse-page h4, #browse-page h5 {
   margin: 3px;
   color: #79828b; }
 
 #browse-page .panel {
-  margin-top: 3em; }
+  margin-top: 1em;
+  margin-bottom: 2.5em; }
 
-#browse-page h5 {
+#browse-page .distance {
+  float: right;
+  padding-top: 0.4em;
+  font-size: small; }
+
+#browse-page h3, #browse-page h4, #browse-page h5 {
   font-weight: normal; }
 
-#browse-page .panel-block:hover {
-  background: #FAFAFA;
+#browse-page .panel:hover .panel-heading, #browse-page .panel:hover {
   cursor: pointer; }
 
 #browse-page .panel .icon {
   border-radius: 4em;
   font-weight: bold;
-  width: 4em;
-  height: 4em;
+  width: 3.50em;
+  height: 3.50em;
   text-align: center;
   margin-right: 1em;
   float: left; }
@@ -52,8 +57,8 @@
   width: 100%; }
 
 #browse-page #markers-view {
+  margin-top: 3.25rem;
   padding: 1.5em; }
   #browse-page #markers-view h3 {
-    text-align: left;
-    font-weight: bold; }
+    text-align: left; }
 

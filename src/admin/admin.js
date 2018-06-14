@@ -31,7 +31,8 @@ window.page = (function() {
         {key: "i", slug: "item"},
         {key: "r", slug: "route"},
         {key: "n", slug: "note"},
-        {key: "u", slug: "user"}
+        {key: "u", slug: "user"},
+        {key: "d", slug: "device"}
     ]);
 
     self.addData("warning", "");
@@ -101,6 +102,8 @@ window.page = (function() {
             self.view.$data.types.forEach(function(type) {
                 self.stor.getManyByType(type.key);
             });
+
+            self.view.$data.page_loading = false;
 
             self.view.$watch("connection", function(new_val, old_val) {
                 if (new_val === false) {

@@ -1,77 +1,56 @@
 window.page = (function() {
     var self = new LanternPage("add");
 
-    var map;
     var new_doc;
     var markers = [];
-
-  
-
-
-    function askForLocation(fn) {
-
-        function geo_success(position) {
-            console.log("[add] found position", position);
-            renderMap(position.coords.latitude, position.coords.longitude);
-            fn();
-        }
-
-        function geo_error() {
-            console.log("[add] no position available");
-        }
-
-        console.log("[add] asking for location");
-        var geo_options = {
-          enableHighAccuracy: true, 
-          maximumAge        : 30000, 
-          timeout           : 27000
-        };
-
-        navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
-    }
-
-
-    function renderMap(lat, lon) {
-        console.log("[add] showing map");
-        map = new LanternMapManager(lat, lon);
-        map.setPosition(lat, lon, 12);
-    }
 
     function setupMapSelector(tag, label) {
         console.log("[add] " + label + " form");
         new_doc.push("tag", "adr");
         console.log(new_doc);
+
         self.view.$data.show_input_selector = false;
         self.view.$data.show_subcategory_selector = false;
         self.view.$data.show_map_selector = true;
-        askForLocation(function() {
-            console.log("[add] map visible", map);
-            self.view.$data.map_loaded = true;
-            var center = map.map.getCenter();
-
-            if (tag != "ara") {
-
-                markers.push(map.addPoint({lat: center.lat, lon: center.lng}, {
-                    draggable: true
-                }));
-            }
-            else {
-                markers.push(map.addCircle({lat: center.lat, lon: center.lng},{
-                    radius: 1000,
-                    color: "#72A2EF",
-                    fillColor: '#72A2E5',
-                    opacity: 0.9,
-                    draggable: true
-                }));
-            }
 
 
-            if (tag == "lne") {
-                markers.push(map.addPoint({lat: center.lat-0.01, lon: center.lng-0.01}, {
-                    draggable: true
-                }));
-            }
-        });
+        setTimeout(function() {
+
+            self.renderMap()
+                .then(self.askForLocation)
+                .then(function(position) {
+                    
+                    self.view.$data.map_loaded = true;
+
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+                    self.map.setPosition(lat, lon, 12);
+
+                    if (tag != "ara") {
+                        markers.push(self.map.addPoint({lat: lat, lon: lon}, {
+                            draggable: true
+                        }));
+                    }
+                    else {
+                        markers.push(self.map.addCircle({lat: lat, lon: lon},{
+                            radius: 1000,
+                            color: "#72A2EF",
+                            fillColor: '#72A2E5',
+                            opacity: 0.9,
+                            draggable: true
+                        }));
+                    }
+
+
+                    if (tag == "lne") {
+                        markers.push(self.map.addPoint({lat: lat-0.01, lon: lon-0.01}, {
+                            draggable: true
+                        }));
+                    }
+                });
+
+        }, 200);
+            
     }
 
 
@@ -160,7 +139,6 @@ window.page = (function() {
                         new_doc.set("radius", marker.getRadius());
                     }
                     self.view.$data.lock_doc = true;
-                    map.setPosition(coords.lat, coords.lng, 10);
                     evt.target.className="button is-primary";
 
                 });

@@ -1,38 +1,37 @@
 ---
-id: "channels"
+id: "home"
 ---
 
 extends ../_layouts/_master.pug
 
 block content
-    #channels-view
+    #home-view
 
         h1(v-if="personalizing" v-cloak) Personalizing Map&hellip;
-        h1(v-if="!personalizing" v-cloak) What do you need most?
+        h1(v-if="!personalizing" v-cloak) What do you need today?
 
         div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
             h2(v-cloak v-if="!lantern_connected && !cloud_connected") 
-                | Connect to a Lantern to send data
+                | Select A Supply Type
             h2(v-cloak v-if="(lantern_connected || cloud_connected) && u_docs.length >= 2") 
                 | {{ pluralize(u_docs.length - 1) }} Listening
             h2(v-cloak v-if="(lantern_connected || cloud_connected) && u_docs.length <= 1") 
                 | Waiting for Users To Join Network
 
         ul.item-list(v-cloak v-if="user")
-            li.item(
-                v-for="cat in item_categories" 
-                v-bind:id="cat._id" 
-                v-bind:class="user.tag && user.tag.indexOf(cat.slug) != -1 ? 'active' : ''"
-               @click="toggleCategory(cat)" 
+            li.item(v-for="cat in item_categories" v-bind:id="cat._id" 
+               @click="handleCategorySelect(cat)" 
                 )
-                    span.icon.is-large(
-                    v-bind:style="makeCategoryStyle(cat)"
-                    ) 
+                    span.icon.is-large(v-bind:style="makeCategoryStyle(cat)") 
                         i(v-bind:class="makeCategoryIconClass(cat)")
                     .title {{ cat.title }}
+            li.item(@click="handleAllCategorySelect")
+                span.icon.is-large(style="background-color: #EEE")
+                    i.fas.fa-ellipsis-h
+                .title More
                 
 block styles
-    link(rel="stylesheet" type="text/css" href="/channels/channels.css")
+    link(rel="stylesheet" type="text/css" href="/home/home.css")
 
 block scripts
-    script(src="/channels/channels.js")
+    script(src="/home/home.js")

@@ -9,8 +9,16 @@ window.page = (function() {
         return;
     }
 
+    function focusMap() {
+        console.log("[detail] showing map");
+        if (self.view.$data.marker) {
+            var coords = Geohash.decode(self.view.$data.marker.geo[0]);
+            self.map.setPosition(coords.lat, coords.lon, 12);
+        }
+    }
+
     //------------------------------------------------------------------------
-    self.addData("show_map", false);
+    self.addData("show_map", true);
     self.addData("marker", {});
     self.addData("item", {});
 
@@ -31,18 +39,10 @@ window.page = (function() {
     });
 
 
-
     self.addHelper("handleShowMap", function(evt) {
         self.view.$data.show_map = true;
         setTimeout(function() {
-            self.renderMap().then(function() {
-                console.log("[detail] showing map");
-                if (self.view.$data.marker) {
-                    var coords = Geohash.decode(self.view.$data.marker.geo[0]);
-                    self.map.setPosition(coords.lat, coords.lon, 12);
-                    console.log(coords);
-                }
-            });
+            self.renderMap().then(focusMap);
         }, 100);
     });
 
@@ -51,6 +51,7 @@ window.page = (function() {
         .then(self.connect)
         .then(function() {
             self.view.$data.allow_back_button = true;
+
             return self.stor.getManyByType("c");
         })
         .then(function() {
@@ -71,6 +72,11 @@ window.page = (function() {
                 }
                 self.view.$data.marker = doc.toJSONFriendly();
                 self.view.$data.page_title = doc.get("title");
+
+
+                self.renderMap().then(focusMap);
+
+
             })
             .catch(function(err) {
                 console.log("[detail] could not get: " + marker_id, err);
@@ -88,7 +94,7 @@ window.page = (function() {
             else {
                 self.view.$data.page_loading = false;
             }
-        })
+        });
 
     return self;
 })();
