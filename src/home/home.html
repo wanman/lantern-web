@@ -5,30 +5,27 @@ id: "home"
 extends ../_layouts/_master.pug
 
 block content
-    #home-view
+    #home-view(v-cloak)
 
-        h1(v-if="personalizing" v-cloak) Personalizing Map&hellip;
-        h1(v-if="!personalizing" v-cloak) What do you need today?
+        h1(v-if="personalizing") Finding closest places&hellip;
+        h1(v-if="!page_loading && !personalizing") {{ m_docs.length }} Places Reported
 
         div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
-            h2(v-cloak v-if="!lantern_connected && !cloud_connected") 
-                | Tap A Circle Below
-            h2(v-cloak v-if="(lantern_connected || cloud_connected) && u_docs.length >= 2") 
-                | {{ pluralize(u_docs.length - 1) }} Listening
-            h2(v-cloak v-if="(lantern_connected || cloud_connected) && u_docs.length <= 1") 
-                | Waiting for Users To Join Network
+            h2 What do you need today?
 
-        ul.item-list(v-cloak v-if="user")
-            li.item(v-for="cat in item_categories" v-bind:id="cat._id" 
+        ul.item-list(v-if="user")
+            li.item(v-for="cat in item_categories" v-bind:id="cat._id" v-bind:ref="cat.slug" 
                @click="handleCategorySelect(cat)" 
                 )
                     span.icon.is-large(v-bind:style="makeCategoryStyle(cat)") 
                         i(v-bind:class="makeCategoryIconClass(cat)")
-                    .title {{ cat.title }}
+                        .badge(v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}
+
+                    .title {{ cat.title }} 
             li.item(@click="handleAllCategorySelect")
                 span.icon.is-large(style="background-color: #EEE")
-                    i.fas.fa-ellipsis-h
-                .title More
+                    | {{i_docs.length}}
+                .title All
                 
 block styles
     link(rel="stylesheet" type="text/css" href="/home/home.css")

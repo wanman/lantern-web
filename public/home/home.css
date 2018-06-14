@@ -41,6 +41,17 @@ html, body {
 #home-view ul li:nth-child(3n) + li:nth-last-child(1) {
   border-bottom: none; }
 
+#home-view ul .badge {
+  color: #FFF;
+  border-radius: 10em;
+  width: 2em;
+  height: 2em;
+  padding: 0.25em;
+  text-align: center;
+  float: right;
+  margin-right: -1em;
+  margin-top: -2em; }
+
 #home-view ul .icon {
   border-radius: 4em;
   font-weight: bold;
@@ -50,5 +61,6 @@ html, body {
   margin-bottom: 0.5em;
   margin-top: 0.5em; }
   #home-view ul .icon i {
-    margin: auto; }
+    margin: auto;
+    padding-left: 0.75em; }
 

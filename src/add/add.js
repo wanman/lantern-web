@@ -69,7 +69,8 @@ window.page = (function() {
         // supply locations get special treatment, as they must be connected
         // to a pre-defined marker
         if (new_doc.has("tag", "sup")) {
-            self.stor.getManyByType("m").then(function() {
+            self.getMarkers().then(function(data) {
+                console.log(data);
                 self.view.$data.show_marker_selector = true;
             });
         }
@@ -201,6 +202,7 @@ window.page = (function() {
             else {
 
                 new_doc = new LanternDocument( "m:" + Math.round(Math.random()*100000), self.stor);
+                new_doc.set("title", "New Place " + Math.round(Math.random()*100));
                 new_doc.push("tag", param.split(":")[1]);
 
                 self.stor.get(param).then(function(result) {

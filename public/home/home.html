@@ -31,30 +31,26 @@
                 <nav class="global" v-if="showNavMenu" v-cloak>
                     <ul>
                         <li><a href="/home/home.html"> <span class="icon"><i class="fas fa-home"></i></span>Home</a></li>
-                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Safe Zones</a></li>
+                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Places</a></li>
                         <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
                         <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
                     </ul>
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <div id="home-view">
-                        <h1 v-if="personalizing" v-cloak>Personalizing Map&hellip;</h1>
-                        <h1 v-if="!personalizing" v-cloak>What do you need today?</h1>
+                    <div id="home-view" v-cloak>
+                        <h1 v-if="personalizing">Finding closest places&hellip;</h1>
+                        <h1 v-if="!page_loading &amp;&amp; !personalizing">{{ m_docs.length }} Places Reported</h1>
                         <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
-                            <h2 v-cloak v-if="!lantern_connected &amp;&amp; !cloud_connected">
-                                 Tap A Circle Below</h2>
-                            <h2 v-cloak v-if="(lantern_connected || cloud_connected) &amp;&amp; u_docs.length &gt;= 2">
-                                 {{ pluralize(u_docs.length - 1) }} Listening</h2>
-                            <h2 v-cloak v-if="(lantern_connected || cloud_connected) &amp;&amp; u_docs.length &lt;= 1">
-                                 Waiting for Users To Join Network</h2>
+                            <h2>What do you need today?</h2>
                         </div>
-                        <ul class="item-list" v-cloak v-if="user">
-                            <li class="item" v-for="cat in item_categories" v-bind:id="cat._id" @click="handleCategorySelect(cat)"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)"></i></span>
-                                <div class="title">{{ cat.title }}</div>
+                        <ul class="item-list" v-if="user">
+                            <li class="item" v-for="cat in item_categories" v-bind:id="cat._id" v-bind:ref="cat.slug" @click="handleCategorySelect(cat)"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)"></i>
+                                    <div class="badge" v-bind:style="makeBadgeStyle(cat)">{{ cat.count }}</div></span>
+                                <div class="title">{{ cat.title }} </div>
                             </li>
-                            <li class="item" @click="handleAllCategorySelect"><span class="icon is-large" style="background-color: #EEE;"><i class="fas fa-ellipsis-h"></i></span>
-                                <div class="title">More</div>
+                            <li class="item" @click="handleAllCategorySelect"><span class="icon is-large" style="background-color: #EEE;">{{i_docs.length}}</span>
+                                <div class="title">All</div>
                             </li>
                         </ul>
                     </div>

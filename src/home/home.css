@@ -60,6 +60,18 @@ html, body {
             {border-bottom: none }
 
 
+        .badge {
+            color: #FFF;
+            border-radius: 10em;
+            width: 2em;
+            height: 2em;
+            padding: 0.25em;
+            text-align: center;
+            float: right;
+            margin-right: -1em;
+            margin-top: -2em;
+
+        }
 
         // icons
         .icon {
@@ -72,6 +84,7 @@ html, body {
             margin-top: 0.5em;
             i {
                 margin: auto;
+                padding-left: 0.75em
             }
         }
 

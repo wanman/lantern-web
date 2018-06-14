@@ -23,7 +23,7 @@ block content
             h1 {{ category.title }}
             h2 Pick Best Description
             ul
-                li(v-for="sc in subcategories" @click="handleShowInputSelector(sc)") 
+                li(v-for="sc in subcategories" @click="handleShowInputSelector(sc)" v-bind:id="sc._id") 
                 
                     span {{sc.title}}
 
@@ -36,9 +36,8 @@ block content
             h1 {{ category.title }}
             h2 Select Closest Venue
             ul
-                li(v-for="marker in m_docs" @click="handleSelectMarkerForItem(marker)") 
+                li(v-for="marker in m_docs" v-bind:id="marker._id" @click="handleSelectMarkerForItem(marker)" v-if="marker.title") 
                     span {{ marker.title }}
-
                     span.icon.is-large
                         i.fas.fa-angle-right
 
@@ -82,7 +81,7 @@ block content
                 i.fas.fa-check-circle.fa-3x
             h1 Thank you!
             p(v-if="lantern_connected") Your contribution was successfully saved to the map.
-            p(v-if="!lantern_connected") Your contribution was successfully saved to the map and will be uploaded and verified once you connect to a Lantern or the internet.
+            p(v-if="!lantern_connected") Your contribution was saved and will be shared with others as soon as we have a network connection.
             .action-panel
                 .button(@click="handleReturnToMap") 
                     span Return to Map

@@ -504,6 +504,32 @@ window.LanternPage = (function(id) {
     };
 
 
+    self.getMarkers = function() {
+        return self.stor.getManyByType("m");
+    };
+
+    self.getItems = function() {
+        return self.stor.getManyByType("i");
+    };
+
+
+    self.getCategories = function() {
+        return self.stor.getManyByType("c");
+    };
+
+    self.getUsers = function() {
+        return self.stor.getManyByType("u");
+    };
+
+    self.getDevices = function() {
+        return self.stor.getManyByType("d");
+    };
+
+    self.getRoutes = function() {
+        return self.stor.getManyByType("r");
+    };
+
+
 
 
 

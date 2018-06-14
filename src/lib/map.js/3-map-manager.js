@@ -8,7 +8,6 @@ window.LanternMapManager = function() {
         attribution: false
     }).addTo(self.map);
 
-    self.map.zoomControl.remove();
 
     //------------------------------------------------------------------------
     self.addPoint = function(coords, opts) {
