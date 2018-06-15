@@ -14,8 +14,8 @@ block content
 
     p.intro To begin, please type <span>lantern.local</span> in the address bar of your web browser or push the button below:
     
-    a.button(id="continue-btn" href="/") Continue
+    a.button(id="continue-btn" href="/index.html") Continue
 
     script.
         var el = document.getElementById("continue-btn");
-        el.href = window.location.protocol +"//" + window.location.host + "/";
+        el.href = window.location.protocol +"//" + window.location.host + "/index.html";
