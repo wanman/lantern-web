@@ -4,6 +4,8 @@ window.page = (function() {
 
     var self = new LanternPage("home");
 
+
+
     //------------------------------------------------------------------------
 
 
@@ -69,6 +71,22 @@ window.page = (function() {
         })
         .then(self.connect)
         .then(self.getMarkers)
+        .then(function(markers) {
+            if (markers.length === 0) {
+                // if we have zero markers, we probably are missing data
+                console.log("[home] importing sample data...");   
+                var imp = new LanternImport(self.stor);
+                imp.all();
+                return new Promise(function(resolve, reject) {
+                    setTimeout(function() {
+                        resolve(self.getMarkers());
+                    }, 1000);
+                });
+            }
+            else {
+                return markers;
+            }
+        })
         .then(self.getItems)
         .then(function(items) {
             // draw category grid

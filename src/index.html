@@ -13,7 +13,7 @@ block content
         div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
             h2 What do you need today?
 
-        ul.item-list(v-if="user")
+        ul.item-list
             li.item(v-for="cat in item_categories" v-bind:id="cat._id" v-bind:ref="cat.slug" 
                @click="handleCategorySelect(cat)" 
                 )

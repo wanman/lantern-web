@@ -44,7 +44,7 @@
                         <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
                             <h2>What do you need today?</h2>
                         </div>
-                        <ul class="item-list" v-if="user">
+                        <ul class="item-list">
                             <li class="item" v-for="cat in item_categories" v-bind:id="cat._id" v-bind:ref="cat.slug" @click="handleCategorySelect(cat)"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)"></i>
                                     <div class="badge" v-bind:style="makeBadgeStyle(cat)">{{ cat.count }}</div></span>
                                 <div class="title">{{ cat.title }} </div>
