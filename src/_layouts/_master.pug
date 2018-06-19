@@ -82,6 +82,12 @@ html(lang="en")
                                     i.fas.fa-database
                                 | Admin
 
+                        li.user-count
+                            span(v-if="u_docs.length") 
+                                span.icon
+                                        i.fas.fa-user
+                                | {{ pluralize(u_docs.length-1) }} Active
+
 
                 // main page content
                 .page-content

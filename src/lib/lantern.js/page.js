@@ -306,6 +306,21 @@ window.LanternPage = (function(id) {
     });
 
 
+    /**
+    * Display proper pluralization for users
+    */
+
+    self.addHelper("pluralize", function(count) {
+        if (count === 0) {
+            return 'No Users';
+        } 
+        else if (count === 1) {
+            return '1 User';
+        } else {
+            return count + ' Users';
+        }
+    });
+
     //------------------------------------------------------------------------
     /**
     * Setup universal template variables

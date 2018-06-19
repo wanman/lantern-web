@@ -38,16 +38,6 @@ window.page = (function() {
         window.location = "/browse/browse.html";
     });
 
-    self.addHelper("pluralize", function(count) {
-        if (count === 0) {
-            return 'No Users';
-        } 
-        else if (count === 1) {
-            return '1 User';
-        } else {
-            return count + ' Users';
-        }
-    });
 
     self.addHelper("makeBadgeStyle", function(cat) {
         if (!cat) return;

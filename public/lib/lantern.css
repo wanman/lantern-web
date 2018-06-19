@@ -4766,8 +4766,7 @@ section nav {
 
 .page-content {
   margin-top: 3.8rem;
-  overflow-y: scroll;
-  padding-bottom: 3em; }
+  overflow-y: scroll; }
 
 section nav.global {
   top: 3.8rem; }
@@ -4856,6 +4855,16 @@ nav.global {
 #back-btn:hover {
   cursor: pointer;
   background: whitesmoke; }
+
+.user-count {
+  position: fixed;
+  bottom: 0;
+  border-top: 1px solid #f2f2f2;
+  padding: 2em;
+  width: 100%;
+  text-align: center; }
+  .user-count i {
+    color: #595959; }
 
 #status-footer {
   background: rgba(255, 255, 255, 0.9);

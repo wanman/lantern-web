@@ -101,8 +101,8 @@ section nav {
 .page-content {
     margin-top: 3.8rem;
     overflow-y: scroll;
-    padding-bottom: 3em;
 }
+
 
 
 section nav.global {
@@ -221,6 +221,20 @@ nav.global {
 #back-btn:hover {
     cursor:  pointer;
     background: $light;
+}
+
+
+
+.user-count {
+    position: fixed;
+    bottom: 0;
+    border-top: 1px solid $light-border;
+    padding: 2em;
+    width: 100%;
+    text-align: center;
+    i {
+        color: $text;
+    }
 }
 
 

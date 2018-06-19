@@ -39,6 +39,7 @@
                         <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Places</a></li>
                         <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
                         <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
+                        <li class="user-count"><span v-if="u_docs.length"> <span class="icon"><i class="fas fa-user"></i></span>{{ pluralize(u_docs.length-1) }} Active</span></li>
                     </ul>
                 </nav>
                 <!-- main page content-->
