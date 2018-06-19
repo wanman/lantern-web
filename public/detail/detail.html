@@ -38,6 +38,7 @@
                     <ul>
                         <li><a href="/index.html"> <span class="icon"><i class="fas fa-home"></i></span>Home</a></li>
                         <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Places</a></li>
+                        <li><a href="/checkin/checkin.html"> <span class="icon"><i class="fas fa-check"></i></span>Check In</a></li>
                         <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
                         <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
                         <li class="user-count"><span v-if="u_docs.length"> <span class="icon"><i class="fas fa-user"></i></span>{{ pluralize(u_docs.length-1) }} Active</span></li>
@@ -47,22 +48,13 @@
                 <div class="page-content">
                     <div v-cloak>
                         <div id="inspector-view" v-if="show_inspector">
-                            <h3>{{ getCategory(item.category).title }} Verifications</h3>
-                            <ul>
-                                <li>
+                            <h3>{{ getCategory(selected_item.category).title }} Verifications</h3>
+                            <ul v-for="row in selected_item.vote" v-if="row.votes &gt; 0">
+                                <li v-bind:id="row.slug">
                                     <div class="tags">
-                                        <div class="tag">3</div>
-                                    </div>Red Cross
-                                </li>
-                                <li>
-                                    <div class="tags">
-                                        <div class="tag">23</div>
-                                    </div>Neighbors
-                                </li>
-                                <li>
-                                    <div class="tags">
-                                        <div class="tag">2</div>
-                                    </div>OXFAM
+                                        <div class="tag">
+                                             {{ row.votes }}</div>
+                                    </div>{{ row.title }}
                                 </li>
                             </ul>
                             <div class="buttons">
@@ -72,8 +64,12 @@
                         <div id="map-prompt" v-if="!show_inspector &amp;&amp; !show_map" @click="handleShowMap"><span class="icon"><i class="fas fa-map"></i></span><span>Show Map</span></div>
                         <div id="map" v-bind:style="'display:'  + (!show_inspector &amp;&amp; show_map ? 'block' : 'none')"></div>
                         <div v-cloak v-if="!page_loading">
-                            <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)"><span class="verifications tags"> 
-                                    <div class="tag">{{ makeVerifications(item) }}</div></span><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
+                            <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)"><span class="status"> 
+                                    <div class="tags">
+                                        <div class="tag"> 
+                                            <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ countVotes(item) }}
+                                        </div>
+                                    </div></span><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
                                 <p>{{ getCategory(item.category).title }} </p><span class="time">{{ moment(moment(marker.updated_at)).short(true) }} ago</span>
                             </div>
                         </div>

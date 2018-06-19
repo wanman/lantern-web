@@ -1,0 +1,125 @@
+---
+id: "checkin"
+---
+
+extends ../_layouts/_master.pug
+
+block content
+    
+    #report-view(v-cloak v-if="!page_loading && show_form")
+       
+        h1 Share Your Status
+       
+        h2(v-if="lantern_connected === false && cloud_connected === false") 
+            | Will Wait for Internet
+        
+        h2(v-if="cloud_connected") 
+            | Will Send to Internet
+
+        h2(v-if="!cloud_connected && lantern_connected") 
+            | Will Send To Nearby Devices
+ 
+
+        form.panel(@submit.prevent="handleSubmit")
+
+            .panel-block
+                .field
+                    label.label Your Initials
+                    .control
+                        input.input(type="text" v-model="initials")
+
+
+            .panel-block
+                .field
+                    label.label Birthday
+                    .control
+                        .select.is-rounded
+                            select(v-model="birth_month")
+                                option(disabled value="") Month...
+                                option(value="1") January
+                                option(value="2") February
+                                option(value="3") March
+                                option(value="4") April
+                                option(value="5") May
+                                option(value="6") June
+                                option(value="7") July
+                                option(value="8") August
+                                option(value="9") September
+                                option(value="10") October
+                                option(value="11") November
+                                option(value="12") December
+
+
+                        .select.is-rounded
+                            select(v-model="birth_day")
+                                option(disabled value="") Day...
+                                option(value="1") 1
+                                option(value="2") 2
+                                option(value="3") 3
+                                option(value="4") 4
+                                option(value="5") 5
+                                option(value="6") 6
+                                option(value="7") 7
+                                option(value="8") 8
+                                option(value="9") 9
+                                option(value="10") 10
+                                option(value="11") 11
+                                option(value="12") 12
+                                option(value="13") 13
+                                option(value="14") 14
+                                option(value="15") 15
+                                option(value="16") 16
+                                option(value="17") 17
+                                option(value="18") 18
+                                option(value="19") 19
+                                option(value="20") 20
+                                option(value="21") 21
+                                option(value="22") 22
+                                option(value="23") 23
+                                option(value="24") 24
+                                option(value="25") 25
+                                option(value="26") 26
+                                option(value="27") 27
+                                option(value="28") 28
+                                option(value="29") 29
+                                option(value="30") 30
+                                option(value="31") 31
+
+
+            .panel-block
+                .field
+                    label.label Status
+                    .control
+                        .select.is-rounded
+                            select(v-model="user_status")
+                                option(disabled value="") Choose...
+                                option(value="2") Completely Safe
+                                option(value="1") Somewhat Safe
+                                option(value="0") Not Yet Safe
+
+            .panel-block.buttons
+                .button.is-primary(@click="handleSubmit" v-bind:class="sending_data ? 'is-loading' : ''") Share Status
+
+    #success-view(v-cloak v-if="!page_loading && show_form === false")
+
+        span.icon.is-large
+            i.fas.fa-check-circle.fa-3x
+        h1 Thank you!
+        p(v-if="cloud_connected") Your status was successfully shared over the internet.
+        p(v-if="!cloud_connected && lantern_connected") Your status was successfully shared with a nearby device.
+        p(v-if="!cloud_connected && !lantern_connected") Your status will be shared once your device regains internet. 
+
+        .action-panel
+            .button(@click="handleReturnHome") 
+                span Continue
+                span.icon.is-small
+                    i.fas.fa-arrow-right
+
+
+
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/checkin/checkin.css")
+
+block scripts
+    script(src="/checkin/checkin.js")

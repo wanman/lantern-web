@@ -23,26 +23,26 @@ window.page = (function() {
     self.addData("show_map", true);
     self.addData("show_inspector", false);
     self.addData("marker", {});
-    self.addData("item", {});
+    self.addData("selected_item", {});
 
 
     //------------------------------------------------------------------------
     self.addHelper("makeItemStyle", function(item) {
         var category = self.stor.getCached("c:"+item.category[0]);
         var style = "border-color: #" +  category.style["color"];
-        if (item._id == self.view.$data.item._id) {
+        if (item._id == self.view.$data.selected_item._id) {
             style += "; border-width: 2px;";
         }
         return style;
     });
 
     self.addHelper("handleSelectItem", function(item) {
-        self.view.$data.item = item;
+        self.view.$data.selected_item = item;
         self.view.$data.show_inspector = true;
     });
 
     self.addHelper("clearSelectItem", function() {
-        self.view.$data.item = {};
+        self.view.$data.selected_item = {};
         self.view.$data.show_inspector = false;
     });
 
@@ -56,7 +56,17 @@ window.page = (function() {
 
     // @todo use actual verifications
     self.addHelper("makeVerifications", function(item) {
-        return item._rev[5];
+        return Math.round(Math.random()*10);
+    });
+
+    self.addHelper("countVotes", function(item) {
+        var count = 0;
+        if (item.hasOwnProperty("vote")) {
+            for (var idx in item.vote) {
+                count += item.vote[idx].votes;
+            }
+        }
+        return count;
     });
     
     //------------------------------------------------------------------------
@@ -101,7 +111,7 @@ window.page = (function() {
 
             if (item_id) {
                 self.stor.get(item_id).then(function(doc) {
-                    self.view.$data.item = doc.toJSONFriendly();
+                    self.view.$data.selected_item = doc.toJSONFriendly();
                     self.view.$data.page_loading = false;
                 })
                 .catch(function(err) {

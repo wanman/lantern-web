@@ -112,7 +112,9 @@ window.LanternDocument = (function(id,stor) {
     self.push = function(k,val) {
         var key = (REG[k] ? REG[k] : k);
         self.data[key] = self.data[key] || [];
-        self.data[key].push(val);
+        if (!self.has(k, val)) {
+            self.data[key].push(val);
+        }
     };
 
     self.pop = function(k,val) {

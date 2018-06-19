@@ -1,0 +1,30 @@
+
+$background: #f9fafb;
+
+.page-content {
+
+    overflow: hidden;
+}
+
+#checkin-page {
+    padding: 1em;
+    
+    label {
+        text-align: left;
+    }
+
+    .panel {
+        margin-top: 1em;
+    }
+
+
+    #success-view {
+        background: $background;
+        padding: 3em;
+        text-align: center;
+        .button {
+            margin-top: 3em;    
+            .icon {margin-left: 0.75em;}
+        }
+    }
+}

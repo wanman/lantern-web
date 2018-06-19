@@ -38,6 +38,7 @@
                     <ul>
                         <li><a href="/index.html"> <span class="icon"><i class="fas fa-home"></i></span>Home</a></li>
                         <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Places</a></li>
+                        <li><a href="/checkin/checkin.html"> <span class="icon"><i class="fas fa-check"></i></span>Check In</a></li>
                         <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
                         <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
                         <li class="user-count"><span v-if="u_docs.length"> <span class="icon"><i class="fas fa-user"></i></span>{{ pluralize(u_docs.length-1) }} Active</span></li>
@@ -104,7 +105,7 @@
                             <p v-if="lantern_connected">Your contribution was successfully saved to the map.</p>
                             <p v-if="!lantern_connected">Your contribution was saved and will be shared with others as soon as we have a network connection.</p>
                             <div class="action-panel">
-                                <div class="button" @click="handleReturnToMap"> <span>Return to Map</span><span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>
+                                <div class="button" @click="handleReturnToMap"> <span>Continue</span><span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>
                             </div>
                         </div>
                     </div>

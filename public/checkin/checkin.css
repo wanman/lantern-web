@@ -1,0 +1,18 @@
+.page-content {
+  overflow: hidden; }
+
+#checkin-page {
+  padding: 1em; }
+  #checkin-page label {
+    text-align: left; }
+  #checkin-page .panel {
+    margin-top: 1em; }
+  #checkin-page #success-view {
+    background: #f9fafb;
+    padding: 3em;
+    text-align: center; }
+    #checkin-page #success-view .button {
+      margin-top: 3em; }
+      #checkin-page #success-view .button .icon {
+        margin-left: 0.75em; }
+
