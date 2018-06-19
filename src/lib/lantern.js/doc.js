@@ -25,7 +25,8 @@ window.LanternDocument = (function(id,stor) {
         tag: "tg",          // other tags
         style: "sl",        // css styles,
         parent: "pt",       // parent document reference
-        child: "cd"         // child document reference
+        child: "cd",        // child document reference,
+        vote: "vt"          // votes for accuracy of data    
 
     };
 

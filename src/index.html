@@ -7,7 +7,7 @@ extends _layouts/_master.pug
 block content
     #home-view(v-cloak)
 
-        h1(v-if="personalizing") Finding closest places&hellip;
+        h1(v-if="personalizing") Finding {{ selected_category.title }} nearby...&hellip;
         h1(v-if="!page_loading && !personalizing") Reported Supplies
 
         div(v-bind:style="personalizing ? 'visibility: hidden' : ''")

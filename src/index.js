@@ -10,7 +10,7 @@ window.page = (function() {
     self.addHelper("handleCategorySelect", function(cat) {
         self.view.$data.personalizing = true;
 
-
+        self.view.$data.selected_category = cat;
         self.view.$refs[cat.slug][0].classList.add("active");
         
         var cat_label = cat._id.substr(2, cat._id.length);
@@ -27,7 +27,7 @@ window.page = (function() {
         self.user.save().then(function() {
             setTimeout(function() {
                 window.location = "/browse/browse.html?cat="+cat.slug;
-            }, 1100);
+            }, 800);
         });
 
     });
@@ -48,6 +48,7 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.addData("item_categories", []);
+    self.addData("selected_category", null);
     self.addData("personalizing", false);
     self.addData("last_sync_check", new Date());
 

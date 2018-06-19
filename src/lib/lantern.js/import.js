@@ -34,13 +34,15 @@ window.LanternImport = function(stor) {
         var venue_doc = new LanternDocument("m:"+id+":%%", stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
+        
+
         venue_doc.set("status", 1);
         venue_doc.push("category", cat);
         venue_doc.set("$ia", new Date());
         venue_doc.save();
 
 
-        var categories = ["wtr", "ful", "net", "med", "clo", "eat", "bed"];
+        var categories = ["wtr", "ful", "net", "med", "clo", "eat", "bed", "pwr"];
         var used_categories = [];
       
         for (var i=0;  i<4; i++) {
@@ -59,6 +61,36 @@ window.LanternImport = function(stor) {
             doc.set("status", 1);
             doc.push("parent", venue_doc.id);
             doc.push("category", item_cat);
+
+            // simulate verification of data for accuracy
+            doc.push("vote",{
+                slug: "oxfam",
+                title: "OXFAM",
+                votes: Math.round(Math.random()*2)
+            });
+
+            doc.push("vote",{
+                slug: "red-cross",
+                title: "Red Cross",
+                votes: Math.round(Math.random()*3)
+            });
+
+
+            doc.push("vote",{
+                slug: "neighbors",
+                title: "Neighbors",
+                votes: Math.round(Math.random()*10)
+            });
+
+
+            doc.push("vote",{
+                slug: "town",
+                title: "Town Officials",
+                votes: Math.round(Math.random()*2)
+            });
+
+
+
             doc.set("$ia", new Date());
             doc.save();
         }
@@ -108,6 +140,7 @@ window.LanternImport = function(stor) {
         addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
         addMarker("hsf", "High School Field House", "drs4b74", "sfe");
         addMarker("cth", "UCG Hospital", "drs4b73", "sfe");
+        addMarker("sht", "Shell Station", "drs4b71", "sfe");
     };
 
     self.item = function() {
