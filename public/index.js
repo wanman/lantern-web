@@ -61,7 +61,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.addData("item_categories", []);
     self.addData("personalizing", false);
-
+    self.addData("last_sync_check", new Date());
 
 
     //------------------------------------------------------------------------

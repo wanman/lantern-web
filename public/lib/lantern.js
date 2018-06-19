@@ -251,6 +251,7 @@ window.LanternImport = function(stor) {
         var venue_doc = new LanternDocument("m:"+id+":%%", stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
+        venue_doc.set("status", 1);
         venue_doc.push("category", cat);
         venue_doc.set("$ia", new Date());
         venue_doc.save();
@@ -370,6 +371,7 @@ window.LanternPage = (function(id) {
             cloud_connected: null,
             lantern_connected: null,
             page_title: "",
+            page_tag: "",
             page_loading: true,
             allow_back_button: false,
             user: null
@@ -451,6 +453,8 @@ window.LanternPage = (function(id) {
         self.user.save();
 
         self.stor.syncWithCloud(continuous, function(status) {
+                            console.log(status);
+
             self.view.$data.cloud_connected = status;
         });
 
@@ -500,7 +504,7 @@ window.LanternPage = (function(id) {
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
                 // device wifi or local testing
-                //sync(true);
+                sync(true);
             });
     };
 
@@ -689,8 +693,8 @@ window.LanternPage = (function(id) {
 
 window.LanternStor = (function($data, uri) {
 
-    var cloud_uri = "https://lantern.global/db/lantern";
-    var lantern_uri = uri + "/db/lantern";
+    var cloud_uri = "https://lantern.global/db/lantern/";
+    var lantern_uri = uri + "/db/lantern/";
     var self = {
         cache: {},        
         browser_db: new PouchDB("lantern"),
@@ -986,7 +990,6 @@ window.LanternStor = (function($data, uri) {
         //console.log("[stor] trying sync with cloud");
         LanternSync(self.browser_db, self.cloud_db, "cloud", continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
-
         });
         return;
     };
@@ -1010,7 +1013,6 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     // @todo expore pouchdb bug where this may be run twice
     function backOffSync(delay) {
         
-        setStatus(false);
 
 
         if (reset_delay) {
@@ -1018,6 +1020,8 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
             reset_delay = false;
             return 0;
         }
+        
+        setStatus(false);
         
         console.log("[stor] delaying " + label + " sync retry: " + delay);
         if (delay === 0) {

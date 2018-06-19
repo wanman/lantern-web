@@ -1,5 +1,7 @@
 $background: #f9fafb;
+$border: #c6c8cd;
 
+$light-border: #f2f2f2;
 
 #detail-page {
 
@@ -10,6 +12,36 @@ $background: #f9fafb;
         padding: 1em;
         text-align: center;
     }
+    #inspector-view {
+
+        padding: 1em;
+        h3 {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        ul li {
+            padding: 0.5em;
+            margin-bottom: 0.5em;
+            border-bottom: 1px solid $light-border;
+
+            .tags {
+                float: right;
+            }
+        }
+
+        background: #FFF;
+        border-bottom: 1px solid $border;
+
+        .buttons {
+            display: block;
+            text-align: center;
+            padding: 0.5em;
+            width: 100%;
+        }
+    }
+
+
 
     #map-prompt:hover {
         background: $background;
@@ -17,13 +49,14 @@ $background: #f9fafb;
     }
 
     .box {
-        min-height: 7em;
         margin: 1em;
+        padding: 0.5em 0.75em;
+
         .icon {
             border-radius: 4em;
             font-weight: bold;
-            width: 4em;
-            height: 4em;
+            width: 3em;
+            height: 3em;
             text-align: center;
             i {
                 margin: auto;
@@ -31,11 +64,24 @@ $background: #f9fafb;
             margin-right: 1em;
             float: left
         }
-
+        .time {
+            font-size: small;
+            color: #c6c8cd;
+        }
+        .verifications {
+            float: right;
+        }
         border: 0px solid;
     }
 
     .box:hover {
         cursor: pointer;
+    }
+
+    #status {
+        background: #FFF;
+        padding: 1em;
+        border-bottom: 1px solid $border;
+        border-top: 1px solid $border;
     }
 }

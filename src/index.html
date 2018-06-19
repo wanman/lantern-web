@@ -8,10 +8,11 @@ block content
     #home-view(v-cloak)
 
         h1(v-if="personalizing") Finding closest places&hellip;
-        h1(v-if="!page_loading && !personalizing") {{ m_docs.length }} Places Reported
+        h1(v-if="!page_loading && !personalizing") Reported Supplies
 
         div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
-            h2 What do you need today?
+            h2 What would help today?
+
 
         ul.item-list
             li.item(v-for="cat in item_categories" v-bind:id="cat._id" v-bind:ref="cat.slug" 
@@ -24,8 +25,8 @@ block content
                     .title {{ cat.title }} 
             li.item(@click="handleAllCategorySelect")
                 span.icon.is-large(style="background-color: #EEE")
-                    | {{i_docs.length}}
-                .title All
+                    i.fas.fa-arrow-right
+                .title More
                 
 block styles
     link(rel="stylesheet" type="text/css" href="/index.css")

@@ -19,9 +19,9 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.addData("show_map", true);
+    self.addData("show_inspector", false);
     self.addData("marker", {});
     self.addData("item", {});
-
 
 
     //------------------------------------------------------------------------
@@ -36,6 +36,12 @@ window.page = (function() {
 
     self.addHelper("handleSelectItem", function(item) {
         self.view.$data.item = item;
+        self.view.$data.show_inspector = true;
+    });
+
+    self.addHelper("clearSelectItem", function() {
+        self.view.$data.item = {};
+        self.view.$data.show_inspector = false;
     });
 
 
@@ -46,6 +52,11 @@ window.page = (function() {
         }, 100);
     });
 
+    // @todo use actual verifications
+    self.addHelper("makeVerifications", function(item) {
+        return item._rev[5];
+    });
+    
     //------------------------------------------------------------------------
     self.render()
         .then(self.connect)
@@ -72,6 +83,10 @@ window.page = (function() {
                 }
                 self.view.$data.marker = doc.toJSONFriendly();
                 self.view.$data.page_title = doc.get("title");
+
+                if (doc.get("status") == 1) {
+                    self.view.$data.page_tag = "Open";
+                }
 
 
                 self.renderMap().then(focusMap);

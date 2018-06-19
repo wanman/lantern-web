@@ -9,6 +9,7 @@ block content
 
     #map-prompt
         .buttons.has-addons.is-centered
+
             span.button(@click="handleShowList" v-bind:class="show_map ? '' : 'is-info is-selected'")
                 span.icon
                     i.fas.fa-list
@@ -19,7 +20,10 @@ block content
                 span Map
 
 
+
+
     div(v-if="!page_loading" v-cloak)
+
 
         // map is empty by default - only certain pages will fill this region
         #map(v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")

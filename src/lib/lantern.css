@@ -40,9 +40,6 @@ body {
     background: $background;
 }
 
-.page-content {
-    margin-bottom: 3.25rem;
-}
 .fas {
     margin-right: 0.75em;
 }
@@ -65,8 +62,23 @@ a:active .icon i {
 
     background: rgba(255,255,255,0.9);
 
+   
 }
 
+.is-fixed-top {
+    height: 3.89rem;
+
+    .tag {
+        position: fixed;
+        top: 1.4em; right: 1.5em;
+
+    }
+}
+
+.is-fixed-top .navbar-item span {
+    font-size: 15px;
+    font-weight: bold;
+}
 section nav {
 
     position: fixed;
@@ -87,14 +99,14 @@ section nav {
 }
 
 .page-content {
-    margin-top: 3.25rem;
+    margin-top: 3.8rem;
     overflow-y: scroll;
-    padding-bottom: 1em;
+    padding-bottom: 3em;
 }
 
 
 section nav.global {
-    top: 3.25rem;
+    top: 3.8rem;
 }
 
 
@@ -139,10 +151,6 @@ section nav.global {
     box-shadow: $panel-shadow;
 }
 
-section nav.global {
-    top: 3.25rem;
-}
-
 
 .logo {
     width: 50px;
@@ -179,6 +187,8 @@ nav.global {
 }
 
 .navbar-burger {
+    width: 3.75rem;
+    height: 3.75rem;
     margin-left: 0em;
 }
 
@@ -193,11 +203,15 @@ nav.global {
 }
 
 #back-btn {
-    height: 3.25rem;
-    width: 3.25rem;
-    margin: -0.7em;
-    margin-right: 0.5em;
+    
+    width: 3.75rem;
+    height: 3.75rem;
+    margin-left: 0em;
+
     text-align: center;
+    span {
+        margin-top: 0.8em;
+    }
     i {
         margin: 0;
     }

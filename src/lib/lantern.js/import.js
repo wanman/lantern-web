@@ -34,6 +34,7 @@ window.LanternImport = function(stor) {
         var venue_doc = new LanternDocument("m:"+id+":%%", stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
+        venue_doc.set("status", 1);
         venue_doc.push("category", cat);
         venue_doc.set("$ia", new Date());
         venue_doc.save();

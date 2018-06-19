@@ -6,6 +6,7 @@ window.LanternPage = (function(id) {
             cloud_connected: null,
             lantern_connected: null,
             page_title: "",
+            page_tag: "",
             page_loading: true,
             allow_back_button: false,
             user: null
@@ -87,6 +88,8 @@ window.LanternPage = (function(id) {
         self.user.save();
 
         self.stor.syncWithCloud(continuous, function(status) {
+                            console.log(status);
+
             self.view.$data.cloud_connected = status;
         });
 
@@ -136,7 +139,7 @@ window.LanternPage = (function(id) {
                 var cached = self.stor.getCached(user.id);
                 self.view.$data.user = cached;
                 // device wifi or local testing
-                //sync(true);
+                sync(true);
             });
     };
 

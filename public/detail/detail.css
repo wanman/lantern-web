@@ -5,25 +5,55 @@
   padding: 1em;
   text-align: center; }
 
+#detail-page #inspector-view {
+  padding: 1em;
+  background: #FFF;
+  border-bottom: 1px solid #c6c8cd; }
+  #detail-page #inspector-view h3 {
+    font-weight: bold;
+    text-align: center; }
+  #detail-page #inspector-view ul li {
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid #f2f2f2; }
+    #detail-page #inspector-view ul li .tags {
+      float: right; }
+  #detail-page #inspector-view .buttons {
+    display: block;
+    text-align: center;
+    padding: 0.5em;
+    width: 100%; }
+
 #detail-page #map-prompt:hover {
   background: #f9fafb;
   cursor: pointer; }
 
 #detail-page .box {
-  min-height: 7em;
   margin: 1em;
+  padding: 0.5em 0.75em;
   border: 0px solid; }
   #detail-page .box .icon {
     border-radius: 4em;
     font-weight: bold;
-    width: 4em;
-    height: 4em;
+    width: 3em;
+    height: 3em;
     text-align: center;
     margin-right: 1em;
     float: left; }
     #detail-page .box .icon i {
       margin: auto; }
+  #detail-page .box .time {
+    font-size: small;
+    color: #c6c8cd; }
+  #detail-page .box .verifications {
+    float: right; }
 
 #detail-page .box:hover {
   cursor: pointer; }
+
+#detail-page #status {
+  background: #FFF;
+  padding: 1em;
+  border-bottom: 1px solid #c6c8cd;
+  border-top: 1px solid #c6c8cd; }
 

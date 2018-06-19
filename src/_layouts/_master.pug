@@ -26,10 +26,15 @@ html(lang="en")
                         span(aria-hidden="true")
                         span(aria-hidden="true")
 
-                    .navbar-item
-                        span#back-btn.icon.is-medium(v-if="allow_back_button" @click="handleGoBack" role="button")
+                    #back-btn(v-if="allow_back_button")
+                        span.icon.is-medium(v-if="allow_back_button" @click="handleGoBack" role="button")
                             i.fas.fa-arrow-left.fa-md
+
+                    .navbar-item
                         span {{ page_title }}
+
+                        .tags(v-if="page_tag")
+                            .tag {{ page_tag }}
                    
 
             nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="cloud_connected !== null || lantern_connected !== null")

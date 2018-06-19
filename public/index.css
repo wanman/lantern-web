@@ -7,7 +7,7 @@ html, body {
 
 #home-view h2 {
   padding: 0em 1em;
-  margin-bottom: 2em; }
+  margin-bottom: 1em; }
 
 #home-view ul li {
   float: left;
@@ -63,4 +63,7 @@ html, body {
   #home-view ul .icon i {
     margin: auto;
     padding-left: 0.75em; }
+
+#home-view ul li:last-child .icon i {
+  padding-left: 0em; }
 

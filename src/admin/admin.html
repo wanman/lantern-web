@@ -16,7 +16,7 @@ block content
 
         .field
             input.switch#join-router(type="checkbox" v-model="connection")
-            label(for="join-router") Connect to Router
+            label(for="join-router") Tether Lantern to Router
 
         // prompt for valid wi-fi credentials if available
         form#wifi-creds(v-if="connection" @submit.prevent="handleSubmit")

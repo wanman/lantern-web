@@ -52,9 +52,9 @@ $panel-shadow: 0 2px 10px rgba(#000000, 0.02), 0 0 0 1px rgba(#000000, 0.02);
 
     #map-prompt {
         position: fixed;
-        top: 3.25rem;
+        top: 3.89rem;
         width: 100%;
-        height: 3.25rem;
+        height: 3.50rem;
         padding: 0.5em;
         border-bottom: 1px solid $light-border;
         box-shadow: $panel-shadow;
@@ -71,21 +71,20 @@ $panel-shadow: 0 2px 10px rgba(#000000, 0.02), 0 0 0 1px rgba(#000000, 0.02);
     }
 
     #map-err {
-        margin-top: 3.25rem;
         padding: 2em;
     }
 
     #map {
         position: fixed !important;
-        top: 6.50rem;
+        top: 7rem;
         z-index: 1000;
         height: 100%;
         width: 100%;
     }
 
     #markers-view {
-        margin-top: 3.25rem;
-        padding: 1.5em;
+        margin-top: 3em;
+        padding: 1em;
         h3 {
             text-align: left;
         }

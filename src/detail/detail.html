@@ -5,24 +5,54 @@ id: "detail"
 extends ../_layouts/_master.pug
 
 block content
-    
-    #map-prompt(v-if="!show_map" @click="handleShowMap")
-        span.icon
-            i.fas.fa-map
-        span Show Map
+    div(v-cloak)
+
+        #inspector-view(v-if="show_inspector")
+
+            h3 {{ getCategory(item.category).title }} Verifications
+            ul
+                li
+                    
+                    .tags
+                        .tag 3
+
+                    | Red Cross
+                li
+                    .tags
+                        .tag 23
+
+                    | Neighbors
+                li
+                    .tags
+                        .tag 2
+
+                    | OXFAM
+
+                    
+
+            .buttons
+                .button( @click="clearSelectItem") Close
+            
+        #map-prompt(v-if="!show_inspector && !show_map" @click="handleShowMap")
+            span.icon
+                i.fas.fa-map
+            span Show Map
 
 
-    #map(v-bind:style="'display:'  + (show_map ? 'block' : 'none')")
+        #map(v-bind:style="'display:'  + (!show_inspector && show_map ? 'block' : 'none')")
 
-    div(v-cloak v-if="!page_loading")
-        .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)")
+        div(v-cloak v-if="!page_loading")
+            .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)")
 
-            span.icon.is-large(v-bind:style="makeCategoryStyle(getCategory(item.category))") 
-                i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
+               
+                span.verifications.tags 
+                    .tag {{ makeVerifications(item) }}
+                span.icon.is-large(v-bind:style="makeCategoryStyle(getCategory(item.category))") 
+                    i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
 
-            p {{ getCategory(item.category).title }}
-            p Available
-            p {{ moment(moment(marker.updated_at)).short(true) }} ago
+                p {{ getCategory(item.category).title }} 
+                span.time {{ moment(moment(marker.updated_at)).short(true) }} ago
+
 
 block styles
     link(rel="stylesheet" type="text/css" href="/lib/map.css")

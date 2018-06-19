@@ -40,6 +40,7 @@ window.page = (function() {
                             }
                         });
 
+                        self.view.$data.category = category_id;
                         self.view.$data.page_loading = false;
                     });
                 });
@@ -50,6 +51,7 @@ window.page = (function() {
 
 
     //------------------------------------------------------------------------
+    self.addData("category", null);
     self.addData("filtered_markers", []);
     self.addData("show_map", null);
     self.addData("geolocation", null);
