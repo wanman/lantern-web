@@ -2,10 +2,15 @@ window.LanternStor = (function($data, uri) {
 
     var cloud_uri = "https://lantern.global/db/lantern/";
     var lantern_uri = uri + "/db/lantern/";
+    var lantern_maps_uri = uri + "/db/lantern-maps/";
     var self = {
         cache: {},        
         browser_db: new PouchDB("lantern"),
         lantern_db: new PouchDB(lantern_uri.replace(":3000", ""), {
+            skip_setup: true,
+            withCredentials: false        
+        }),
+        lantern_maps_db: new PouchDB(lantern_maps_uri.replace(":3000", ""), {
             skip_setup: true,
             withCredentials: false        
         }),
@@ -122,6 +127,7 @@ window.LanternStor = (function($data, uri) {
                             self.db = self.lantern_db;
                         }
                         else if (err.reason == "QuotaExceededError") {
+                            console.log(err);
                             console.log("quota exceeded for local storage. using remote storage...");
                             self.db = self.lantern_db;
                         }
@@ -282,11 +288,18 @@ window.LanternStor = (function($data, uri) {
         //console.log("[stor] trying sync with lantern");
         if (self.db.adapter == "http") {
             console.log("[stor] skipping sync since target is lantern already");
+            status_fn(true);
             return;
         }
         LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
         });
+
+
+        LanternSync(new PouchDB("lantern-maps"), self.lantern_maps_db, "lantern-maps", continuous, function() {}, function(changed_doc) {
+            console.log("[stor] map update", changed_doc._id);
+        });
+
         return;
     };
 

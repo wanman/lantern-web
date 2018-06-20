@@ -10,14 +10,16 @@ block content
         #inspector-view(v-if="show_inspector")
 
             h3 {{ getCategory(selected_item.category).title }} Verifications
-            ul(v-for="row in selected_item.vote" v-if="row.votes > 0")
-                li(v-bind:id="row.slug")
-                    .tags
-                        .tag 
-                            | {{ row.votes }}
 
-                    | {{ row.title }}
-                    
+            a.tags.has-addons(v-for="row in selected_item.vote" v-if="row.votes > 0") 
+             
+                span.tag.is-primary
+                    .icon
+                        i.fas.fa-thumbs-up
+                    | {{ row.votes }}
+                span.tag  {{ row.title }}
+
+
 
             .buttons
                 .button( @click="clearSelectItem") Close

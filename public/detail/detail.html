@@ -48,15 +48,8 @@
                 <div class="page-content">
                     <div v-cloak>
                         <div id="inspector-view" v-if="show_inspector">
-                            <h3>{{ getCategory(selected_item.category).title }} Verifications</h3>
-                            <ul v-for="row in selected_item.vote" v-if="row.votes &gt; 0">
-                                <li v-bind:id="row.slug">
-                                    <div class="tags">
-                                        <div class="tag">
-                                             {{ row.votes }}</div>
-                                    </div>{{ row.title }}
-                                </li>
-                            </ul>
+                            <h3>{{ getCategory(selected_item.category).title }} Verifications</h3><a class="tags has-addons" v-for="row in selected_item.vote" v-if="row.votes &gt; 0"> <span class="tag is-primary">
+                                    <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ row.votes }}</span><span class="tag"> {{ row.title }}</span></a>
                             <div class="buttons">
                                 <div class="button" @click="clearSelectItem">Close</div>
                             </div>

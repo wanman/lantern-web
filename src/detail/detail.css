@@ -13,26 +13,22 @@ $light-border: #f2f2f2;
         text-align: center;
     }
     #inspector-view {
-        min-height: 200px;
+        height: 200px;
+        overflow-y: scroll;
+        position: relative;
+        top: 0;
         padding: 1em;
         h3 {
             font-weight: bold;
             text-align: center;
         }
 
-        ul li {
-            padding: 0.5em;
-            margin-bottom: 0.5em;
-            border-bottom: 1px solid $light-border;
-
-            .tags {
-                float: right;
-                .tag {
-                    width: 6em;
-                }
-            }
+        .tags {
+            float: left;
+            margin-right: 1em;
+            margin-top: 1em;
+            margin-bottom: 0;
         }
-
         background: #FFF;
         border-bottom: 1px solid $border;
 
@@ -40,6 +36,9 @@ $light-border: #f2f2f2;
             display: block;
             text-align: center;
             padding: 0.5em;
+            position: fixed;
+
+            top: 200px;
             width: 100%;
         }
     }

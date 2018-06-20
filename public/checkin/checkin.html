@@ -12,6 +12,7 @@
         <meta name="theme-color" content="#ffffff">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
         <link rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css">
+        <link rel="stylesheet" type="text/css" href="/lib/map.css">
         <link rel="stylesheet" type="text/css" href="/checkin/checkin.css">
     </head>
     <body>
@@ -45,12 +46,12 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <div id="report-view" v-cloak v-if="!page_loading &amp;&amp; show_form">
+                    <div id="report-view" v-cloak v-if="!page_loading &amp;&amp; show_form === true">
                         <h1>Share Your Status</h1>
                         <h2 v-if="lantern_connected === false &amp;&amp; cloud_connected === false">
                              Will Wait for Internet</h2>
                         <h2 v-if="cloud_connected">
-                             Will Send to Internet</h2>
+                             Will Send Globally</h2>
                         <h2 v-if="!cloud_connected &amp;&amp; lantern_connected">
                              Will Send To Nearby Devices</h2>
                         <form class="panel" @submit.prevent="handleSubmit">
@@ -144,17 +145,20 @@
                     </div>
                     <div id="success-view" v-cloak v-if="!page_loading &amp;&amp; show_form === false"><span class="icon is-large"><i class="fas fa-check-circle fa-3x"></i></span>
                         <h1>Thank you!</h1>
-                        <p v-if="cloud_connected">Your status was successfully shared over the internet.</p>
-                        <p v-if="!cloud_connected &amp;&amp; lantern_connected">Your status was successfully shared with a nearby device.</p>
-                        <p v-if="!cloud_connected &amp;&amp; !lantern_connected">Your status will be shared once your device regains internet. </p>
+                        <p v-if="cloud_connected">Your status was successfully shared over the internet. Please note there is <b>no guarantee</b> your message will be received.</p>
+                        <p v-if="!cloud_connected &amp;&amp; lantern_connected">Your status was successfully shared with a nearby device. Please note there is <b>no guarantee</b> your message will be received.</p>
+                        <p v-if="!cloud_connected &amp;&amp; !lantern_connected">Your status will be shared once your device regains internet. Please note there is <b>no guarantee</b> your message will be received.</p>
                         <div class="action-panel">
                             <div class="button" @click="handleReturnHome"> <span>Continue</span><span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>
                         </div>
                     </div>
+                    <div id="map-cover"></div>
+                    <div id="map" v-cloak v-if="!page_loading"></div>
                 </div>
             </section>
             <script src="/lib/vendor.js"></script>
             <script src="/lib/lantern.js"></script>
+            <script src="/lib/map.js"></script>
             <script src="/checkin/checkin.js"></script>
         </div>
     </body>

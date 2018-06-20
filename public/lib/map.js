@@ -14170,7 +14170,7 @@ window.LanternMapManager = function() {
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: false,
-        dbName: "lantern",
+        dbName: "lantern-maps",
         maxZoom: 18,
         useCache: true,
         crossOrigin: true
@@ -14213,6 +14213,10 @@ window.LanternMapManager = function() {
     self.fitToMarkers = function() {
         var group = new L.featureGroup(self.markers);
         self.map.fitBounds(group.getBounds());
+    };
+
+    self.removeZoomControl = function() {
+        self.map.removeControl(self.map.zoomControl);
     };
 
 

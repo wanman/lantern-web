@@ -3,6 +3,8 @@ window.page = (function() {
 
     var marker_id = self.getURIParameterByName("mrk");
     var item_id = self.getURIParameterByName("itm");
+    var marker_title;
+
 
     if (!marker_id) {
         window.location = "/";
@@ -37,11 +39,13 @@ window.page = (function() {
     self.addHelper("handleSelectItem", function(item) {
         self.view.$data.selected_item = item;
         self.view.$data.show_inspector = true;
+        
     });
 
     self.addHelper("clearSelectItem", function() {
         self.view.$data.selected_item = {};
-        self.view.$data.show_inspector = false;
+        self.view.$data.show_inspector = false;               
+        self.view.$data.page_title = marker_title;
     });
 
 
@@ -92,8 +96,8 @@ window.page = (function() {
                     }
                 }
                 self.view.$data.marker = doc.toJSONFriendly();
-                self.view.$data.page_title = doc.get("title");
-
+                marker_title = doc.get("title");
+                self.view.$data.page_title = marker_title;
                 if (doc.get("status") == 1) {
                     self.view.$data.page_tag = "Open";
                 }

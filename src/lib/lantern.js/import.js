@@ -66,7 +66,7 @@ window.LanternImport = function(stor) {
             doc.push("vote",{
                 slug: "oxfam",
                 title: "OXFAM",
-                votes: Math.round(Math.random()*2)
+                votes: Math.round(Math.random()*1)
             });
 
             doc.push("vote",{

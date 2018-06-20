@@ -91,7 +91,10 @@ window.LanternPage = (function(id) {
             self.view.$data.cloud_connected = status;
         });
 
-        if (window.location.host != "lantern.global") {
+        if (window.location.host == "lantern.global") {
+            self.view.$data.cloud_connected = true;
+        }
+        else {
             self.stor.syncWithLantern(continuous, function(status) {
                 self.view.$data.lantern_connected = status;
             });
@@ -217,7 +220,7 @@ window.LanternPage = (function(id) {
                         self.map.addPolygon(coords);
                     }
                 });
-                resolve();
+                resolve(self.map);
 
             });
         });

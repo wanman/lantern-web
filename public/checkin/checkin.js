@@ -25,7 +25,7 @@ window.page = (function() {
     });
 
     self.addHelper("handleReturnHome", function() {
-        window.location = "/";
+        window.location = "/index.html";
     });
 
     self.render()
@@ -39,6 +39,27 @@ window.page = (function() {
             if (self.user.has("status")) {
                 self.view.$data.user_status = self.user.get("status");
             }
+        })
+        .then(function() {
+            self.renderMap()
+                .then(function(map) {
+                    map.removeZoomControl();
+                })
+                .then(self.askForLocation)
+                .then(function(position) {
+                    self.view.$data.map_loaded = true;
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    // @todo use more precision (demo preserves privacy)
+                    var hash = Geohash.encode(lat, lon, 3);
+                    
+                    self.user.push("gp", hash);
+                    self.map.setPosition(lat, lon, 12);
+                    var marker = self.map.addPoint({lat: lat, lon: lon}, {
+                        draggable: false
+                    });
+                });
         });
 
     return self;

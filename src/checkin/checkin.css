@@ -1,12 +1,19 @@
 
 $background: #f9fafb;
 
+body {
+    background: none;
+}
+
+
 .page-content {
 
     overflow: hidden;
 }
 
-#checkin-page {
+#checkin-page {    
+    background: rgba(255,255,255,0.8);
+    background: none;
     padding: 1em;
     
     label {
@@ -19,7 +26,8 @@ $background: #f9fafb;
 
 
     #success-view {
-        background: $background;
+        background: rgba(255,255,255,0.8);
+        border-radius: 8px;
         padding: 3em;
         text-align: center;
         .button {
@@ -27,4 +35,20 @@ $background: #f9fafb;
             .icon {margin-left: 0.75em;}
         }
     }
+
+
+    #map-cover, #map {
+        background: rgba(255,255,255,0.8);
+        height: 100%;
+        width: 100%;
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        z-index: -5;
+    }
+
+    #map-cover {
+        z-index: -2;
+    }
+
 }

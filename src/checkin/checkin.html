@@ -6,15 +6,14 @@ extends ../_layouts/_master.pug
 
 block content
     
-    #report-view(v-cloak v-if="!page_loading && show_form")
-       
+    #report-view(v-cloak v-if="!page_loading && show_form === true")
         h1 Share Your Status
        
         h2(v-if="lantern_connected === false && cloud_connected === false") 
             | Will Wait for Internet
         
         h2(v-if="cloud_connected") 
-            | Will Send to Internet
+            | Will Send Globally
 
         h2(v-if="!cloud_connected && lantern_connected") 
             | Will Send To Nearby Devices
@@ -97,6 +96,7 @@ block content
                                 option(value="1") Somewhat Safe
                                 option(value="0") Not Yet Safe
 
+
             .panel-block.buttons
                 .button.is-primary(@click="handleSubmit" v-bind:class="sending_data ? 'is-loading' : ''") Share Status
 
@@ -105,9 +105,9 @@ block content
         span.icon.is-large
             i.fas.fa-check-circle.fa-3x
         h1 Thank you!
-        p(v-if="cloud_connected") Your status was successfully shared over the internet.
-        p(v-if="!cloud_connected && lantern_connected") Your status was successfully shared with a nearby device.
-        p(v-if="!cloud_connected && !lantern_connected") Your status will be shared once your device regains internet. 
+        p(v-if="cloud_connected") Your status was successfully shared over the internet. Please note there is <b>no guarantee</b> your message will be received.
+        p(v-if="!cloud_connected && lantern_connected") Your status was successfully shared with a nearby device. Please note there is <b>no guarantee</b> your message will be received.
+        p(v-if="!cloud_connected && !lantern_connected") Your status will be shared once your device regains internet. Please note there is <b>no guarantee</b> your message will be received.
 
         .action-panel
             .button(@click="handleReturnHome") 
@@ -115,11 +115,14 @@ block content
                 span.icon.is-small
                     i.fas.fa-arrow-right
 
-
+    #map-cover
+    #map(v-cloak v-if="!page_loading")
 
 
 block styles
+    link(rel="stylesheet" type="text/css" href="/lib/map.css")
     link(rel="stylesheet" type="text/css" href="/checkin/checkin.css")
 
 block scripts
+    script(src="/lib/map.js")
     script(src="/checkin/checkin.js")

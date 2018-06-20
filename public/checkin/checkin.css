@@ -1,18 +1,34 @@
+body {
+  background: none; }
+
 .page-content {
   overflow: hidden; }
 
 #checkin-page {
+  background: rgba(255, 255, 255, 0.8);
+  background: none;
   padding: 1em; }
   #checkin-page label {
     text-align: left; }
   #checkin-page .panel {
     margin-top: 1em; }
   #checkin-page #success-view {
-    background: #f9fafb;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
     padding: 3em;
     text-align: center; }
     #checkin-page #success-view .button {
       margin-top: 3em; }
       #checkin-page #success-view .button .icon {
         margin-left: 0.75em; }
+  #checkin-page #map-cover, #checkin-page #map {
+    background: rgba(255, 255, 255, 0.8);
+    height: 100%;
+    width: 100%;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    z-index: -5; }
+  #checkin-page #map-cover {
+    z-index: -2; }
 
