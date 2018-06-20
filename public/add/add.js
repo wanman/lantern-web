@@ -135,7 +135,6 @@ window.page = (function() {
 
                 markers.forEach(function(marker) {
                     var coords = marker.getLatLng();
-                    console.log(coords);
                     var hash = Geohash.encode(coords.lat, coords.lng, 10);
                     new_doc.push("geo", hash);
                     if (marker.getRadius) {

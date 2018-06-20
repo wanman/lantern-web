@@ -88,8 +88,6 @@ window.LanternPage = (function(id) {
         self.user.save();
 
         self.stor.syncWithCloud(continuous, function(status) {
-                            console.log(status);
-
             self.view.$data.cloud_connected = status;
         });
 
@@ -196,12 +194,10 @@ window.LanternPage = (function(id) {
 
                 if (coords.length == 1) {
                     // point
-                    console.log("[page] draw marker: ", marker._id);
                     self.map.addPoint(coords[0]);
                 }
                 else {
                     // draw a shape
-                    console.log("[page] draw polygon: ", marker._id);
                     self.map.addPolygon(coords);
                 }
             });

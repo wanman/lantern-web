@@ -31,7 +31,7 @@ window.LanternImport = function(stor) {
 
     
     function addMarker(id, title, geo, cat) {
-        var venue_doc = new LanternDocument("m:"+id+":%%", stor);
+        var venue_doc = new LanternDocument("m:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
         
@@ -57,7 +57,7 @@ window.LanternImport = function(stor) {
             used_categories.push(item_cat);
             
             
-            var doc = new LanternDocument("i:" + item_cat + ":%%", stor);
+            var doc = new LanternDocument(["i", venue_doc.id, item_cat].join(":"), stor);
             doc.set("status", 1);
             doc.push("parent", venue_doc.id);
             doc.push("category", item_cat);
@@ -140,7 +140,8 @@ window.LanternImport = function(stor) {
         addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
         addMarker("hsf", "High School Field House", "drs4b74", "sfe");
         addMarker("cth", "UCG Hospital", "drs4b73", "sfe");
-        addMarker("sht", "Shell Station", "drs4b71", "sfe");
+        addMarker("shl", "Shell Station", "drs4b71", "sfe");
+        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe");
     };
 
     self.item = function() {

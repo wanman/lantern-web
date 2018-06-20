@@ -24,12 +24,17 @@ window.page = (function() {
             self.user.push("tag", cat_label);
         }
 
-        self.user.save().then(function() {
-            setTimeout(function() {
-                window.location = "/browse/browse.html?cat="+cat.slug;
-            }, 800);
-        });
-
+        self.user.save()
+            .then(self.askForLocation)
+            .then(function(position) {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+                var hash = Geohash.encode(lat, lon, 10);
+                window.location = "/browse/browse.html?gp=" + hash + "&cat="+cat.slug;
+            })
+            .catch(function(err) {
+                window.location = "/browse/browse.html?&cat="+cat.slug;
+            });
     });
 
     self.addHelper("handleAllCategorySelect", function() {

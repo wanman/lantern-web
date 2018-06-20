@@ -1,33 +1,45 @@
 window.LanternMapManager = function() {
 
     var self = {
-        map: L.map('map')
+        map: L.map('map'),
+        markers: []
     };
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: false
+        attribution: false,
+        dbName: "lantern",
+        maxZoom: 18,
+        useCache: true,
+        crossOrigin: true
     }).addTo(self.map);
 
 
     //------------------------------------------------------------------------
     self.addPoint = function(coords, opts) {
-        console.log("[map] adding point: ", coords);
-        return L.marker(coords, opts || {}).addTo(self.map);
+        //console.log("[map] adding point: ", coords);
+        var marker = L.marker(coords, opts || {}).addTo(self.map);
+        self.markers.push(marker);
+        return marker;
     };
     
     self.addPolygon = function(coords, opts) {
-        console.log("[map] adding polygon: ", coords);
+        //console.log("[map] adding polygon: ", coords);
         return L.polygon(coords, opts || {}).addTo(self.map);
     };
 
     self.addCircle = function(coords, opts) {
-        console.log("[map] adding circle: ", coords);
+        //console.log("[map] adding circle: ", coords);
         return L.circle(coords, opts || {}).addTo(self.map);
     };
     
     self.setPosition = function(lat, lon, zoom) {
-        console.log("[map] set position to:" + lat, lon);
+        //console.log("[map] set position to:" + lat, lon);
         self.map.setView([lat, lon], zoom || 11);
+    };
+
+    self.fitToMarkers = function() {
+        var group = new L.featureGroup(self.markers);
+        self.map.fitBounds(group.getBounds());
     };
 
 

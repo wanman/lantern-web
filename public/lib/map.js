@@ -13803,423 +13803,340 @@ exports.map = createMap;
 })));
 //# sourceMappingURL=leaflet-src.js.map
 
-'use strict';
+/*
+Copyright (c) 2015 Iván Sánchez Ortega <ivan@mazemap.no>
 
-(function (factory, window) {
 
-    if (typeof define === 'function' && define.amd) {
-        define(['leaflet'], factory);
-    } else if (typeof exports === 'object' && module.exports) {
-        module.exports = factory(require('leaflet'));
-    } else if (typeof window !== 'undefined') {
-        if (typeof window.L === 'undefined') {
-            throw 'Leaflet must be loaded first!';
-        }
-        factory(window.L);
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+
+L.TileLayer.addInitHook(function() {
+
+    if (!this.options.useCache) {
+        this._db     = null;
+        this._canvas = null;
+        return;
     }
-}(function (L) {
 
-    /**
-     * The Offline Layer should work in the same way as the Tile Layer does
-     * when there are no offline tile images saved.
-     */
-    L.TileLayer.Offline = L.TileLayer.extend({
+    var dbName = this.options.dbName || 'offline-tiles';
 
-        /**
-         * Constructor of the layer.
-         * 
-         * @param {String} url URL of the tile map provider.
-         * @param {Object} tilesDb An object that implements a certain interface
-         * so it's able to serve as the database layer to save and remove the tiles.
-         * @param {Object} options This is the same options parameter as the Leaflet
-         * Tile Layer, there are no additional parameters. Check their documentation
-         * for up-to-date information.
+    if (this.options.dbOptions) {
+        this._db = new PouchDB(dbName, this.options.dbOptions);
+    } else {
+        this._db = new PouchDB(dbName);
+    }
+
+    this._canvas = document.createElement('canvas');
+
+    if (!(this._canvas.getContext && this._canvas.getContext('2d'))) {
+        // HTML5 canvas is needed to pack the tiles as base64 data. If
+        //   the browser doesn't support canvas, the code will forcefully
+        //   skip caching the tiles.
+        this._canvas = null;
+    }
+});
+
+// 🍂namespace TileLayer
+// 🍂section PouchDB tile caching options
+// 🍂option useCache: Boolean = false
+// Whether to use a PouchDB cache on this tile layer, or not
+L.TileLayer.prototype.options.useCache     = false;
+
+// 🍂option saveToCache: Boolean = true
+// When caching is enabled, whether to save new tiles to the cache or not
+L.TileLayer.prototype.options.saveToCache  = true;
+
+// 🍂option useOnlyCache: Boolean = false
+// When caching is enabled, whether to request new tiles from the network or not
+L.TileLayer.prototype.options.useOnlyCache = false;
+
+// 🍂option useCache: String = 'image/png'
+// The image format to be used when saving the tile images in the cache
+L.TileLayer.prototype.options.cacheFormat = 'image/png';
+
+// 🍂option cacheMaxAge: Number = 24*3600*1000
+// Maximum age of the cache, in milliseconds
+L.TileLayer.prototype.options.cacheMaxAge  = 24*3600*1000;
+
+
+L.TileLayer.include({
+
+    // Overwrites L.TileLayer.prototype.createTile
+    createTile: function(coords, done) {
+        var tile = document.createElement('img');
+
+        tile.onerror = L.bind(this._tileOnError, this, done, tile);
+
+        if (this.options.crossOrigin) {
+            tile.crossOrigin = '';
+        }
+
+        /*
+         Alt tag is *set to empty string to keep screen readers from reading URL and for compliance reasons
+         http://www.w3.org/TR/WCAG20-TECHS/H67
          */
-        initialize: function (url, tilesDb, options) {
-            this._url = url;
-            this._tilesDb = tilesDb;
+        tile.alt = '';
 
-            options = L.Util.setOptions(this, options);
+        var tileUrl = this.getTileUrl(coords);
 
-            if (options.detectRetina && L.Browser.retina && options.maxZoom > 0) {
-                options.tileSize = Math.floor(options.tileSize / 2);
+        if (this.options.useCache && this._canvas) {
+            this._db.get(tileUrl, {revs_info: true}, this._onCacheLookup(tile, tileUrl, done));
+        } else {
+            // Fall back to standard behaviour
+            tile.onload = L.bind(this._tileOnLoad, this, done, tile);
+        }
 
-                if (!options.zoomReverse) {
-                    options.zoomOffset++;
-                    options.maxZoom--;
+        tile.src = tileUrl;
+        return tile;
+    },
+
+    // Returns a callback (closure over tile/key/originalSrc) to be run when the DB
+    //   backend is finished with a fetch operation.
+    _onCacheLookup: function(tile, tileUrl, done) {
+        return function(err, data) {
+            if (data) {
+                this.fire('tilecachehit', {
+                    tile: tile,
+                    url: tileUrl
+                });
+                if (Date.now() > data.timestamp + this.options.cacheMaxAge && !this.options.useOnlyCache) {
+                    // Tile is too old, try to refresh it
+                    //console.log('Tile is too old: ', tileUrl);
+
+                    if (this.options.saveToCache) {
+                        tile.onload = L.bind(this._saveTile, this, tile, tileUrl, data._revs_info[0].rev, done);
+                    }
+                    tile.crossOrigin = 'Anonymous';
+                    tile.src = tileUrl;
+                    tile.onerror = function(ev) {
+                        // If the tile is too old but couldn't be fetched from the network,
+                        //   serve the one still in cache.
+                        this.src = data.dataUrl;
+                    }
                 } else {
-                    options.zoomOffset--;
-                    options.minZoom++;
+                    // Serve tile from cached data
+                    //console.log('Tile is cached: ', tileUrl);
+                    tile.onload = L.bind(this._tileOnLoad, this, done, tile);
+                    tile.src = data.dataUrl;    // data.dataUrl is already a base64-encoded PNG image.
                 }
-
-                options.minZoom = Math.max(0, options.minZoom);
-            }
-
-            if (typeof options.subdomains === 'string') {
-                options.subdomains = options.subdomains.split('');
-            }
-
-            if (!L.Browser.android) {
-                this.on('tileunload', this._onTileRemove);
-            }
-        },
-
-        /**
-         * Overrides the method from the Tile Layer. Loads a tile given its
-         * coordinates.
-         * 
-         * @param {Object} coords Coordinates of the tile.
-         * @param {Function} done A callback to be called when the tile has been
-         * loaded.
-         * @returns {HTMLElement} An <img> HTML element with the appropriate
-         * image URL.
-         */
-        createTile: function (coords, done) {
-            var tile = document.createElement('img');
-
-            L.DomEvent.on(tile, 'load', L.bind(this._tileOnLoad, this, done, tile));
-            L.DomEvent.on(tile, 'error', L.bind(this._tileOnError, this, done, tile));
-
-            if (this.options.crossOrigin) {
-                tile.crossOrigin = '';
-            }
-
-            tile.alt = '';
-
-            tile.setAttribute('role', 'presentation');
-
-            this.getTileUrl(coords).then(function (url) {
-                tile.src = url;
-            }).catch(function (err) {
-                throw err;
-            });
-
-            return tile;
-        },
-
-        /**
-         * Overrides the method from the Tile Layer. Returns the URL for a tile
-         * given its coordinates. It tries to get the tile image offline first,
-         * then if it fails, it falls back to the original Tile Layer
-         * implementation.
-         * 
-         * @param {Object} coords Coordinates of the tile.
-         * @returns {String} The URL for a tile image.
-         */
-        getTileUrl: function (coords) {
-            var url = L.TileLayer.prototype.getTileUrl.call(this, coords);
-            var dbStorageKey = this._getStorageKey(url);
-
-            var resultPromise = this._tilesDb.getItem(dbStorageKey).then(function (data) {
-                if (data && typeof data === 'object') {
-                    return URL.createObjectURL(data);
+            } else {
+                this.fire('tilecachemiss', {
+                    tile: tile,
+                    url: tileUrl
+                });
+                if (this.options.useOnlyCache) {
+                    // Offline, not cached
+//                  console.log('Tile not in cache', tileUrl);
+                    tile.onload = L.Util.falseFn;
+                    tile.src = L.Util.emptyImageUrl;
+                } else {
+                    //Online, not cached, request the tile normally
+//                  console.log('Requesting tile normally', tileUrl);
+                    if (this.options.saveToCache) {
+                        tile.onload = L.bind(this._saveTile, this, tile, tileUrl, null, done);
+                    } else {
+                        tile.onload = L.bind(this._tileOnLoad, this, done, tile);
+                    }
+                    tile.crossOrigin = 'Anonymous';
+                    tile.src = tileUrl;
                 }
-                return url;
-            }).catch(function (err) {
-                throw err;
-            });
+            }
+        }.bind(this);
+    },
 
-            return resultPromise;
-        },
+    // Returns an event handler (closure over DB key), which runs
+    //   when the tile (which is an <img>) is ready.
+    // The handler will delete the document from pouchDB if an existing revision is passed.
+    //   This will keep just the latest valid copy of the image in the cache.
+    _saveTile: function(tile, tileUrl, existingRevision, done) {
+        if (this._canvas === null) return;
+        this._canvas.width  = tile.naturalWidth  || tile.width;
+        this._canvas.height = tile.naturalHeight || tile.height;
 
-        /**
-         * Gets the URLs for all the tiles that are inside the given bounds.
-         * Every element of the result array is in this format:
-         * {key: <String>, url: <String>}. The key is the key used on the
-         * database layer to find the tile image offline. The URL is the
-         * location from where the tile image will be downloaded.
-         * 
-         * @param {Object} bounds The bounding box of the tiles.
-         * @param {Number} zoom The zoom level of the bounding box.
-         * @returns {Array} An array containing all the URLs inside the given
-         * bounds.
-         */
-        getTileUrls: function (bounds, zoom) {
-            var tiles = [];
-            var originalurl = this._url;
+        var context = this._canvas.getContext('2d');
+        context.drawImage(tile, 0, 0);
 
-            this.setUrl(this._url.replace('{z}', zoom), true);
+        var dataUrl;
+        try {
+            dataUrl = this._canvas.toDataURL(this.options.cacheFormat);
+        } catch(err) {
+            this.fire('tilecacheerror', { tile: tile, error: err });
+            return done();
+        }
 
+        var doc = {_id: tileUrl, dataUrl: dataUrl, timestamp: Date.now()};
+        if (existingRevision) {
+          this._db.get(tileUrl).then(function(doc) {
+              return this._db.put({
+                  _id: doc._id,
+                  _rev: doc._rev,
+                  dataUrl: dataUrl,
+                  timestamp: Date.now()
+              });
+          }.bind(this)).then(function(response) {
+            //console.log('_saveTile update: ', response);
+          });
+        } else {
+          this._db.put(doc).then( function(doc) {
+            //console.log('_saveTile insert: ', doc);
+          });
+        }
+
+        if (done) {
+          done();
+        }
+    },
+
+    // 🍂section PouchDB tile caching options
+    // 🍂method seed(bbox: LatLngBounds, minZoom: Number, maxZoom: Number): this
+    // Starts seeding the cache given a bounding box and the minimum/maximum zoom levels
+    // Use with care! This can spawn thousands of requests and flood tileservers!
+    seed: function(bbox, minZoom, maxZoom) {
+        if (!this.options.useCache) return;
+        if (minZoom > maxZoom) return;
+        if (!this._map) return;
+
+        var queue = [];
+
+        for (var z = minZoom; z<=maxZoom; z++) {
+
+            var northEastPoint = this._map.project(bbox.getNorthEast(),z);
+            var southWestPoint = this._map.project(bbox.getSouthWest(),z);
+
+            // Calculate tile indexes as per L.TileLayer._update and
+            //   L.TileLayer._addTilesFromCenterOut
+            var tileSize = this.getTileSize();
             var tileBounds = L.bounds(
-                bounds.min.divideBy(this.getTileSize().x).floor(),
-                bounds.max.divideBy(this.getTileSize().x).floor()
-            );
+                L.point(Math.floor(northEastPoint.x / tileSize.x), Math.floor(northEastPoint.y / tileSize.y)),
+                L.point(Math.floor(southWestPoint.x / tileSize.x), Math.floor(southWestPoint.y / tileSize.y)));
 
-            for (var i = tileBounds.min.x; i <= tileBounds.max.x; i++) {
-                for (var j = tileBounds.min.y; j <= tileBounds.max.y; j++) {
-                    var tilePoint = new L.Point(i, j);
-                    var url = L.TileLayer.prototype.getTileUrl.call(this, tilePoint);
-
-                    tiles.push({
-                        'key': this._getStorageKey(url),
-                        'url': url,
-                    });
+            for (var j = tileBounds.min.y; j <= tileBounds.max.y; j++) {
+                for (var i = tileBounds.min.x; i <= tileBounds.max.x; i++) {
+                    point = new L.Point(i, j);
+                    point.z = z;
+                    queue.push(this._getTileUrl(point));
                 }
             }
-
-            this.setUrl(originalurl, true);
-
-            return tiles;
-        },
-
-        /**
-         * Determines the key that will be used on the database layer given
-         * a URL.
-         * 
-         * @param {String} url The URL of a tile image.
-         * @returns {String} The key that will be used on the database layer
-         * to find a tile image.
-         */
-        _getStorageKey: function (url) {
-            var key = null;
-
-            if (url.indexOf('{s}')) {
-                var regexstring = new RegExp('[' + this.options.subdomains.join('|') + ']\.');
-                key = url.replace(regexstring, this.options.subdomains['0'] + '.');
-            }
-
-            return key || url;
-        },
-    });
-
-    /**
-     * Factory function as suggested by the Leaflet team.
-     * 
-     * @param {String} url URL of the tile map provider.
-     * @param {Object} tilesDb An object that implements a certain interface
-     * so it's able to serve as the database layer to save and remove the tiles.
-     * @param {Object} options This is the same options parameter as the Leaflet
-     * Tile Layer, there are no additional parameters. Check their documentation
-     * for up-to-date information.
-     */
-    L.tileLayer.offline = function (url, tilesDb, options) {
-        return new L.TileLayer.Offline(url, tilesDb, options);
-    };
-}, window));
-
-'use strict';
-
-(function (factory, window) {
-
-    if (typeof define === 'function' && define.amd) {
-        define(['leaflet'], factory);
-    } else if (typeof exports === 'object' && module.exports) {
-        module.exports = factory(require('leaflet'));
-    } else if (typeof window !== 'undefined') {
-        if (typeof window.L === 'undefined') {
-            throw 'Leaflet must be loaded first!';
         }
-        factory(window.L);
-    }
-}(function (L) {
 
-    /**
-     * The Offline Control to be used together with the Offline Layer.
-     */
-    L.Control.Offline = L.Control.extend({
-        options: {
-            position: 'topleft',
-            saveButtonHtml: 'S',
-            saveButtonTitle: 'Save tiles',
-            removeButtonHtml: 'R',
-            removeButtonTitle: 'Remove tiles',
-            minZoom: 0,
-            maxZoom: 19,
-            confirmSavingCallback: null,
-            confirmRemovalCallback: null
-        },
-
-        /**
-         * Constructor of the control.
-         * 
-         * @param {Object} baseLayer The Offline Layer to work together with the
-         * control.
-         * @param {Object} tilesDb An object that implements a certain interface
-         * so it's able to serve as the database layer to save and remove the tiles.
-         * @param {Object} options This is the same parameter as the Leaflet
-         * Control, but it has some additions. Check the README for more.
-         */
-        initialize: function (baseLayer, tilesDb, options) {
-            this._baseLayer = baseLayer;
-            this._tilesDb = tilesDb;
-
-            L.Util.setOptions(this, options);
-        },
-
-        /**
-         * Creates the container DOM element for the control and add listeners
-         * on relevant map events.
-         * 
-         * @param {Object} map The Leaflet map.
-         * @returns {HTMLElement} The DOM element for the control.
-         */
-        onAdd: function (map) {
-            var container = L.DomUtil.create('div', 'leaflet-control-offline leaflet-bar');
-
-            this._createButton(this.options.saveButtonHtml, this.options.saveButtonTitle, 'save-tiles-button', container, this._saveTiles);
-            this._createButton(this.options.removeButtonHtml, this.options.removeButtonTitle, 'remove-tiles-button', container, this._removeTiles);
-
-            return container;
-        },
-
-        /**
-         * Auxiliary method that creates a button DOM element.
-         * 
-         * @param {String} html The HTML that will be used inside the button
-         * DOM element.
-         * @param {String} title The title of the button DOM element.
-         * @param {String} className The class name for the button DOM element.
-         * @param {HTMLElement} container The container DOM element for the
-         * buttons.
-         * @param {Function} fn A function that will be executed when the button
-         * is clicked.
-         * @returns {HTMLElement} A button DOM element.
-         */
-        _createButton: function (html, title, className, container, fn) {
-            var link = L.DomUtil.create('a', className, container);
-            link.innerHTML = html;
-            link.href = '#';
-            link.title = title;
-
-            L.DomEvent.disableClickPropagation(link);
-            L.DomEvent.on(link, 'click', L.DomEvent.stop);
-            L.DomEvent.on(link, 'click', fn, this);
-            L.DomEvent.on(link, 'click', this._refocusOnMap, this);
-
-            return link;
-        },
-
-        /**
-         * The function executed when the button to save tiles is clicked.
-         */
-        _saveTiles: function () {
-            var self = this;
-
-            var bounds = null;
-            var zoomLevels = [];
-            var tileUrls = [];
-            var currentZoom = this._map.getZoom();
-            var latlngBounds = this._map.getBounds();
-
-            if (currentZoom < this.options.minZoom) {
-                self._baseLayer.fire('offline:below-min-zoom-error');
-
-                return;
-            }
-
-            for (var zoom = currentZoom; zoom <= this.options.maxZoom; zoom++) {
-                zoomLevels.push(zoom);
-            }
-
-            for (var i = 0; i < zoomLevels.length; i++) {
-                bounds = L.bounds(this._map.project(latlngBounds.getNorthWest(), zoomLevels[i]),
-                    this._map.project(latlngBounds.getSouthEast(), zoomLevels[i]));
-                tileUrls = tileUrls.concat(this._baseLayer.getTileUrls(bounds, zoomLevels[i]));
-            }
-
-            var continueSaveTiles = function () {
-                self._baseLayer.fire('offline:save-start', {
-                    nTilesToSave: tileUrls.length
-                });
-
-                self._tilesDb.saveTiles(tileUrls).then(function () {
-                    self._baseLayer.fire('offline:save-end');
-                }).catch(function (err) {
-                    self._baseLayer.fire('offline:save-error', {
-                        error: err
-                    });
-                });
-            };
-
-            if (this.options.confirmSavingCallback) {
-                this.options.confirmSavingCallback(tileUrls.length, continueSaveTiles);
-            } else {
-                continueSaveTiles();
-            }
-        },
-
-        /**
-         * The function executed when the button to remove tiles is clicked.
-         */
-        _removeTiles: function () {
-            var self = this;
-
-            var continueRemoveTiles = function () {
-                self._baseLayer.fire('offline:remove-start');
-
-                self._tilesDb.clear().then(function () {
-                    self._baseLayer.fire('offline:remove-end');
-                }).catch(function (err) {
-                    self._baseLayer.fire('offline:remove-error', {
-                        error: err
-                    });
-                });
-            };
-
-            if (self.options.confirmRemovalCallback) {
-                self.options.confirmRemovalCallback(continueRemoveTiles);
-            } else {
-                continueRemoveTiles();
-            }
+        var seedData = {
+            bbox: bbox,
+            minZoom: minZoom,
+            maxZoom: maxZoom,
+            queueLength: queue.length
         }
-    });
+        this.fire('seedstart', seedData);
+        var tile = this._createTile();
+        tile._layer = this;
+        this._seedOneTile(tile, queue, seedData);
+        return this;
+    },
 
-    /**
-     * Factory function as suggested by the Leaflet team.
-     * 
-     * @param {Object} baseLayer The Offline Layer to work together with the
-     * control.
-     * @param {Object} tilesDb An object that implements a certain interface
-     * so it's able to serve as the database layer to save and remove the tiles.
-     * @param {Object} options This is the same parameter as the Leaflet
-     * Control, but it has some additions. Check the README for more.
-     */
-    L.control.offline = function (baseLayer, tilesDb, options) {
-        return new L.Control.Offline(baseLayer, tilesDb, options);
-    };
-}, window));
+    _createTile: function () {
+        return new Image();
+    },
 
-'use strict';
+    // Modified L.TileLayer.getTileUrl, this will use the zoom given by the parameter coords
+    //  instead of the maps current zoomlevel.
+    _getTileUrl: function (coords) {
+        var zoom = coords.z;
+        if (this.options.zoomReverse) {
+            zoom = this.options.maxZoom - zoom;
+        }
+        zoom += this.options.zoomOffset;
+        return L.Util.template(this._url, L.extend({
+            r: this.options.detectRetina && L.Browser.retina && this.options.maxZoom > 0 ? '@2x' : '',
+            s: this._getSubdomain(coords),
+            x: coords.x,
+            y: this.options.tms ? this._globalTileRange.max.y - coords.y : coords.y,
+            z: this.options.maxNativeZoom ? Math.min(zoom, this.options.maxNativeZoom) : zoom
+        }, this.options));
+    },
 
-(function (factory) {
-    if (typeof define === 'function' && define.amd) {
-        define(['./TileLayer.Offline', './Control.Offline'], factory);
-    } else if (typeof exports === 'object' && module.exports) {
-        module.exports = factory(require('./TileLayer.Offline'), require('./Control.Offline'));
+    // Uses a defined tile to eat through one item in the queue and
+    //   asynchronously recursively call itself when the tile has
+    //   finished loading.
+    _seedOneTile: function(tile, remaining, seedData) {
+        if (!remaining.length) {
+            this.fire('seedend', seedData);
+            return;
+        }
+        this.fire('seedprogress', {
+            bbox:    seedData.bbox,
+            minZoom: seedData.minZoom,
+            maxZoom: seedData.maxZoom,
+            queueLength: seedData.queueLength,
+            remainingLength: remaining.length
+        });
+
+        var url = remaining.pop();
+
+        this._db.get(url, function(err, data) {
+            if (!data) {
+                tile.onload = function(e) {
+                    this._saveTile(tile, url, null);
+                    this._seedOneTile(tile, remaining, seedData);
+                }.bind(this);
+                tile.onerror = function(e) {
+                    // Could not load tile, let's continue anyways.
+                    this._seedOneTile(tile, remaining, seedData);
+                }.bind(this);
+                tile.crossOrigin = 'Anonymous';
+                tile.src = url;
+            } else {
+                this._seedOneTile(tile, remaining, seedData);
+            }
+        }.bind(this));
     }
-}(function (TileLayerOffline, ControlOffline) {
-}));
 
+});
 window.LanternMapManager = function() {
 
     var self = {
-        map: L.map('map')
+        map: L.map('map'),
+        markers: []
     };
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: false
+        attribution: false,
+        dbName: "lantern",
+        maxZoom: 18,
+        useCache: true,
+        crossOrigin: true
     }).addTo(self.map);
 
 
     //------------------------------------------------------------------------
     self.addPoint = function(coords, opts) {
-        console.log("[map] adding point: ", coords);
-        return L.marker(coords, opts || {}).addTo(self.map);
+        //console.log("[map] adding point: ", coords);
+        var marker = L.marker(coords, opts || {}).addTo(self.map);
+        self.markers.push(marker);
+        return marker;
     };
     
     self.addPolygon = function(coords, opts) {
-        console.log("[map] adding polygon: ", coords);
+        //console.log("[map] adding polygon: ", coords);
         return L.polygon(coords, opts || {}).addTo(self.map);
     };
 
     self.addCircle = function(coords, opts) {
-        console.log("[map] adding circle: ", coords);
+        //console.log("[map] adding circle: ", coords);
         return L.circle(coords, opts || {}).addTo(self.map);
     };
     
     self.setPosition = function(lat, lon, zoom) {
-        console.log("[map] set position to:" + lat, lon);
+        //console.log("[map] set position to:" + lat, lon);
         self.map.setView([lat, lon], zoom || 11);
+    };
+
+    self.fitToMarkers = function() {
+        var group = new L.featureGroup(self.markers);
+        self.map.fitBounds(group.getBounds());
     };
 
 

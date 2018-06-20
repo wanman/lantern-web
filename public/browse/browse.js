@@ -76,11 +76,8 @@ window.page = (function() {
 
         setTimeout(function() {
             self.renderMap()
-                .then(self.askForLocation)
-                .then(function(position) {
-                    var lat = position.coords.latitude;
-                    var lon = position.coords.longitude;
-                    self.map.setPosition(lat, lon, 7);
+                .then(function() {
+                    self.map.fitToMarkers();
                 })
                 .catch(function(err) {
                     console.log("[browse] map error", err);

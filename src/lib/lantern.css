@@ -121,6 +121,11 @@ section nav.global {
     border-bottom: 1px solid $light-border;
 }
 
+.navbar.is-fixed-bottom {
+    z-index: 1001;
+    
+}
+
 .card {
     border-radius: 5px;
     border: 1px solid $border;

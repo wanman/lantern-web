@@ -27,7 +27,9 @@ html, body {
     }
     .actions {
         border-top: 1px solid #EEE;
+        border-bottom: 1px solid #EEE;
         padding: 1em;
+        height: 4em;
         margin-bottom: 1em;
 
         .button {
@@ -40,7 +42,6 @@ html, body {
     }
 
     .connection {
-        border-bottom: 1px solid #EEE;
         padding: 1em;
     }
 
