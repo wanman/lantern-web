@@ -21,7 +21,13 @@ body {
     }
 
     .panel {
+        margin: 1.5em;
         margin-top: 1em;
+    }
+
+    .buttons {
+        display: block;
+        text-align: center;
     }
 
 

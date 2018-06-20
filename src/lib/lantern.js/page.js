@@ -8,6 +8,7 @@ window.LanternPage = (function(id) {
             page_title: "",
             page_tag: "",
             page_loading: true,
+            is_syncing: false,
             allow_back_button: false,
             user: null
         },
@@ -81,25 +82,41 @@ window.LanternPage = (function(id) {
     }
 
 
+    /**
+    * Display a sync icon in footer momentarily
+    */
+    function showSyncIcon() {
+        setTimeout(function() {
+            if (self.view.$data.is_syncing) return;
+            self.view.$data.is_syncing = true;
+            setTimeout(function() {
+                self.view.$data.is_syncing = false;
+            }, 4000);
+        }, 1000);
+    }
+
+
     function sync(continuous) {
-
-        // make sure we tell the system we're awake
-        self.user.set("updated_at",new Date());
-        self.user.save();
-
         if (window.location.host == "lantern.global") {
             self.view.$data.cloud_connected = true;
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = true;
+            }, function(changed_doc) {
+                showSyncIcon();
             });
         }
         else {
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = status;
+            },function(changed_doc) {
+                showSyncIcon();
+
             });
 
             self.stor.syncWithLantern(continuous, function(status) {
                 self.view.$data.lantern_connected = status;
+            },function(changed_doc) {
+                showSyncIcon();
             });
         }
     }

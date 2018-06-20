@@ -11,7 +11,11 @@ body {
   #checkin-page label {
     text-align: left; }
   #checkin-page .panel {
+    margin: 1.5em;
     margin-top: 1em; }
+  #checkin-page .buttons {
+    display: block;
+    text-align: center; }
   #checkin-page #success-view {
     background: rgba(255, 255, 255, 0.8);
     border-radius: 8px;

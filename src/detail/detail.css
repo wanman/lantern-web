@@ -6,6 +6,10 @@ $light-border: #f2f2f2;
 
 #detail-page {
 
+    .tags .tag {
+        font-size: 12px;
+    }
+
     #map-prompt {
         background: #FFF;
         border-bottom: 1px solid #EEE;
@@ -17,12 +21,12 @@ $light-border: #f2f2f2;
         height: 200px;
         width: 100%;
         z-index: 10001;
-        overflow-y: scroll;
+        overflow-y: hidden;
         position: fixed;
         border-top: 1px solid $light-border;
         top: 3.8rem;
         left: 0;
-        padding: 2em;
+        padding: 1em;
 
         h3 {
             font-weight: bold;
@@ -32,9 +36,13 @@ $light-border: #f2f2f2;
 
         .tags {
             float: left;
-            margin-right: 1em;
-            margin-top: 0.5em;
+            margin-right: 0.4em;
+            margin-top: 0.4em;
             margin-bottom: 0;
+
+            .is-primary {
+                padding-left: 1.25em;
+            }
         }
         background: rgba(255,255,255,0.95);
         border-bottom: 1px solid $border;

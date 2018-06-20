@@ -30,7 +30,9 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         return delay * 3;
     }
 
+    console.log("[sync] start " + label + " sync...");
     src.sync(dest, {
+        since: 0,
         live: continuous || false,
         retry: true,
         back_off_function: backOffSync

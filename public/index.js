@@ -35,7 +35,9 @@ window.page = (function() {
                 window.location = "/browse/browse.html?gp=" + hash + "&cat="+cat.slug;
             })
             .catch(function(err) {
-                window.location = "/browse/browse.html?&cat="+cat.slug;
+                setTimeout(function() {
+                    window.location = "/browse/browse.html?&cat="+cat.slug;
+                }, 500);
             });
     });
 

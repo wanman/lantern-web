@@ -37,9 +37,16 @@ html(lang="en")
                             .tag {{ page_tag }}
                    
 
-            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="cloud_connected !== null || lantern_connected !== null")
+            nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="cloud_connected !== null || lantern_connected !== null" v-bind:class="is_syncing ? 'is-syncing' : ''")
                 .navbar-brand
-                    .navbar-item
+                    .navbar-item(v-if="is_syncing")
+                        span.icon
+                            i.fas.fa-sync
+                        
+                        span(v-if="cloud_connected") Syncing with Cloud
+                        span(v-if="!cloud_connected && lantern_connected") Syncing with Lantern
+
+                    .navbar-item(v-if="!is_syncing")
                         span(v-if="!cloud_connected && !lantern_connected") 
 
                             span.icon

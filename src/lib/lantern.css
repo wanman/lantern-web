@@ -101,7 +101,6 @@ section nav {
 
 .page-content {
     margin-top: 3.8rem;
-    overflow-y: scroll;
     padding-bottom: 5em;
 }
 
@@ -255,7 +254,35 @@ nav.global {
     }
 
     .icon i {
+
+        transition-duration: 1s;
+        transition-property: transform;
+
         color: $text;
+    }
+}
+
+
+@keyframes rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+#status-footer.is-syncing {
+    background: #3273dc;
+
+    .navbar-item {
+        margin: auto;
+        display: block;
+        color: #FFF;
+
+        .icon i {
+            color: #FFF;
+            animation-name: rotate;
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
     }
 }
 

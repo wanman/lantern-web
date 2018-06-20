@@ -1,3 +1,6 @@
+#detail-page .tags .tag {
+  font-size: 12px; }
+
 #detail-page #map-prompt {
   background: #FFF;
   border-bottom: 1px solid #EEE;
@@ -9,12 +12,12 @@
   height: 200px;
   width: 100%;
   z-index: 10001;
-  overflow-y: scroll;
+  overflow-y: hidden;
   position: fixed;
   border-top: 1px solid #f2f2f2;
   top: 3.8rem;
   left: 0;
-  padding: 2em;
+  padding: 1em;
   background: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid #c6c8cd; }
   #detail-page #inspector-view h3 {
@@ -23,9 +26,11 @@
     margin-bottom: 1em; }
   #detail-page #inspector-view .tags {
     float: left;
-    margin-right: 1em;
-    margin-top: 0.5em;
+    margin-right: 0.4em;
+    margin-top: 0.4em;
     margin-bottom: 0; }
+    #detail-page #inspector-view .tags .is-primary {
+      padding-left: 1.25em; }
   #detail-page #inspector-view .buttons {
     display: block;
     text-align: center;

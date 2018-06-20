@@ -19,7 +19,7 @@ window.page = (function() {
                 self.view.$data.show_form = false;
                 self.view.$data.sending_data = false;
             });
-        }, 1000);
+        }, 300);
     });
 
     self.addHelper("handleReturnHome", function() {

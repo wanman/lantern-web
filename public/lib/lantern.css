@@ -4822,7 +4822,6 @@ section nav {
 
 .page-content {
   margin-top: 3.8rem;
-  overflow-y: scroll;
   padding-bottom: 5em; }
 
 section nav.global {
@@ -4934,7 +4933,28 @@ nav.global {
     font-size: small;
     padding: 0em 1em; }
   #status-footer .icon i {
+    transition-duration: 1s;
+    transition-property: transform;
     color: #595959; }
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg); }
+  to {
+    transform: rotate(360deg); } }
+
+#status-footer.is-syncing {
+  background: #3273dc; }
+  #status-footer.is-syncing .navbar-item {
+    margin: auto;
+    display: block;
+    color: #FFF; }
+    #status-footer.is-syncing .navbar-item .icon i {
+      color: #FFF;
+      animation-name: rotate;
+      animation-duration: 2s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear; }
 
 #index-page, #welcome-page {
   background: #FFF;
