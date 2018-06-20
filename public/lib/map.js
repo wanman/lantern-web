@@ -14219,6 +14219,10 @@ window.LanternMapManager = function() {
         self.map.removeControl(self.map.zoomControl);
     };
 
+    self.addZoomControl = function() {
+        self.map.addControl(self.map.zoomControl);
+    };
+
 
     self.setPosition(38.42,-102.79, 4);
 

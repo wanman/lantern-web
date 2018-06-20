@@ -489,14 +489,17 @@ window.LanternPage = (function(id) {
         self.user.set("updated_at",new Date());
         self.user.save();
 
-        self.stor.syncWithCloud(continuous, function(status) {
-            self.view.$data.cloud_connected = status;
-        });
-
         if (window.location.host == "lantern.global") {
             self.view.$data.cloud_connected = true;
+            self.stor.syncWithCloud(continuous, function(status) {
+                self.view.$data.cloud_connected = true;
+            });
         }
         else {
+            self.stor.syncWithCloud(continuous, function(status) {
+                self.view.$data.cloud_connected = status;
+            });
+
             self.stor.syncWithLantern(continuous, function(status) {
                 self.view.$data.lantern_connected = status;
             });

@@ -39,8 +39,16 @@ window.page = (function() {
     });
 
     self.addHelper("handleSelectItem", function(item) {
-        self.view.$data.selected_item = item;
-        self.view.$data.show_inspector = true;
+        if (self.view.$data.selected_item._id == item._id) {
+            self.map.addZoomControl();
+            self.view.$data.selected_item = {};
+            self.view.$data.show_inspector = false;      
+        }
+        else {
+            self.map.removeZoomControl();
+            self.view.$data.selected_item = item;
+            self.view.$data.show_inspector = true;
+        }
         
     });
 

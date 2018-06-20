@@ -102,7 +102,7 @@ section nav {
 .page-content {
     margin-top: 3.8rem;
     overflow-y: scroll;
-    margin-bottom: 2em;
+    padding-bottom: 5em;
 }
 
 

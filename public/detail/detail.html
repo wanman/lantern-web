@@ -50,12 +50,9 @@
                         <div id="inspector-view" v-if="show_inspector">
                             <h3>{{ getCategory(selected_item.category).title }} Verifications</h3><a class="tags has-addons" v-for="row in selected_item.vote" v-if="row.votes &gt; 0"> <span class="tag is-primary">
                                     <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ row.votes }}</span><span class="tag"> {{ row.title }}</span></a>
-                            <div class="buttons">
-                                <div class="button" @click="clearSelectItem">Close</div>
-                            </div>
                         </div>
                         <div id="map-prompt" v-if="!show_inspector &amp;&amp; !show_map" @click="handleShowMap"><span class="icon"><i class="fas fa-map"></i></span><span>Show Map</span></div>
-                        <div id="map" v-bind:style="'display:'  + (!show_inspector &amp;&amp; show_map ? 'block' : 'none')"></div>
+                        <div id="map" v-bind:style="'display:'  + (show_map ? 'block' : 'none')"></div>
                         <div v-cloak v-if="!page_loading">
                             <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)"><span class="status"> 
                                     <div class="tags">
