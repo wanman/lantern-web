@@ -4937,10 +4937,17 @@ nav.global {
     transition-property: transform;
     color: #595959; }
 
-@keyframes rotate {
-  from {
-    transform: rotate(0deg); }
-  to {
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg); } }
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg); } }
+
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
     transform: rotate(360deg); } }
 
 #status-footer.is-syncing {
@@ -4951,10 +4958,9 @@ nav.global {
     color: #FFF; }
     #status-footer.is-syncing .navbar-item .icon i {
       color: #FFF;
-      animation-name: rotate;
-      animation-duration: 2s;
-      animation-iteration-count: infinite;
-      animation-timing-function: linear; }
+      -webkit-animation: spin 1.5s linear infinite;
+      -moz-animation: spin 1.5s linear infinite;
+      animation: spin 1.5s linear infinite; }
 
 #index-page, #welcome-page {
   background: #FFF;

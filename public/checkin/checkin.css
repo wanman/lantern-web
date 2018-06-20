@@ -16,7 +16,20 @@ body {
   #checkin-page .buttons {
     display: block;
     text-align: center; }
+  #checkin-page .waiting {
+    font-weight: bold;
+    margin-top: 2em;
+    margin-bottom: 1em; }
+  #checkin-page .confirmations {
+    font-size: large;
+    border-radius: 3px;
+    padding: 0.2em; }
+    #checkin-page .confirmations span {
+      font-weight: bold; }
+  #checkin-page .confirmations.is-loading {
+    background: #FCFCFC; }
   #checkin-page #success-view {
+    border: 1px solid #f2f2f2;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 8px;
     padding: 3em;

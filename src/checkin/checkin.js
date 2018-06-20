@@ -6,6 +6,7 @@ window.page = (function() {
     self.addData("initials", "");
     self.addData("birth_month", "");
     self.addData("birth_day", "");
+    self.addData("confirmation_count", 0);
     self.addData("sending_data", false);
 
     self.addHelper("handleSubmit", function() { 
@@ -18,6 +19,15 @@ window.page = (function() {
             self.user.save().then(function() {
                 self.view.$data.show_form = false;
                 self.view.$data.sending_data = false;
+
+                var iv = setInterval(function() {
+                    if (self.view.$data.confirmation_count < 5) {
+                        self.view.$data.confirmation_count = self.view.$data.confirmation_count+1;
+                    }
+                    else {
+                        clearInterval(iv);
+                    }
+                }, 3000+Math.random()*5000);
             });
         }, 300);
     });

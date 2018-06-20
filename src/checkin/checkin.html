@@ -105,9 +105,22 @@ block content
         span.icon.is-large
             i.fas.fa-check-circle.fa-3x
         h1 Thank you!
-        p(v-if="cloud_connected") Your status was successfully shared over the internet. Please note there is <b>no guarantee</b> your message will be received.
-        p(v-if="!cloud_connected && lantern_connected") Your status was successfully shared with a nearby device. Please note there is <b>no guarantee</b> your message will be received.
-        p(v-if="!cloud_connected && !lantern_connected") Your status will be shared once your device regains internet. Please note there is <b>no guarantee</b> your message will be received.
+        
+        div(v-if="confirmation_count < 5")
+            p(v-if="cloud_connected") Your status was successfully shared over the internet.
+
+            p(v-if="!cloud_connected && lantern_connected") Your status was successfully shared with a nearby device. 
+
+            p(v-if="!cloud_connected && !lantern_connected") Your status will be shared once your device regains internet.
+
+        div(v-if="confirmation_count >= 5")
+            p Your status has been shared across the network.
+
+        h5.waiting Confirmations
+
+        .confirmations(v-bind:class="confirmation_count < 5 ? 'is-loading' : ''")
+            | {{ confirmation_count }} / 
+            span 5
 
         .action-panel
             .button(@click="handleReturnHome") 

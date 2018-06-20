@@ -494,7 +494,7 @@ window.LanternPage = (function(id) {
             setTimeout(function() {
                 self.view.$data.is_syncing = false;
             }, 4000);
-        }, 1000);
+        }, 50);
     }
 
 
@@ -504,7 +504,7 @@ window.LanternPage = (function(id) {
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = true;
             }, function(changed_doc) {
-                showSyncIcon();
+                // showSyncIcon();
             });
         }
         else {

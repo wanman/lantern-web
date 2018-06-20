@@ -1,6 +1,8 @@
 
 $background: #f9fafb;
+$border: #c6c8cd;
 
+$light-border: #f2f2f2;
 body {
     background: none;
 }
@@ -30,8 +32,29 @@ body {
         text-align: center;
     }
 
+    .waiting {
+        
+        font-weight: bold;
+        margin-top: 2em;
+        margin-bottom: 1em;
+    }
+
+    .confirmations {
+        font-size: large;
+        span {
+            font-weight: bold;
+        }
+        border-radius: 3px;
+        padding: 0.2em;
+    }
+
+    .confirmations.is-loading {
+        background: #FCFCFC;
+    }
+
 
     #success-view {
+        border: 1px solid $light-border;
         background: rgba(255,255,255,0.8);
         border-radius: 8px;
         padding: 3em;
