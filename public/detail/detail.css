@@ -22,6 +22,8 @@
   border-bottom: 1px solid #c6c8cd; }
   #detail-page #inspector-view h3 {
     font-weight: bold;
+    text-align: center; }
+  #detail-page #inspector-view h4 {
     text-align: center;
     margin-bottom: 1em; }
   #detail-page #inspector-view .tags {
@@ -38,6 +40,9 @@
     position: fixed;
     top: 200px;
     width: 100%; }
+  #detail-page #inspector-view .unavailable {
+    margin-top: 2em;
+    text-align: center; }
 
 #detail-page #map-prompt:hover {
   background: #f9fafb;

@@ -10,6 +10,8 @@
         <link rel="mask-icon" href="/media/favicon/safari-pinned-tab.svg" color="#5bbad5">
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="manifest" href="/manifest.json">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
         <link rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css">
         <link rel="stylesheet" type="text/css" href="/lib/map.css">
@@ -154,7 +156,7 @@
                         <div v-if="confirmation_count &gt;= 5">
                             <p>Your status has been shared across the network.</p>
                         </div>
-                        <h5 class="waiting">Confirmations</h5>
+                        <h5 class="waiting">Received By Users</h5>
                         <div class="confirmations" v-bind:class="confirmation_count &lt; 5 ? 'is-loading' : ''">{{ confirmation_count }} / <span>5</span></div>
                         <div class="action-panel">
                             <div class="button" @click="handleReturnHome"> <span>Continue</span><span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>

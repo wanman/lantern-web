@@ -1,0 +1,13 @@
+{
+  "short_name": "Lantern",
+  "name": "Lantern Network",
+  "icons": [
+    {
+      "src": "/media/favicon/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/index.html?source=pwa",
+  "display": "standalone"
+}

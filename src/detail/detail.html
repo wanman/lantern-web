@@ -5,19 +5,27 @@ id: "detail"
 extends ../_layouts/_master.pug
 
 block content
+
     div(v-cloak)
 
         #inspector-view(v-if="show_inspector")
 
             h3 {{ getCategory(selected_item.category).title }} Verifications
 
-            a.tags.has-addons(v-for="row in selected_item.vote" v-if="row.votes > 0") 
-             
-                span.tag.is-primary
-                    .icon
-                        i.fas.fa-thumbs-up
-                    | {{ row.votes }}
-                span.tag  {{ row.title }}
+            div(v-if="selected_item.status")
+
+
+                h4.time Last vote {{ moment(moment(marker.updated_at)).short(true) }} ago
+
+                a.tags.has-addons(v-for="row in selected_item.vote" v-if="row.votes > 0") 
+                 
+                    span.tag.is-primary
+                        .icon
+                            i.fas.fa-thumbs-up
+                        | {{ row.votes }}
+                    span.tag  {{ row.title }}
+            div.unavailable(v-if="selected_item.status == 0")
+                p Sorry, this item has been reported unavailable. Please check back soon.
                 
         #map-prompt(v-if="!show_inspector && !show_map" @click="handleShowMap")
             span.icon
@@ -31,7 +39,7 @@ block content
             .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)")
 
                
-                span.status 
+                span.status(v-if="item.status")
                     .tags
                         .tag 
                             .icon
@@ -42,8 +50,9 @@ block content
                     i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
 
                 p {{ getCategory(item.category).title }} 
-                span.time {{ moment(moment(marker.updated_at)).short(true) }} ago
 
+                span.time(v-if="item.status") Available {{ moment(moment(marker.updated_at)).short(true) }} ago
+                span.time(v-if="item.status == 0") Unavailable {{ moment(moment(marker.updated_at)).short(true) }} ago
 
 block styles
     link(rel="stylesheet" type="text/css" href="/lib/map.css")

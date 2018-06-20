@@ -27,12 +27,12 @@ window.page = (function() {
                     self.map.setPosition(lat, lon, 12);
 
                     if (tag != "ara") {
-                        markers.push(self.map.addPoint({lat: lat, lon: lon}, {
+                        markers.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, {
                             draggable: true
                         }));
                     }
                     else {
-                        markers.push(self.map.addCircle({lat: lat, lon: lon},{
+                        markers.push(self.map.addCircle(new_doc.get("title"), {lat: lat, lon: lon},{
                             radius: 1000,
                             color: "#72A2EF",
                             fillColor: '#72A2E5',
@@ -43,7 +43,7 @@ window.page = (function() {
 
 
                     if (tag == "lne") {
-                        markers.push(self.map.addPoint({lat: lat-0.01, lon: lon-0.01}, {
+                        markers.push(self.map.addPoint(new_doc.get("title"), {lat: lat-0.01, lon: lon-0.01}, {
                             draggable: true
                         }));
                     }

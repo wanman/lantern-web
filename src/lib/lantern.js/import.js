@@ -30,7 +30,7 @@ window.LanternImport = function(stor) {
     }
 
     
-    function addMarker(id, title, geo, cat, icon) {
+    function addMarker(id, title, geo, cat, icon, cats) {
         var venue_doc = new LanternDocument("m:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
@@ -42,25 +42,14 @@ window.LanternImport = function(stor) {
         venue_doc.save();
 
 
-        var categories = ["wtr", "ful", "net", "med", "clo", "eat", "bed", "pwr"];
-        var used_categories = [];
       
-        for (var i=0;  i<4; i++) {
+        for (var idx in cats) {
 
-            var index = Math.round(Math.random()*categories.length-1);
-            var item_cat = categories[index];
-
-            if (!item_cat || used_categories.indexOf(item_cat) !== -1) {
-                return;
-            }
-
-            used_categories.push(item_cat);
-            
-            
-            var doc = new LanternDocument(["i", venue_doc.id, item_cat].join(":"), stor);
-            doc.set("status", 1);
+        
+            var doc = new LanternDocument(["i", venue_doc.id, cats[idx]].join(":"), stor);
+            doc.set("status", (Math.random() > 0.1 ? 1 : 0));
             doc.push("parent", venue_doc.id);
-            doc.push("category", item_cat);
+            doc.push("category", cats[idx]);
 
             // simulate verification of data for accuracy
             doc.push("vote",{
@@ -109,6 +98,7 @@ window.LanternImport = function(stor) {
         addCategory("pwr", "Power", "itm", "f45d90", "f2dae2", "plug");
         addCategory("eat", "Food", "itm", "ffcc54", "fff7ef", "utensils");
         addCategory("bed", "Shelter", "itm", "FFB000", "fef7eb", "bed");
+        //addCategory("sup", "Support", "itm", "FFB000", "fef7eb", "question-circle");
 
 
         //console.log("[import] adding default Marker categories");
@@ -135,13 +125,14 @@ window.LanternImport = function(stor) {
     */
     self.marker = function() {
         //console.log("[import] adding default venues");
-        addMarker("css", "Central City Shelter", "drs4b7s", "sfe", "home");
-        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe", "coffee");
-        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe", "plus-square");
-        addMarker("hsf", "High School Field House", "drs4b74", "sfe", "basketball-ball");
-        addMarker("cth", "UCG Hospital", "drs4b73", "sfe", "hospital-symbol");
-        addMarker("shl", "Shell Station", "drs4b71", "sfe", "gas-pump");
-        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe", "film");
+        addMarker("css", "Central City Shelter", "drs4b7s", "sfe", "home", ["bed", "eat"]);
+        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe", "coffee", ["eat", "wtr", "pwr"]);
+        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe", "plus-square", ["med", "clo"]);
+        addMarker("hsf", "High School Field House", "drs4b74", "sfe", "basketball-ball", ["bed", "clo", "net", "wtr"]);
+        addMarker("cth", "UCG Hospital", "drs4b73", "sfe", "hospital-symbol", ["med"]);
+        addMarker("shl", "Shell Station", "drs4b71", "sfe", "gas-pump", ["ful", "wtr"]);
+        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe", "film", ["net", "pwr"]);
+        //addMarker("emb", "Spanish Embassy", "drs4b46", "sfe", "suitcase", ["sup"]);
     };
 
     self.item = function() {

@@ -97,6 +97,10 @@ window.LanternPage = (function(id) {
 
 
     function sync(continuous) {
+
+        self.view.$data.cloud_connected = self.stor.cloud_connected;
+        self.view.$data.lantern_connected = self.stor.lantern_connected;
+
         if (window.location.host == "lantern.global") {
             self.view.$data.cloud_connected = true;
             self.stor.syncWithCloud(continuous, function(status) {
@@ -233,11 +237,11 @@ window.LanternPage = (function(id) {
                         // point
                         var final_icon = icon || marker_options[marker._id][0].icon;
                         var final_color = color || marker_options[marker._id][0].style.color;
-                        self.map.addPoint(coords[0], final_icon, final_color);
+                        self.map.addPoint(marker.title, coords[0], final_icon, final_color);
                     }
                     else {
                         // draw a shape
-                        self.map.addPolygon(coords);
+                        self.map.addPolygon(marker.title, coords);
                     }
                 });
                 resolve(self.map);

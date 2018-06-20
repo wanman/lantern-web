@@ -14,14 +14,11 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     function backOffSync(delay) {
         
 
-
         if (reset_delay) {
             console.log("[stor] " + label + " do reset delay");
             reset_delay = false;
             return 0;
         }
-        
-        setStatus(false);
         
         console.log("[stor] delaying " + label + " sync retry: " + delay);
         if (delay === 0) {

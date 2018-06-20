@@ -116,7 +116,7 @@ block content
         div(v-if="confirmation_count >= 5")
             p Your status has been shared across the network.
 
-        h5.waiting Confirmations
+        h5.waiting Received By Users
 
         .confirmations(v-bind:class="confirmation_count < 5 ? 'is-loading' : ''")
             | {{ confirmation_count }} / 

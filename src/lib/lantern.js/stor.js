@@ -94,6 +94,21 @@ window.LanternStor = (function($data, uri) {
         }
     }
 
+    function lanternOrCloud() {
+        return self.cloud_db.info().then(function() {
+            self.db = self.cloud_db;
+            self.cloud_connected = true;
+            return self.db;
+        })
+        .catch(function() {
+            return self.lantern_db.info().then(function() {
+                self.db = self.lantern_db;
+                self.lantern_connected = true;
+                return self.db;
+            });
+        });
+    }
+
     function pickDatabase() {
         //console.log("[stor] picking database");
         if (self.db) return Promise.resolve(self.db);
@@ -104,8 +119,7 @@ window.LanternStor = (function($data, uri) {
             var timer = setTimeout(function() {
                 console.log("timed out looking for local db. use remote storage...");
                 if (!self.db) {
-                    self.db = self.lantern_db;
-                    resolve(self.db);
+                    return lanternOrCloud();
                 }
             }, 1000);
 
@@ -123,15 +137,13 @@ window.LanternStor = (function($data, uri) {
                             // attempt in-memory stor
                             // some browsers may not allow us to stor data locally
                             console.log("may be in private browsing mode. using remote storage...");
-                            // @todo default to cloud if lanter not available and we have internet
-                            self.db = self.lantern_db;
+                            lanternOrCloud().then(resolve);
                         }
                         else if (err.reason == "QuotaExceededError") {
                             console.log(err);
                             console.log("quota exceeded for local storage. using remote storage...");
-                            self.db = self.lantern_db;
+                            lanternOrCloud().then(resolve);
                         }
-                        resolve(self.db);
                     }
                     else {
                         clearTimeout(timer);
@@ -150,10 +162,8 @@ window.LanternStor = (function($data, uri) {
 
     self.setup = function() {
         return pickDatabase()
-            .then(function() {
-                console.log("[stor] target = " + 
-                    (self.db.adapter == "http" ? "remote" : "local")
-                );
+            .then(function(db) {
+                console.log("[stor] using database:", db.name);
             });
     };
 

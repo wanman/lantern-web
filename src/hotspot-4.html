@@ -1,0 +1,22 @@
+---
+id: "index"
+---
+
+extends _layouts/_captive.pug
+
+block content
+
+    img.logo(src="/media/logo.png")
+
+    h1 Tell Folks You&#39;re Safe
+
+    p.intro  If you would like, you may submit your name to verified organizations that keep track of those affected by a disaster event. Any data reported will be shared publicly and will only be delivered once internet service is available.
+
+
+    a.button.is-primary(id="checkin-btn" href="/checkin/checkin.html") Yes, I want to share my status
+    a.button(id="continue-btn" href="/index.html") No, take me to the app
+
+
+    script.
+        var el = document.getElementById("continue-btn");
+        el.href = window.location.protocol +"//" + window.location.host + "/index.html";

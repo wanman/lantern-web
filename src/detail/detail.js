@@ -33,6 +33,11 @@ window.page = (function() {
         if (item._id == self.view.$data.selected_item._id) {
             style += "; border-width: 2px;";
         }
+
+        if (item.status == 0) {
+            style += "; opacity: 0.45";
+        }
+
         return style;
     });
 
@@ -107,7 +112,7 @@ window.page = (function() {
                 marker_title = doc.get("title");
                 self.view.$data.page_title = marker_title;
                 if (doc.get("status") == 1) {
-                    self.view.$data.page_tag = "Open";
+                    self.view.$data.page_tag = "Open Now";
                 }
 
 

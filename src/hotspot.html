@@ -8,14 +8,9 @@ block content
 
     img.logo(src="/media/logo.png")
 
-    p.intro  You are about to join a local information exchange for your region. Internet is unavailable, however you will have access to a map to find nearby supplies and offer help to those nearby. 
+    h1 Welcome to the Lantern Network
+
+    p.intro  A community-wide wireless network that works even when internet goes offline. Designed for a stronger, safer recovery.
 
     p.intro This is a demo only. Data is for experimentation purposes only and should not be relied upon or considered accurate.
-
-    p.intro To begin, please type <span>lantern.local</span> in the address bar of your web browser or push the button below:
-    
-    a.button(id="continue-btn" href="/index.html") Continue
-
-    script.
-        var el = document.getElementById("continue-btn");
-        el.href = window.location.protocol +"//" + window.location.host + "/index.html";
+    a.button(id="continue-btn" href="/hotspot-2.html") Continue

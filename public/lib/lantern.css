@@ -4971,4 +4971,8 @@ nav.global {
     padding: 2em;
     margin-top: 2em;
     margin-bottom: 2em; }
+  #index-page .button, #welcome-page .button {
+    padding: 2em 1em;
+    margin-top: 2em;
+    width: 100%; }
 

@@ -296,4 +296,10 @@ nav.global {
         margin-top: 2em;
         margin-bottom: 2em;
     }
+
+    .button {
+        padding: 2em 1em;
+        margin-top: 2em;
+        width: 100%;
+    }
 }

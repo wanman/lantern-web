@@ -250,7 +250,7 @@ window.LanternImport = function(stor) {
     }
 
     
-    function addMarker(id, title, geo, cat, icon) {
+    function addMarker(id, title, geo, cat, icon, cats) {
         var venue_doc = new LanternDocument("m:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
@@ -262,25 +262,14 @@ window.LanternImport = function(stor) {
         venue_doc.save();
 
 
-        var categories = ["wtr", "ful", "net", "med", "clo", "eat", "bed", "pwr"];
-        var used_categories = [];
       
-        for (var i=0;  i<4; i++) {
+        for (var idx in cats) {
 
-            var index = Math.round(Math.random()*categories.length-1);
-            var item_cat = categories[index];
-
-            if (!item_cat || used_categories.indexOf(item_cat) !== -1) {
-                return;
-            }
-
-            used_categories.push(item_cat);
-            
-            
-            var doc = new LanternDocument(["i", venue_doc.id, item_cat].join(":"), stor);
-            doc.set("status", 1);
+        
+            var doc = new LanternDocument(["i", venue_doc.id, cats[idx]].join(":"), stor);
+            doc.set("status", (Math.random() > 0.1 ? 1 : 0));
             doc.push("parent", venue_doc.id);
-            doc.push("category", item_cat);
+            doc.push("category", cats[idx]);
 
             // simulate verification of data for accuracy
             doc.push("vote",{
@@ -329,6 +318,7 @@ window.LanternImport = function(stor) {
         addCategory("pwr", "Power", "itm", "f45d90", "f2dae2", "plug");
         addCategory("eat", "Food", "itm", "ffcc54", "fff7ef", "utensils");
         addCategory("bed", "Shelter", "itm", "FFB000", "fef7eb", "bed");
+        //addCategory("sup", "Support", "itm", "FFB000", "fef7eb", "question-circle");
 
 
         //console.log("[import] adding default Marker categories");
@@ -355,13 +345,14 @@ window.LanternImport = function(stor) {
     */
     self.marker = function() {
         //console.log("[import] adding default venues");
-        addMarker("css", "Central City Shelter", "drs4b7s", "sfe", "home");
-        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe", "coffee");
-        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe", "plus-square");
-        addMarker("hsf", "High School Field House", "drs4b74", "sfe", "basketball-ball");
-        addMarker("cth", "UCG Hospital", "drs4b73", "sfe", "hospital-symbol");
-        addMarker("shl", "Shell Station", "drs4b71", "sfe", "gas-pump");
-        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe", "film");
+        addMarker("css", "Central City Shelter", "drs4b7s", "sfe", "home", ["bed", "eat"]);
+        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe", "coffee", ["eat", "wtr", "pwr"]);
+        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe", "plus-square", ["med", "clo"]);
+        addMarker("hsf", "High School Field House", "drs4b74", "sfe", "basketball-ball", ["bed", "clo", "net", "wtr"]);
+        addMarker("cth", "UCG Hospital", "drs4b73", "sfe", "hospital-symbol", ["med"]);
+        addMarker("shl", "Shell Station", "drs4b71", "sfe", "gas-pump", ["ful", "wtr"]);
+        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe", "film", ["net", "pwr"]);
+        //addMarker("emb", "Spanish Embassy", "drs4b46", "sfe", "suitcase", ["sup"]);
     };
 
     self.item = function() {
@@ -499,6 +490,10 @@ window.LanternPage = (function(id) {
 
 
     function sync(continuous) {
+
+        self.view.$data.cloud_connected = self.stor.cloud_connected;
+        self.view.$data.lantern_connected = self.stor.lantern_connected;
+
         if (window.location.host == "lantern.global") {
             self.view.$data.cloud_connected = true;
             self.stor.syncWithCloud(continuous, function(status) {
@@ -635,11 +630,11 @@ window.LanternPage = (function(id) {
                         // point
                         var final_icon = icon || marker_options[marker._id][0].icon;
                         var final_color = color || marker_options[marker._id][0].style.color;
-                        self.map.addPoint(coords[0], final_icon, final_color);
+                        self.map.addPoint(marker.title, coords[0], final_icon, final_color);
                     }
                     else {
                         // draw a shape
-                        self.map.addPolygon(coords);
+                        self.map.addPolygon(marker.title, coords);
                     }
                 });
                 resolve(self.map);
@@ -876,6 +871,21 @@ window.LanternStor = (function($data, uri) {
         }
     }
 
+    function lanternOrCloud() {
+        return self.cloud_db.info().then(function() {
+            self.db = self.cloud_db;
+            self.cloud_connected = true;
+            return self.db;
+        })
+        .catch(function() {
+            return self.lantern_db.info().then(function() {
+                self.db = self.lantern_db;
+                self.lantern_connected = true;
+                return self.db;
+            });
+        });
+    }
+
     function pickDatabase() {
         //console.log("[stor] picking database");
         if (self.db) return Promise.resolve(self.db);
@@ -886,8 +896,7 @@ window.LanternStor = (function($data, uri) {
             var timer = setTimeout(function() {
                 console.log("timed out looking for local db. use remote storage...");
                 if (!self.db) {
-                    self.db = self.lantern_db;
-                    resolve(self.db);
+                    return lanternOrCloud();
                 }
             }, 1000);
 
@@ -905,15 +914,13 @@ window.LanternStor = (function($data, uri) {
                             // attempt in-memory stor
                             // some browsers may not allow us to stor data locally
                             console.log("may be in private browsing mode. using remote storage...");
-                            // @todo default to cloud if lanter not available and we have internet
-                            self.db = self.lantern_db;
+                            lanternOrCloud().then(resolve);
                         }
                         else if (err.reason == "QuotaExceededError") {
                             console.log(err);
                             console.log("quota exceeded for local storage. using remote storage...");
-                            self.db = self.lantern_db;
+                            lanternOrCloud().then(resolve);
                         }
-                        resolve(self.db);
                     }
                     else {
                         clearTimeout(timer);
@@ -932,10 +939,8 @@ window.LanternStor = (function($data, uri) {
 
     self.setup = function() {
         return pickDatabase()
-            .then(function() {
-                console.log("[stor] target = " + 
-                    (self.db.adapter == "http" ? "remote" : "local")
-                );
+            .then(function(db) {
+                console.log("[stor] using database:", db.name);
             });
     };
 
@@ -1119,14 +1124,11 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     function backOffSync(delay) {
         
 
-
         if (reset_delay) {
             console.log("[stor] " + label + " do reset delay");
             reset_delay = false;
             return 0;
         }
-        
-        setStatus(false);
         
         console.log("[stor] delaying " + label + " sync retry: " + delay);
         if (delay === 0) {

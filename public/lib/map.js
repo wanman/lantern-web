@@ -14178,7 +14178,7 @@ window.LanternMapManager = function() {
 
 
     //------------------------------------------------------------------------
-    self.addPoint = function(coords,  icon, color) {
+    self.addPoint = function(title, coords,  icon, color) {
 
         var opts = {};
         icon = icon || "info-circle";
@@ -14190,19 +14190,19 @@ window.LanternMapManager = function() {
             iconColor: '#FFF'
         });        
 
-        var marker = L.marker(coords, opts).addTo(self.map);
+        var marker = L.marker(coords, opts).bindTooltip(title).addTo(self.map);
         self.markers.push(marker);
         return marker;
     };
     
-    self.addPolygon = function(coords, opts) {
+    self.addPolygon = function(title, coords, opts) {
         //console.log("[map] adding polygon: ", coords);
-        return L.polygon(coords, opts || {}).addTo(self.map);
+        return L.polygon(coords, opts || {}).bindTooltip(title).addTo(self.map);
     };
 
-    self.addCircle = function(coords, opts) {
+    self.addCircle = function(title, coords, opts) {
         //console.log("[map] adding circle: ", coords);
-        return L.circle(coords, opts || {}).addTo(self.map);
+        return L.circle(coords, opts || {}).bindTooltip(title).addTo(self.map);
     };
     
     self.setPosition = function(lat, lon, zoom) {

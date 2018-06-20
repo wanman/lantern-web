@@ -64,7 +64,7 @@ window.page = (function() {
                     
                     self.user.push("gp", hash);
                     self.map.setPosition(lat, lon, 12);
-                    var marker = self.map.addPoint({lat: lat, lon: lon}, {
+                    var marker = self.map.addPoint("You Are Here", {lat: lat, lon: lon}, {
                         draggable: false
                     });
                 });

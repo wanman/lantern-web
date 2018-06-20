@@ -10,6 +10,8 @@
         <link rel="mask-icon" href="/media/favicon/safari-pinned-tab.svg" color="#5bbad5">
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="manifest" href="/manifest.json">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
         <link rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css">
         <link rel="stylesheet" type="text/css" href="/lib/map.css">
@@ -49,19 +51,25 @@
                 <div class="page-content">
                     <div v-cloak>
                         <div id="inspector-view" v-if="show_inspector">
-                            <h3>{{ getCategory(selected_item.category).title }} Verifications</h3><a class="tags has-addons" v-for="row in selected_item.vote" v-if="row.votes &gt; 0"> <span class="tag is-primary">
-                                    <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ row.votes }}</span><span class="tag"> {{ row.title }}</span></a>
+                            <h3>{{ getCategory(selected_item.category).title }} Verifications</h3>
+                            <div v-if="selected_item.status">
+                                <h4 class="time">Last vote {{ moment(moment(marker.updated_at)).short(true) }} ago</h4><a class="tags has-addons" v-for="row in selected_item.vote" v-if="row.votes &gt; 0"> <span class="tag is-primary">
+                                        <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ row.votes }}</span><span class="tag"> {{ row.title }}</span></a>
+                            </div>
+                            <div class="unavailable" v-if="selected_item.status == 0">
+                                <p>Sorry, this item has been reported unavailable. Please check back soon.</p>
+                            </div>
                         </div>
                         <div id="map-prompt" v-if="!show_inspector &amp;&amp; !show_map" @click="handleShowMap"><span class="icon"><i class="fas fa-map"></i></span><span>Show Map</span></div>
                         <div id="map" v-bind:style="'display:'  + (show_map ? 'block' : 'none')"></div>
                         <div v-cloak v-if="!page_loading">
-                            <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)"><span class="status"> 
+                            <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)"><span class="status" v-if="item.status">
                                     <div class="tags">
                                         <div class="tag"> 
                                             <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ countVotes(item) }}
                                         </div>
                                     </div></span><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
-                                <p>{{ getCategory(item.category).title }} </p><span class="time">{{ moment(moment(marker.updated_at)).short(true) }} ago</span>
+                                <p>{{ getCategory(item.category).title }} </p><span class="time" v-if="item.status">Available {{ moment(moment(marker.updated_at)).short(true) }} ago</span><span class="time" v-if="item.status == 0">Unavailable {{ moment(moment(marker.updated_at)).short(true) }} ago</span>
                             </div>
                         </div>
                     </div>
