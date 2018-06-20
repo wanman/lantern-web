@@ -75,7 +75,17 @@ window.page = (function() {
         self.view.$data.show_map = true;
 
         setTimeout(function() {
-            self.renderMap()
+
+            var icon = null;
+            var color = null;
+            
+            if (self.view.$data.category) {
+                var cat = self.stor.getCached("c:" + self.view.$data.category);
+                icon = cat.icon;
+                color = cat.style.color;
+            }
+            
+            self.renderMap(self.view.$data.filtered_markers, icon, color)
                 .then(function() {
                     self.map.fitToMarkers();
                 })

@@ -174,7 +174,9 @@ window.LanternPage = (function(id) {
     /**
     * Display the map for the user based on approx. location
     */
-    self.renderMap = function() {
+    self.renderMap = function(markers, icon, color) {
+
+        markers = markers || [];
 
         return new Promise(function(resolve, reject) {
 
@@ -191,14 +193,13 @@ window.LanternPage = (function(id) {
                     marker_options[m] = marker_options[m] || [];
                     marker_options[m].push(self.stor.getCached(c_doc));
                 });
-
-                console.log(marker_options);
             
                 self.map = new LanternMapManager();
                 // add markers to map
 
-                self.view.$data.m_docs.forEach(function(marker) {
+                markers.forEach(function(m_id) {
                     var coords = [];
+                    var marker = self.stor.getCached(m_id);
                     
                     for (var idx in marker.geo) {
                         var c = Geohash.decode(marker.geo[idx]);
@@ -207,7 +208,9 @@ window.LanternPage = (function(id) {
 
                     if (coords.length == 1) {
                         // point
-                        self.map.addPoint(coords[0], marker_options[marker._id][0].icon, marker_options[marker._id][0].style.color);
+                        var final_icon = icon || marker_options[marker._id][0].icon;
+                        var final_color = color || marker_options[marker._id][0].style.color;
+                        self.map.addPoint(coords[0], final_icon, final_color);
                     }
                     else {
                         // draw a shape

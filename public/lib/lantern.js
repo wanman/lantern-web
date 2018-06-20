@@ -250,12 +250,12 @@ window.LanternImport = function(stor) {
     }
 
     
-    function addMarker(id, title, geo, cat) {
+    function addMarker(id, title, geo, cat, icon) {
         var venue_doc = new LanternDocument("m:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
         
-
+        venue_doc.set("icon", icon);
         venue_doc.set("status", 1);
         venue_doc.push("category", cat);
         venue_doc.set("$ia", new Date());
@@ -355,13 +355,13 @@ window.LanternImport = function(stor) {
     */
     self.marker = function() {
         //console.log("[import] adding default venues");
-        addMarker("css", "Central City Shelter", "drs4b7s", "sfe");
-        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe");
-        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
-        addMarker("hsf", "High School Field House", "drs4b74", "sfe");
-        addMarker("cth", "UCG Hospital", "drs4b73", "sfe");
-        addMarker("shl", "Shell Station", "drs4b71", "sfe");
-        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe");
+        addMarker("css", "Central City Shelter", "drs4b7s", "sfe", "home");
+        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe", "coffee");
+        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe", "plus-square");
+        addMarker("hsf", "High School Field House", "drs4b74", "sfe", "basketball-ball");
+        addMarker("cth", "UCG Hospital", "drs4b73", "sfe", "hospital-symbol");
+        addMarker("shl", "Shell Station", "drs4b71", "sfe", "gas-pump");
+        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe", "film");
     };
 
     self.item = function() {
@@ -576,34 +576,52 @@ window.LanternPage = (function(id) {
     /**
     * Display the map for the user based on approx. location
     */
-    self.renderMap = function() {
+    self.renderMap = function(markers, icon, color) {
+
+        markers = markers || [];
 
         return new Promise(function(resolve, reject) {
 
             if (self.map) {
                 return resolve();
             }
-            
-            self.map = new LanternMapManager();
-            // add markers to map
-            self.view.$data.m_docs.forEach(function(marker) {
-                var coords = [];
-                
-                for (var idx in marker.geo) {
-                    var c = Geohash.decode(marker.geo[idx]);
-                    coords.push(c);
-                }
 
-                if (coords.length == 1) {
-                    // point
-                    self.map.addPoint(coords[0]);
-                }
-                else {
-                    // draw a shape
-                    self.map.addPolygon(coords);
-                }
+            var marker_options = {};
+            self.getItems().then(function(items) {
+                
+                items.forEach(function(item){
+                    var m = item.get("parent")[0];
+                    var c_doc = "c:"+item.get("category")[0];
+                    marker_options[m] = marker_options[m] || [];
+                    marker_options[m].push(self.stor.getCached(c_doc));
+                });
+            
+                self.map = new LanternMapManager();
+                // add markers to map
+
+                markers.forEach(function(m_id) {
+                    var coords = [];
+                    var marker = self.stor.getCached(m_id);
+                    
+                    for (var idx in marker.geo) {
+                        var c = Geohash.decode(marker.geo[idx]);
+                        coords.push(c);
+                    }
+
+                    if (coords.length == 1) {
+                        // point
+                        var final_icon = icon || marker_options[marker._id][0].icon;
+                        var final_color = color || marker_options[marker._id][0].style.color;
+                        self.map.addPoint(coords[0], final_icon, final_color);
+                    }
+                    else {
+                        // draw a shape
+                        self.map.addPolygon(coords);
+                    }
+                });
+                resolve();
+
             });
-            resolve();
         });
 
     };

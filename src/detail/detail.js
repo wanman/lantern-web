@@ -99,7 +99,7 @@ window.page = (function() {
                 }
 
 
-                self.renderMap().then(focusMap);
+                self.renderMap([marker_id]).then(focusMap);
 
 
             })
