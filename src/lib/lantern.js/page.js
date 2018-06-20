@@ -181,27 +181,42 @@ window.LanternPage = (function(id) {
             if (self.map) {
                 return resolve();
             }
-            
-            self.map = new LanternMapManager();
-            // add markers to map
-            self.view.$data.m_docs.forEach(function(marker) {
-                var coords = [];
-                
-                for (var idx in marker.geo) {
-                    var c = Geohash.decode(marker.geo[idx]);
-                    coords.push(c);
-                }
 
-                if (coords.length == 1) {
-                    // point
-                    self.map.addPoint(coords[0]);
-                }
-                else {
-                    // draw a shape
-                    self.map.addPolygon(coords);
-                }
+            var marker_options = {};
+            self.getItems().then(function(items) {
+                
+                items.forEach(function(item){
+                    var m = item.get("parent")[0];
+                    var c_doc = "c:"+item.get("category")[0];
+                    marker_options[m] = marker_options[m] || [];
+                    marker_options[m].push(self.stor.getCached(c_doc));
+                });
+
+                console.log(marker_options);
+            
+                self.map = new LanternMapManager();
+                // add markers to map
+
+                self.view.$data.m_docs.forEach(function(marker) {
+                    var coords = [];
+                    
+                    for (var idx in marker.geo) {
+                        var c = Geohash.decode(marker.geo[idx]);
+                        coords.push(c);
+                    }
+
+                    if (coords.length == 1) {
+                        // point
+                        self.map.addPoint(coords[0], marker_options[marker._id][0].icon, marker_options[marker._id][0].style.color);
+                    }
+                    else {
+                        // draw a shape
+                        self.map.addPolygon(coords);
+                    }
+                });
+                resolve();
+
             });
-            resolve();
         });
 
     };

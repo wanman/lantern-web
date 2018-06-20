@@ -30,12 +30,12 @@ window.LanternImport = function(stor) {
     }
 
     
-    function addMarker(id, title, geo, cat) {
+    function addMarker(id, title, geo, cat, icon) {
         var venue_doc = new LanternDocument("m:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
         
-
+        venue_doc.set("icon", icon);
         venue_doc.set("status", 1);
         venue_doc.push("category", cat);
         venue_doc.set("$ia", new Date());
@@ -135,13 +135,13 @@ window.LanternImport = function(stor) {
     */
     self.marker = function() {
         //console.log("[import] adding default venues");
-        addMarker("css", "Central City Shelter", "drs4b7s", "sfe");
-        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe");
-        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe");
-        addMarker("hsf", "High School Field House", "drs4b74", "sfe");
-        addMarker("cth", "UCG Hospital", "drs4b73", "sfe");
-        addMarker("shl", "Shell Station", "drs4b71", "sfe");
-        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe");
+        addMarker("css", "Central City Shelter", "drs4b7s", "sfe", "home");
+        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe", "coffee");
+        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe", "plus-square");
+        addMarker("hsf", "High School Field House", "drs4b74", "sfe", "basketball-ball");
+        addMarker("cth", "UCG Hospital", "drs4b73", "sfe", "hospital-symbol");
+        addMarker("shl", "Shell Station", "drs4b71", "sfe", "gas-pump");
+        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe", "film");
     };
 
     self.item = function() {

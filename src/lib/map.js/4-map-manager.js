@@ -15,9 +15,21 @@ window.LanternMapManager = function() {
 
 
     //------------------------------------------------------------------------
-    self.addPoint = function(coords, opts) {
+    self.addPoint = function(coords,  icon, color) {
         //console.log("[map] adding point: ", coords);
-        var marker = L.marker(coords, opts || {}).addTo(self.map);
+
+        var opts = {};
+        icon = icon || "info-circle";
+        color = "#"+color || "#222222";
+        console.log(color);
+
+        opts.icon = L.icon.fontAwesome({ 
+            iconClasses: 'fa fa-' + icon, // you _could_ add other icon classes, not tested.
+            markerColor: color,
+            iconColor: '#FFF'
+        });        
+
+        var marker = L.marker(coords, opts).addTo(self.map);
         self.markers.push(marker);
         return marker;
     };
