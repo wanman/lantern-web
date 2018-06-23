@@ -158,7 +158,25 @@ self.__precacheManifest = [
   {
     "url": "welcome.html",
     "revision": "402222a444edbea5e4258334fa6a4a9a"
+  },
+  {
+    "url": "lib/lantern.js",
+    "revision": "37f67ef158153f0fb9688ecfee79fd51"
+  },
+  {
+    "url": "lib/map.css",
+    "revision": "9b465e5f4c4d62749c489bcc8b88da62"
+  },
+  {
+    "url": "lib/map.js",
+    "revision": "0afe16eae86df3dc2ea95d5d309a7871"
+  },
+  {
+    "url": "lib/vendor.js",
+    "revision": "2424177957c131efab437d13ba8f28b2"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+
+workbox.routing.registerRoute(/\.(?:png|jpg|jpeg|svg)$/, workbox.strategies.cacheFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":10,"purgeOnQuotaError":false})] }), 'GET');
