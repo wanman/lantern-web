@@ -17,13 +17,14 @@ block content
 
                 h4.time Last vote {{ moment(moment(marker.updated_at)).short(true) }} ago
 
-                a.tags.has-addons(v-for="row in selected_item.vote" v-if="row.votes > 0") 
-                 
-                    span.tag.is-primary
-                        .icon
-                            i.fas.fa-thumbs-up
-                        | {{ row.votes }}
-                    span.tag  {{ row.title }}
+                .tags-container
+                    a.tags.has-addons(v-for="row in selected_item.vote" v-if="row.votes > 0") 
+                     
+                        span.tag.is-primary
+                            .icon
+                                i.fas.fa-thumbs-up
+                            | {{ row.votes }}
+                        span.tag  {{ row.title }}
             div.unavailable(v-if="selected_item.status == 0")
                 p Sorry, this item has been reported unavailable. Please check back soon.
                 

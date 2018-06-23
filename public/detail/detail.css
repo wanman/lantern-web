@@ -18,6 +18,7 @@
   top: 3.8rem;
   left: 0;
   padding: 1em;
+  text-align: center;
   background: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid #c6c8cd; }
   #detail-page #inspector-view h3 {
@@ -26,6 +27,8 @@
   #detail-page #inspector-view h4 {
     text-align: center;
     margin-bottom: 1em; }
+  #detail-page #inspector-view .tags-container {
+    padding: 1em 3em; }
   #detail-page #inspector-view .tags {
     float: left;
     margin-right: 0.4em;
