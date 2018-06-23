@@ -1,8 +1,8 @@
 window.page = (function() {
     var self = new LanternPage("detail");
 
-    var marker_id = self.getURIParameterByName("mrk");
-    var item_id = self.getURIParameterByName("itm");
+    var marker_id = self.getHashParameterByName("mrk");
+    var item_id = self.getHashParameterByName("itm");
     var marker_title;
 
 

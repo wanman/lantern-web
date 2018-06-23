@@ -683,10 +683,10 @@ window.LanternPage = (function(id) {
     /**
     * Get a query parameter value
     */
-    self.getURIParameterByName = function(name, url) {
-        if (!url) url = window.location.href;
+    self.getHashParameterByName = function(name, url) {
+        if (!url) url = window.location.hash;
         name = name.replace(/[\[\]]/g, "\\$&");
-        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        var regex = new RegExp("[#&]" + name + "(=([^&#]*)|&|#|$)"),
             results = regex.exec(url);
         if (!results) return null;
         if (!results[2]) return '';
@@ -778,9 +778,9 @@ window.LanternPage = (function(id) {
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register('/sw.js', {
         scope: "/"
-    }).then(function() {
+    }).then(function(registration) {
         // success
-        console.log("[sw] registered");
+        console.log("[sw] registered service worker");
     }).catch(function(e) {
         // failed
         console.log("[sw] err", e);

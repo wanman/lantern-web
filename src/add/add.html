@@ -9,7 +9,7 @@ block content
 
 
         // report view
-        #report-view(v-if="show_report")
+        #report-view(v-if="view == 'report'")
             h1 Help Us Map Your Region
             h2 What to report?
             ul
@@ -19,7 +19,7 @@ block content
                         i.fas.fa-angle-right
          
 
-        #subcategory-view(v-if="show_subcategory_selector")
+        #subcategory-view(v-if="view == 'subcategory'")
             h1 {{ category.title }}
             h2 Pick Best Description
             ul
@@ -32,7 +32,7 @@ block content
 
 
 
-        #marker-selector-view(v-if="show_marker_selector")
+        #marker-selector-view(v-if="view == 'marker'")
             h1 {{ category.title }}
             h2 Select Closest Venue
             ul
@@ -41,7 +41,7 @@ block content
                     span.icon.is-large
                         i.fas.fa-angle-right
 
-        #input-selector-view(v-if="show_input_selector")
+        #input-selector-view(v-if="view == 'input'")
             h1 Select Condition Coverage
             ul
                 li.box(@click="presentAddressForm") An Address
@@ -49,7 +49,7 @@ block content
                 li.box(@click="presentLineForm") A Line
 
 
-        #map-selector-view(v-if="show_map_selector")
+        #map-selector-view(v-if="view == 'map'")
 
       
             div(v-if="map_loaded && !lock_doc")
@@ -75,7 +75,7 @@ block content
                 .button.is-primary(v-if="lock_doc & lantern_connected" @click="handleButtonPush") Send Now
                 .button.is-primary(v-if="lock_doc & !lantern_connected" @click="handleButtonPush") Send When Possible
 
-        #success-view(v-if="show_success")
+        #success-view(v-if="view == 'success'")
 
             span.icon.is-large
                 i.fas.fa-check-circle.fa-3x

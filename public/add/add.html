@@ -52,28 +52,28 @@
                 <div class="page-content">
                     <div v-cloak>
                         <!-- report view-->
-                        <div id="report-view" v-if="show_report">
+                        <div id="report-view" v-if="view == 'report'">
                             <h1>Help Us Map Your Region</h1>
                             <h2>What to report?</h2>
                             <ul>
                                 <li v-for="category in marker_categories" @click="handleMarkerCategory(category)"><span>{{ category.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
                         </div>
-                        <div id="subcategory-view" v-if="show_subcategory_selector">
+                        <div id="subcategory-view" v-if="view == 'subcategory'">
                             <h1>{{ category.title }}</h1>
                             <h2>Pick Best Description</h2>
                             <ul>
                                 <li v-for="sc in subcategories" @click="handleShowInputSelector(sc)" v-bind:id="sc._id"> <span>{{sc.title}}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
                         </div>
-                        <div id="marker-selector-view" v-if="show_marker_selector">
+                        <div id="marker-selector-view" v-if="view == 'marker'">
                             <h1>{{ category.title }}</h1>
                             <h2>Select Closest Venue</h2>
                             <ul>
                                 <li v-for="marker in m_docs" v-bind:id="marker._id" @click="handleSelectMarkerForItem(marker)" v-if="marker.title"> <span>{{ marker.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
                         </div>
-                        <div id="input-selector-view" v-if="show_input_selector">
+                        <div id="input-selector-view" v-if="view == 'input'">
                             <h1>Select Condition Coverage</h1>
                             <ul>
                                 <li class="box" @click="presentAddressForm">An Address</li>
@@ -81,7 +81,7 @@
                                 <li class="box" @click="presentLineForm">A Line</li>
                             </ul>
                         </div>
-                        <div id="map-selector-view" v-if="show_map_selector">
+                        <div id="map-selector-view" v-if="view == 'map'">
                             <div v-if="map_loaded &amp;&amp; !lock_doc">
                                 <h1 v-if="area_radius">Drag Pin And Adjust Radius</h1>
                                 <h1 v-if="!area_radius">Drag Pin</h1>
@@ -104,7 +104,7 @@
                                 <div class="button is-primary" v-if="lock_doc &amp; !lantern_connected" @click="handleButtonPush">Send When Possible</div>
                             </div>
                         </div>
-                        <div id="success-view" v-if="show_success"><span class="icon is-large"><i class="fas fa-check-circle fa-3x"></i></span>
+                        <div id="success-view" v-if="view == 'success'"><span class="icon is-large"><i class="fas fa-check-circle fa-3x"></i></span>
                             <h1>Thank you!</h1>
                             <p v-if="lantern_connected || cloud_connected">Your contribution was successfully saved to the map. Next, others on the network will be asked to verify the accuracy of this data.</p>
                             <p v-if="!lantern_connected &amp;&amp; !cloud_connected">Your contribution was saved and will be shared with others as soon as we have a network connection.</p>

@@ -2,7 +2,7 @@ window.page = (function() {
 
     var self = new LanternPage("browse");
 
-    var category_id = self.getURIParameterByName("cat");
+    var category_id = self.getHashParameterByName("cat");
 
     /**
     * Construct sample documents for demonstration purposes
@@ -61,11 +61,11 @@ window.page = (function() {
     //------------------------------------------------------------------------
 
     self.addHelper("handleItemSelect", function(item, marker) {
-        window.location = "/detail/detail.html?mrk=" + marker._id + "&itm=" + item._id;
+        window.location = "/detail/detail.html#mrk=" + marker._id + "&itm=" + item._id;
     });
 
     self.addHelper("handleMarkerSelect", function(marker) {
-        window.location = "/detail/detail.html?mrk=" + marker._id;
+        window.location = "/detail/detail.html#mrk=" + marker._id;
     });
 
 

@@ -9,11 +9,8 @@ window.page = (function() {
     function setupMapSelector(tag, label) {
         console.log("[add] " + label + " form");
         new_doc.push("tag", "adr");
-        console.log(new_doc);
 
-        self.view.$data.show_input_selector = false;
-        self.view.$data.show_subcategory_selector = false;
-        self.view.$data.show_map_selector = true;
+        self.view.$data.view = "map";
 
 
         setTimeout(function() {
@@ -55,6 +52,74 @@ window.page = (function() {
             
     }
 
+    function setCategory(id) {
+        console.log("[add] setting category to: " + id);
+
+
+        new_doc = new LanternDocument( "m:" + Math.round(Math.random()*100000), self.stor);
+        new_doc.set("title", "New Place " + Math.round(Math.random()*100));
+        new_doc.push("tag", id);
+
+        self.stor.get("c:"+id).then(function(result) {
+            self.view.$data.category  = result.toJSONFriendly();
+            self.view.$data.page_title = "Report " + result.get("title");
+            self.view.$data.allow_back_button = true;
+
+            self.stor.getManyByType("c").then(function(results) {
+                results.forEach(function(cat) {
+                    if (result.id == "c:sup") {
+                        // special case for supplies
+                        if (cat.has("tag", "itm")) {
+                            self.view.$data.subcategories.push(cat.toJSONFriendly());
+                        }
+                    }
+                    else {
+                        // find subcategories
+                        if (cat.has("tag", id)) {
+                            self.view.$data.subcategories.push(cat.toJSONFriendly());
+                        }
+                    }
+                    
+                });  
+
+                 if (self.view.$data.subcategories == 0 ) {
+                    console.log("[add] no available subcategories for category:", id);
+                    console.log("[add] skipping ahead to input selector...");
+                    self.view.$data.view = "input";
+                }   
+                else {
+                    self.view.$data.view = "subcategory";
+                }        
+            });
+        });
+    }
+
+    function refreshView() {
+        cat_id = self.getHashParameterByName("ct");
+
+        self.view.$data.subcategories = [];
+
+        if (cat_id) {
+            setCategory(cat_id);
+        }
+        else {
+            self.view.$data.view = "report";
+            self.view.$data.page_title = "Contribute";
+            self.view.$data.marker_categories = [];
+            
+            //async load in categories we can use for reporting
+            self.stor.getManyByType("c")
+                .then(function(categories) {
+                    categories.forEach(function(cat) {
+                        if (cat.has("tag", "mrk")) {
+                            self.view.$data.marker_categories.push(cat.toJSONFriendly());
+                            self.view.$data.view = "report";
+                        }
+                    });
+                });
+        }
+
+    }
 
     //------------------------------------------------------------------------
     self.addHelper("handleShowInputSelector", function(subcategory) {
@@ -63,21 +128,16 @@ window.page = (function() {
         new_doc.push("category", subcategory._id.split(":")[1]);
 
 
-        console.log(new_doc);
-
-
-        self.view.$data.show_subcategory_selector = false;
 
         // supply locations get special treatment, as they must be connected
         // to a pre-defined marker
         if (new_doc.has("tag", "sup")) {
             self.getMarkers().then(function(data) {
-                console.log(data);
-                self.view.$data.show_marker_selector = true;
+                self.view.$data.view = "marker";
             });
         }
         else {
-            self.view.$data.show_input_selector = true;
+            self.view.$data.view = "input";
 
         }
     });
@@ -90,8 +150,7 @@ window.page = (function() {
         new_doc.push("parent", marker._id);
         new_doc.set("$ia", new Date());
         new_doc.save().then(function() {
-            self.view.$data.show_marker_selector = false;
-            self.view.$data.show_success = true;
+            self.view.$data.view = "success";
         });
     });
 
@@ -127,8 +186,7 @@ window.page = (function() {
                 console.log("save", new_doc);
                 new_doc.save().then(function() {
                     evt.target.className="button is-primary";
-                    self.view.$data.show_map_selector = false;
-                    self.view.$data.show_success = true;
+                    self.view.$data.view = "success";
                 });
             }
             else {
@@ -160,7 +218,8 @@ window.page = (function() {
 
     self.addHelper("handleMarkerCategory", function(cat) {
         console.log("[browse] report a " + cat.title);
-        window.location = "/add/add.html?ct="+cat._id;
+        var id = cat._id.replace("c:", "");
+        window.location = "/add/add.html#ct="+id;
     });    
 
     
@@ -169,76 +228,19 @@ window.page = (function() {
     self.addData("category", null);
     self.addData("subcategories", []);
     self.addData("marker_categories", []);
-    self.addData("show_subcategory_selector", false);
-    self.addData("show_report", false);
-    self.addData("show_input_selector", false);
-    self.addData("show_map_selector", false);
-    self.addData("show_success", false);
+    self.addData("view", "report");
     self.addData("map_loaded", false);
     self.addData("area_radius", 0);
     self.addData("lock_doc", false); // for preview before saving
-    self.addData("show_marker_selector", false);
 
     //------------------------------------------------------------------------
     
-    var param = self.getURIParameterByName("ct");
 
     self.render()
         .then(self.connect)
-        .then(function() {
-            
-            if (!param) {
-                self.view.$data.page_title = "Contribute";
-                //async load in categories we can use for reporting
-                self.stor.getManyByType("c")
-                    .then(function(categories) {
-                        categories.forEach(function(cat) {
-                            if (cat.has("tag", "mrk")) {
-                                self.view.$data.marker_categories.push(cat.toJSONFriendly());
-                                self.view.$data.show_report = true;
-                            }
-                        });
-                    });
-            }
-            else {
-
-                new_doc = new LanternDocument( "m:" + Math.round(Math.random()*100000), self.stor);
-                new_doc.set("title", "New Place " + Math.round(Math.random()*100));
-                new_doc.push("tag", param.split(":")[1]);
-
-                self.stor.get(param).then(function(result) {
-                    self.view.$data.category  = result.toJSONFriendly();
-                    self.view.$data.page_title = "Report " + result.get("title");
-                    self.view.$data.allow_back_button = true;
-                    self.stor.getManyByType("c").then(function(results) {
-                        results.forEach(function(cat) {
-                            if (result.id == "c:sup") {
-                                // special case for supplies
-                                if (cat.has("tag", "itm")) {
-                                    self.view.$data.subcategories.push(cat.toJSONFriendly());
-                                }
-                            }
-                            else {
-                                // find subcategories
-                                if (cat.has("tag", param.split(":")[1])) {
-                                    self.view.$data.subcategories.push(cat.toJSONFriendly());
-                                }
-                            }
-                            
-                        });  
-
-                         if (self.view.$data.subcategories == 0 ) {
-                            console.log("[add] no available subcategories for category:", param);
-                            console.log("[add] skipping ahead to input selector...");
-                            self.view.$data.show_input_selector = true;
-                        }   
-                        else {
-                            self.view.$data.show_subcategory_selector = true;
-                        }        
-                    });
-                });
-            }
-        });
+        .then(refreshView);
+    
+    window.onhashchange = refreshView;
 
     return self;
 }());

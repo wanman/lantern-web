@@ -25,11 +25,11 @@ self.__precacheManifest = [
   },
   {
     "url": "add/add.html",
-    "revision": "df705ab1472306f6b7eeedd01d01afa0"
+    "revision": "7520927e1f67c44432c9bdc41106d558"
   },
   {
     "url": "add/add.js",
-    "revision": "47a1208badf4f2cca852621f8998ae7e"
+    "revision": "9afe81a71f8c72305c9198ff7b2ebb7a"
   },
   {
     "url": "admin/admin.css",
@@ -53,7 +53,7 @@ self.__precacheManifest = [
   },
   {
     "url": "browse/browse.js",
-    "revision": "527943a6887daf025b2280496991d267"
+    "revision": "b54017f91663db29e24bf6aa7804c101"
   },
   {
     "url": "checkin/checkin.css",
@@ -77,7 +77,7 @@ self.__precacheManifest = [
   },
   {
     "url": "detail/detail.js",
-    "revision": "439ac6601c1df73b1310ceb46bcd5391"
+    "revision": "1d265121cabac84d999d0ac50239dbb9"
   },
   {
     "url": "hotspot-2.html",
@@ -105,7 +105,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.js",
-    "revision": "7f2b63a1dbbb977550bc826a4271dd95"
+    "revision": "700d0cd0bf653e7f0cb46e1cf36620f5"
   },
   {
     "url": "lib/lantern.css",
