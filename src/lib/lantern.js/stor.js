@@ -3,6 +3,7 @@ window.LanternStor = (function($data, uri) {
     var cloud_uri = "https://lantern.global/db/lantern/";
     var lantern_uri = uri + "/db/lantern/";
     var lantern_maps_uri = uri + "/db/lantern-maps/";
+    var did_sync_maps = false;
     var self = {
         cache: {},        
         browser_db: new PouchDB("lantern"),
@@ -301,16 +302,26 @@ window.LanternStor = (function($data, uri) {
             status_fn(true);
             return;
         }
-        LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, status_fn, function(changed_doc) {
+
+        LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, function(status) {
+                status_fn(status);
+
+                // don't bother trying map sync until main sync is working...
+                if (status && !did_sync_maps) {
+                    did_sync_maps = true;
+
+                    LanternSync(new PouchDB("lantern-maps"), self.lantern_maps_db, "lantern-maps", continuous, function() {}, function(changed_doc) {
+                        console.log("[stor] map update", changed_doc._id);
+                        change_fn(changed_doc);
+                    });
+                }
+
+            }, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
             change_fn(changed_doc);
         });
 
 
-        LanternSync(new PouchDB("lantern-maps"), self.lantern_maps_db, "lantern-maps", continuous, function() {}, function(changed_doc) {
-            console.log("[stor] map update", changed_doc._id);
-            change_fn(changed_doc);
-        });
 
         return;
     };

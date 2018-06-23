@@ -282,8 +282,8 @@ window.LanternPage = (function(id) {
     * Points to the right server for processing requests
     */
     self.getBaseURI = function() {
-        return "http://" + (window.location.host == "localhost:3000" ? 
-            "localhost:8080" :  window.location.host);
+        return "https://" + (window.location.host == "localhost:3000" ? 
+            "localhost" :  window.location.host);
     };
 
     

@@ -6,8 +6,15 @@
       "src": "/media/favicon/android-chrome-192x192.png",
       "type": "image/png",
       "sizes": "192x192"
+    },
+    {
+      "src": "/media/favicon/chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
-  "start_url": "/index.html?source=pwa",
+  "background_color": "#FFFFFF",
+  "theme_color": "#3273dc",
+  "start_url": "/index.html",
   "display": "standalone"
 }

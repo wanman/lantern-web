@@ -25,6 +25,12 @@ window.page = (function() {
         }
 
         self.user.save()
+            .then(function() {
+                // always redirect, but get user location when possible
+                setTimeout(function() {
+                    window.location = "/browse/browse.html?&cat="+cat.slug;
+                }, 750);
+            })
             .then(self.askForLocation)
             .then(function(position) {
                 var lat = position.coords.latitude;
@@ -33,9 +39,7 @@ window.page = (function() {
                 window.location = "/browse/browse.html?gp=" + hash + "&cat="+cat.slug;
             })
             .catch(function(err) {
-                setTimeout(function() {
-                    window.location = "/browse/browse.html?&cat="+cat.slug;
-                }, 500);
+                console.log(err);
             });
     });
 

@@ -105,7 +105,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.js",
-    "revision": "9c88f6f857db9cbbf1a737558cfcbaf7"
+    "revision": "7f2b63a1dbbb977550bc826a4271dd95"
   },
   {
     "url": "lib/lantern.css",
@@ -113,7 +113,7 @@ self.__precacheManifest = [
   },
   {
     "url": "manifest.json",
-    "revision": "947bdfb8e6bf9ce3b938721597df1d69"
+    "revision": "8f392d3eaa1e00cac800a6b5ffe3efb7"
   },
   {
     "url": "media/icons/css/fa-brands.css",
