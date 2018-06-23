@@ -118,6 +118,10 @@ self.__precacheManifest = [
     "revision": "8f392d3eaa1e00cac800a6b5ffe3efb7"
   },
   {
+    "url": "media/favicon/safari-pinned-tab.svg",
+    "revision": "1143884328fb4dc69fae54eac9eccfdb"
+  },
+  {
     "url": "media/icons/css/fa-brands.css",
     "revision": "ef4b96231c1c8e5bc6d2018ff59ee62e"
   },
@@ -158,6 +162,66 @@ self.__precacheManifest = [
     "revision": "497c6efa3acaba85fb0a1b4f76b61bde"
   },
   {
+    "url": "media/icons/webfonts/fa-brands-400.eot",
+    "revision": "748ab466bee11e0b2132916def799916"
+  },
+  {
+    "url": "media/icons/webfonts/fa-brands-400.svg",
+    "revision": "b032e14eac87e3001396ff597e4ec15f"
+  },
+  {
+    "url": "media/icons/webfonts/fa-brands-400.ttf",
+    "revision": "7febe26eeb4dd8e3a3c614a144d399fb"
+  },
+  {
+    "url": "media/icons/webfonts/fa-brands-400.woff",
+    "revision": "2248542e1bbbd548a157e3e6ced054fc"
+  },
+  {
+    "url": "media/icons/webfonts/fa-brands-400.woff2",
+    "revision": "3654744dc6d6c37c9b3582b57622df5e"
+  },
+  {
+    "url": "media/icons/webfonts/fa-regular-400.eot",
+    "revision": "b58f468f84168d61e0ebc1e1f423587c"
+  },
+  {
+    "url": "media/icons/webfonts/fa-regular-400.svg",
+    "revision": "3929b3ef871fa90bbb4e77e005851e74"
+  },
+  {
+    "url": "media/icons/webfonts/fa-regular-400.ttf",
+    "revision": "54f142e03adc6da499c2af4f54ab76fd"
+  },
+  {
+    "url": "media/icons/webfonts/fa-regular-400.woff",
+    "revision": "f3dd4f397fbc5aaf831b6b0ba112d75c"
+  },
+  {
+    "url": "media/icons/webfonts/fa-regular-400.woff2",
+    "revision": "33f727ccde4b05c0ed143c5cd78cda0c"
+  },
+  {
+    "url": "media/icons/webfonts/fa-solid-900.eot",
+    "revision": "035a137af03db6f1af76a589da5bb865"
+  },
+  {
+    "url": "media/icons/webfonts/fa-solid-900.svg",
+    "revision": "9bbbee00f65769a64927764ef51af6d0"
+  },
+  {
+    "url": "media/icons/webfonts/fa-solid-900.ttf",
+    "revision": "b6a14bb88dbc580e45034af297c8f605"
+  },
+  {
+    "url": "media/icons/webfonts/fa-solid-900.woff",
+    "revision": "6661d6b3521b4c480ba759e4b9e480c1"
+  },
+  {
+    "url": "media/icons/webfonts/fa-solid-900.woff2",
+    "revision": "8a8c0474283e0d9ef41743e5e486bf05"
+  },
+  {
     "url": "welcome.html",
     "revision": "402222a444edbea5e4258334fa6a4a9a"
   },
@@ -181,5 +245,5 @@ self.__precacheManifest = [
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerRoute(/\.(?:png|jpg|jpeg|svg)$/, workbox.strategies.cacheFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":10,"purgeOnQuotaError":false})] }), 'GET');
+workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.cacheFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":10,"purgeOnQuotaError":false})] }), 'GET');
 
