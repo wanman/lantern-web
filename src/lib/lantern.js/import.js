@@ -25,7 +25,11 @@ window.LanternImport = function(stor) {
             doc.set("icon", icon);
         }
 
-        doc.set("$ia", new Date());
+        var time = new Date();
+
+        doc.set("$ia", time);
+        doc.set("$ua", time);
+        doc.set("$ca", time);
         doc.save();
     }
 
@@ -79,8 +83,10 @@ window.LanternImport = function(stor) {
             });
 
 
-
-            doc.set("$ia", new Date());
+            var time = new Date();
+            doc.set("$ia", time);
+            doc.set("$ua", time);
+            doc.set("$ca", time);
             doc.save();
         }
 
@@ -143,7 +149,10 @@ window.LanternImport = function(stor) {
         //console.log("[import] adding default geo routes"); 
         var doc = new LanternDocument("r:%%", stor);
         doc.set("geo", ['drs4b77e8', 'drs4b77e9']);
-        doc.set("$ia", new Date());
+        var time = new Date();
+        doc.set("$ia", time);
+        doc.set("$ua", time);
+        doc.set("$ca", time);
         doc.save();
     };
 
@@ -152,7 +161,10 @@ window.LanternImport = function(stor) {
         //console.log("[import] adding default notes");
         var doc = new LanternDocument("n:%%", stor);
         doc.push("tag", "v:test-place");
-        doc.set("$ia", new Date());
+        var time = new Date();
+        doc.set("$ia", time);
+        doc.set("$ua", time);
+        doc.set("$ca", time);
         doc.save();
     };
 

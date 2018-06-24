@@ -37,7 +37,7 @@ block content
 
                 div(v-if="filtered_markers.length")
 
-                    .panel(v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title && filtered_markers.indexOf(marker._id) != -1")
+                    .panel(v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="filtered_markers.indexOf(marker._id) != -1")
                         
                         .panel-heading(@click="handleMarkerSelect(marker)")
                             .distance {{ getDistanceFromMarker(marker) }}
@@ -45,7 +45,7 @@ block content
 
                         .panel-block(@click="handleMarkerSelect(marker)")
 
-                            .category(v-for="item in i_docs" v-if="item.parent == marker._id && item.category[0]" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id")
+                            .category(v-for="item in i_docs" v-if="item.parent && item.parent == marker._id && item.category[0]" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id")
 
                                 span.icon.is-large(v-bind:style="makeCategoryStyle(getCategory(item.category))") 
                                     i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")

@@ -12,10 +12,11 @@ block content
 
             h3 {{ getCategory(selected_item.category).title }} Verifications
 
-            div(v-if="selected_item.status")
+            div(v-if="selected_item.status && selected_item.vote")
 
 
-                h4.time Last vote {{ moment(moment(marker.updated_at)).short(true) }} ago
+                h4.time Last vote {{ moment(moment(selected_item.updated_at)).short(true) }} ago
+
 
                 .tags-container
                     a.tags.has-addons(v-for="row in selected_item.vote" v-if="row.votes > 0") 
@@ -25,6 +26,9 @@ block content
                                 i.fas.fa-thumbs-up
                             | {{ row.votes }}
                         span.tag  {{ row.title }}
+
+            div.unavailable(v-if="!selected_item.vote")
+                p Nobody has verified this report just yet. Please check back soon.
             div.unavailable(v-if="selected_item.status == 0")
                 p Sorry, this item has been reported unavailable. Please check back soon.
                 
@@ -52,8 +56,8 @@ block content
 
                 p {{ getCategory(item.category).title }} 
 
-                span.time(v-if="item.status") Available {{ moment(moment(marker.updated_at)).short(true) }} ago
-                span.time(v-if="item.status == 0") Unavailable {{ moment(moment(marker.updated_at)).short(true) }} ago
+                span.time(v-if="item.status") Available {{ moment(moment(item.updated_at)).short(true) }} ago
+                span.time(v-if="item.status == 0") Unavailable {{ moment(moment(item.updated_at)).short(true) }} ago
 
 block styles
     link(rel="stylesheet" type="text/css" href="/lib/map.css")

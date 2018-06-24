@@ -144,6 +144,7 @@ window.page = (function() {
         console.log("[add] selected marker", marker, new_doc);
 
         new_doc.id = "i:" + new_doc.get("category") + "-" + Math.round(Math.random()*100);
+        new_doc.set("title", "Supply");
         new_doc.set("status", 1);
         new_doc.push("parent", marker._id);
         new_doc.set("$ia", new Date());

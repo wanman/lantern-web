@@ -33,7 +33,7 @@
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null" v-bind:class="is_syncing ? 'is-syncing' : ''">
                 <div class="navbar-brand">
-                    <div class="navbar-item" v-if="is_syncing"><span class="icon"><i class="fas fa-sync"></i></span><span v-if="cloud_connected">Syncing with Cloud</span><span v-if="!cloud_connected &amp;&amp; lantern_connected">Syncing with Lantern</span></div>
+                    <div class="navbar-item" v-if="is_syncing"><span class="icon"><i class="fas fa-sync"></i></span><span v-if="is_syncing === true">Syncing</span><span v-if="is_syncing !== true">Syncing {{ is_syncing }}</span></div>
                     <div class="navbar-item" v-if="!is_syncing"><span v-if="!cloud_connected &amp;&amp; !lantern_connected"> <span class="icon"><i class="fas fa-wifi" style="color: #DDD;"></i></span>Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern X12</span></div>
                 </div>
             </nav>
@@ -61,13 +61,13 @@
                             <div id="markers">
                                 <p v-if="!filtered_markers.length">No items have been reported to match your search yet. Please check back soon.</p>
                                 <div v-if="filtered_markers.length">
-                                    <div class="panel" v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="marker.title &amp;&amp; filtered_markers.indexOf(marker._id) != -1">
+                                    <div class="panel" v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="filtered_markers.indexOf(marker._id) != -1">
                                         <div class="panel-heading" @click="handleMarkerSelect(marker)">
                                             <div class="distance">{{ getDistanceFromMarker(marker) }}</div>
                                             <h3>{{ marker.title }}</h3>
                                         </div>
                                         <div class="panel-block" @click="handleMarkerSelect(marker)">
-                                            <div class="category" v-for="item in i_docs" v-if="item.parent == marker._id &amp;&amp; item.category[0]" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span></div>
+                                            <div class="category" v-for="item in i_docs" v-if="item.parent &amp;&amp; item.parent == marker._id &amp;&amp; item.category[0]" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span></div>
                                         </div>
                                     </div>
                                 </div>

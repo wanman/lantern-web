@@ -245,7 +245,11 @@ window.LanternImport = function(stor) {
             doc.set("icon", icon);
         }
 
-        doc.set("$ia", new Date());
+        var time = new Date();
+
+        doc.set("$ia", time);
+        doc.set("$ua", time);
+        doc.set("$ca", time);
         doc.save();
     }
 
@@ -299,8 +303,10 @@ window.LanternImport = function(stor) {
             });
 
 
-
-            doc.set("$ia", new Date());
+            var time = new Date();
+            doc.set("$ia", time);
+            doc.set("$ua", time);
+            doc.set("$ca", time);
             doc.save();
         }
 
@@ -363,7 +369,10 @@ window.LanternImport = function(stor) {
         //console.log("[import] adding default geo routes"); 
         var doc = new LanternDocument("r:%%", stor);
         doc.set("geo", ['drs4b77e8', 'drs4b77e9']);
-        doc.set("$ia", new Date());
+        var time = new Date();
+        doc.set("$ia", time);
+        doc.set("$ua", time);
+        doc.set("$ca", time);
         doc.save();
     };
 
@@ -372,7 +381,10 @@ window.LanternImport = function(stor) {
         //console.log("[import] adding default notes");
         var doc = new LanternDocument("n:%%", stor);
         doc.push("tag", "v:test-place");
-        doc.set("$ia", new Date());
+        var time = new Date();
+        doc.set("$ia", time);
+        doc.set("$ua", time);
+        doc.set("$ca", time);
         doc.save();
     };
 
@@ -447,6 +459,7 @@ window.LanternPage = (function(id) {
     function registerUser() {
         console.log("[user] create");
         var doc = new LanternDocument("u:"+getUserId(), self.stor);
+        doc.set("title", "User");
         doc.save();
         return doc;
     }
@@ -478,10 +491,15 @@ window.LanternPage = (function(id) {
     /**
     * Display a sync icon in footer momentarily
     */
-    function showSyncIcon() {
+    function showSyncIcon(doc) {
         setTimeout(function() {
             if (self.view.$data.is_syncing) return;
             self.view.$data.is_syncing = true;
+            console.log(doc);
+            // display title of doc where possible
+            if (doc && doc.hasOwnProperty("tt")) {
+                self.view.$data.is_syncing = doc.tt;
+            }
             setTimeout(function() {
                 self.view.$data.is_syncing = false;
             }, 4000);
@@ -506,14 +524,17 @@ window.LanternPage = (function(id) {
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = status;
             },function(changed_doc) {
-                showSyncIcon();
+                showSyncIcon(changed_doc);
 
             });
 
             self.stor.syncWithLantern(continuous, function(status) {
                 self.view.$data.lantern_connected = status;
             },function(changed_doc) {
-                showSyncIcon();
+                // don't display sync message for map cache
+                if (!changed_doc.dataUrl) {
+                    showSyncIcon(changed_doc);
+                }
             });
         }
     }
@@ -766,6 +787,10 @@ window.LanternPage = (function(id) {
     */
     opts.methods.toggleNavigation = function(el) {
         self.view.$data.showNavMenu = !self.view.$data.showNavMenu;
+
+        if (self.view.$data.showNavMenu) {
+            self.getUsers();
+        }
     };
 
 
@@ -1147,19 +1172,17 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         
 
         if (reset_delay) {
-            console.log("[stor] " + label + " do reset delay");
             reset_delay = false;
             return 0;
         }
         
-        console.log("[stor] delaying " + label + " sync retry: " + delay);
+        console.log("[" + label + "] retry sync in: " + delay);
         if (delay === 0) {
           return 3000;
         }
         return delay * 3;
     }
 
-    console.log("[sync] start " + label + " sync...");
     src.sync(dest, {
         since: 0,
         live: continuous || false,
@@ -1167,23 +1190,23 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         back_off_function: backOffSync
     })
     .on('complete', function() {
-        console.log("[stor] started " + label + " sync");
+        console.log("[" + label + "] started sync");
         setStatus(true);
     })
     .on('paused', function(err) {
         if (err) {
-            console.log("[stor] lost connection with " + label);
+            console.log("[" + label +"] lost connection");
             setStatus(false);
         }
     })
     .on('active', function() {
-        console.log("[stor] active " + label + " sync");
+        console.log("[" + label + "] active sync");
         setStatus(true);
     })
     .on('change', function (info) {
         setStatus(true);
         if (info.change.docs) {
-            console.log("[stor] did %s to " + label + " database: %s docs", 
+            console.log("[" + label + "] %s: %s docs", 
                     info.direction, 
                     info.change.docs.length);
             for (var idx in info.change.docs) {

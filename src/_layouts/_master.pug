@@ -46,8 +46,8 @@ html(lang="en")
                         span.icon
                             i.fas.fa-sync
                         
-                        span(v-if="cloud_connected") Syncing with Cloud
-                        span(v-if="!cloud_connected && lantern_connected") Syncing with Lantern
+                        span(v-if="is_syncing === true") Syncing
+                        span(v-if="is_syncing !== true") Syncing {{ is_syncing }}
 
                     .navbar-item(v-if="!is_syncing")
                         span(v-if="!cloud_connected && !lantern_connected") 

@@ -54,6 +54,7 @@ window.LanternPage = (function(id) {
     function registerUser() {
         console.log("[user] create");
         var doc = new LanternDocument("u:"+getUserId(), self.stor);
+        doc.set("title", "User");
         doc.save();
         return doc;
     }
@@ -85,10 +86,15 @@ window.LanternPage = (function(id) {
     /**
     * Display a sync icon in footer momentarily
     */
-    function showSyncIcon() {
+    function showSyncIcon(doc) {
         setTimeout(function() {
             if (self.view.$data.is_syncing) return;
             self.view.$data.is_syncing = true;
+            console.log(doc);
+            // display title of doc where possible
+            if (doc && doc.hasOwnProperty("tt")) {
+                self.view.$data.is_syncing = doc.tt;
+            }
             setTimeout(function() {
                 self.view.$data.is_syncing = false;
             }, 4000);
@@ -113,14 +119,17 @@ window.LanternPage = (function(id) {
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = status;
             },function(changed_doc) {
-                showSyncIcon();
+                showSyncIcon(changed_doc);
 
             });
 
             self.stor.syncWithLantern(continuous, function(status) {
                 self.view.$data.lantern_connected = status;
             },function(changed_doc) {
-                showSyncIcon();
+                // don't display sync message for map cache
+                if (!changed_doc.dataUrl) {
+                    showSyncIcon(changed_doc);
+                }
             });
         }
     }
@@ -373,6 +382,10 @@ window.LanternPage = (function(id) {
     */
     opts.methods.toggleNavigation = function(el) {
         self.view.$data.showNavMenu = !self.view.$data.showNavMenu;
+
+        if (self.view.$data.showNavMenu) {
+            self.getUsers();
+        }
     };
 
 

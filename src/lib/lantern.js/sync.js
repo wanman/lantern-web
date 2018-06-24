@@ -15,19 +15,17 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         
 
         if (reset_delay) {
-            console.log("[stor] " + label + " do reset delay");
             reset_delay = false;
             return 0;
         }
         
-        console.log("[stor] delaying " + label + " sync retry: " + delay);
+        console.log("[" + label + "] retry sync in: " + delay);
         if (delay === 0) {
           return 3000;
         }
         return delay * 3;
     }
 
-    console.log("[sync] start " + label + " sync...");
     src.sync(dest, {
         since: 0,
         live: continuous || false,
@@ -35,23 +33,23 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         back_off_function: backOffSync
     })
     .on('complete', function() {
-        console.log("[stor] started " + label + " sync");
+        console.log("[" + label + "] started sync");
         setStatus(true);
     })
     .on('paused', function(err) {
         if (err) {
-            console.log("[stor] lost connection with " + label);
+            console.log("[" + label +"] lost connection");
             setStatus(false);
         }
     })
     .on('active', function() {
-        console.log("[stor] active " + label + " sync");
+        console.log("[" + label + "] active sync");
         setStatus(true);
     })
     .on('change', function (info) {
         setStatus(true);
         if (info.change.docs) {
-            console.log("[stor] did %s to " + label + " database: %s docs", 
+            console.log("[" + label + "] %s: %s docs", 
                     info.direction, 
                     info.change.docs.length);
             for (var idx in info.change.docs) {

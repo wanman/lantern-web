@@ -33,7 +33,7 @@
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null" v-bind:class="is_syncing ? 'is-syncing' : ''">
                 <div class="navbar-brand">
-                    <div class="navbar-item" v-if="is_syncing"><span class="icon"><i class="fas fa-sync"></i></span><span v-if="cloud_connected">Syncing with Cloud</span><span v-if="!cloud_connected &amp;&amp; lantern_connected">Syncing with Lantern</span></div>
+                    <div class="navbar-item" v-if="is_syncing"><span class="icon"><i class="fas fa-sync"></i></span><span v-if="is_syncing === true">Syncing</span><span v-if="is_syncing !== true">Syncing {{ is_syncing }}</span></div>
                     <div class="navbar-item" v-if="!is_syncing"><span v-if="!cloud_connected &amp;&amp; !lantern_connected"> <span class="icon"><i class="fas fa-wifi" style="color: #DDD;"></i></span>Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern X12</span></div>
                 </div>
             </nav>
@@ -53,10 +53,13 @@
                     <div v-cloak>
                         <div id="inspector-view" v-if="show_inspector">
                             <h3>{{ getCategory(selected_item.category).title }} Verifications</h3>
-                            <div v-if="selected_item.status">
-                                <h4 class="time">Last vote {{ moment(moment(marker.updated_at)).short(true) }} ago</h4>
+                            <div v-if="selected_item.status &amp;&amp; selected_item.vote">
+                                <h4 class="time">Last vote {{ moment(moment(selected_item.updated_at)).short(true) }} ago</h4>
                                 <div class="tags-container"><a class="tags has-addons" v-for="row in selected_item.vote" v-if="row.votes &gt; 0"> <span class="tag is-primary">
                                             <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ row.votes }}</span><span class="tag"> {{ row.title }}</span></a></div>
+                            </div>
+                            <div class="unavailable" v-if="!selected_item.vote">
+                                <p>Nobody has verified this report just yet. Please check back soon.</p>
                             </div>
                             <div class="unavailable" v-if="selected_item.status == 0">
                                 <p>Sorry, this item has been reported unavailable. Please check back soon.</p>
@@ -71,7 +74,7 @@
                                             <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ countVotes(item) }}
                                         </div>
                                     </div></span><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
-                                <p>{{ getCategory(item.category).title }} </p><span class="time" v-if="item.status">Available {{ moment(moment(marker.updated_at)).short(true) }} ago</span><span class="time" v-if="item.status == 0">Unavailable {{ moment(moment(marker.updated_at)).short(true) }} ago</span>
+                                <p>{{ getCategory(item.category).title }} </p><span class="time" v-if="item.status">Available {{ moment(moment(item.updated_at)).short(true) }} ago</span><span class="time" v-if="item.status == 0">Unavailable {{ moment(moment(item.updated_at)).short(true) }} ago</span>
                             </div>
                         </div>
                     </div>
