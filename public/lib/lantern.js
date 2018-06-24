@@ -819,7 +819,7 @@ window.LanternStor = (function($data, uri) {
     var did_sync_maps = false;
     var self = {
         cache: {},        
-        browser_db: new PouchDB("lantern"),
+        browser_db: null,
         lantern_db: new PouchDB(lantern_uri.replace(":3000", ""), {
             skip_setup: true,
             withCredentials: false        
@@ -836,6 +836,14 @@ window.LanternStor = (function($data, uri) {
         lantern_connected: null,
         db: null
     };
+
+    try {
+        self.browser_db = new PouchDB("lantern");
+    }
+    catch(e) {
+        // browser refuses to use local storage...
+        console.log("[stor] skip in-browser storage since browser refuses");
+    }
 
     //------------------------------------------------------------------------
 
@@ -936,6 +944,10 @@ window.LanternStor = (function($data, uri) {
                     return lanternOrCloud();
                 }
             }, 1000);
+
+            if (!self.browser_db) {
+                return lanternOrCloud().then(resolve);
+            }
 
             self.browser_db.info()
                 .then(function (result) {
@@ -1123,10 +1135,20 @@ window.LanternStor = (function($data, uri) {
                 if (status && !did_sync_maps) {
                     did_sync_maps = true;
 
-                    LanternSync(new PouchDB("lantern-maps"), self.lantern_maps_db, "lantern-maps", continuous, function() {}, function(changed_doc) {
-                        console.log("[stor] map update", changed_doc._id);
-                        change_fn(changed_doc);
-                    });
+
+                    try {
+                        var local_maps_db = new PouchDB("lantern-maps");
+
+                        LanternSync(local_maps_db, self.lantern_maps_db, "lantern-maps", continuous, function() {}, function(changed_doc) {
+                            console.log("[stor] map update", changed_doc._id);
+                            change_fn(changed_doc);
+                        });
+                    }
+                    catch(e) {
+                        // browser refuses to use local storage...
+                        console.log("[stor] skip map sync since no in-browser storage available");
+                    }
+
                 }
 
             }, function(changed_doc) {
