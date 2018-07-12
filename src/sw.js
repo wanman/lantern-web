@@ -53,7 +53,7 @@ self.__precacheManifest = [
   },
   {
     "url": "browse/browse.js",
-    "revision": "b54017f91663db29e24bf6aa7804c101"
+    "revision": "23b07679850cfc88495a571510ea977c"
   },
   {
     "url": "checkin/checkin.css",
@@ -80,20 +80,8 @@ self.__precacheManifest = [
     "revision": "1d265121cabac84d999d0ac50239dbb9"
   },
   {
-    "url": "hotspot-2.html",
-    "revision": "0d0a2ee8a7d627fb40ab9ffc4c160f75"
-  },
-  {
-    "url": "hotspot-3.html",
-    "revision": "4de3f8cebc3be54eec0bcfce603ea6ca"
-  },
-  {
-    "url": "hotspot-4.html",
-    "revision": "8bc142288b4cba31ea567f93a589bca6"
-  },
-  {
     "url": "hotspot.html",
-    "revision": "358725a40425328a57e96988b9987897"
+    "revision": "9a22bae0a422fbe643d9d495e44d305f"
   },
   {
     "url": "index.css",
@@ -105,7 +93,19 @@ self.__precacheManifest = [
   },
   {
     "url": "index.js",
-    "revision": "700d0cd0bf653e7f0cb46e1cf36620f5"
+    "revision": "2a94230a884d5dae2e32b758656f40df"
+  },
+  {
+    "url": "intro/a.html",
+    "revision": "7875d187b41e35a693ce9779eabc8b05"
+  },
+  {
+    "url": "intro/b.html",
+    "revision": "b836c6505e5b11ec1bc96662b5f157a8"
+  },
+  {
+    "url": "intro/c.html",
+    "revision": "68eb56c7cd242e27543dab88da5eb33b"
   },
   {
     "url": "lib/lantern.css",

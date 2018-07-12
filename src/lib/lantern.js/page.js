@@ -246,7 +246,10 @@ window.LanternPage = (function(id) {
                         // point
                         var final_icon = icon || marker_options[marker._id][0].icon;
                         var final_color = color || marker_options[marker._id][0].style.color;
-                        self.map.addPoint(marker.title, coords[0], final_icon, final_color);
+                        var pt = self.map.addPoint(marker.title, coords[0], final_icon, final_color);
+                        pt.on("click", function(e) {
+                            window.location = "/detail/detail.html#mrk=" + m_id;
+                        });
                     }
                     else {
                         // draw a shape

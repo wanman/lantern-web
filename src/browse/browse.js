@@ -72,6 +72,11 @@ window.page = (function() {
     self.addHelper("handleShowMap", function(evt) {
         self.view.$data.show_map = true;
 
+
+        self.askForLocation().then(function(res) {
+            console.log(res.coords);
+        });
+
         setTimeout(function() {
 
             var icon = null;
@@ -86,6 +91,8 @@ window.page = (function() {
             self.renderMap(self.view.$data.filtered_markers, icon, color)
                 .then(function() {
                     self.map.fitToMarkers();
+
+
                 })
                 .catch(function(err) {
                     console.log("[browse] map error", err);

@@ -26,17 +26,9 @@ window.page = (function() {
 
         self.user.save()
             .then(function() {
-                // always redirect, but get user location when possible
                 setTimeout(function() {
                     window.location = "/browse/browse.html#cat="+cat.slug;
                 }, 1000);
-            })
-            .then(self.askForLocation)
-            .then(function(position) {
-                var lat = position.coords.latitude;
-                var lon = position.coords.longitude;
-                var hash = Geohash.encode(lat, lon, 10);
-                window.location = "/browse/browse.html#gp=" + hash + "&cat="+cat.slug;
             })
             .catch(function(err) {
                 console.log(err);
