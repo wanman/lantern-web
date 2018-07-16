@@ -1,6 +1,6 @@
 window.LanternPage = (function(id) {
 
-
+    // view options
     var opts = {
         data: {
             cloud_connected: null,
@@ -18,6 +18,13 @@ window.LanternPage = (function(id) {
             }
 
         }
+    };
+
+    // geolocation options
+    var geo_options = {
+        enableHighAccuracy: false, 
+        maximumAge        : 30000, 
+        timeout           : 27000
     };
 
     var self = {
@@ -134,7 +141,13 @@ window.LanternPage = (function(id) {
         }
     }
 
-
+    /**
+    * Update interface based on user's changing geolocation
+    */
+    function onLocationChange(position) {
+        console.log("[page] my geo", position.coords.latitude, position.coords.longitude);
+        self.map.setOwnLocation({lat:position.coords.latitude, lng:position.coords.longitude});
+    }
 
     //------------------------------------------------------------------------
     /** 
@@ -210,7 +223,7 @@ window.LanternPage = (function(id) {
     /**
     * Display the map for the user based on approx. location
     */
-    self.renderMap = function(markers, icon, color) {
+    self.renderMap = function(markers, show_tooltip, icon, color) {
 
         markers = markers || [];
 
@@ -219,6 +232,12 @@ window.LanternPage = (function(id) {
             if (self.map) {
                 return resolve();
             }
+
+            // show my own location on the map
+            var wpid = navigator.geolocation.watchPosition(onLocationChange, function(err) {
+                console.log("[page] geo err", err);
+            }, geo_options);
+
 
             var marker_options = {};
             self.getItems().then(function(items) {
@@ -247,9 +266,17 @@ window.LanternPage = (function(id) {
                         var final_icon = icon || marker_options[marker._id][0].icon;
                         var final_color = color || marker_options[marker._id][0].style.color;
                         var pt = self.map.addPoint(marker.title, coords[0], final_icon, final_color);
-                        pt.on("click", function(e) {
-                            window.location = "/detail/detail.html#mrk=" + m_id;
-                        });
+                       
+
+                        if (show_tooltip) {
+                            
+                            pt.on("click", function(e) {
+                                window.location = "/detail/detail.html#mrk=" + m_id;
+                            });
+
+                            pt.openTooltip();
+                        }
+
                     }
                     else {
                         // draw a shape
@@ -265,25 +292,14 @@ window.LanternPage = (function(id) {
     
     self.askForLocation = function() {
         return new Promise(function(resolve, reject) {
-
-            function geo_success(position) {
-                resolve(position);
-            }
-
-            function geo_error(err) {
-                reject(err);
-            }
-
             console.log("[page] asking for location");
-            var geo_options = {
-              enableHighAccuracy: false, 
-              maximumAge        : 30000, 
-              timeout           : 27000
-            };
-
-            navigator.geolocation.getCurrentPosition(geo_success, geo_error, geo_options);
-            //var wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
-
+           
+            navigator.geolocation.getCurrentPosition(function(position) {
+                resolve(position);
+            }, function(err) {
+                reject(err);
+            }, geo_options);
+          
         });
     };
 

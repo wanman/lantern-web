@@ -14165,8 +14165,12 @@ window.LanternMapManager = function() {
 
     var self = {
         map: L.map('map'),
-        markers: []
+        markers: [],
+        objects: [],
+        user: null
     };
+
+
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: false,
@@ -14190,21 +14194,23 @@ window.LanternMapManager = function() {
             iconColor: '#FFF'
         });        
 
-        var marker = L.marker(coords, opts).bindTooltip(title).addTo(self.map);
+        var marker = L.marker(coords, opts).addTo(self.map);
         self.markers.push(marker);
+        self.objects.push(marker);
         return marker;
     };
     
     self.addPolygon = function(title, coords, opts) {
         //console.log("[map] adding polygon: ", coords);
-        return L.polygon(coords, opts || {}).bindTooltip(title).addTo(self.map);
+        return L.polygon(coords, opts || {}).addTo(self.map);
     };
 
     self.addCircle = function(title, coords, opts) {
         //console.log("[map] adding circle: ", coords);
-        return L.circle(coords, opts || {}).bindTooltip(title).addTo(self.map);
+        return L.circle(coords, opts || {}).addTo(self.map);
     };
     
+
     self.setPosition = function(lat, lon, zoom) {
         //console.log("[map] set position to:" + lat, lon);
         self.map.setView([lat, lon], zoom || 11);
@@ -14215,12 +14221,30 @@ window.LanternMapManager = function() {
         self.map.fitBounds(group.getBounds());
     };
 
+
+    self.fitAll = function() {
+        var group = new L.featureGroup(self.objects);
+        self.map.fitBounds(group.getBounds());
+    };
+
     self.removeZoomControl = function() {
         self.map.removeControl(self.map.zoomControl);
     };
 
     self.addZoomControl = function() {
         self.map.addControl(self.map.zoomControl);
+    };
+
+    self.setOwnLocation = function(coords) {
+        if (self.user) {
+            self.user.setLatLng(coords);
+        }
+        else {
+            self.user = L.circle(coords).addTo(self.map);
+            self.objects.push(self.user);
+        }
+    
+        return self.user;
     };
 
 

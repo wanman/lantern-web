@@ -55,7 +55,7 @@ self.__precacheManifest = [
   },
   {
     "url": "browse/browse.js",
-    "revision": "23b07679850cfc88495a571510ea977c"
+    "revision": "50282d7767b6325ba55b4d68173c9980"
   },
   {
     "url": "checkin/checkin.css",
@@ -75,11 +75,11 @@ self.__precacheManifest = [
   },
   {
     "url": "detail/detail.html",
-    "revision": "625af426f730e5b4f2d03dd4c5a6d36f"
+    "revision": "a8e2341ded42c5ad8080de2751c82ce3"
   },
   {
     "url": "detail/detail.js",
-    "revision": "1d265121cabac84d999d0ac50239dbb9"
+    "revision": "376a631d3e2bee9b48b51de8de5592f9"
   },
   {
     "url": "hotspot.html",
@@ -227,7 +227,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.js",
-    "revision": "aac32e6c1f00a0cea8c1c058cc4dc70c"
+    "revision": "89d47f17a591ea4869ba4ec6d934ed25"
   },
   {
     "url": "lib/map.css",
@@ -235,7 +235,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/map.js",
-    "revision": "0afe16eae86df3dc2ea95d5d309a7871"
+    "revision": "544de4c138d15775121bcb98108d38a0"
   },
   {
     "url": "lib/vendor.js",

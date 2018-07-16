@@ -51,6 +51,39 @@ window.page = (function() {
         });
     }
 
+    function showMap() {
+        self.view.$data.show_map = true;
+
+       
+        if (!self.map || !self.map.user) {
+            self.askForLocation().then(function(res) {
+                console.log("[browse] my geo", Geohash.encode(res.coords.latitude, res.coords.longitude,6));
+                self.map.setOwnLocation({lat:res.coords.latitude, lng:res.coords.longitude});
+                self.map.fitAll();
+            });
+        }
+
+        setTimeout(function() {
+
+            var icon = null;
+            var color = null;
+            
+            if (self.view.$data.category) {
+                var cat = self.stor.getCached("c:" + self.view.$data.category);
+                icon = cat.icon;
+                color = cat.style.color;
+            }
+            
+            self.renderMap(self.view.$data.filtered_markers, true, icon, color)
+                .then(function() {
+                    self.map.fitAll();
+                })
+                .catch(function(err) {
+                    console.log("[browse] map error", err);
+                });
+        }, 100);
+    }
+
 
     //------------------------------------------------------------------------
     self.addData("category", null);
@@ -72,38 +105,27 @@ window.page = (function() {
 
 
     self.addHelper("handleShowMap", function(evt) {
-        self.view.$data.show_map = true;
 
-
-        self.askForLocation().then(function(res) {
-            console.log(res.coords);
-        });
-
-        setTimeout(function() {
-
-            var icon = null;
-            var color = null;
-            
-            if (self.view.$data.category) {
-                var cat = self.stor.getCached("c:" + self.view.$data.category);
-                icon = cat.icon;
-                color = cat.style.color;
-            }
-            
-            self.renderMap(self.view.$data.filtered_markers, icon, color)
-                .then(function() {
-                    self.map.fitToMarkers();
-
-
-                })
-                .catch(function(err) {
-                    console.log("[browse] map error", err);
-                });
-        }, 100);
+        cat = self.getHashParameterByName("cat");
+        var str = window.location.origin + window.location.pathname + "#";
+        if (cat) {
+            str += "cat=" + cat;
+        }
+        window.location = str += "&v=map";
+        
+        showMap();
     });
 
     self.addHelper("handleShowList", function(evt) {
         self.view.$data.show_map = false;
+
+        cat = self.getHashParameterByName("cat");
+        var str = window.location.origin + window.location.pathname + "#";
+        if (cat) {
+            str += "cat=" + cat;
+        }
+        window.location = str += "&v=list";
+
     });
 
 
@@ -127,7 +149,12 @@ window.page = (function() {
             self.view.$data.page_title = "Places";
         })
         .then(self.connect)
-        .then(loadMarkers);
+        .then(loadMarkers)
+        .then(function() {
+            if (self.getHashParameterByName("v") == "map") {
+                showMap();
+            }
+        });
 
     return self; 
 }());

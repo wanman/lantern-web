@@ -54,7 +54,7 @@
                         <div id="inspector-view" v-if="show_inspector">
                             <h3>{{ getCategory(selected_item.category).title }} Verifications</h3>
                             <div v-if="selected_item.status &amp;&amp; selected_item.vote">
-                                <h4 class="time">Last vote {{ moment(moment(selected_item.updated_at)).short(true) }} ago</h4>
+                                <h4 class="time">Last vote {{ timestamp(selected_item) }}</h4>
                                 <div class="tags-container"><a class="tags has-addons" v-for="row in selected_item.vote" v-if="row.votes &gt; 0"> <span class="tag is-primary">
                                             <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ row.votes }}</span><span class="tag"> {{ row.title }}</span></a></div>
                             </div>
@@ -74,7 +74,7 @@
                                             <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ countVotes(item) }}
                                         </div>
                                     </div></span><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
-                                <p>{{ getCategory(item.category).title }} </p><span class="time" v-if="item.status">Available {{ moment(moment(item.updated_at)).short(true) }} ago</span><span class="time" v-if="item.status == 0">Unavailable {{ moment(moment(item.updated_at)).short(true) }} ago</span>
+                                <p>{{ getCategory(item.category).title }} </p><span class="time" v-if="item.status">{{ timestamp(item) }} </span><span class="time" v-if="item.status == 0"> {{ timestamp(item) }}</span>
                             </div>
                         </div>
                     </div>

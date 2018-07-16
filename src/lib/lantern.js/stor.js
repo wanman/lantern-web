@@ -200,7 +200,7 @@ window.LanternStor = (function($data, uri) {
         return self.db.allDocs(params)
             .then(function(result) {
 
-                console.log("[stor] loading type: " + type + " (" + result.rows.length + ")");
+                //console.log("[stor] loading type: " + type + " (" + result.rows.length + ")");
 
                 return Promise.all(result.rows.map(function(result) {
 

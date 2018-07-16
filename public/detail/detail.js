@@ -86,6 +86,13 @@ window.page = (function() {
         return count;
     });
     
+
+    self.addHelper("timestamp", function(item) {
+        // make sure we have a most recent timestamp to work with
+        var timestamp = item.updated_at || item.created_at || item.imported_at;
+        return moment(timestamp).startOf('hour').fromNow();
+    });
+
     //------------------------------------------------------------------------
     self.render()
         .then(self.connect)
@@ -101,26 +108,14 @@ window.page = (function() {
             console.log("[detail]", marker_id);
 
             self.stor.get(marker_id).then(function(doc) {
-                // make sure we have a most recent timestamp to work with
-                if (!doc.has("updated_at")) {
-                    if (doc.has("created_at")){
-                        doc.set("updated_at", doc.get("created_at"));
-                    }
-                    else if (doc.has("imported_at")){ 
-                        doc.set("updated_at", doc.get("imported_at"));
-                    }
-                }
+              
                 self.view.$data.marker = doc.toJSONFriendly();
                 marker_title = doc.get("title");
                 self.view.$data.page_title = marker_title;
                 if (doc.get("status") == 1) {
                     self.view.$data.page_tag = "Open Now";
                 }
-
-
                 self.renderMap([marker_id]).then(focusMap);
-
-
             })
             .catch(function(err) {
                 console.log("[detail] could not get: " + marker_id, err);

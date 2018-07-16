@@ -19,7 +19,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
             return 0;
         }
         
-        console.log("[" + label + "] retry sync in: " + delay);
+        //console.log("[" + label + "] retry sync in: " + delay);
         if (delay === 0) {
           return 3000;
         }
