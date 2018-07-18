@@ -34,8 +34,8 @@ window.LanternImport = function(stor) {
     }
 
     
-    function addMarker(id, title, geo, cat, icon, cats) {
-        var venue_doc = new LanternDocument("m:"+id, stor);
+    function addVenue(id, title, geo, cat, icon, cats) {
+        var venue_doc = new LanternDocument("v:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
         
@@ -45,8 +45,6 @@ window.LanternImport = function(stor) {
         venue_doc.set("$ia", new Date());
         venue_doc.save();
 
-
-      
         for (var idx in cats) {
 
         
@@ -129,16 +127,22 @@ window.LanternImport = function(stor) {
     * Allows for tracking population size and resource distribution
     * against meaningful points in a town.
     */
-    self.marker = function() {
+    self.venue = function() {
         //console.log("[import] adding default venues");
-        addMarker("css", "Central City Shelter", "drs4b7s", "sfe", "home", ["bed", "eat"]);
-        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe", "coffee", ["eat", "wtr", "pwr"]);
-        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe", "plus-square", ["med", "clo"]);
-        addMarker("hsf", "High School Field House", "drs4b74", "sfe", "basketball-ball", ["bed", "clo", "net", "wtr"]);
-        addMarker("cth", "UCG Hospital", "drs4b73", "sfe", "hospital-symbol", ["med"]);
-        addMarker("shl", "Shell Station", "drs4b71", "sfe", "gas-pump", ["ful", "wtr"]);
-        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe", "film", ["net", "pwr"]);
-        //addMarker("emb", "Spanish Embassy", "drs4b46", "sfe", "suitcase", ["sup"]);
+
+        // temporary shelters or forward operating bases
+        addVenue("css", "Central City Shelter", "drs4b7s", "tmp", "home", ["bed", "eat"]);
+        addVenue("rcm", "Red Cross HQ", "drs4b75", "tmp", "plus-square", ["med", "clo"]);
+
+        // permanent buildings that now offer some safety
+        addVenue("aic", "AJ's Cafe", "drs4b77", "bld", "coffee", ["eat", "wtr", "pwr"]);
+        addVenue("hsf", "High School Field House", "drs4b79", "sfe", "basketball-ball", ["bed", "clo", "net", "wtr"]);
+        addVenue("cth", "UCG Hospital", "drs4b73", "bld", "hospital-symbol", ["med"]);
+        addVenue("shl", "Shell Station", "drs4b71", "bld", "gas-pump", ["ful", "wtr"]);
+        addVenue("mst", "Main Street Theatre", "drs4b41", "bld", "film", ["net", "pwr"]);
+        //addVenue("emb", "Embassy", "drs4b46", "sfe", "suitcase", ["sup"]);
+
+        addVenue("wtk", "Water Truck", "drs4b72", "trk", "truck", ["wtr"]);
     };
 
     self.item = function() {

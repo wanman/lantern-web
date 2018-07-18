@@ -327,8 +327,7 @@ window.LanternStor = (function($data, uri) {
                         var local_maps_db = new PouchDB("lantern-maps");
 
                         LanternSync(local_maps_db, self.lantern_maps_db, "lantern-maps", continuous, function() {}, function(changed_doc) {
-                            console.log("[stor] map update", changed_doc._id);
-                            change_fn(changed_doc);
+                            //console.log("[stor] map update", changed_doc._id);
                         });
                     }
                     catch(e) {

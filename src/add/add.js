@@ -2,7 +2,7 @@ window.page = (function() {
     var self = new LanternPage("add");
 
     var new_doc;
-    var markers = [];
+    var venues = [];
 
     function setupMapSelector(tag, label) {
         console.log("[add] " + label + " form");
@@ -24,12 +24,12 @@ window.page = (function() {
                     self.map.setPosition(lat, lon, 12);
 
                     if (tag != "ara") {
-                        markers.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, {
+                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, {
                             draggable: true
                         }));
                     }
                     else {
-                        markers.push(self.map.addCircle(new_doc.get("title"), {lat: lat, lon: lon},{
+                        venues.push(self.map.addCircle(new_doc.get("title"), {lat: lat, lon: lon},{
                             radius: 1000,
                             color: "#72A2EF",
                             fillColor: '#72A2E5',
@@ -40,7 +40,7 @@ window.page = (function() {
 
 
                     if (tag == "lne") {
-                        markers.push(self.map.addPoint(new_doc.get("title"), {lat: lat-0.01, lon: lon-0.01}, {
+                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat-0.01, lon: lon-0.01}, {
                             draggable: true
                         }));
                     }
@@ -103,14 +103,14 @@ window.page = (function() {
         else {
             self.view.$data.view = "report";
             self.view.$data.page_title = "Contribute";
-            self.view.$data.marker_categories = [];
+            self.view.$data.venue_categories = [];
             
             //async load in categories we can use for reporting
             self.stor.getManyByType("c")
                 .then(function(categories) {
                     categories.forEach(function(cat) {
                         if (cat.has("tag", "mrk")) {
-                            self.view.$data.marker_categories.push(cat.toJSONFriendly());
+                            self.view.$data.venue_categories.push(cat.toJSONFriendly());
                             self.view.$data.view = "report";
                         }
                     });
@@ -128,10 +128,10 @@ window.page = (function() {
 
 
         // supply locations get special treatment, as they must be connected
-        // to a pre-defined marker
+        // to a pre-defined venue
         if (new_doc.has("tag", "sup")) {
-            self.getMarkers().then(function(data) {
-                self.view.$data.view = "marker";
+            self.getVenues().then(function(data) {
+                self.view.$data.view = "venue";
             });
         }
         else {
@@ -140,13 +140,13 @@ window.page = (function() {
         }
     });
 
-    self.addHelper("handleSelectMarkerForItem", function(marker) {
-        console.log("[add] selected marker", marker, new_doc);
+    self.addHelper("handleSelectVenueForItem", function(venue) {
+        console.log("[add] selected venue", venue, new_doc);
 
         new_doc.id = "i:" + new_doc.get("category") + "-" + Math.round(Math.random()*100);
         new_doc.set("title", "Supply");
         new_doc.set("status", 1);
-        new_doc.push("parent", marker._id);
+        new_doc.push("parent", venue._id);
         new_doc.set("$ia", new Date());
         new_doc.save().then(function() {
             self.view.$data.view = "success";
@@ -164,8 +164,8 @@ window.page = (function() {
     self.addHelper("presentAreaForm", function() {
         self.view.$data.area_radius = 1000;
         self.view.$watch("area_radius", function(new_val, old_val) {
-            if (markers[0]) {
-                markers[0].setRadius(new_val);
+            if (venues[0]) {
+                venues[0].setRadius(new_val);
             }
         });
         setupMapSelector("ara", "area");
@@ -190,12 +190,12 @@ window.page = (function() {
             }
             else {
 
-                markers.forEach(function(marker) {
-                    var coords = marker.getLatLng();
+                venues.forEach(function(venue) {
+                    var coords = venue.getLatLng();
                     var hash = Geohash.encode(coords.lat, coords.lng, 10);
                     new_doc.push("geo", hash);
-                    if (marker.getRadius) {
-                        new_doc.set("radius", marker.getRadius());
+                    if (venue.getRadius) {
+                        new_doc.set("radius", venue.getRadius());
                     }
                     self.view.$data.lock_doc = true;
                     evt.target.className="button is-primary";
@@ -215,7 +215,7 @@ window.page = (function() {
         window.history.go(-1);
     });
 
-    self.addHelper("handleMarkerCategory", function(cat) {
+    self.addHelper("handleVenueCategory", function(cat) {
         console.log("[browse] report a " + cat.title);
         var id = cat._id.replace("c:", "");
         window.location = "/add/add.html#ct="+id;
@@ -226,7 +226,7 @@ window.page = (function() {
  
     self.addData("category", null);
     self.addData("subcategories", []);
-    self.addData("marker_categories", []);
+    self.addData("venue_categories", []);
     self.addData("view", "report");
     self.addData("map_loaded", false);
     self.addData("area_radius", 0);

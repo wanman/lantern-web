@@ -12,7 +12,7 @@ window.page = (function() {
     }
 
     function focusMap() {
-        console.log("[detail] showing map");
+        //console.log("[detail] showing map");
         if (self.view.$data.marker) {
             var coords = Geohash.decode(self.view.$data.marker.geo[0]);
             self.map.setPosition(coords.lat, coords.lon, 12);
@@ -29,7 +29,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.addHelper("makeItemStyle", function(item) {
         var category = self.stor.getCached("c:"+item.category[0]);
-        var style = "border-color: #" +  category.style["color"];
+        var style = "border-color: #" +  category.style.color;
         if (item._id == self.view.$data.selected_item._id) {
             style += "; border-width: 2px;";
         }
@@ -103,7 +103,7 @@ window.page = (function() {
             return self.stor.getManyByType("i");
         })
         .then(function() {
-            console.log("[detail]", marker_id);
+            //console.log("[detail]", marker_id);
 
             self.stor.get(marker_id).then(function(doc) {
               

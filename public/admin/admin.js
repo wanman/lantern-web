@@ -29,7 +29,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.addData("types", [
         {key: "c", slug: "category"},
-        {key: "m", slug: "marker"},
+        {key: "v", slug: "venue"},
         {key: "i", slug: "item"},
         {key: "r", slug: "route"},
         {key: "n", slug: "note"},

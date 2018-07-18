@@ -62,21 +62,21 @@ window.page = (function() {
             self.view.$data.page_title = "Home";
         })
         .then(self.connect)
-        .then(self.getMarkers)
-        .then(function(markers) {
-            if (markers.length === 0) {
-                // if we have zero markers, we probably are missing data
+        .then(self.getVenues)
+        .then(function(venues) {
+            if (venues.length === 0) {
+                // if we have zero venues, we probably are missing data
                 console.log("[home] importing sample data...");   
                 var imp = new LanternImport(self.stor);
                 imp.all();
                 return new Promise(function(resolve, reject) {
                     setTimeout(function() {
-                        resolve(self.getMarkers());
+                        resolve(self.getVenues());
                     }, 1000);
                 });
             }
             else {
-                return markers;
+                return venues;
             }
         })
         .then(self.getItems)
@@ -91,7 +91,8 @@ window.page = (function() {
 
                             items.forEach(function(item) {
                                 item.get("category").forEach(function(cat) {
-                                    if (cat == data.slug) {
+
+                                    if (item.id[2] == "v" && cat == data.slug) {
                                         data.count++;
                                     }
                                 });

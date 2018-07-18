@@ -27,11 +27,11 @@ self.__precacheManifest = [
   },
   {
     "url": "add/add.html",
-    "revision": "7520927e1f67c44432c9bdc41106d558"
+    "revision": "46a4067db8a2a1d48338c0f2f45b9c82"
   },
   {
     "url": "add/add.js",
-    "revision": "8e9b43dcd2f7bc4c72063f7f98ad3992"
+    "revision": "f5da152e10bf09cea0593e4a8b1017d1"
   },
   {
     "url": "admin/admin.css",
@@ -43,19 +43,19 @@ self.__precacheManifest = [
   },
   {
     "url": "admin/admin.js",
-    "revision": "1ecca46628c0acf3e62274ef4ae29fdd"
+    "revision": "fb9212b89360de4b79e4514c1a3b752c"
   },
   {
     "url": "browse/browse.css",
-    "revision": "94234672744f3bf9e1ef118139205d32"
+    "revision": "510e7f5f3391fc16634c63d72a20b5c6"
   },
   {
     "url": "browse/browse.html",
-    "revision": "26ea806f6d50944d48ffa875ec0e3197"
+    "revision": "e804c75094949c45a4ff31ab59c68121"
   },
   {
     "url": "browse/browse.js",
-    "revision": "50282d7767b6325ba55b4d68173c9980"
+    "revision": "f7e48d2aad2c7e8c36d11f493ae481cf"
   },
   {
     "url": "checkin/checkin.css",
@@ -79,7 +79,7 @@ self.__precacheManifest = [
   },
   {
     "url": "detail/detail.js",
-    "revision": "376a631d3e2bee9b48b51de8de5592f9"
+    "revision": "88c94c2347a69163fcb72c19efaeb7ac"
   },
   {
     "url": "hotspot.html",
@@ -95,7 +95,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.js",
-    "revision": "2a94230a884d5dae2e32b758656f40df"
+    "revision": "ba9fbdd5781b2097e8f39a5988e2a495"
   },
   {
     "url": "intro/a.html",
@@ -227,7 +227,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.js",
-    "revision": "89d47f17a591ea4869ba4ec6d934ed25"
+    "revision": "5b937d2994acaf0cd8334f58d9a54a44"
   },
   {
     "url": "lib/map.css",

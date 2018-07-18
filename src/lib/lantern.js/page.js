@@ -37,7 +37,7 @@ window.LanternPage = (function(id) {
 
     // initialize arrays for each type of doc
     // only these document types will ever be accepted by the system
-    (["m", "i", "c", "r", "n", "u", "d"]).forEach(function(type) {
+    (["v", "i", "c", "r", "n", "u", "d"]).forEach(function(type) {
         opts.data[type+"_docs"] = [];
     });
 
@@ -191,8 +191,8 @@ window.LanternPage = (function(id) {
     };
 
 
-    self.getMarkers = function() {
-        return self.stor.getManyByType("m");
+    self.getVenues = function() {
+        return self.stor.getManyByType("v");
     };
 
     self.getItems = function() {
@@ -223,9 +223,9 @@ window.LanternPage = (function(id) {
     /**
     * Display the map for the user based on approx. location
     */
-    self.renderMap = function(markers, show_tooltip, icon, color) {
+    self.renderMap = function(venues, show_tooltip, icon, color) {
 
-        markers = markers || [];
+        venues = venues || [];
 
         return new Promise(function(resolve, reject) {
 
@@ -239,48 +239,53 @@ window.LanternPage = (function(id) {
             }, geo_options);
 
 
-            var marker_options = {};
+            var venue_options = {};
             self.getItems().then(function(items) {
                 
                 items.forEach(function(item){
                     var m = item.get("parent")[0];
                     var c_doc = "c:"+item.get("category")[0];
-                    marker_options[m] = marker_options[m] || [];
-                    marker_options[m].push(self.stor.getCached(c_doc));
+                    venue_options[m] = venue_options[m] || [];
+                    venue_options[m].push(self.stor.getCached(c_doc));
                 });
             
                 self.map = new LanternMapManager();
-                // add markers to map
+                // add venues to map
 
-                markers.forEach(function(m_id) {
+                venues.forEach(function(v_id) {
                     var coords = [];
-                    var marker = self.stor.getCached(m_id);
+                    var venue = self.stor.getCached(v_id);
                     
-                    for (var idx in marker.geo) {
-                        var c = Geohash.decode(marker.geo[idx]);
-                        coords.push(c);
+                    for (var idx in venue.geo) {
+                        try {
+                            var c = Geohash.decode(venue.geo[idx]);
+                            coords.push(c);
+                        }
+                        catch(e) {
+                            console.error("[page] invalid geohash " + venue.geo + " for: " + v_id);
+                        }
                     }
 
                     if (coords.length == 1) {
                         // point
-                        var final_icon = icon || marker_options[marker._id][0].icon;
-                        var final_color = color || marker_options[marker._id][0].style.color;
-                        var pt = self.map.addPoint(marker.title, coords[0], final_icon, final_color);
+                        var final_icon = icon || venue_options[venue._id][0].icon;
+                        var final_color = color || venue_options[venue._id][0].style.color;
+                        var pt = self.map.addPoint(venue.title, coords[0], final_icon, final_color);
                        
 
                         if (show_tooltip) {
                             
                             pt.on("click", function(e) {
-                                window.location = "/detail/detail.html#mrk=" + m_id;
+                                window.location = "/detail/detail.html#mrk=" + v_id;
                             });
 
                             pt.openTooltip();
                         }
 
                     }
-                    else {
+                    else if (coords.length == 2) {
                         // draw a shape
-                        self.map.addPolygon(marker.title, coords);
+                        self.map.addPolygon(venue.title, coords);
                     }
                 });
                 resolve(self.map);

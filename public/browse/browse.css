@@ -20,19 +20,18 @@
 #browse-page .panel:hover .panel-heading, #browse-page .panel:hover {
   cursor: pointer; }
 
-#browse-page .panel .icon {
-  border-radius: 4em;
-  font-weight: bold;
-  width: 3.50em;
-  height: 3.50em;
-  text-align: center;
-  margin-right: 1em;
-  float: left; }
-  #browse-page .panel .icon i {
-    margin: auto; }
-
-#browse-page .panel .panel-block {
+#browse-page .panel-block {
   overflow-x: hidden; }
+  #browse-page .panel-block .icon {
+    border-radius: 4em;
+    font-weight: bold;
+    width: 3.50em;
+    height: 3.50em;
+    text-align: center;
+    margin-right: 1em;
+    float: left; }
+    #browse-page .panel-block .icon i {
+      margin: auto; }
 
 #browse-page #map-prompt {
   position: fixed;
@@ -58,9 +57,9 @@
   height: 100%;
   width: 100%; }
 
-#browse-page #markers-view {
+#browse-page #venues-view {
   margin-top: 6em;
   padding: 1em; }
-  #browse-page #markers-view h3 {
+  #browse-page #venues-view h3 {
     text-align: left; }
 

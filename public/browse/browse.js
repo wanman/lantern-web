@@ -16,20 +16,20 @@ window.page = (function() {
 
 
     /*
-    * Make sure we have markers to work with
+    * Make sure we have venues to work with
     */
-    function loadMarkers() {
+    function loadVenues() {
 
-        return self.stor.getManyByType("m").then(function(markers) {
-            if (markers.length === 0) {
-                // if we have zero markers, we probably are missing data
+        return self.stor.getManyByType("v").then(function(venues) {
+            if (venues.length === 0) {
+                // if we have zero venues, we probably are missing data
                 console.log("[browse] importing sample data...");
                 importSampleData();
-                setTimeout(loadMarkers, 300);
+                setTimeout(loadVenues, 300);
             }
             else {
                 self.stor.getManyByType("c").then(function() {
-                    // cache items for future association with markers
+                    // cache items for future association with venues
                     self.stor.getManyByType("i").then(function(items) {
 
                         if (category_id) {
@@ -38,7 +38,10 @@ window.page = (function() {
                         }
                         items.forEach(function(item) {
                             if (!category_id || item.has("category", category_id)) {
-                                self.view.$data.filtered_markers.push(item.get("parent")[0]);
+                                var venue = item.get("parent")[0];
+                                if (venue[0] == "v") {
+                                    self.view.$data.filtered_venues.push(venue);
+                                }
                             }
                         });
 
@@ -74,7 +77,7 @@ window.page = (function() {
                 color = cat.style.color;
             }
             
-            self.renderMap(self.view.$data.filtered_markers, true, icon, color)
+            self.renderMap(self.view.$data.filtered_venues, true, icon, color)
                 .then(function() {
                     self.map.fitAll();
                 })
@@ -87,7 +90,7 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
     self.addData("category", null);
-    self.addData("filtered_markers", []);
+    self.addData("filtered_venues", []);
     self.addData("show_map", null);
     self.addData("geolocation", null);
 
@@ -95,12 +98,12 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
 
-    self.addHelper("handleItemSelect", function(item, marker) {
-        window.location = "/detail/detail.html#mrk=" + marker._id + "&itm=" + item._id;
+    self.addHelper("handleItemSelect", function(item, venue) {
+        window.location = "/detail/detail.html#mrk=" + venue._id + "&itm=" + item._id;
     });
 
-    self.addHelper("handleMarkerSelect", function(marker) {
-        window.location = "/detail/detail.html#mrk=" + marker._id;
+    self.addHelper("handleVenueSelect", function(venue) {
+        window.location = "/detail/detail.html#mrk=" + venue._id;
     });
 
 
@@ -138,7 +141,7 @@ window.page = (function() {
     });
 
 
-    self.addHelper("getDistanceFromMarker", function(marker) {
+    self.addHelper("getDistanceFromVenue", function(venue) {
         var distance = 1 + Math.round(Math.random()*5);
         return distance + "km";
     });
@@ -149,7 +152,7 @@ window.page = (function() {
             self.view.$data.page_title = "Places";
         })
         .then(self.connect)
-        .then(loadMarkers)
+        .then(loadVenues)
         .then(function() {
             if (self.getHashParameterByName("v") == "map") {
                 showMap();

@@ -254,8 +254,8 @@ window.LanternImport = function(stor) {
     }
 
     
-    function addMarker(id, title, geo, cat, icon, cats) {
-        var venue_doc = new LanternDocument("m:"+id, stor);
+    function addVenue(id, title, geo, cat, icon, cats) {
+        var venue_doc = new LanternDocument("v:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
         
@@ -265,8 +265,6 @@ window.LanternImport = function(stor) {
         venue_doc.set("$ia", new Date());
         venue_doc.save();
 
-
-      
         for (var idx in cats) {
 
         
@@ -349,16 +347,22 @@ window.LanternImport = function(stor) {
     * Allows for tracking population size and resource distribution
     * against meaningful points in a town.
     */
-    self.marker = function() {
+    self.venue = function() {
         //console.log("[import] adding default venues");
-        addMarker("css", "Central City Shelter", "drs4b7s", "sfe", "home", ["bed", "eat"]);
-        addMarker("aic", "AJ's Cafe", "drs4b77", "sfe", "coffee", ["eat", "wtr", "pwr"]);
-        addMarker("rcm", "Red Cross HQ", "drs4b75", "sfe", "plus-square", ["med", "clo"]);
-        addMarker("hsf", "High School Field House", "drs4b74", "sfe", "basketball-ball", ["bed", "clo", "net", "wtr"]);
-        addMarker("cth", "UCG Hospital", "drs4b73", "sfe", "hospital-symbol", ["med"]);
-        addMarker("shl", "Shell Station", "drs4b71", "sfe", "gas-pump", ["ful", "wtr"]);
-        addMarker("mst", "Main Street Theatre", "drs4b41", "sfe", "film", ["net", "pwr"]);
-        //addMarker("emb", "Spanish Embassy", "drs4b46", "sfe", "suitcase", ["sup"]);
+
+        // temporary shelters or forward operating bases
+        addVenue("css", "Central City Shelter", "drs4b7s", "tmp", "home", ["bed", "eat"]);
+        addVenue("rcm", "Red Cross HQ", "drs4b75", "tmp", "plus-square", ["med", "clo"]);
+
+        // permanent buildings that now offer some safety
+        addVenue("aic", "AJ's Cafe", "drs4b77", "bld", "coffee", ["eat", "wtr", "pwr"]);
+        addVenue("hsf", "High School Field House", "drs4b79", "sfe", "basketball-ball", ["bed", "clo", "net", "wtr"]);
+        addVenue("cth", "UCG Hospital", "drs4b73", "bld", "hospital-symbol", ["med"]);
+        addVenue("shl", "Shell Station", "drs4b71", "bld", "gas-pump", ["ful", "wtr"]);
+        addVenue("mst", "Main Street Theatre", "drs4b41", "bld", "film", ["net", "pwr"]);
+        //addVenue("emb", "Embassy", "drs4b46", "sfe", "suitcase", ["sup"]);
+
+        addVenue("wtk", "Water Truck", "drs4b72", "trk", "truck", ["wtr"]);
     };
 
     self.item = function() {
@@ -442,7 +446,7 @@ window.LanternPage = (function(id) {
 
     // initialize arrays for each type of doc
     // only these document types will ever be accepted by the system
-    (["m", "i", "c", "r", "n", "u", "d"]).forEach(function(type) {
+    (["v", "i", "c", "r", "n", "u", "d"]).forEach(function(type) {
         opts.data[type+"_docs"] = [];
     });
 
@@ -535,14 +539,14 @@ window.LanternPage = (function(id) {
 
             });
 
-            self.stor.syncWithLantern(continuous, function(status) {
-                self.view.$data.lantern_connected = status;
-            },function(changed_doc) {
-                // don't display sync message for map cache
-                if (!changed_doc.dataUrl) {
-                    showSyncIcon(changed_doc);
-                }
-            });
+            // self.stor.syncWithLantern(continuous, function(status) {
+            //     self.view.$data.lantern_connected = status;
+            // },function(changed_doc) {
+            //     // don't display sync message for map cache
+            //     if (!changed_doc.dataUrl) {
+            //         showSyncIcon(changed_doc);
+            //     }
+            // });
         }
     }
 
@@ -596,8 +600,8 @@ window.LanternPage = (function(id) {
     };
 
 
-    self.getMarkers = function() {
-        return self.stor.getManyByType("m");
+    self.getVenues = function() {
+        return self.stor.getManyByType("v");
     };
 
     self.getItems = function() {
@@ -628,9 +632,9 @@ window.LanternPage = (function(id) {
     /**
     * Display the map for the user based on approx. location
     */
-    self.renderMap = function(markers, show_tooltip, icon, color) {
+    self.renderMap = function(venues, show_tooltip, icon, color) {
 
-        markers = markers || [];
+        venues = venues || [];
 
         return new Promise(function(resolve, reject) {
 
@@ -644,48 +648,53 @@ window.LanternPage = (function(id) {
             }, geo_options);
 
 
-            var marker_options = {};
+            var venue_options = {};
             self.getItems().then(function(items) {
                 
                 items.forEach(function(item){
                     var m = item.get("parent")[0];
                     var c_doc = "c:"+item.get("category")[0];
-                    marker_options[m] = marker_options[m] || [];
-                    marker_options[m].push(self.stor.getCached(c_doc));
+                    venue_options[m] = venue_options[m] || [];
+                    venue_options[m].push(self.stor.getCached(c_doc));
                 });
             
                 self.map = new LanternMapManager();
-                // add markers to map
+                // add venues to map
 
-                markers.forEach(function(m_id) {
+                venues.forEach(function(v_id) {
                     var coords = [];
-                    var marker = self.stor.getCached(m_id);
+                    var venue = self.stor.getCached(v_id);
                     
-                    for (var idx in marker.geo) {
-                        var c = Geohash.decode(marker.geo[idx]);
-                        coords.push(c);
+                    for (var idx in venue.geo) {
+                        try {
+                            var c = Geohash.decode(venue.geo[idx]);
+                            coords.push(c);
+                        }
+                        catch(e) {
+                            console.error("[page] invalid geohash " + venue.geo + " for: " + v_id);
+                        }
                     }
 
                     if (coords.length == 1) {
                         // point
-                        var final_icon = icon || marker_options[marker._id][0].icon;
-                        var final_color = color || marker_options[marker._id][0].style.color;
-                        var pt = self.map.addPoint(marker.title, coords[0], final_icon, final_color);
+                        var final_icon = icon || venue_options[venue._id][0].icon;
+                        var final_color = color || venue_options[venue._id][0].style.color;
+                        var pt = self.map.addPoint(venue.title, coords[0], final_icon, final_color);
                        
 
                         if (show_tooltip) {
                             
                             pt.on("click", function(e) {
-                                window.location = "/detail/detail.html#mrk=" + m_id;
+                                window.location = "/detail/detail.html#mrk=" + v_id;
                             });
 
                             pt.openTooltip();
                         }
 
                     }
-                    else {
+                    else if (coords.length == 2) {
                         // draw a shape
-                        self.map.addPolygon(marker.title, coords);
+                        self.map.addPolygon(venue.title, coords);
                     }
                 });
                 resolve(self.map);
@@ -1159,8 +1168,7 @@ window.LanternStor = (function($data, uri) {
                         var local_maps_db = new PouchDB("lantern-maps");
 
                         LanternSync(local_maps_db, self.lantern_maps_db, "lantern-maps", continuous, function() {}, function(changed_doc) {
-                            console.log("[stor] map update", changed_doc._id);
-                            change_fn(changed_doc);
+                            //console.log("[stor] map update", changed_doc._id);
                         });
                     }
                     catch(e) {
@@ -1241,7 +1249,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         }
     })
     .on('active', function() {
-        console.log("[" + label + "] active sync");
+        //console÷.log("[" + label + "] active sync");
         setStatus(true);
     })
     .on('change', function (info) {

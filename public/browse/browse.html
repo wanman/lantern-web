@@ -56,18 +56,18 @@
                     <div v-if="!page_loading" v-cloak>
                         <!-- map is empty by default - only certain pages will fill this region-->
                         <div id="map" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')"></div>
-                        <!-- markers view-->
-                        <div id="markers-view" v-if="!show_map">
-                            <div id="markers">
-                                <p v-if="!filtered_markers.length">No items have been reported to match your search yet. Please check back soon.</p>
-                                <div v-if="filtered_markers.length">
-                                    <div class="panel" v-bind:data-id="marker._id" v-for="marker in m_docs" v-if="filtered_markers.indexOf(marker._id) != -1">
-                                        <div class="panel-heading" @click="handleMarkerSelect(marker)">
-                                            <div class="distance">{{ getDistanceFromMarker(marker) }}</div>
-                                            <h3>{{ marker.title }}</h3>
+                        <!-- venues view-->
+                        <div id="venues-view" v-if="!show_map">
+                            <div id="venues">
+                                <p v-if="!filtered_venues.length">No items have been reported to match your search yet. Please check back soon.</p>
+                                <div v-if="filtered_venues.length">
+                                    <div class="panel" v-bind:data-id="venue._id" v-for="venue in v_docs" v-if="filtered_venues.indexOf(venue._id) != -1">
+                                        <div class="panel-heading" @click="handleVenueSelect(venue)">
+                                            <div class="distance">{{ getDistanceFromVenue(venue) }}</div>
+                                            <h3> <span class="icon"><i class="fas fa-truck" v-if="venue.category[0] == 'trk'"></i><i class="fas fa-building" v-if="venue.category[0] != 'trk'"></i></span>{{ venue.title }}</h3>
                                         </div>
-                                        <div class="panel-block" @click="handleMarkerSelect(marker)">
-                                            <div class="category" v-for="item in i_docs" v-if="item.parent &amp;&amp; item.parent == marker._id &amp;&amp; item.category[0]" @click="handleItemSelect(item, marker)" v-bind:data-id="item._id"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span></div>
+                                        <div class="panel-block" @click="handleVenueSelect(venue)">
+                                            <div class="category" v-for="item in i_docs" v-if="item.parent &amp;&amp; item.parent == venue._id &amp;&amp; item.category[0]" @click="handleItemSelect(item, venue)" v-bind:data-id="item._id"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span></div>
                                         </div>
                                     </div>
                                 </div>

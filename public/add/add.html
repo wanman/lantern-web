@@ -56,7 +56,7 @@
                             <h1>Help Us Map Your Region</h1>
                             <h2>What to report?</h2>
                             <ul>
-                                <li v-for="category in marker_categories" @click="handleMarkerCategory(category)"><span>{{ category.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
+                                <li v-for="category in venues_categories" @click="handleVenueCategory(category)"><span>{{ category.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
                         </div>
                         <div id="subcategory-view" v-if="view == 'subcategory'">
@@ -66,11 +66,11 @@
                                 <li v-for="sc in subcategories" @click="handleShowInputSelector(sc)" v-bind:id="sc._id"> <span>{{sc.title}}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
                         </div>
-                        <div id="marker-selector-view" v-if="view == 'marker'">
+                        <div id="venues-selector-view" v-if="view == 'venues'">
                             <h1>{{ category.title }}</h1>
                             <h2>Select Closest Venue</h2>
                             <ul>
-                                <li v-for="marker in m_docs" v-bind:id="marker._id" @click="handleSelectMarkerForItem(marker)" v-if="marker.title"> <span>{{ marker.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
+                                <li v-for="venues in v_docs" v-bind:id="venues._id" @click="handleSelectVenueForItem(venues)" v-if="venues.title"> <span>{{ venues.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
                         </div>
                         <div id="input-selector-view" v-if="view == 'input'">
