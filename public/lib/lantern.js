@@ -326,7 +326,6 @@ window.LanternImport = function(stor) {
 
 
         //console.log("[import] adding default Marker categories");
-        addCategory("sfe", "Safe Zone", "mrk");
         addCategory("sup", "Supply", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("pwo", "Power Outage", "mrk");
@@ -539,14 +538,14 @@ window.LanternPage = (function(id) {
 
             });
 
-            // self.stor.syncWithLantern(continuous, function(status) {
-            //     self.view.$data.lantern_connected = status;
-            // },function(changed_doc) {
-            //     // don't display sync message for map cache
-            //     if (!changed_doc.dataUrl) {
-            //         showSyncIcon(changed_doc);
-            //     }
-            // });
+            self.stor.syncWithLantern(continuous, function(status) {
+                self.view.$data.lantern_connected = status;
+            },function(changed_doc) {
+                // don't display sync message for map cache
+                if (!changed_doc.dataUrl) {
+                    showSyncIcon(changed_doc);
+                }
+            });
         }
     }
 
@@ -554,6 +553,7 @@ window.LanternPage = (function(id) {
     * Update interface based on user's changing geolocation
     */
     function onLocationChange(position) {
+        if (!position || !position.coords) return;
         console.log("[page] my geo", position.coords.latitude, position.coords.longitude);
         self.map.setOwnLocation({lat:position.coords.latitude, lng:position.coords.longitude});
     }
@@ -877,6 +877,8 @@ window.LanternStor = (function($data, uri) {
 
 
     function getIndexForDoc(id,type) {
+        if (!$data[type+"_docs"]) return;
+
         var doc_id_list = $data[type+"_docs"].map(function(compare_doc) {
             return compare_doc._id;
         });
@@ -887,6 +889,7 @@ window.LanternStor = (function($data, uri) {
     function removeFromCache(doc_id) {
         var type = doc_id.split(":")[0];
         var index = getIndexForDoc(doc_id,type);
+        if (!index) return;
         //console.log("[stor] remove from cache", doc_id, index);
         $data[type+"_docs"].splice(index, 1);
         self.cache[doc_id] = null;
@@ -1115,6 +1118,19 @@ window.LanternStor = (function($data, uri) {
     };
 
 
+    /**
+    * Compact database
+    */
+    self.compact = function() {
+        return self.db.compact().then(function (info) {
+            // compaction complete
+            console.log("[stor] compaction complete", info);
+        }).catch(function (err) {
+            // handle errors
+            console.error(err);
+        });
+    };
+
 
     /**
     * Check if we're connected to cloud instance (and therefore internet)
@@ -1156,6 +1172,7 @@ window.LanternStor = (function($data, uri) {
             return;
         }
 
+        
         LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, function(status) {
                 status_fn(status);
 
@@ -1232,12 +1249,16 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         return delay * 3;
     }
 
-    src.sync(dest, {
+    var opts =  {
         since: 0,
+        batch_size: 500,
         live: continuous || false,
         retry: true,
         back_off_function: backOffSync
-    })
+    };
+
+    
+    src.sync(dest, opts)
     .on('complete', function() {
         console.log("[" + label + "] started sync");
         setStatus(true);
@@ -1249,7 +1270,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         }
     })
     .on('active', function() {
-        //console÷.log("[" + label + "] active sync");
+        console.log("[" + label + "] active sync");
         setStatus(true);
     })
     .on('change', function (info) {

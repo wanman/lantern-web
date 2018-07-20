@@ -106,7 +106,6 @@ window.LanternImport = function(stor) {
 
 
         //console.log("[import] adding default Marker categories");
-        addCategory("sfe", "Safe Zone", "mrk");
         addCategory("sup", "Supply", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("pwo", "Power Outage", "mrk");

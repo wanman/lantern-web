@@ -59,11 +59,15 @@ window.page = (function() {
 
        
         if (!self.map || !self.map.user) {
-            self.askForLocation().then(function(res) {
-                console.log("[browse] my geo", Geohash.encode(res.coords.latitude, res.coords.longitude,6));
-                self.map.setOwnLocation({lat:res.coords.latitude, lng:res.coords.longitude});
-                self.map.fitAll();
-            });
+            self.askForLocation()
+                .then(function(res) {
+                    console.log("[browse] my geo", Geohash.encode(res.coords.latitude, res.coords.longitude,6));
+                    self.map.setOwnLocation({lat:res.coords.latitude, lng:res.coords.longitude});
+                    self.map.fitAll();
+                })
+                .catch(function(err) {
+                    console.log("[browse] err fitting map", err);
+                });
         }
 
         setTimeout(function() {

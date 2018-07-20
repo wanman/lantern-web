@@ -46,6 +46,9 @@ window.page = (function() {
                             draggable: true
                         }));
                     }
+                })
+                .catch(function(err) {
+                    console.log("[add] err setting map selector", err);
                 });
 
         }, 200);

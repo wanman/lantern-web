@@ -145,6 +145,7 @@ window.LanternPage = (function(id) {
     * Update interface based on user's changing geolocation
     */
     function onLocationChange(position) {
+        if (!position || !position.coords) return;
         console.log("[page] my geo", position.coords.latitude, position.coords.longitude);
         self.map.setOwnLocation({lat:position.coords.latitude, lng:position.coords.longitude});
     }

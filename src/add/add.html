@@ -13,7 +13,7 @@ block content
             h1 Help Us Map Your Region
             h2 What to report?
             ul
-                li(v-for="category in venues_categories" @click="handleVenueCategory(category)")
+                li(v-for="category in venue_categories" @click="handleVenueCategory(category)")
                     span {{ category.title }}
                     span.icon.is-large
                         i.fas.fa-angle-right

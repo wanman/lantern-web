@@ -36,6 +36,8 @@ window.LanternStor = (function($data, uri) {
 
 
     function getIndexForDoc(id,type) {
+        if (!$data[type+"_docs"]) return;
+
         var doc_id_list = $data[type+"_docs"].map(function(compare_doc) {
             return compare_doc._id;
         });
@@ -46,6 +48,7 @@ window.LanternStor = (function($data, uri) {
     function removeFromCache(doc_id) {
         var type = doc_id.split(":")[0];
         var index = getIndexForDoc(doc_id,type);
+        if (!index) return;
         //console.log("[stor] remove from cache", doc_id, index);
         $data[type+"_docs"].splice(index, 1);
         self.cache[doc_id] = null;
@@ -274,6 +277,19 @@ window.LanternStor = (function($data, uri) {
     };
 
 
+    /**
+    * Compact database
+    */
+    self.compact = function() {
+        return self.db.compact().then(function (info) {
+            // compaction complete
+            console.log("[stor] compaction complete", info);
+        }).catch(function (err) {
+            // handle errors
+            console.error(err);
+        });
+    };
+
 
     /**
     * Check if we're connected to cloud instance (and therefore internet)
@@ -315,6 +331,7 @@ window.LanternStor = (function($data, uri) {
             return;
         }
 
+        
         LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, function(status) {
                 status_fn(status);
 

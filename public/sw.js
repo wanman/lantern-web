@@ -27,11 +27,11 @@ self.__precacheManifest = [
   },
   {
     "url": "add/add.html",
-    "revision": "46a4067db8a2a1d48338c0f2f45b9c82"
+    "revision": "f06fb7489a6a996d237468624c2871de"
   },
   {
     "url": "add/add.js",
-    "revision": "f5da152e10bf09cea0593e4a8b1017d1"
+    "revision": "a847be6d54149675fbaac0368e45b558"
   },
   {
     "url": "admin/admin.css",
@@ -55,7 +55,7 @@ self.__precacheManifest = [
   },
   {
     "url": "browse/browse.js",
-    "revision": "f7e48d2aad2c7e8c36d11f493ae481cf"
+    "revision": "a606760a80def02909469be36372fc71"
   },
   {
     "url": "checkin/checkin.css",
@@ -227,7 +227,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.js",
-    "revision": "5b937d2994acaf0cd8334f58d9a54a44"
+    "revision": "75356bb7b87f1252c8212a6a3e555c95"
   },
   {
     "url": "lib/map.css",
