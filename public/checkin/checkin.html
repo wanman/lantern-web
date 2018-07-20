@@ -14,7 +14,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="manifest" href="/manifest.json">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
-        <link rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css">
+        <link rel="stylesheet" type="text/css" href="/media/icons/css/all.css">
         <link rel="stylesheet" type="text/css" href="/lib/map.css">
         <link rel="stylesheet" type="text/css" href="/checkin/checkin.css">
     </head>
@@ -34,7 +34,7 @@
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null" v-bind:class="is_syncing ? 'is-syncing' : ''">
                 <div class="navbar-brand">
                     <div class="navbar-item" v-if="is_syncing"><span class="icon"><i class="fas fa-sync"></i></span><span v-if="is_syncing === true">Syncing</span><span v-if="is_syncing !== true">Syncing {{ is_syncing }}</span></div>
-                    <div class="navbar-item" v-if="!is_syncing"><span v-if="!cloud_connected &amp;&amp; !lantern_connected"> <span class="icon"><i class="fas fa-wifi" style="color: #DDD;"></i></span>Offline</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern {{ lantern_name.toUpperCase() }}</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span></div>
+                    <div class="navbar-item" v-if="!is_syncing"><span v-if="!cloud_connected &amp;&amp; !lantern_connected"> <span class="icon"><i class="fas fa-wifi" style="color: #DDD;"></i></span>Offline</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern {{ lantern_name }}</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span></div>
                 </div>
             </nav>
             <section>
@@ -42,9 +42,9 @@
                     <ul>
                         <li><a href="/index.html"> <span class="icon"><i class="fas fa-home"></i></span>Home</a></li>
                         <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Supplies</a></li>
+                        <li><a href="/network/network.html"> <span class="icon"><i class="fas fa-globe-americas"></i></span>Network</a></li>
                         <li><a href="/checkin/checkin.html"> <span class="icon"><i class="fas fa-check"></i></span>Check In</a></li>
                         <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
-                        <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>
                         <li class="user-count"><span v-if="u_docs.length"> <span class="icon"><i class="fas fa-user"></i></span>{{ pluralize(u_docs.length-1) }} Active</span></li>
                     </ul>
                 </nav>

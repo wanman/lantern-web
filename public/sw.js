@@ -79,7 +79,7 @@ self.__precacheManifest = [
   },
   {
     "url": "detail/detail.js",
-    "revision": "88c94c2347a69163fcb72c19efaeb7ac"
+    "revision": "a8c4d761093d0c2b5362fbead4f9080b"
   },
   {
     "url": "hotspot.html",
@@ -122,104 +122,132 @@ self.__precacheManifest = [
     "revision": "1143884328fb4dc69fae54eac9eccfdb"
   },
   {
-    "url": "media/icons/css/fa-brands.css",
-    "revision": "ef4b96231c1c8e5bc6d2018ff59ee62e"
+    "url": "media/icons/css/all.css",
+    "revision": "ee8c65c3604b12ffbd3b7d093eeb8c32"
   },
   {
-    "url": "media/icons/css/fa-brands.min.css",
-    "revision": "e7771f7bdea7a420973e20cd173a1b19"
+    "url": "media/icons/css/all.min.css",
+    "revision": "597b70b2ce6b1483f72526c906918fe9"
   },
   {
-    "url": "media/icons/css/fa-regular.css",
-    "revision": "4dc9fb8af478dad580da0763c3bb2c4d"
+    "url": "media/icons/css/brands.css",
+    "revision": "127cb8f6670d4788d86e858190f64b31"
   },
   {
-    "url": "media/icons/css/fa-regular.min.css",
-    "revision": "b7a248c091ece954a64f4fde5dae801d"
-  },
-  {
-    "url": "media/icons/css/fa-solid.css",
-    "revision": "f59b676f5ab1dca6ba71e7eba50cd004"
-  },
-  {
-    "url": "media/icons/css/fa-solid.min.css",
-    "revision": "286b42d8d5ab6254c10c8cfbc00ce955"
-  },
-  {
-    "url": "media/icons/css/fontawesome-all.css",
-    "revision": "0a2ed388e9c6ab831acb42c006aa91a3"
-  },
-  {
-    "url": "media/icons/css/fontawesome-all.min.css",
-    "revision": "d61bfe9b56c13ecff5313ee3abb45e8b"
+    "url": "media/icons/css/brands.min.css",
+    "revision": "ab62d037fa1cdb0f8b5cb8de2bcd4a62"
   },
   {
     "url": "media/icons/css/fontawesome.css",
-    "revision": "695883f214d9afb980d1fdc2fca6ee1a"
+    "revision": "7e868d39994348a643753429713e0e08"
   },
   {
     "url": "media/icons/css/fontawesome.min.css",
-    "revision": "497c6efa3acaba85fb0a1b4f76b61bde"
+    "revision": "7d2230b007a9313e4f6fe6326dfcb002"
+  },
+  {
+    "url": "media/icons/css/regular.css",
+    "revision": "4e45c3fc6f308783b395d41967320a56"
+  },
+  {
+    "url": "media/icons/css/regular.min.css",
+    "revision": "d80445041f6774d949debc12596067a8"
+  },
+  {
+    "url": "media/icons/css/solid.css",
+    "revision": "3259d50befcbe0f639262828073894ea"
+  },
+  {
+    "url": "media/icons/css/solid.min.css",
+    "revision": "129190453beb880efe8830b4706671ef"
+  },
+  {
+    "url": "media/icons/css/svg-with-js.css",
+    "revision": "ee683e04209d4f43ae596cf1141ff5e5"
+  },
+  {
+    "url": "media/icons/css/svg-with-js.min.css",
+    "revision": "e115adb8623097026038966528dd5ab6"
+  },
+  {
+    "url": "media/icons/css/v4-shims.css",
+    "revision": "28a04437e7ed02acb8618e4a588c68b9"
+  },
+  {
+    "url": "media/icons/css/v4-shims.min.css",
+    "revision": "01727b5056f65c2ac938f5db4e552b10"
   },
   {
     "url": "media/icons/webfonts/fa-brands-400.eot",
-    "revision": "748ab466bee11e0b2132916def799916"
+    "revision": "69b310edc4e366b06627596657ffd6e2"
   },
   {
     "url": "media/icons/webfonts/fa-brands-400.svg",
-    "revision": "b032e14eac87e3001396ff597e4ec15f"
+    "revision": "5da7e33c62be3559dce2c91476435e34"
   },
   {
     "url": "media/icons/webfonts/fa-brands-400.ttf",
-    "revision": "7febe26eeb4dd8e3a3c614a144d399fb"
+    "revision": "d94572ddae31011adf538b407c99e8c1"
   },
   {
     "url": "media/icons/webfonts/fa-brands-400.woff",
-    "revision": "2248542e1bbbd548a157e3e6ced054fc"
+    "revision": "e9f8333989a84d0bd403f6d15e717fb1"
   },
   {
     "url": "media/icons/webfonts/fa-brands-400.woff2",
-    "revision": "3654744dc6d6c37c9b3582b57622df5e"
+    "revision": "66f625f1d99357cb1559bea25c827270"
   },
   {
     "url": "media/icons/webfonts/fa-regular-400.eot",
-    "revision": "b58f468f84168d61e0ebc1e1f423587c"
+    "revision": "0b7928f6fbf544c473e51e6579da0bec"
   },
   {
     "url": "media/icons/webfonts/fa-regular-400.svg",
-    "revision": "3929b3ef871fa90bbb4e77e005851e74"
+    "revision": "4e41caaf414b0335fc8219f0739a2adb"
   },
   {
     "url": "media/icons/webfonts/fa-regular-400.ttf",
-    "revision": "54f142e03adc6da499c2af4f54ab76fd"
+    "revision": "cdd8fa76f79bbe1cd789e8b78831b2b0"
   },
   {
     "url": "media/icons/webfonts/fa-regular-400.woff",
-    "revision": "f3dd4f397fbc5aaf831b6b0ba112d75c"
+    "revision": "d9e29124cc610631509da59240e8fc95"
   },
   {
     "url": "media/icons/webfonts/fa-regular-400.woff2",
-    "revision": "33f727ccde4b05c0ed143c5cd78cda0c"
+    "revision": "930c12643983f664f026b6e65300f09d"
   },
   {
     "url": "media/icons/webfonts/fa-solid-900.eot",
-    "revision": "035a137af03db6f1af76a589da5bb865"
+    "revision": "0b93480e003507618e8e1198126a2d37"
   },
   {
     "url": "media/icons/webfonts/fa-solid-900.svg",
-    "revision": "9bbbee00f65769a64927764ef51af6d0"
+    "revision": "666a82cb3e9f8591bef4049aea26c4c6"
   },
   {
     "url": "media/icons/webfonts/fa-solid-900.ttf",
-    "revision": "b6a14bb88dbc580e45034af297c8f605"
+    "revision": "a7a790d499af8d37b9f742a666ab849c"
   },
   {
     "url": "media/icons/webfonts/fa-solid-900.woff",
-    "revision": "6661d6b3521b4c480ba759e4b9e480c1"
+    "revision": "dfc040d53fa343d2ba7ccb8217f34346"
   },
   {
     "url": "media/icons/webfonts/fa-solid-900.woff2",
-    "revision": "8a8c0474283e0d9ef41743e5e486bf05"
+    "revision": "e8a92a29978352517c450b9a800b06cb"
+  },
+  {
+    "url": "network/network.css",
+    "revision": "8ec89b8d1d526bb148a21d6ac5cbaa59"
+  },
+  {
+    "url": "network/network.html",
+    "revision": "94aacc0bf4e8bd5b6eaa0d4cdfea411d"
+  },
+  {
+    "url": "network/network.js",
+    "revision": "05bc1d66a15b1a7f325cd0a6ba2589ba"
   },
   {
     "url": "welcome.html",

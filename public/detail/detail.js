@@ -101,9 +101,7 @@ window.page = (function() {
 
             return self.stor.getManyByType("c");
         })
-        .then(function() {
-            return self.stor.getManyByType("i");
-        })
+        .then(self.getManyItems)
         .then(function() {
             //console.log("[detail]", marker_id);
 

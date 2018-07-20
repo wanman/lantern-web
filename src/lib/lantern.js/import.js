@@ -173,7 +173,7 @@ window.LanternImport = function(stor) {
 
     self.all = function() {
         self.category(); // accepted categories for various types of docs
-        self.marker(); // items placed in specific Markers
+        self.venue(); // items placed in specific Markers
         self.item(); // dummy for consistency, see Marker()
         self.route(); // routes between Markers
         self.note(); // notes related to items or Markers or routes

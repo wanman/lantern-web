@@ -1,0 +1,17 @@
+---
+id: "network"
+---
+
+extends ../_layouts/_master.pug
+
+block content
+    p.card(v-for="d in d_docs" v-if="d.title") Lantern {{ d.title }} 
+
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/lib/map.css")
+    link(rel="stylesheet" type="text/css" href="/network/network.css")
+
+block scripts
+    script(src="/lib/map.js")
+    script(src="/network/network.js")

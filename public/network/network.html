@@ -15,10 +15,11 @@
         <link rel="manifest" href="/manifest.json">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
         <link rel="stylesheet" type="text/css" href="/media/icons/css/all.css">
-        <link rel="stylesheet" type="text/css" href="/index.css">
+        <link rel="stylesheet" type="text/css" href="/lib/map.css">
+        <link rel="stylesheet" type="text/css" href="/network/network.css">
     </head>
     <body>
-        <div id="home-page">
+        <div id="network-page">
             <!-- global navigation-->
             <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']">
                 <div class="navbar-brand"><a class="navbar-burger" v-if="!allow_back_button" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
@@ -49,27 +50,13 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <div id="home-view" v-cloak>
-                        <h1 v-if="personalizing">Finding {{ selected_category.title }} nearby...&hellip;</h1>
-                        <h1 v-if="!page_loading &amp;&amp; !personalizing">Reported Supplies</h1>
-                        <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
-                            <h2>What would help today?</h2>
-                        </div>
-                        <ul class="item-list">
-                            <li class="item" v-for="cat in item_categories" v-bind:id="cat._id" v-bind:ref="cat.slug" @click="handleCategorySelect(cat)"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)"></i>
-                                    <div class="badge" v-bind:style="makeBadgeStyle(cat)">{{ cat.count }}</div></span>
-                                <div class="title">{{ cat.title }} </div>
-                            </li>
-                            <li class="item" @click="handleAllCategorySelect"><span class="icon is-large" style="background-color: #EEE;"><i class="fas fa-arrow-right"></i></span>
-                                <div class="title">More</div>
-                            </li>
-                        </ul>
-                    </div>
+                    <p class="card" v-for="d in d_docs" v-if="d.title">Lantern {{ d.title }} </p>
                 </div>
             </section>
             <script src="/lib/vendor.js"></script>
             <script src="/lib/lantern.js"></script>
-            <script src="/index.js"></script>
+            <script src="/lib/map.js"></script>
+            <script src="/network/network.js"></script>
         </div>
     </body>
 </html>

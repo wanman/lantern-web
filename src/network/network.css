@@ -1,0 +1,10 @@
+
+#network-page {
+
+    padding: 2em 1em;
+
+    .card {
+        margin: 1em;
+        padding: 1em;
+    }
+}

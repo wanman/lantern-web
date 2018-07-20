@@ -14,7 +14,7 @@ html(lang="en")
         meta(name="apple-mobile-web-app-capable" content="yes")
         link(rel="manifest" href="/manifest.json")
         link(rel="stylesheet" type="text/css" href="/lib/lantern.css")
-        link(rel="stylesheet" type="text/css" href="/media/icons/css/fontawesome-all.css")
+        link(rel="stylesheet" type="text/css" href="/media/icons/css/all.css")
         block styles
 
     body
@@ -59,7 +59,7 @@ html(lang="en")
                         span(v-if="lantern_connected") 
                             span.icon
                                     i.fas.fa-wifi
-                            | Lantern {{ lantern_name.toUpperCase() }}
+                            | Lantern {{ lantern_name }}
                         span(v-if="cloud_connected") 
                             span.icon
                                     i.fas.fa-cloud
@@ -80,6 +80,11 @@ html(lang="en")
                                 span.icon
                                     i.fas.fa-map
                                 | Supplies
+                        li
+                            a(href="/network/network.html") 
+                                span.icon
+                                    i.fas.fa-globe-americas
+                                | Network
                        
                         li
                             a(href="/checkin/checkin.html") 
@@ -92,11 +97,6 @@ html(lang="en")
                                 span.icon
                                     i.fas.fa-plus-circle
                                 | Contribute
-                        li
-                            a(href="/admin/admin.html") 
-                                span.icon
-                                    i.fas.fa-database
-                                | Admin
 
                         li.user-count
                             span(v-if="u_docs.length") 
