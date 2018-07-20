@@ -33,14 +33,14 @@
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null" v-bind:class="is_syncing ? 'is-syncing' : ''">
                 <div class="navbar-brand">
                     <div class="navbar-item" v-if="is_syncing"><span class="icon"><i class="fas fa-sync"></i></span><span v-if="is_syncing === true">Syncing</span><span v-if="is_syncing !== true">Syncing {{ is_syncing }}</span></div>
-                    <div class="navbar-item" v-if="!is_syncing"><span v-if="!cloud_connected &amp;&amp; !lantern_connected"> <span class="icon"><i class="fas fa-wifi" style="color: #DDD;"></i></span>Offline</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern X12</span></div>
+                    <div class="navbar-item" v-if="!is_syncing"><span v-if="!cloud_connected &amp;&amp; !lantern_connected"> <span class="icon"><i class="fas fa-wifi" style="color: #DDD;"></i></span>Offline</span><span v-if="lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern {{ lantern_name.toUpperCase() }}</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span></div>
                 </div>
             </nav>
             <section>
                 <nav class="global" v-if="showNavMenu" v-cloak>
                     <ul>
                         <li><a href="/index.html"> <span class="icon"><i class="fas fa-home"></i></span>Home</a></li>
-                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Places</a></li>
+                        <li><a href="/browse/browse.html"> <span class="icon"><i class="fas fa-map"></i></span>Supplies</a></li>
                         <li><a href="/checkin/checkin.html"> <span class="icon"><i class="fas fa-check"></i></span>Check In</a></li>
                         <li><a href="/add/add.html"> <span class="icon"><i class="fas fa-plus-circle"></i></span>Contribute</a></li>
                         <li><a href="/admin/admin.html"> <span class="icon"><i class="fas fa-database"></i></span>Admin</a></li>

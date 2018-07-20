@@ -5,6 +5,7 @@ window.LanternPage = (function(id) {
         data: {
             cloud_connected: null,
             lantern_connected: null,
+            lantern_name: "",
             page_title: "",
             page_tag: "",
             page_loading: true,
@@ -108,11 +109,30 @@ window.LanternPage = (function(id) {
         }, 50);
     }
 
+    /**
+    * Get name of the lantern we're connected to and save for view
+    **/
+    function loadLanternName() {
+        fetch(self.stor.lantern_uri + "/api/name").then(function(response) {
+            return response.json();
+        }).then(function(json) {
+            self.view.$data.lantern_name = json.name;
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
+    }
+
 
     function sync(continuous) {
 
         self.view.$data.cloud_connected = self.stor.cloud_connected;
-        self.view.$data.lantern_connected = self.stor.lantern_connected;
+        self.view.$data.lantern_connected = self.stor.lantern_connceted;
+
+        if (self.stor.lantern_connected) {
+            loadLanternName();
+        }
+
 
         if (window.location.host == "lantern.global") {
             self.view.$data.cloud_connected = true;
@@ -123,6 +143,8 @@ window.LanternPage = (function(id) {
             });
         }
         else {
+
+
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = status;
             },function(changed_doc) {
@@ -132,6 +154,10 @@ window.LanternPage = (function(id) {
 
             self.stor.syncWithLantern(continuous, function(status) {
                 self.view.$data.lantern_connected = status;
+                if (status == true) {
+                    loadLanternName();
+                }
+
             },function(changed_doc) {
                 // don't display sync message for map cache
                 if (!changed_doc.dataUrl) {

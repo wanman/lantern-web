@@ -56,14 +56,14 @@ html(lang="en")
                                     i.fas.fa-wifi(style="color: #DDD")
                             | Offline
 
+                        span(v-if="lantern_connected") 
+                            span.icon
+                                    i.fas.fa-wifi
+                            | Lantern {{ lantern_name.toUpperCase() }}
                         span(v-if="cloud_connected") 
                             span.icon
                                     i.fas.fa-cloud
                             | Online
-                        span(v-if="lantern_connected") 
-                            span.icon
-                                    i.fas.fa-wifi
-                            | Lantern X12
 
 
             section
@@ -79,7 +79,7 @@ html(lang="en")
                             a(href="/browse/browse.html") 
                                 span.icon
                                     i.fas.fa-map
-                                | Places
+                                | Supplies
                        
                         li
                             a(href="/checkin/checkin.html") 

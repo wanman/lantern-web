@@ -1,17 +1,17 @@
 window.LanternStor = (function($data, uri) {
 
     var cloud_uri = "https://lantern.global/db/lantern/";
-    var lantern_uri = uri + "/db/lantern/";
-    var lantern_maps_uri = uri + "/db/lantern-maps/";
     var did_sync_maps = false;
+    uri = uri.replace(":3000", "");
+
     var self = {
         cache: {},        
         browser_db: null,
-        lantern_db: new PouchDB(lantern_uri.replace(":3000", ""), {
+        lantern_db: new PouchDB(uri + "/db/lantern/", {
             skip_setup: true,
             withCredentials: false        
         }),
-        lantern_maps_db: new PouchDB(lantern_maps_uri.replace(":3000", ""), {
+        lantern_maps_db: new PouchDB( uri + "/db/lantern-maps/", {
             skip_setup: true,
             withCredentials: false        
         }),
@@ -21,6 +21,7 @@ window.LanternStor = (function($data, uri) {
         }),
         cloud_connected: null,
         lantern_connected: null,
+        lantern_uri: uri,
         db: null
     };
 

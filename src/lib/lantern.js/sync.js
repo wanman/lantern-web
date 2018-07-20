@@ -47,7 +47,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         }
     })
     .on('active', function() {
-        console.log("[" + label + "] active sync");
+        //console.log("[" + label + "] active sync");
         setStatus(true);
     })
     .on('change', function (info) {

@@ -413,6 +413,7 @@ window.LanternPage = (function(id) {
         data: {
             cloud_connected: null,
             lantern_connected: null,
+            lantern_name: "",
             page_title: "",
             page_tag: "",
             page_loading: true,
@@ -516,11 +517,30 @@ window.LanternPage = (function(id) {
         }, 50);
     }
 
+    /**
+    * Get name of the lantern we're connected to and save for view
+    **/
+    function loadLanternName() {
+        fetch(self.stor.lantern_uri + "/api/name").then(function(response) {
+            return response.json();
+        }).then(function(json) {
+            self.view.$data.lantern_name = json.name;
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
+    }
+
 
     function sync(continuous) {
 
         self.view.$data.cloud_connected = self.stor.cloud_connected;
-        self.view.$data.lantern_connected = self.stor.lantern_connected;
+        self.view.$data.lantern_connected = self.stor.lantern_connceted;
+
+        if (self.stor.lantern_connected) {
+            loadLanternName();
+        }
+
 
         if (window.location.host == "lantern.global") {
             self.view.$data.cloud_connected = true;
@@ -531,6 +551,8 @@ window.LanternPage = (function(id) {
             });
         }
         else {
+
+
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = status;
             },function(changed_doc) {
@@ -540,6 +562,10 @@ window.LanternPage = (function(id) {
 
             self.stor.syncWithLantern(continuous, function(status) {
                 self.view.$data.lantern_connected = status;
+                if (status == true) {
+                    loadLanternName();
+                }
+
             },function(changed_doc) {
                 // don't display sync message for map cache
                 if (!changed_doc.dataUrl) {
@@ -842,17 +868,17 @@ if ("serviceWorker" in navigator) {
 window.LanternStor = (function($data, uri) {
 
     var cloud_uri = "https://lantern.global/db/lantern/";
-    var lantern_uri = uri + "/db/lantern/";
-    var lantern_maps_uri = uri + "/db/lantern-maps/";
     var did_sync_maps = false;
+    uri = uri.replace(":3000", "");
+
     var self = {
         cache: {},        
         browser_db: null,
-        lantern_db: new PouchDB(lantern_uri.replace(":3000", ""), {
+        lantern_db: new PouchDB(uri + "/db/lantern/", {
             skip_setup: true,
             withCredentials: false        
         }),
-        lantern_maps_db: new PouchDB(lantern_maps_uri.replace(":3000", ""), {
+        lantern_maps_db: new PouchDB( uri + "/db/lantern-maps/", {
             skip_setup: true,
             withCredentials: false        
         }),
@@ -862,6 +888,7 @@ window.LanternStor = (function($data, uri) {
         }),
         cloud_connected: null,
         lantern_connected: null,
+        lantern_uri: uri,
         db: null
     };
 
@@ -1270,7 +1297,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         }
     })
     .on('active', function() {
-        console.log("[" + label + "] active sync");
+        //console.log("[" + label + "] active sync");
         setStatus(true);
     })
     .on('change', function (info) {

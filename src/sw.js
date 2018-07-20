@@ -53,7 +53,7 @@ self.__precacheManifest = [
   },
   {
     "url": "browse/browse.js",
-    "revision": "a606760a80def02909469be36372fc71"
+    "revision": "fde8317301b02abd3d38224d0a0b37d7"
   },
   {
     "url": "checkin/checkin.css",
@@ -225,7 +225,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.js",
-    "revision": "75356bb7b87f1252c8212a6a3e555c95"
+    "revision": "f2461b979fd4674682ad5f54e2b9084d"
   },
   {
     "url": "lib/map.css",

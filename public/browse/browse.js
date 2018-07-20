@@ -33,7 +33,7 @@ window.page = (function() {
                     self.stor.getManyByType("i").then(function(items) {
 
                         if (category_id) {
-                            self.view.$data.page_title = "Places : " + 
+                            self.view.$data.page_title = "Supplies : " + 
                                 self.stor.getCached("c:" + category_id).title;
                         }
                         items.forEach(function(item) {
@@ -153,7 +153,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.render()
         .then(function() {
-            self.view.$data.page_title = "Places";
+            self.view.$data.page_title = "Supplies";
         })
         .then(self.connect)
         .then(loadVenues)
