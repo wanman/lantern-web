@@ -243,11 +243,11 @@ self.__precacheManifest = [
   },
   {
     "url": "network/network.html",
-    "revision": "94aacc0bf4e8bd5b6eaa0d4cdfea411d"
+    "revision": "add3342b12fe9a0aa6ad7f41d3d79fa5"
   },
   {
     "url": "network/network.js",
-    "revision": "05bc1d66a15b1a7f325cd0a6ba2589ba"
+    "revision": "1dfce07770d18304fa2d022e244b748f"
   },
   {
     "url": "welcome.html",

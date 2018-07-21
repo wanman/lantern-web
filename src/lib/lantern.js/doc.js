@@ -51,6 +51,7 @@ window.LanternDocument = (function(id,stor) {
     //------------------------------------------------------------------------
     
     var self = {
+        id: null,
         data: {}
     };
 
@@ -133,30 +134,35 @@ window.LanternDocument = (function(id,stor) {
 
     self.save = function() {
 
-        if (self.has("created_at")) {
+        if (!self.has("created_at")) {
+            self.set("created_at", new Date());
+        }
+        else {
             self.set("updated_at", new Date());
         }
+
+        var doc = {
+            _id: self.id
+        };
         
-        return stor.upsert(self.id, function(doc) {
-            for (var idx in self.data) {
-                doc[idx] = self.data[idx];
-            }
+        for (var idx in self.data) {
+            doc[idx] = self.data[idx];
+        }
 
-            if (!self.has("created_at")) {
-                self.set("created_at", new Date());
-            }
-            console.log("[doc] saved " + self.id);
-            return doc;
-        })
-        .catch(function(err) {
-            if(err.name === "conflict") {
-                console.log("[doc] conflicted: " + doc._id, err);
-            }
-            else {
-                console.log("[doc] err", err);
-            }
-
-        });
+        return stor.post(doc)
+            .then(function(doc) {
+               
+                console.log("[doc] saved " + self.id);
+                return doc;
+            })
+            .catch(function(err) {
+                if(err.name === "conflict") {
+                    console.log("[doc] conflicted: " + doc._id, err);
+                }
+                else {
+                    console.log("[doc] err", err);
+                }
+            });
     };
 
 

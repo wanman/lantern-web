@@ -50,7 +50,9 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <p class="card" v-for="d in d_docs" v-if="d.title">Lantern {{ d.title }} </p>
+                    <div v-cloak>
+                        <p class="card" v-for="d in d_docs" v-if="d.title">Lantern {{ d.title }} </p>
+                    </div>
                 </div>
             </section>
             <script src="/lib/vendor.js"></script>

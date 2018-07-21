@@ -95,17 +95,17 @@ window.LanternPage = (function(id) {
     * Display a sync icon in footer momentarily
     */
     function showSyncIcon(doc) {
+        console.log("[page] sync", doc);
         setTimeout(function() {
             if (self.view.$data.is_syncing) return;
             self.view.$data.is_syncing = true;
-            console.log(doc);
             // display title of doc where possible
             if (doc && doc.hasOwnProperty("tt")) {
                 self.view.$data.is_syncing = doc.tt;
             }
             setTimeout(function() {
                 self.view.$data.is_syncing = false;
-            }, 4000);
+            }, 2000);
         }, 50);
     }
 
@@ -172,7 +172,7 @@ window.LanternPage = (function(id) {
     */
     function onLocationChange(position) {
         if (!position || !position.coords) return;
-        console.log("[page] my geo", position.coords.latitude, position.coords.longitude);
+        console.log("[page] my geo", Geohash.encode(position.coords.latitude, position.coords.longitude,6));
         self.map.setOwnLocation({lat:position.coords.latitude, lng:position.coords.longitude});
     }
 
@@ -342,7 +342,8 @@ window.LanternPage = (function(id) {
     * Points to the right server for processing requests
     */
     self.getBaseURI = function() {
-        return "https://" + (window.location.host == "localhost:3000" ? 
+
+        return window.location.protocol + "//" + (window.location.host == "localhost:3000" ? 
             "localhost" :  window.location.host);
     };
 

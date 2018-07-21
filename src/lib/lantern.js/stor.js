@@ -250,6 +250,14 @@ window.LanternStor = (function($data, uri) {
         });
     };
 
+    self.post = function() {
+        var doc = arguments[0];
+        console.log("[stor] post: ", doc);
+        return self.db.put.apply(self.db, arguments).then(function() {
+            addToCache(new LanternDocument(doc, self));
+        });
+    };
+
     self.upsert = function() {
         //console.log("[stor] upsert " + arguments[0]);
         var fn = arguments[1];
@@ -282,6 +290,10 @@ window.LanternStor = (function($data, uri) {
     * Compact database
     */
     self.compact = function() {
+        if (self.browser_db) {
+            self.browser_db.compact();
+        }
+
         return self.db.compact().then(function (info) {
             // compaction complete
             console.log("[stor] compaction complete", info);

@@ -5,7 +5,8 @@ id: "network"
 extends ../_layouts/_master.pug
 
 block content
-    p.card(v-for="d in d_docs" v-if="d.title") Lantern {{ d.title }} 
+    div(v-cloak)
+        p.card(v-for="d in d_docs" v-if="d.title") Lantern {{ d.title }} 
 
 
 block styles

@@ -53,6 +53,7 @@ window.LanternDocument = (function(id,stor) {
     //------------------------------------------------------------------------
     
     var self = {
+        id: null,
         data: {}
     };
 
@@ -135,30 +136,35 @@ window.LanternDocument = (function(id,stor) {
 
     self.save = function() {
 
-        if (self.has("created_at")) {
+        if (!self.has("created_at")) {
+            self.set("created_at", new Date());
+        }
+        else {
             self.set("updated_at", new Date());
         }
+
+        var doc = {
+            _id: self.id
+        };
         
-        return stor.upsert(self.id, function(doc) {
-            for (var idx in self.data) {
-                doc[idx] = self.data[idx];
-            }
+        for (var idx in self.data) {
+            doc[idx] = self.data[idx];
+        }
 
-            if (!self.has("created_at")) {
-                self.set("created_at", new Date());
-            }
-            console.log("[doc] saved " + self.id);
-            return doc;
-        })
-        .catch(function(err) {
-            if(err.name === "conflict") {
-                console.log("[doc] conflicted: " + doc._id, err);
-            }
-            else {
-                console.log("[doc] err", err);
-            }
-
-        });
+        return stor.post(doc)
+            .then(function(doc) {
+               
+                console.log("[doc] saved " + self.id);
+                return doc;
+            })
+            .catch(function(err) {
+                if(err.name === "conflict") {
+                    console.log("[doc] conflicted: " + doc._id, err);
+                }
+                else {
+                    console.log("[doc] err", err);
+                }
+            });
     };
 
 
@@ -503,17 +509,17 @@ window.LanternPage = (function(id) {
     * Display a sync icon in footer momentarily
     */
     function showSyncIcon(doc) {
+        console.log("[page] sync", doc);
         setTimeout(function() {
             if (self.view.$data.is_syncing) return;
             self.view.$data.is_syncing = true;
-            console.log(doc);
             // display title of doc where possible
             if (doc && doc.hasOwnProperty("tt")) {
                 self.view.$data.is_syncing = doc.tt;
             }
             setTimeout(function() {
                 self.view.$data.is_syncing = false;
-            }, 4000);
+            }, 2000);
         }, 50);
     }
 
@@ -580,7 +586,7 @@ window.LanternPage = (function(id) {
     */
     function onLocationChange(position) {
         if (!position || !position.coords) return;
-        console.log("[page] my geo", position.coords.latitude, position.coords.longitude);
+        console.log("[page] my geo", Geohash.encode(position.coords.latitude, position.coords.longitude,6));
         self.map.setOwnLocation({lat:position.coords.latitude, lng:position.coords.longitude});
     }
 
@@ -750,7 +756,8 @@ window.LanternPage = (function(id) {
     * Points to the right server for processing requests
     */
     self.getBaseURI = function() {
-        return "https://" + (window.location.host == "localhost:3000" ? 
+
+        return window.location.protocol + "//" + (window.location.host == "localhost:3000" ? 
             "localhost" :  window.location.host);
     };
 
@@ -1117,6 +1124,14 @@ window.LanternStor = (function($data, uri) {
         });
     };
 
+    self.post = function() {
+        var doc = arguments[0];
+        console.log("[stor] post: ", doc);
+        return self.db.put.apply(self.db, arguments).then(function() {
+            addToCache(new LanternDocument(doc, self));
+        });
+    };
+
     self.upsert = function() {
         //console.log("[stor] upsert " + arguments[0]);
         var fn = arguments[1];
@@ -1149,6 +1164,10 @@ window.LanternStor = (function($data, uri) {
     * Compact database
     */
     self.compact = function() {
+        if (self.browser_db) {
+            self.browser_db.compact();
+        }
+
         return self.db.compact().then(function (info) {
             // compaction complete
             console.log("[stor] compaction complete", info);
