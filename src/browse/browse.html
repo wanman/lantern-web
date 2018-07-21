@@ -30,9 +30,7 @@ block content
 
         // venues view
         #venues-view(v-if="!show_map")
-            
             #venues
-
                 p(v-if="!filtered_venues.length" ) No items have been reported to match your search yet. Please check back soon.
 
                 div(v-if="filtered_venues.length")
@@ -40,7 +38,7 @@ block content
                     .panel(v-bind:data-id="venue._id" v-for="venue in v_docs" v-if="filtered_venues.indexOf(venue._id) != -1")
                         
                         .panel-heading(@click="handleVenueSelect(venue)")
-                            .distance {{ getDistanceFromVenue(venue) }}
+                            .distance(v-if="geolocation") {{ getDistanceFromVenue(venue) }}
                             
 
                             h3 

@@ -51,11 +51,11 @@ self.__precacheManifest = [
   },
   {
     "url": "browse/browse.html",
-    "revision": "e804c75094949c45a4ff31ab59c68121"
+    "revision": "78920522349a80da425c1d1e4a93e64a"
   },
   {
     "url": "browse/browse.js",
-    "revision": "fde8317301b02abd3d38224d0a0b37d7"
+    "revision": "921d143db4ee343027c9d3d0a82d9da9"
   },
   {
     "url": "checkin/checkin.css",
@@ -273,5 +273,5 @@ self.__precacheManifest = [
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.cacheFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":10,"purgeOnQuotaError":false})] }), 'GET');
+workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.staleWhileRevalidate({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":10,"purgeOnQuotaError":false})] }), 'GET');
 

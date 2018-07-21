@@ -29,10 +29,11 @@ window.LanternPage = (function(id) {
     };
 
     var self = {
-        stor: null,
-        user: null,
-        view: null,
-        map: null
+        geo: null, // user geohash location
+        stor: null, // database storage
+        user: null, // user document
+        view: null, // vue app
+        map: null // leaflet map
     };
 
 
@@ -145,24 +146,38 @@ window.LanternPage = (function(id) {
         else {
 
 
-            self.stor.syncWithCloud(continuous, function(status) {
-                self.view.$data.cloud_connected = status;
-            },function(changed_doc) {
-                showSyncIcon(changed_doc);
-
+            // check to see if we have cloud access before attempting sync
+            // this could be blocked because we're offline or server is down
+            fetch("https://lantern.global/api/id").then(function(res) {
+                if (res.status == 200) {
+                    self.stor.syncWithCloud(continuous, function(status) {
+                        self.view.$data.cloud_connected = status;
+                    },function(changed_doc) {
+                        showSyncIcon(changed_doc);
+                    });
+                }
+            }).catch(function(err) {
+                self.view.$data.cloud_connected = false;
             });
 
-            self.stor.syncWithLantern(continuous, function(status) {
-                self.view.$data.lantern_connected = status;
-                if (status == true) {
-                    loadLanternName();
-                }
 
-            },function(changed_doc) {
-                // don't display sync message for map cache
-                if (!changed_doc.dataUrl) {
-                    showSyncIcon(changed_doc);
+            // check to see if we have rpi access before attempting sync
+            fetch("https://lantern.local/api/id").then(function(res) {
+                if (res.status == 200) {
+                    self.stor.syncWithLantern(continuous, function(status) {
+                        self.view.$data.lantern_connected = status;
+                        if (status == true) {
+                            loadLanternName();
+                        }
+                    },function(changed_doc) {
+                        // don't display sync message for map cache
+                        if (!changed_doc.dataUrl) {
+                            showSyncIcon(changed_doc);
+                        }
+                    });
                 }
+            }).catch(function(err) {
+                self.view.$data.lantern_connected = false;
             });
         }
     }
@@ -172,7 +187,8 @@ window.LanternPage = (function(id) {
     */
     function onLocationChange(position) {
         if (!position || !position.coords) return;
-        console.log("[page] my geo", Geohash.encode(position.coords.latitude, position.coords.longitude,6));
+        self.geo = Geohash.encode(position.coords.latitude, position.coords.longitude, 7);
+        console.log("[page] my geo", self.geo);
         self.map.setOwnLocation({lat:position.coords.latitude, lng:position.coords.longitude});
     }
 

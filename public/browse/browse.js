@@ -19,38 +19,40 @@ window.page = (function() {
     * Make sure we have venues to work with
     */
     function loadVenues() {
+        return new Promise(function(resolve, reject) {
+            return self.stor.getManyByType("v").then(function(venues) {
+                if (venues.length === 0) {
+                    // if we have zero venues, we probably are missing data
+                    console.log("[browse] importing sample data...");
+                    importSampleData();
+                    setTimeout(loadVenues, 300);
+                }
+                else {
+                    self.stor.getManyByType("c").then(function() {
+                        // cache items for future association with venues
+                        self.stor.getManyByType("i").then(function(items) {
 
-        return self.stor.getManyByType("v").then(function(venues) {
-            if (venues.length === 0) {
-                // if we have zero venues, we probably are missing data
-                console.log("[browse] importing sample data...");
-                importSampleData();
-                setTimeout(loadVenues, 300);
-            }
-            else {
-                self.stor.getManyByType("c").then(function() {
-                    // cache items for future association with venues
-                    self.stor.getManyByType("i").then(function(items) {
-
-                        if (category_id) {
-                            self.view.$data.page_title = "Supplies : " + 
-                                self.stor.getCached("c:" + category_id).title;
-                        }
-                        items.forEach(function(item) {
-                            if (!category_id || item.has("category", category_id)) {
-                                var venue = item.get("parent")[0];
-                                if (venue[0] == "v") {
-                                    self.view.$data.filtered_venues.push(venue);
-                                }
+                            if (category_id) {
+                                self.view.$data.page_title = "Supplies : " + 
+                                    self.stor.getCached("c:" + category_id).title;
                             }
+                            items.forEach(function(item) {
+                                if (!category_id || item.has("category", category_id)) {
+                                    var venue = item.get("parent")[0];
+                                    if (venue[0] == "v") {
+                                        self.view.$data.filtered_venues.push(venue);
+                                    }
+                                }
+                            });
+                            self.view.$data.category = category_id;
+                            self.view.$data.page_loading = false;
+                            resolve();
                         });
-
-                        self.view.$data.category = category_id;
-                        self.view.$data.page_loading = false;
                     });
-                });
 
-            }
+                }
+            });
+
         });
     }
 
@@ -61,7 +63,9 @@ window.page = (function() {
         if (!self.map || !self.map.user) {
             self.askForLocation()
                 .then(function(res) {
-                    console.log("[browse] my geo", Geohash.encode(res.coords.latitude, res.coords.longitude,6));
+                    self.geo = Geohash.encode(res.coords.latitude, res.coords.longitude, 7);
+                    console.log("[browse] my geo", self.geo);
+                    self.view.$data.geolocation = self.geo;
                     self.map.setOwnLocation({lat:res.coords.latitude, lng:res.coords.longitude});
                     self.map.fitAll();
                 })
@@ -97,6 +101,7 @@ window.page = (function() {
     self.addData("filtered_venues", []);
     self.addData("show_map", null);
     self.addData("geolocation", null);
+
 
 
 
@@ -146,8 +151,20 @@ window.page = (function() {
 
 
     self.addHelper("getDistanceFromVenue", function(venue) {
-        var distance = 1 + Math.round(Math.random()*5);
-        return distance + "km";
+        if (venue.hasOwnProperty("geo") && typeof(venue.geo[0]) == "string") {
+            var geo = venue.geo[0];
+            if (!self.geo) {
+                console.log("[browse] skip distance calc since no user geo available", venue._id);
+                return;
+            }
+            var distance = Math.round(Geohash.inKm(geo, self.geo));
+            return distance + "km";
+        }
+        else {
+            console.log("[browse] skip distance calc since venue missing geo", venue._id);
+            return;
+        }
+
     });
 
     //------------------------------------------------------------------------
