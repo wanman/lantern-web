@@ -15,10 +15,10 @@
         <link rel="manifest" href="/manifest.json">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
         <link rel="stylesheet" type="text/css" href="/media/icons/css/all.css">
-        <link rel="stylesheet" type="text/css" href="/index.css">
+        <link rel="stylesheet" type="text/css" href="./index.css">
     </head>
     <body>
-        <div id="home-page">
+        <div id="admin-page">
             <!-- global navigation-->
             <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']">
                 <div class="navbar-brand"><a class="navbar-burger" v-if="!allow_back_button" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
@@ -49,12 +49,28 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <div id="home-view" v-cloak></div>
+                    <div id="doc-summary" v-cloak><a class="tags has-addons" v-for="item in types" @click="handleSelectType(item)"> <span class="tag">{{ item.slug }}</span><span class="tag is-primary">{{ getDocCount(item) }}</span></a></div>
+                    <div class="actions">
+                        <div class="button is-primary" v-on:click="loadTestData">Load Test Data</div>
+                        <div class="button is-danger is-outlined" v-on:click="removeAllDocs">Clear Data</div>
+                    </div>
+                    <div class="connection" v-if="lantern_connected" v-cloak>
+                        <div class="notification is-warning has-text-weight-normal is-size-6" v-cloak v-if="warning">{{ warning }}</div>
+                        <div class="field">
+                            <input class="switch" id="join-router" type="checkbox" v-model="connection">
+                            <label for="join-router">Tether Lantern to Router</label>
+                        </div>
+                        <!-- prompt for valid wi-fi credentials if available-->
+                        <form id="wifi-creds" v-if="connection" @submit.prevent="handleSubmit">
+                            <input class="input" type="text" placeholder="WiFi SSID" v-model="network_ssid">
+                            <input class="input" type="password" placeholder="WiFi Password" v-model="network_pass"><a class="button is-primary" @click="handleSubmit" :class="processing ? 'is-loading' : ''">Connect</a>
+                        </form>
+                    </div>
                 </div>
             </section>
             <script src="/lib/vendor.js"></script>
             <script src="/lib/lantern.js"></script>
-            <script src="/index.js"></script>
+            <script src="./index.js"></script>
         </div>
     </body>
 </html>

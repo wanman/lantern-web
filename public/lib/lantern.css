@@ -4824,6 +4824,26 @@ section nav {
   margin-top: 3.8rem;
   padding-bottom: 5em; }
 
+ul.menu li {
+  color: #3273dc;
+  background: #FFF;
+  padding: 1.5em;
+  padding-right: 1em;
+  border-top: 1px solid #f2f2f2;
+  width: 100%;
+  display: block; }
+  ul.menu li .icon {
+    float: right;
+    margin-top: -0.75em;
+    margin-right: 0px; }
+
+ul.menu li:last-child {
+  border-bottom: 1px solid #f2f2f2; }
+
+ul.menu li:hover {
+  cursor: pointer;
+  background: #FAFAFA; }
+
 section nav.global {
   top: 3.8rem; }
 
@@ -4893,13 +4913,12 @@ nav.global {
   height: 3.75rem;
   margin-left: 0em; }
 
-.mock {
+.more {
   text-align: center;
-  height: 100%;
-  margin: -1.5em; }
-  .mock img {
-    margin: auto;
-    border: 1px solid #c6c8cd; }
+  padding: 1em; }
+  .more a.button {
+    width: 50%;
+    margin: auto; }
 
 #back-btn {
   width: 3.75rem;

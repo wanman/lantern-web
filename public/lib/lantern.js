@@ -332,7 +332,6 @@ window.LanternImport = function(stor) {
 
 
         //console.log("[import] adding default Marker categories");
-        addCategory("sup", "Supply", "mrk");
         addCategory("dgr", "Dangerous Area", "mrk");
         addCategory("pwo", "Power Outage", "mrk");
 
@@ -576,7 +575,7 @@ window.LanternPage = (function(id) {
 
 
             // check to see if we have rpi access before attempting sync
-            fetch("https://lantern.local/api/id").then(function(res) {
+            fetch("http://lantern.local/api/id").then(function(res) {
                 if (res.status == 200) {
                     self.stor.syncWithLantern(continuous, function(status) {
                         self.view.$data.lantern_connected = status;
@@ -594,16 +593,6 @@ window.LanternPage = (function(id) {
                 self.view.$data.lantern_connected = false;
             });
         }
-    }
-
-    /**
-    * Update interface based on user's changing geolocation
-    */
-    function onLocationChange(position) {
-        if (!position || !position.coords) return;
-        self.geo = Geohash.encode(position.coords.latitude, position.coords.longitude, 7);
-        console.log("[page] my geo", self.geo);
-        self.map.setOwnLocation({lat:position.coords.latitude, lng:position.coords.longitude});
     }
 
     //------------------------------------------------------------------------
@@ -680,47 +669,48 @@ window.LanternPage = (function(id) {
     /**
     * Display the map for the user based on approx. location
     */
+    // @todo handle re-render when new venues are selected
     self.renderMap = function(venues, show_tooltip, icon, color) {
+
+        if (!self.map) {
+            self.map = new LanternMapManager();
+        }
+
+        self.map.clear();
 
         venues = venues || [];
 
+
         return new Promise(function(resolve, reject) {
-
-            if (self.map) {
-                return resolve();
-            }
-
-            // show my own location on the map
-            var wpid = navigator.geolocation.watchPosition(onLocationChange, function(err) {
-                console.log("[page] geo err", err);
-            }, geo_options);
-
 
             var venue_options = {};
             self.getItems().then(function(items) {
                 
                 items.forEach(function(item){
-                    var m = item.get("parent")[0];
-                    var c_doc = "c:"+item.get("category")[0];
-                    venue_options[m] = venue_options[m] || [];
-                    venue_options[m].push(self.stor.getCached(c_doc));
+                    var v = item.get("parent")[0];
+                    if (item.get("category") ) {
+                        var c_doc = "c:"+item.get("category")[0];
+                        venue_options[v] = venue_options[v] || [];
+                        venue_options[v].push(self.stor.getCached(c_doc));
+                    }
                 });
-            
-                self.map = new LanternMapManager();
+
                 // add venues to map
 
                 venues.forEach(function(v_id) {
                     var coords = [];
                     var venue = self.stor.getCached(v_id);
                     
-                    for (var idx in venue.geo) {
-                        try {
-                            var c = Geohash.decode(venue.geo[idx]);
-                            coords.push(c);
-                        }
-                        catch(e) {
-                            console.error("[page] invalid geohash " + venue.geo + " for: " + v_id);
-                        }
+                    if (venue.geo) {
+                        for (var idx in venue.geo) {
+                            try {
+                                var c = Geohash.decode(venue.geo[idx]);
+                                coords.push(c);
+                            }
+                            catch(e) {
+                                console.error("[page] invalid geohash " + venue.geo + " for: " + v_id);
+                            }
+                        }   
                     }
 
                     if (coords.length == 1) {
@@ -733,7 +723,7 @@ window.LanternPage = (function(id) {
                         if (show_tooltip) {
                             
                             pt.on("click", function(e) {
-                                window.location = "/detail/detail.html#mrk=" + v_id;
+                                window.location = "/apps/rdr/detail.html#mrk=" + v_id;
                             });
 
                             pt.openTooltip();
@@ -946,6 +936,7 @@ window.LanternStor = (function($data, uri) {
     }
 
     function addToCache(doc) {
+        var index;
 
         var type = doc.id.split(":")[0];
         var obj = doc.toJSONFriendly();
@@ -957,13 +948,21 @@ window.LanternStor = (function($data, uri) {
         if (!$data.hasOwnProperty(type_key)) {
             $data[type_key] = [];
         }
-        $data[type_key].push(obj);
+
+        // make sure we don't double-add to cache
         index = getIndexForDoc(doc.id, type);
-        self.cache[doc.id] = {
-            id: doc.id, 
-            type: type,
-            index: index
-        };
+        if (index != -1) {
+            console.log("[stor] found existing index for " + doc.id, index);
+        }
+        else {
+            $data[type_key].push(obj);
+            index = getIndexForDoc(doc.id, type);
+            self.cache[doc.id] = {
+                id: doc.id, 
+                type: type,
+                index: index
+            };
+        }
     }
 
     function replaceInCache(doc) {

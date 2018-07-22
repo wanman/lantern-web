@@ -1,0 +1,43 @@
+---
+id: "admin"
+---
+
+
+extends ../../_layouts/_master.pug
+
+block content
+        
+
+
+    #doc-summary(v-cloak)
+
+        a.tags.has-addons(v-for="item in types" @click="handleSelectType(item)") 
+            span.tag {{ item.slug }}
+            span.tag.is-primary {{ getDocCount(item) }}
+
+
+    .actions
+        .button.is-primary(v-on:click="loadTestData") Load Test Data
+        .button.is-danger.is-outlined(v-on:click="removeAllDocs") Clear Data
+
+
+    .connection(v-if="lantern_connected" v-cloak)
+
+        .notification.is-warning.has-text-weight-normal.is-size-6(v-cloak v-if="warning") {{ warning }}
+        
+
+        .field
+            input.switch#join-router(type="checkbox" v-model="connection")
+            label(for="join-router") Tether Lantern to Router
+
+        // prompt for valid wi-fi credentials if available
+        form#wifi-creds(v-if="connection" @submit.prevent="handleSubmit")
+            input.input(type="text" placeholder="WiFi SSID" v-model="network_ssid")
+            input.input(type="password" placeholder="WiFi Password" v-model="network_pass")
+            a.button.is-primary(@click="handleSubmit" :class="processing ? 'is-loading' : ''") Connect
+
+block styles
+    link(rel="stylesheet" type="text/css" href="./index.css")
+
+block scripts
+    script(src="./index.js")

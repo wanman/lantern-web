@@ -104,6 +104,33 @@ section nav {
     padding-bottom: 5em;
 }
 
+ul.menu {
+    li {
+        color: #3273dc;
+        background: #FFF;
+        padding: 1.5em;
+        padding-right: 1em;
+        border-top: 1px solid $light-border;
+        width: 100%;
+        display: block;
+
+
+        .icon {
+            float: right;
+            margin-top: -0.75em;   
+            margin-right: 0px;     
+        }
+    }
+
+    li:last-child  {
+        border-bottom: 1px solid $light-border;
+    }
+    li:hover {
+        cursor: pointer;
+        background: #FAFAFA;
+    }
+}
+
 
 
 section nav.global {
@@ -198,13 +225,14 @@ nav.global {
     margin-left: 0em;
 }
 
-.mock {
+
+.more {
     text-align: center;
-    height: 100%;
-    margin: -1.5em;
-    img {    
+    padding: 1em;
+    a.button {
+        width: 50%;
         margin: auto;
-        border: 1px solid $border;
+
     }
 }
 

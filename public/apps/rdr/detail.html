@@ -15,10 +15,11 @@
         <link rel="manifest" href="/manifest.json">
         <link rel="stylesheet" type="text/css" href="/lib/lantern.css">
         <link rel="stylesheet" type="text/css" href="/media/icons/css/all.css">
-        <link rel="stylesheet" type="text/css" href="/index.css">
+        <link rel="stylesheet" type="text/css" href="/lib/map.css">
+        <link rel="stylesheet" type="text/css" href="./detail.css">
     </head>
     <body>
-        <div id="home-page">
+        <div id="detail-page">
             <!-- global navigation-->
             <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']">
                 <div class="navbar-brand"><a class="navbar-burger" v-if="!allow_back_button" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
@@ -49,12 +50,46 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <div id="home-view" v-cloak></div>
+                    <div id="report-view" v-if="show_input" v-cloak>
+                        <ul class="menu">
+                            <li v-for="row in item_types" @click="handleAddItemType(row)" v-bind:id="row._id"> <span>{{ row.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
+                        </ul>
+                    </div>
+                    <div v-cloak>
+                        <div id="inspector-view" v-if="show_inspector &amp;&amp; !show_input">
+                            <h3>{{ getCategory(selected_item.category).title }} Verifications</h3>
+                            <div v-if="selected_item.status &amp;&amp; selected_item.vote">
+                                <h4 class="time">Last vote {{ timestamp(selected_item) }}</h4>
+                                <div class="tags-container"><a class="tags has-addons" v-for="row in selected_item.vote" v-if="row.votes &gt; 0"> <span class="tag is-primary">
+                                            <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ row.votes }}</span><span class="tag"> {{ row.title }}</span></a></div>
+                            </div>
+                            <div class="unavailable" v-if="!selected_item.vote">
+                                <p>Nobody has verified this report just yet. Please check back soon.</p>
+                            </div>
+                            <div class="unavailable" v-if="selected_item.status == 0">
+                                <p>Sorry, this item has been reported unavailable. Please check back soon.</p>
+                            </div>
+                        </div>
+                        <div id="map-prompt" v-if="!show_inspector &amp;&amp; !show_map" @click="handleShowMap"><span class="icon"><i class="fas fa-map"></i></span><span>Show Map</span></div>
+                        <div id="map" v-bind:style="'display:'  + (show_map &amp;&amp; !show_input ? 'block' : 'none')"></div>
+                        <div v-cloak v-if="!page_loading &amp;&amp; !show_input">
+                            <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)"><span class="status" v-if="item.status">
+                                    <div class="tags">
+                                        <div class="tag"> 
+                                            <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ countVotes(item) }}
+                                        </div>
+                                    </div></span><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span>
+                                <p>{{ getCategory(item.category).title }} </p><span class="time" v-if="item.status">{{ timestamp(item) }} </span><span class="time" v-if="item.status == 0"> {{ timestamp(item) }}</span>
+                            </div>
+                            <div class="more"><a class="button" @click="handleShowInput">Add Item</a></div>
+                        </div>
+                    </div>
                 </div>
             </section>
             <script src="/lib/vendor.js"></script>
             <script src="/lib/lantern.js"></script>
-            <script src="/index.js"></script>
+            <script src="/lib/map.js"></script>
+            <script src="./detail.js"></script>
         </div>
     </body>
 </html>

@@ -14171,17 +14171,34 @@ window.LanternMapManager = function() {
     };
 
 
+    function init() {
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: false,
-        dbName: "lantern-maps",
-        maxZoom: 18,
-        useCache: true,
-        crossOrigin: true
-    }).addTo(self.map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: false,
+            dbName: "lantern-maps",
+            maxZoom: 18,
+            useCache: true,
+            crossOrigin: true
+        }).addTo(self.map);
+
+        // default to center of US as starting location for map
+        self.setPosition(38.42,-102.79, 4);
+        self.markers = [];
+        self.objects = [];
+    }
 
 
     //------------------------------------------------------------------------
+
+    self.clear = function() {
+        self.map.eachLayer(function (layer) {
+            self.map.removeLayer(layer);
+        });
+
+        init();
+
+    };
+
     self.addPoint = function(title, coords,  icon, color) {
 
         var opts = {};
@@ -14248,9 +14265,7 @@ window.LanternMapManager = function() {
     };
 
 
-    self.setPosition(38.42,-102.79, 4);
-
     //------------------------------------------------------------------------
-
+    init();
     return self;
 };

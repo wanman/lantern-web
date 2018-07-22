@@ -56,6 +56,7 @@ window.LanternStor = (function($data, uri) {
     }
 
     function addToCache(doc) {
+        var index;
 
         var type = doc.id.split(":")[0];
         var obj = doc.toJSONFriendly();
@@ -67,13 +68,21 @@ window.LanternStor = (function($data, uri) {
         if (!$data.hasOwnProperty(type_key)) {
             $data[type_key] = [];
         }
-        $data[type_key].push(obj);
+
+        // make sure we don't double-add to cache
         index = getIndexForDoc(doc.id, type);
-        self.cache[doc.id] = {
-            id: doc.id, 
-            type: type,
-            index: index
-        };
+        if (index != -1) {
+            console.log("[stor] found existing index for " + doc.id, index);
+        }
+        else {
+            $data[type_key].push(obj);
+            index = getIndexForDoc(doc.id, type);
+            self.cache[doc.id] = {
+                id: doc.id, 
+                type: type,
+                index: index
+            };
+        }
     }
 
     function replaceInCache(doc) {

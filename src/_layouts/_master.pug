@@ -76,24 +76,24 @@ html(lang="en")
                                 | Home
 
                         li
-                            a(href="/browse/browse.html") 
+                            a(href="/apps/rdr/") 
                                 span.icon
                                     i.fas.fa-map
                                 | Supplies
                         li
-                            a(href="/network/network.html") 
+                            a(href="/apps/net/") 
                                 span.icon
                                     i.fas.fa-globe-americas
                                 | Network
                        
                         li
-                            a(href="/checkin/checkin.html") 
+                            a(href="/apps/chk/") 
                                 span.icon
                                     i.fas.fa-check
                                 | Check In
                        
                         li
-                            a(href="/add/add.html") 
+                            a(href="/apps/rpt/") 
                                 span.icon
                                     i.fas.fa-plus-circle
                                 | Contribute
@@ -102,7 +102,7 @@ html(lang="en")
                             span(v-if="u_docs.length") 
                                 span.icon
                                         i.fas.fa-user
-                                | {{ pluralize(u_docs.length-1) }} Active
+                                | {{ pluralize(u_docs.length) }} Active
 
 
                 // main page content

@@ -1,0 +1,89 @@
+#detail-page .tags .tag {
+  font-size: 12px; }
+
+#detail-page #report-view {
+  z-index: 10001; }
+
+#detail-page #map-prompt {
+  background: #FFF;
+  border-bottom: 1px solid #EEE;
+  color: #3273dc;
+  padding: 1em;
+  text-align: center; }
+
+#detail-page #inspector-view {
+  height: 200px;
+  width: 100%;
+  z-index: 10001;
+  overflow-y: hidden;
+  position: fixed;
+  border-top: 1px solid #f2f2f2;
+  top: 3.8rem;
+  left: 0;
+  padding: 1em;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid #c6c8cd; }
+  #detail-page #inspector-view h3 {
+    font-weight: bold;
+    text-align: center; }
+  #detail-page #inspector-view h4 {
+    text-align: center;
+    margin-bottom: 1em; }
+  #detail-page #inspector-view .tags-container {
+    padding: 1em 3em; }
+  #detail-page #inspector-view .tags {
+    float: left;
+    margin-right: 0.4em;
+    margin-top: 0.4em;
+    margin-bottom: 0; }
+    #detail-page #inspector-view .tags .is-primary {
+      padding-left: 1.25em; }
+  #detail-page #inspector-view .buttons {
+    display: block;
+    text-align: center;
+    padding: 0.5em;
+    position: fixed;
+    top: 200px;
+    width: 100%; }
+  #detail-page #inspector-view .unavailable {
+    margin-top: 2em;
+    text-align: center; }
+
+#detail-page #map-prompt:hover {
+  background: #f9fafb;
+  cursor: pointer; }
+
+#detail-page button.button {
+  margin: 1em; }
+
+#detail-page .box {
+  margin: 1em;
+  padding: 0.5em 0.75em;
+  border: 0px solid; }
+  #detail-page .box .icon {
+    border-radius: 4em;
+    font-weight: bold;
+    width: 3em;
+    height: 3em;
+    text-align: center;
+    margin-right: 1em;
+    float: left; }
+    #detail-page .box .icon i {
+      margin: auto; }
+  #detail-page .box .time {
+    font-size: small;
+    color: #c6c8cd; }
+  #detail-page .box .status {
+    float: right;
+    padding: 0.6em; }
+
+#detail-page .box:hover {
+  cursor: pointer; }
+
+#detail-page #status {
+  background: #FFF;
+  padding: 1em;
+  border-bottom: 1px solid #c6c8cd;
+  border-top: 1px solid #c6c8cd; }
+
