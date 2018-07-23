@@ -56,7 +56,7 @@
                             <h1>Help Us Map Your Region</h1>
                             <h2>What to report?</h2>
                             <ul class="menu">
-                                <li v-for="category in venue_categories" @click="handleVenueCategory(category)"><span>{{ category.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
+                                <li v-for="category in venue_categories" @click="handleVenueCategory(category)" v-bind:id="category._id"><span>{{ category.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
                         </div>
                         <div id="subcategory-view" v-if="view == 'subcategory'">
@@ -69,9 +69,9 @@
                         <div id="input-selector-view" v-if="view == 'input'">
                             <h1>Select Condition Coverage</h1>
                             <ul>
-                                <li class="box" @click="presentAddressForm">An Address</li>
-                                <li class="box" @click="presentAreaForm">An Area</li>
-                                <li class="box" @click="presentLineForm">A Line</li>
+                                <li class="box" @click="presentAddressForm"> <span class="icon is-large"><i class="fas fa-map-pin"></i></span>An Address</li>
+                                <li class="box" @click="presentAreaForm"> <span class="icon is-large"><i class="fas fa-circle"></i></span>An Area</li>
+                                <li class="box" @click="presentLineForm"> <span class="icon is-large"><i class="fas fa-road"></i></span>A Line</li>
                             </ul>
                         </div>
                         <div id="map-selector-view" v-if="view == 'map'">

@@ -360,7 +360,7 @@ window.LanternImport = function(stor) {
 
         // permanent buildings that now offer some safety
         addVenue("aic", "AJ's Cafe", "drs4b77", "bld", "coffee", ["eat", "wtr", "pwr"]);
-        addVenue("hsf", "High School Field House", "drs4b79", "sfe", "basketball-ball", ["bed", "clo", "net", "wtr"]);
+        addVenue("hsf", "High School Field House", "drs4b79", "bld", "basketball-ball", ["bed", "clo", "net", "wtr"]);
         addVenue("cth", "UCG Hospital", "drs4b73", "bld", "hospital-symbol", ["med"]);
         addVenue("shl", "Shell Station", "drs4b71", "bld", "gas-pump", ["ful", "wtr"]);
         addVenue("mst", "Main Street Theatre", "drs4b41", "bld", "film", ["net", "pwr"]);
@@ -449,6 +449,8 @@ window.LanternPage = (function(id) {
         map: null // leaflet map
     };
 
+    var did_assign_location = false;
+
 
     // initialize arrays for each type of doc
     // only these document types will ever be accepted by the system
@@ -509,7 +511,10 @@ window.LanternPage = (function(id) {
     * Display a sync icon in footer momentarily
     */
     function showSyncIcon(doc) {
-        console.log("[page] sync", doc);
+        if (doc._deleted == true) {
+            // don't interrupt interface for basic document deletes
+            return;
+        }
         setTimeout(function() {
             if (self.view.$data.is_syncing) return;
             self.view.$data.is_syncing = true;
@@ -575,7 +580,7 @@ window.LanternPage = (function(id) {
 
 
             // check to see if we have rpi access before attempting sync
-            fetch("http://lantern.local/api/id").then(function(res) {
+            fetch(self.getBaseURI() + "/api/id").then(function(res) {
                 if (res.status == 200) {
                     self.stor.syncWithLantern(continuous, function(status) {
                         self.view.$data.lantern_connected = status;
@@ -744,14 +749,46 @@ window.LanternPage = (function(id) {
     
     self.askForLocation = function() {
         return new Promise(function(resolve, reject) {
-            console.log("[page] asking for location");
-           
+            console.log("[page] asking for location")
             navigator.geolocation.getCurrentPosition(function(position) {
                 resolve(position);
             }, function(err) {
                 reject(err);
             }, geo_options);
           
+        });
+    };
+
+
+    /**
+    * Update connected device with geolocation
+    */
+
+    self.sendGeohashToLantern = function(geohash) {
+
+        // only try to set location once per page-load
+        if (did_assign_location) {
+            return;
+        }
+
+        // don't set geohash for cloud-hosted solutions
+        if (window.location.host == "lantern.global") {
+            return;    
+        }        
+
+        // increase privacy
+        geohash = geohash.substr(0,4);
+
+        fetch(self.getBaseURI() + "/api/geo",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            }, 
+            body: JSON.stringify({"geo": geohash })
+        }).then(function() {
+            console.log("[page] assigned geohash to lantern: " + geohash);
+            did_assign_location = true;
         });
     };
 

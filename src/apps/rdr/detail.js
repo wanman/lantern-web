@@ -159,7 +159,7 @@ window.page = (function() {
                 self.view.$data.marker = doc.toJSONFriendly();
                 venue_title = doc.get("title");
                 self.view.$data.page_title = venue_title;
-                if (doc.get("status") == 1) {
+                if (doc.get("status") == 1 && !doc.has("category", "trk")) {
                     self.view.$data.page_tag = "Open Now";
                 }
                 self.renderMap([venue_id]).then(focusMap);

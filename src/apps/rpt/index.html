@@ -13,7 +13,7 @@ block content
             h1 Help Us Map Your Region
             h2 What to report?
             ul.menu
-                li(v-for="category in venue_categories" @click="handleVenueCategory(category)")
+                li(v-for="category in venue_categories" @click="handleVenueCategory(category)" v-bind:id="category._id")
                     span {{ category.title }}
                     span.icon.is-large
                         i.fas.fa-angle-right
@@ -34,9 +34,21 @@ block content
         #input-selector-view(v-if="view == 'input'")
             h1 Select Condition Coverage
             ul
-                li.box(@click="presentAddressForm") An Address
-                li.box(@click="presentAreaForm") An Area
-                li.box(@click="presentLineForm") A Line
+                li.box(@click="presentAddressForm") 
+
+                    span.icon.is-large
+                        i.fas.fa-map-pin
+                    | An Address
+                li.box(@click="presentAreaForm") 
+
+                    span.icon.is-large
+                        i.fas.fa-circle
+                    | An Area
+                li.box(@click="presentLineForm") 
+
+                    span.icon.is-large
+                        i.fas.fa-road
+                    | A Line
 
 
         #map-selector-view(v-if="view == 'map'")

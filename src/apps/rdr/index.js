@@ -12,7 +12,6 @@ window.page = (function() {
     };
 
     function reflowView() {
-
         category_id = self.getHashParameterByName("cat");
         loadVenues().then(function() {
             if (self.getHashParameterByName("v") == "map") {
@@ -121,8 +120,12 @@ window.page = (function() {
 
                 self.askForLocation()
                     .then(function(res) {
+
                         self.geo = Geohash.encode(res.coords.latitude, res.coords.longitude, 7);
-                        console.log("[browse] my geo", self.geo);
+                        console.log("[rdr] my geo", self.geo);
+
+                        self.sendGeohashToLantern(self.geo);
+
                         self.view.$data.geolocation = self.geo;
                         self.map.setOwnLocation({lat:res.coords.latitude, lng:res.coords.longitude});
                         self.map.fitAll();
@@ -138,13 +141,13 @@ window.page = (function() {
 
                     })
                     .catch(function(err) {
-                        console.log("[browse] err fitting map", err);
+                        console.log("[rdr] err fitting map", err);
                     });
 
 
             })
             .catch(function(err) {
-                console.log("[browse] map error", err);
+                console.log("[rdr] map error", err);
             });
         
     }
@@ -276,14 +279,14 @@ window.page = (function() {
         if (venue.hasOwnProperty("geo") && typeof(venue.geo[0]) == "string") {
             var geo = venue.geo[0];
             if (!self.geo) {
-                console.log("[browse] skip distance calc since no user geo available", venue._id);
+                console.log("[rdr] skip distance calc since no user geo available", venue._id);
                 return;
             }
             var distance = Math.round(Geohash.inKm(geo, self.geo));
             return distance + "km";
         }
         else {
-            console.log("[browse] skip distance calc since venue missing geo", venue._id);
+            console.log("[rdr] skip distance calc since venue missing geo", venue._id);
             return;
         }
 

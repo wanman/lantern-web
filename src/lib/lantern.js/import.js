@@ -134,7 +134,7 @@ window.LanternImport = function(stor) {
 
         // permanent buildings that now offer some safety
         addVenue("aic", "AJ's Cafe", "drs4b77", "bld", "coffee", ["eat", "wtr", "pwr"]);
-        addVenue("hsf", "High School Field House", "drs4b79", "sfe", "basketball-ball", ["bed", "clo", "net", "wtr"]);
+        addVenue("hsf", "High School Field House", "drs4b79", "bld", "basketball-ball", ["bed", "clo", "net", "wtr"]);
         addVenue("cth", "UCG Hospital", "drs4b73", "bld", "hospital-symbol", ["med"]);
         addVenue("shl", "Shell Station", "drs4b71", "bld", "gas-pump", ["ful", "wtr"]);
         addVenue("mst", "Main Street Theatre", "drs4b41", "bld", "film", ["net", "pwr"]);
