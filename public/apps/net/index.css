@@ -1,6 +1,18 @@
 #network-page {
   padding: 2em 1em; }
   #network-page .card {
-    margin: 1em;
-    padding: 1em; }
+    margin: 1em; }
+    #network-page .card h4 {
+      font-weight: bold; }
+    #network-page .card .card-content {
+      font-size: x-large; }
+    #network-page .card .icon {
+      float: right; }
+  #network-page table {
+    width: 100%;
+    border: 1px solid #f2f2f2; }
+    #network-page table .icon {
+      color: #EEE; }
+    #network-page table .icon.online {
+      color: #73cc72; }
 

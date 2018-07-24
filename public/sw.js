@@ -47,11 +47,11 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/net/index.css",
-    "revision": "8ec89b8d1d526bb148a21d6ac5cbaa59"
+    "revision": "c12dae3719d8bdb14e1662c09be7556f"
   },
   {
     "url": "apps/net/index.html",
-    "revision": "fd37a40caa7368a445b9c0f00b1f7ac1"
+    "revision": "ff8680382ed5e00beba7eac2a9e8fed6"
   },
   {
     "url": "apps/net/index.js",
@@ -123,7 +123,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.css",
-    "revision": "492898caa1980c515b3d714f31e1f1cb"
+    "revision": "62fc7e32f5e9095e0c58e064d3d5e69d"
   },
   {
     "url": "manifest.json",

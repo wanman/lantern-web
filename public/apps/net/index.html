@@ -52,9 +52,48 @@
                 <!-- main page content-->
                 <div class="page-content">
                     <div v-cloak v-if="!page_loading">
-                        <div class="card" @click="handleInspectDevices"> <span class="icon"><i class="fas fa-server"></i></span><b>Hosts </b>{{ d_docs.length }}</div>
-                        <div class="card" @click="handleInspectUsers"><span class="icon"><i class="fas fa-user"></i></span><b>Users  </b>{{ u_docs.length }} </div>
-                        <div class="card" @click="handleInspectSearches"><span class="icon"><i class="fas fa-search"></i></span><b>Searches  </b>{{ needs }} </div>
+                        <div class="card" @click="handleInspectDevices"> 
+                            <div class="card-header"> 
+                                <div class="card-header-title">Active Hosts </div>
+                                <div class="card-header-icon">                    <span class="icon"><i class="fas fa-server"></i></span></div>
+                            </div>
+                            <div class="card-content">{{ d_docs.length }}</div>
+                        </div>
+                        <div class="card" @click="handleInspectUsers">
+                            <div class="card-header"> 
+                                <div class="card-header-title">Users  </div>
+                                <div class="card-header-icon"> <span class="icon"><i class="fas fa-user"></i></span></div>
+                            </div>
+                            <div class="card-content">{{ u_docs.length }} </div>
+                        </div>
+                        <div class="card" @click="handleInspectSearches">
+                            <div class="card-header"> 
+                                <div class="card-header-title">Searches  </div>
+                                <div class="card-header-icon"><span class="icon"><i class="fas fa-search"></i></span></div>
+                            </div>
+                            <div class="card-content">{{ needs }} </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"> 
+                                <div class="card-header-title">Host List </div>
+                            </div>
+                            <table class="table is-striped" @click="handleInspectDevices">
+                                <thead>
+                                    <th> </th>
+                                    <th>Name</th>
+                                    <th>Last Seen</th>
+                                    <th>Location</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in d_docs">
+                                        <td><span class="icon" v-bind:class="item.status == 1 ? 'online' : ''"><i class="fas fa-circle"></i></span></td>
+                                        <td>{{ item.title }}</td>
+                                        <td>{{ timestamp(item) }}</td>
+                                        <td><span v-if="item.geo &amp;&amp; item.geo.length">{{ item.geo[item.geo.length-1] }}</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </section>

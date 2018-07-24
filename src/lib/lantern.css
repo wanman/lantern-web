@@ -18,6 +18,7 @@ $panel-item-border: 1px solid rgba($black, 0.05);
 @import "bulma/sass/elements/icon";
 @import "bulma/sass/elements/button";
 @import "bulma/sass/elements/form";
+@import "bulma/sass/elements/table";
 @import "bulma/sass/elements/progress";
 @import "bulma/sass/components/navbar";
 @import "bulma/sass/elements/notification";

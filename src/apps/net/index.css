@@ -1,10 +1,38 @@
 
+
+$background: #f9fafb;
+$border: #c6c8cd;
+$light-border: #f2f2f2;
+
 #network-page {
 
     padding: 2em 1em;
 
     .card {
         margin: 1em;
-        padding: 1em;
+        h4 {
+            font-weight: bold;
+        }
+
+        .card-content {
+            font-size: x-large;
+        }
+
+        .icon {
+            float: right;
+        }
+    }
+
+    table {
+        width: 100%;
+        border: 1px solid $light-border;
+
+        .icon {
+            color: #EEE;
+        }
+
+        .icon.online {
+            color: rgb(115, 204, 114);
+        }
     }
 }

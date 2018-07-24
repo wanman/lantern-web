@@ -6,24 +6,53 @@ extends ../../_layouts/_master.pug
 
 block content
     div(v-cloak v-if="!page_loading")
+
         .card(@click="handleInspectDevices") 
-            span.icon
-                    i.fas.fa-server
-            b Hosts 
-            | {{ d_docs.length }}
+            .card-header 
+                .card-header-title Active Hosts 
+                .card-header-icon                     
+                    span.icon
+                        i.fas.fa-server
+            .card-content {{ d_docs.length }}
 
         .card(@click="handleInspectUsers")
-            span.icon
-                    i.fas.fa-user
-            b Users  
-            | {{ u_docs.length }} 
+            .card-header 
+                .card-header-title Users  
+                .card-header-icon 
+                    span.icon
+                            i.fas.fa-user
+            .card-content {{ u_docs.length }} 
 
 
         .card(@click="handleInspectSearches")
-            span.icon
-                    i.fas.fa-search
-            b Searches  
-            | {{ needs }} 
+            .card-header 
+                .card-header-title Searches  
+                .card-header-icon
+                    span.icon
+                        i.fas.fa-search
+            .card-content {{ needs }} 
+
+        .card
+
+            .card-header 
+                .card-header-title Host List 
+
+            table.table.is-striped(@click="handleInspectDevices")
+                thead
+                    th 
+                    th Name
+                    th Last Seen
+                    th Location
+                tbody
+                    tr(v-for="item in d_docs")
+                        td
+                            span.icon(v-bind:class="item.status == 1 ? 'online' : ''")
+                                i.fas.fa-circle
+                        td {{ item.title }}
+                        td {{ timestamp(item) }}
+                        td
+                            span(v-if="item.geo && item.geo.length") {{ item.geo[item.geo.length-1] }}
+
 
 block styles
     link(rel="stylesheet" type="text/css" href="/lib/map.css")

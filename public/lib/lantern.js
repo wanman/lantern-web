@@ -850,6 +850,13 @@ window.LanternPage = (function(id) {
         return obj;
     });
 
+
+    self.addHelper("timestamp", function(item) {
+        // make sure we have a most recent timestamp to work with
+        var timestamp = item.updated_at || item.created_at || item.imported_at;
+        return moment(timestamp).startOf('hour').fromNow();
+    });
+
     /**
     * Extract background and stroke colors from database
     */
