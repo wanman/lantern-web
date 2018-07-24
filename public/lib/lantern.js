@@ -749,7 +749,7 @@ window.LanternPage = (function(id) {
     
     self.askForLocation = function() {
         return new Promise(function(resolve, reject) {
-            console.log("[page] asking for location")
+            console.log("[page] asking for location");
             navigator.geolocation.getCurrentPosition(function(position) {
                 resolve(position);
             }, function(err) {
@@ -763,7 +763,6 @@ window.LanternPage = (function(id) {
     /**
     * Update connected device with geolocation
     */
-
     self.sendGeohashToLantern = function(geohash) {
 
         // only try to set location once per page-load
@@ -771,27 +770,30 @@ window.LanternPage = (function(id) {
             return;
         }
 
-        // don't set geohash for cloud-hosted solutions
-        if (window.location.host == "lantern.global") {
-            return;    
-        }        
-
         // increase privacy
         geohash = geohash.substr(0,4);
 
-        fetch(self.getBaseURI() + "/api/geo",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json; charset=utf-8"
-            }, 
-            body: JSON.stringify({"geo": geohash })
-        }).then(function() {
-            console.log("[page] assigned geohash to lantern: " + geohash);
-            did_assign_location = true;
-        });
-    };
+        // tell device to use this as it's most recent location (skip GPS)
+        if (self.stor.lantern_connceted) {
+            fetch(self.getBaseURI() + "/api/geo",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                }, 
+                body: JSON.stringify({"geo": geohash })
+            }).then(function() {
+                console.log("[page] assigned geohash to lantern: " + geohash);
+                did_assign_location = true;
+            });
+        }
 
+        // update user document to include location
+        console.log("[page] updating user location");
+        self.user.push("geo", geohash);
+        self.user.save();
+
+    };
 
 
 
@@ -989,7 +991,7 @@ window.LanternStor = (function($data, uri) {
         // make sure we don't double-add to cache
         index = getIndexForDoc(doc.id, type);
         if (index != -1) {
-            console.log("[stor] found existing index for " + doc.id, index);
+            //console.log("[stor] found existing index for " + doc.id, index);
         }
         else {
             $data[type_key].push(obj);

@@ -16,8 +16,21 @@ window.page = (function() {
         setTimeout(function() {
             self.user.set("status", self.view.$data.user_status);
             self.user.set("title", self.view.$data.initials);
+
+
+            // add birthday identifier but remove any previous ones saved
             var birthday_tag = [self.view.$data.birth_day, self.view.$data.birth_month].join("-");
-            self.user.push("tag",  birthday_tag);
+            var tags = self.user.get("tag");
+            var final_tags = [];
+            tags.forEach(function(tag) {
+                if (tag.indexOf("chk:") == -1) {
+                    final_tags.push(tag);
+                }
+            });
+            final_tags.push("chk:"+birthday_tag);
+
+            self.user.set("tag", final_tags);
+            self.user.push("gp", self.geo);
             self.user.save().then(function() {
                 self.view.$data.show_form = false;
                 self.view.$data.sending_data = false;
@@ -49,6 +62,19 @@ window.page = (function() {
             if (self.user.has("status")) {
                 self.view.$data.user_status = self.user.get("status");
             }
+
+            var tags = self.user.get("tag");
+            tags.forEach(function(tag) {
+                if (tag.indexOf("chk:") !== -1) {
+                    tag = tag.replace("chk:", "");
+                    var id = tag.split("-");
+                    if (id.length == 2) {
+                        self.view.$data.birth_month = id[0];
+                        self.view.$data.birth_day = id[1];                        
+                    }
+                }
+            });
+
         })
         .then(function() {
             self.renderMap()
@@ -60,11 +86,7 @@ window.page = (function() {
                     self.view.$data.map_loaded = true;
                     var lat = position.coords.latitude;
                     var lon = position.coords.longitude;
-
-                    // @todo use more precision (demo preserves privacy)
-                    var hash = Geohash.encode(lat, lon, 3);
-                    
-                    self.user.push("gp", hash);
+                    self.geo = Geohash.encode(lat, lon, 4);
                     self.map.setPosition(lat, lon, 12);
                     var marker = self.map.addPoint("You Are Here", {lat: lat, lon: lon}, {
                         draggable: false

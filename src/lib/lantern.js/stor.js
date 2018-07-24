@@ -72,7 +72,7 @@ window.LanternStor = (function($data, uri) {
         // make sure we don't double-add to cache
         index = getIndexForDoc(doc.id, type);
         if (index != -1) {
-            console.log("[stor] found existing index for " + doc.id, index);
+            //console.log("[stor] found existing index for " + doc.id, index);
         }
         else {
             $data[type_key].push(obj);

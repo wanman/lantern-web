@@ -29,7 +29,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/chk/index.js",
-    "revision": "88e0784cb52c1d98c54391cc96b494dc"
+    "revision": "e51eb7b26b20eb6cb08854a8107dfcba"
   },
   {
     "url": "apps/dba/index.css",
