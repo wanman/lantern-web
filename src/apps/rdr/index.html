@@ -5,10 +5,21 @@ id: "browse"
 extends ../../_layouts/_master.pug
 
 block content
-    
-
+  
     div(v-if="!page_loading" v-cloak)
 
+
+
+        // map view ----------------------------------------------------------
+        // map is empty by default - only certain pages will fill this region
+
+        #map(v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
+
+
+
+  
+
+  
         #map-prompt(v-if="!show_filters")
             .buttons.has-addons.is-centered
 
@@ -22,15 +33,12 @@ block content
                     span Map
 
 
-
-
-
         // filters view ------------------------------------------------------
         #filters(v-if="show_filters")
 
 
             h1(v-if="personalizing") Finding {{ selected_category.title }} nearby...&hellip;
-            h1(v-if="!page_loading && !personalizing") Reported Supplies
+            h1(v-if="!page_loading && !personalizing") Reported Near You
 
             div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
                 h2 What would help today?
@@ -49,19 +57,6 @@ block content
                     span.icon.is-large(style="background-color: #EEE")
                         i.fas.fa-arrow-right
                     .title All
-
-
-
-
-
-
-        // map view ----------------------------------------------------------
-        // map is empty by default - only certain pages will fill this region
-        #map(v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
-
-
-
-
 
 
 
@@ -92,9 +87,6 @@ block content
 
                                 span.icon.is-large(v-bind:style="makeCategoryStyle(getCategory(item.category))") 
                                     i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
-
-                    .more
-                        a.button(v-if="filtered_venues.length < v_docs.length" @click="handleRemoveFilter") Clear Filter
 
 
 block styles

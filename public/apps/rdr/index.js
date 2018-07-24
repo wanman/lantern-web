@@ -4,7 +4,6 @@ window.page = (function() {
 
     var self = new LanternPage("browse");
     var category_id;
-    var wpid;
     
     // geolocation options
     var geo_options = {
@@ -23,7 +22,8 @@ window.page = (function() {
                 showList();
             }
             else {
-                showFilters();
+                self.view.$data.show_filters = true;
+                self.view.$data.personalizing = false;
             }
         });
     }
@@ -103,6 +103,8 @@ window.page = (function() {
 
     
     function showMap() {
+
+        console.log("[rdr] show map");
         self.view.$data.show_map = true;
         self.view.$data.show_filters = false;
 
@@ -113,11 +115,15 @@ window.page = (function() {
             var cat = self.stor.getCached("c:" + self.view.$data.category);
             icon = cat.icon;
             color = cat.style.color;
-        }
-        
+        }   
+
+        self.view.$data.page_action_icon = "filter";
+
+  
         self.renderMap(self.view.$data.filtered_venues, true, icon, color)
             .then(function() {
 
+                console.log("[rdr] rendering map");
                 self.map.fitAll();
 
                 self.askForLocation()
@@ -131,15 +137,6 @@ window.page = (function() {
                         self.view.$data.geolocation = self.geo;
                         self.map.setOwnLocation({lat:res.coords.latitude, lng:res.coords.longitude});
                         self.map.fitAll();
-
-
-                        if (!wpid) {       
-                            // show my own location on the map
-                            var wpid = navigator.geolocation.watchPosition(onLocationChange, function(err) {
-                                console.log("[page] geo err", err);
-                            }, geo_options);
-                        }
-                      
 
                     })
                     .catch(function(err) {
@@ -156,16 +153,13 @@ window.page = (function() {
 
 
     function showList() {
+        console.log("[rdr] show list");
         self.view.$data.show_map = false;
         self.view.$data.show_filters = false;
         self.view.$data.personalizing = false;
+        self.view.$data.page_action_icon = "filter";
     }
 
-    function showFilters() {
-        self.view.$data.show_map = false;
-        self.view.$data.show_filters = true;
-        self.view.$data.personalizing = false;
-    }
 
     //------------------------------------------------------------------------
         
@@ -187,6 +181,17 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
 
+    self.addHelper("handleActionButton", function() {
+        console.log("[rdr] toggle page filter");
+        if (self.view.$data.show_filters) {
+            self.view.$data.show_filters = false;
+        }
+        else {
+            self.view.$data.show_filters = true; 
+        }
+    });
+
+
     self.addHelper("handleCategorySelect", function(cat) {
         self.view.$data.personalizing = true;
 
@@ -207,7 +212,9 @@ window.page = (function() {
         self.user.save()
             .then(function() {
                 setTimeout(function() {
-                    window.location.hash = "#v=list&cat="+cat.slug;
+                    v = self.getHashParameterByName("v");
+                    v = v || "list";
+                    window.location.hash = "#v=" + v + "&cat="+cat.slug;
                 }, 1000);
             })
             .catch(function(err) {
@@ -216,7 +223,13 @@ window.page = (function() {
     });
 
     self.addHelper("handleAllCategorySelect", function() {
-        window.location.hash = "#v=list";
+
+        v = self.getHashParameterByName("v");
+
+        var str = "#";
+        v = v || "list";
+        str+="&v="+v+"&r="+Math.round(Math.random()*10);
+        window.location.hash = str;
     });
 
 
@@ -250,7 +263,6 @@ window.page = (function() {
     });
 
     self.addHelper("handleShowList", function(evt) {
-        self.view.$data.show_map = false;
 
         cat = self.getHashParameterByName("cat");
         var str = window.location.origin + window.location.pathname + "#";
@@ -261,12 +273,6 @@ window.page = (function() {
     });
 
 
-    self.addHelper("handleRemoveFilter", function() {
-        cat = self.getHashParameterByName("cat");
-        if (cat) {
-            window.location.hash = window.location.hash.replace("cat="+cat, "");
-        }
-    });
 
     self.addHelper("getCategoryName", function(item) {
         var id = "c:" + item.category[0];

@@ -29,6 +29,7 @@
                             <div class="tag">{{ page_tag }}</div>
                         </div>
                     </div>
+                    <div class="action" v-if="page_action_icon &amp;&amp; handleActionButton" @click="handleActionButton"><span class="icon"><i class="fas" v-bind:class="'fa-'+page_action_icon"></i></span></div>
                 </div>
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null" v-bind:class="is_syncing ? 'is-syncing' : ''">
@@ -51,13 +52,16 @@
                 <!-- main page content-->
                 <div class="page-content">
                     <div v-if="!page_loading" v-cloak>
+                        <!-- map view ------------------------------------------------------------>
+                        <!-- map is empty by default - only certain pages will fill this region-->
+                        <div id="map" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')"></div>
                         <div id="map-prompt" v-if="!show_filters">
                             <div class="buttons has-addons is-centered"><span class="button" @click="handleShowList" v-bind:class="show_map ? '' : 'is-info is-selected'"><span class="icon"><i class="fas fa-list"></i></span><span>List</span></span><span class="button" @click="handleShowMap" v-bind:class="show_map ? 'is-info is-selected' : ''"><span class="icon"><i class="fas fa-map"></i></span><span>Map</span></span></div>
                         </div>
                         <!-- filters view -------------------------------------------------------->
                         <div id="filters" v-if="show_filters">
                             <h1 v-if="personalizing">Finding {{ selected_category.title }} nearby...&hellip;</h1>
-                            <h1 v-if="!page_loading &amp;&amp; !personalizing">Reported Supplies</h1>
+                            <h1 v-if="!page_loading &amp;&amp; !personalizing">Reported Near You</h1>
                             <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
                                 <h2>What would help today?</h2>
                             </div>
@@ -71,9 +75,6 @@
                                 </li>
                             </ul>
                         </div>
-                        <!-- map view ------------------------------------------------------------>
-                        <!-- map is empty by default - only certain pages will fill this region-->
-                        <div id="map" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')"></div>
                         <!-- venues view --------------------------------------------------------->
                         <div id="venues-view" v-if="!show_map &amp;&amp; !show_filters">
                             <div id="venues">
@@ -88,7 +89,6 @@
                                             <div class="category" v-for="item in i_docs" v-if="item.parent &amp;&amp; item.parent == venue._id &amp;&amp; item.category[0]" @click="handleItemSelect(item, venue)" v-bind:data-id="item._id"><span class="icon is-large" v-bind:style="makeCategoryStyle(getCategory(item.category))"> <i v-bind:class="makeCategoryIconClass(getCategory(item.category))"></i></span></div>
                                         </div>
                                     </div>
-                                    <div class="more"><a class="button" v-if="filtered_venues.length &lt; v_docs.length" @click="handleRemoveFilter">Clear Filter</a></div>
                                 </div>
                             </div>
                         </div>

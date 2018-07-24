@@ -38,7 +38,11 @@ html(lang="en")
 
                         .tags(v-if="page_tag")
                             .tag {{ page_tag }}
-                   
+
+                    .action(v-if="page_action_icon && handleActionButton" @click="handleActionButton")
+                        span.icon
+                            i.fas(v-bind:class="'fa-'+page_action_icon")
+               
 
             nav.navbar.is-fixed-bottom#status-footer(v-cloak v-if="cloud_connected !== null || lantern_connected !== null" v-bind:class="is_syncing ? 'is-syncing' : ''")
                 .navbar-brand

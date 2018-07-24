@@ -13,7 +13,7 @@ window.LanternMapManager = function() {
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: false,
             dbName: "lantern-maps",
-            maxZoom: 18,
+            maxZoom: 16,
             useCache: true,
             crossOrigin: true
         }).addTo(self.map);
@@ -72,7 +72,7 @@ window.LanternMapManager = function() {
 
     self.fitToMarkers = function() {
         var group = new L.featureGroup(self.markers);
-        self.map.fitBounds(group.getBounds());
+        self.map.fitBounds(group.getBounds(), {padding: [50,50]});
     };
 
 

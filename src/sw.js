@@ -69,15 +69,15 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rdr/index.css",
-    "revision": "b6f6cf6c03b334ec915a88b80dbed1b8"
+    "revision": "05cac61cc0f1bfb5d9c989f3457a8068"
   },
   {
     "url": "apps/rdr/index.html",
-    "revision": "f84e98e9b1347ff7176e67100ab20678"
+    "revision": "bf1e357bf4f00aaae5a84928840a08d7"
   },
   {
     "url": "apps/rdr/index.js",
-    "revision": "f81ac0bc9eef84ecfc045bdd3585128a"
+    "revision": "32fa28e646a5229fa4e2d1fdf6f16c56"
   },
   {
     "url": "apps/rpt/index.css",
@@ -121,7 +121,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.css",
-    "revision": "b09fb00de72fb20a969c16ba9b40a00e"
+    "revision": "492898caa1980c515b3d714f31e1f1cb"
   },
   {
     "url": "manifest.json",
@@ -261,7 +261,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/map.js",
-    "revision": "5a9f1f10a6cfeb274497384b12855344"
+    "revision": "e6be86b726ef8f1a99390feb4b131518"
   },
   {
     "url": "lib/vendor.js",

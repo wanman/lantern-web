@@ -4793,6 +4793,20 @@ a:active .icon i {
 
 .navbar {
   background: rgba(255, 255, 255, 0.9); }
+  .navbar .action {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: center;
+    padding-top: 1em;
+    padding-left: 0.5em;
+    width: 3.75rem;
+    height: 3.75rem; }
+  .navbar .action:hover {
+    background: #FAFAFA;
+    cursor: pointer; }
+  .navbar .action:active {
+    background: #FAFAFA; }
 
 .is-fixed-top {
   height: 3.89rem; }
@@ -4906,7 +4920,8 @@ h1 {
   padding: 0.75em; }
 
 nav.global {
-  background: #FFF; }
+  background: #FFF;
+  z-index: 10005; }
 
 .navbar-burger {
   width: 3.75rem;

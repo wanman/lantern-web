@@ -62,8 +62,25 @@ a:active .icon i {
 .navbar {
 
     background: rgba(255,255,255,0.9);
+    .action {
+        position: absolute;
+        top: 0;
+        right: 0;
+        text-align: center;
+        padding-top: 1em;
+        padding-left: 0.5em;
+        width: 3.75rem;
+        height: 3.75rem;
+    }
 
-   
+    .action:hover {
+        background: #FAFAFA;
+        cursor: pointer;
+
+    }
+    .action:active {
+        background: #FAFAFA;
+    }
 }
 
 .is-fixed-top {
@@ -217,6 +234,8 @@ h1 {
 
 nav.global {
     background: #FFF;
+
+    z-index: 10005;
 }
 
 .navbar-burger {

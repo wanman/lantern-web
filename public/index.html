@@ -28,6 +28,7 @@
                             <div class="tag">{{ page_tag }}</div>
                         </div>
                     </div>
+                    <div class="action" v-if="page_action_icon &amp;&amp; handleActionButton" @click="handleActionButton"><span class="icon"><i class="fas" v-bind:class="'fa-'+page_action_icon"></i></span></div>
                 </div>
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null" v-bind:class="is_syncing ? 'is-syncing' : ''">

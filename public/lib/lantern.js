@@ -420,7 +420,9 @@ window.LanternPage = (function(id) {
             lantern_connected: null,
             lantern_name: "",
             page_title: "",
-            page_tag: "",
+            page_tag: "",     
+            page_action_icon: "",
+            page_action_helper: null,
             page_loading: true,
             is_syncing: false,
             allow_back_button: false,
@@ -770,6 +772,9 @@ window.LanternPage = (function(id) {
             return;
         }
 
+        did_assign_location = true;
+
+
         // increase privacy
         geohash = geohash.substr(0,4);
 
@@ -784,7 +789,6 @@ window.LanternPage = (function(id) {
                 body: JSON.stringify({"geo": geohash })
             }).then(function() {
                 console.log("[page] assigned geohash to lantern: " + geohash);
-                did_assign_location = true;
             });
         }
 
