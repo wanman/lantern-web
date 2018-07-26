@@ -203,6 +203,11 @@ window.LanternStor = (function($data, uri) {
             });
     };
 
+    self.print = function(id) {
+        return self.get(id).then(function(res) {
+            console.log(res.toJSONFriendly());
+        });
+    };
 
     self.getManyByType = function(type) {
         var params = {

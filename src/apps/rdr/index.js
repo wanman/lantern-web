@@ -20,7 +20,7 @@ window.page = (function() {
                 showList();
             }
             else {
-                self.view.$data.show_filters = true;
+                self.view.$data.show_filters = false;
                 self.view.$data.personalizing = false;
             }
         });
@@ -106,6 +106,7 @@ window.page = (function() {
         self.view.$data.show_map = true;
         self.view.$data.show_filters = false;
 
+        self.view.$data.page_action_icon = "filter";
         var icon = null;
         var color = null;
         
@@ -114,8 +115,6 @@ window.page = (function() {
             icon = cat.icon;
             color = cat.style.color;
         }   
-
-        self.view.$data.page_action_icon = "filter";
 
   
         self.renderMap(self.view.$data.filtered_venues, true, icon, color)
@@ -166,7 +165,7 @@ window.page = (function() {
     self.addData("selected_category", null);
     self.addData("personalizing", false);
     self.addData("last_sync_check", new Date());
-    self.addData("show_filters", true);
+    self.addData("show_filters", false);
 
     // map and list view
     self.addData("category", null);
@@ -183,9 +182,11 @@ window.page = (function() {
         console.log("[rdr] toggle page filter");
         if (self.view.$data.show_filters) {
             self.view.$data.show_filters = false;
+            self.view.$data.page_action_icon = "filters";
         }
         else {
             self.view.$data.show_filters = true; 
+            self.view.$data.page_action_icon = "";
         }
     });
 
@@ -212,6 +213,8 @@ window.page = (function() {
                 setTimeout(function() {
                     v = self.getHashParameterByName("v");
                     v = v || "list";
+                    self.view.$data.personalizing = false;
+
                     window.location.hash = "#v=" + v + "&cat="+cat.slug;
                 }, 1000);
             })
@@ -305,6 +308,7 @@ window.page = (function() {
     self.render()
         .then(function() {
             self.view.$data.page_title = "Supplies";
+
         })
         .then(self.connect)
         .then(reflowView);

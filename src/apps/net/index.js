@@ -4,7 +4,22 @@ window.page = (function() {
 
     var tag_tally = {};
 
+    function setVerificationCount() {
+        self.view.$data.verifications = 0;
+        self.getItems().then(function(items) {
+            items.forEach(function(item) {
+                if (item.has("vote")) {
+                    var vt = item.get("vote");
+                    vt.forEach(function(row) {
+                        self.view.$data.verifications += Number(row.votes);
+                    });
+                }
+            });
+        });
+    }
+
     self.addData("needs", 0);
+    self.addData("verifications", 0);
 
     self.addHelper("handleInspectDevices", function() {
         self.view.$data.d_docs.forEach(function(doc) {
@@ -42,6 +57,7 @@ window.page = (function() {
             });
             self.view.$data.page_title = "Network";
             self.view.$data.page_loading = false;
-        });
+        })
+        .then(setVerificationCount);
     return self;
 })();

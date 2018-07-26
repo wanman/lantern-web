@@ -52,26 +52,26 @@
                 <!-- main page content-->
                 <div class="page-content">
                     <div v-cloak v-if="!page_loading">
+                        <div class="card" @click="handleInspectUsers">
+                            <div class="card-header"> 
+                                <div class="card-header-title">Active Users  </div>
+                                <div class="card-header-icon"> <span class="icon"><i class="fas fa-user"></i></span></div>
+                            </div>
+                            <div class="card-content">{{ u_docs.length }} </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"> 
+                                <div class="card-header-title">Verifications  </div>
+                                <div class="card-header-icon"> <span class="icon"><i class="fas fa-check-double"></i></span></div>
+                            </div>
+                            <div class="card-content">{{ verifications }} </div>
+                        </div>
                         <div class="card" @click="handleInspectDevices"> 
                             <div class="card-header"> 
                                 <div class="card-header-title">Active Hosts </div>
                                 <div class="card-header-icon">                    <span class="icon"><i class="fas fa-server"></i></span></div>
                             </div>
                             <div class="card-content">{{ d_docs.length }}</div>
-                        </div>
-                        <div class="card" @click="handleInspectUsers">
-                            <div class="card-header"> 
-                                <div class="card-header-title">Users  </div>
-                                <div class="card-header-icon"> <span class="icon"><i class="fas fa-user"></i></span></div>
-                            </div>
-                            <div class="card-content">{{ u_docs.length }} </div>
-                        </div>
-                        <div class="card" @click="handleInspectSearches">
-                            <div class="card-header"> 
-                                <div class="card-header-title">Searches  </div>
-                                <div class="card-header-icon"><span class="icon"><i class="fas fa-search"></i></span></div>
-                            </div>
-                            <div class="card-content">{{ needs }} </div>
                         </div>
                         <div class="card">
                             <div class="card-header"> 

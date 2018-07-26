@@ -259,8 +259,14 @@ window.LanternImport = function(stor) {
         doc.save();
     }
 
+
+
     
     function addVenue(id, title, geo, cat, icon, cats) {
+
+        var now = new Date();
+
+        // first define the building or vehicle venue for supply items
         var venue_doc = new LanternDocument("v:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
@@ -268,14 +274,17 @@ window.LanternImport = function(stor) {
         venue_doc.set("icon", icon);
         venue_doc.set("status", 1);
         venue_doc.push("category", cat);
-        venue_doc.set("$ia", new Date());
+        venue_doc.set("$ia", now);
+        venue_doc.set("$ca", now);
         venue_doc.save();
+
 
         for (var idx in cats) {
 
-        
+            // add supply item for desired categories (water, fuel, etc.)
             var doc = new LanternDocument(["i", venue_doc.id, cats[idx]].join(":"), stor);
             doc.set("status", (Math.random() > 0.1 ? 1 : 0));
+            // attach a supply item to a venue
             doc.push("parent", venue_doc.id);
             doc.push("category", cats[idx]);
 
@@ -292,13 +301,11 @@ window.LanternImport = function(stor) {
                 votes: Math.round(Math.random()*3)
             });
 
-
             doc.push("vote",{
                 slug: "neighbors",
                 title: "Neighbors",
                 votes: Math.round(Math.random()*10)
             });
-
 
             doc.push("vote",{
                 slug: "town",
@@ -306,11 +313,9 @@ window.LanternImport = function(stor) {
                 votes: Math.round(Math.random()*2)
             });
 
-
-            var time = new Date();
-            doc.set("$ia", time);
-            doc.set("$ua", time);
-            doc.set("$ca", time);
+            doc.set("$ia", now);
+            doc.set("$ua", now);
+            doc.set("$ca", now);
             doc.save();
         }
 
@@ -1133,6 +1138,11 @@ window.LanternStor = (function($data, uri) {
             });
     };
 
+    self.print = function(id) {
+        return self.get(id).then(function(res) {
+            console.log(res.toJSONFriendly());
+        });
+    };
 
     self.getManyByType = function(type) {
         var params = {

@@ -22,7 +22,7 @@ window.page = (function() {
                 showList();
             }
             else {
-                self.view.$data.show_filters = true;
+                self.view.$data.show_filters = false;
                 self.view.$data.personalizing = false;
             }
         });
@@ -168,7 +168,7 @@ window.page = (function() {
     self.addData("selected_category", null);
     self.addData("personalizing", false);
     self.addData("last_sync_check", new Date());
-    self.addData("show_filters", true);
+    self.addData("show_filters", false);
 
     // map and list view
     self.addData("category", null);

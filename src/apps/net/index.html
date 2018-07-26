@@ -7,6 +7,23 @@ extends ../../_layouts/_master.pug
 block content
     div(v-cloak v-if="!page_loading")
 
+
+        .card(@click="handleInspectUsers")
+            .card-header 
+                .card-header-title Active Users  
+                .card-header-icon 
+                    span.icon
+                            i.fas.fa-user
+            .card-content {{ u_docs.length }} 
+
+        .card()
+            .card-header 
+                .card-header-title Verifications  
+                .card-header-icon 
+                    span.icon
+                            i.fas.fa-check-double
+            .card-content {{ verifications }} 
+
         .card(@click="handleInspectDevices") 
             .card-header 
                 .card-header-title Active Hosts 
@@ -14,23 +31,6 @@ block content
                     span.icon
                         i.fas.fa-server
             .card-content {{ d_docs.length }}
-
-        .card(@click="handleInspectUsers")
-            .card-header 
-                .card-header-title Users  
-                .card-header-icon 
-                    span.icon
-                            i.fas.fa-user
-            .card-content {{ u_docs.length }} 
-
-
-        .card(@click="handleInspectSearches")
-            .card-header 
-                .card-header-title Searches  
-                .card-header-icon
-                    span.icon
-                        i.fas.fa-search
-            .card-content {{ needs }} 
 
         .card
 

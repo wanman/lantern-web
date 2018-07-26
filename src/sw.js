@@ -49,11 +49,11 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/net/index.html",
-    "revision": "ff8680382ed5e00beba7eac2a9e8fed6"
+    "revision": "6ec1ad35cdb01cdc3f6379595a0c3c13"
   },
   {
     "url": "apps/net/index.js",
-    "revision": "138c50c980255bbc5f7c5d44236a1388"
+    "revision": "f43a4f39ce1eabc4b8cfe9de62b59e03"
   },
   {
     "url": "apps/rdr/detail.css",
@@ -77,7 +77,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rdr/index.js",
-    "revision": "32fa28e646a5229fa4e2d1fdf6f16c56"
+    "revision": "8888c92cb10ca52a15b7c9ff4a6385fa"
   },
   {
     "url": "apps/rpt/index.css",
