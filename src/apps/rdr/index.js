@@ -105,8 +105,6 @@ window.page = (function() {
         console.log("[rdr] show map");
         self.view.$data.show_map = true;
         self.view.$data.show_filters = false;
-
-        self.view.$data.page_action_icon = "filter";
         var icon = null;
         var color = null;
         
@@ -154,7 +152,6 @@ window.page = (function() {
         self.view.$data.show_map = false;
         self.view.$data.show_filters = false;
         self.view.$data.personalizing = false;
-        self.view.$data.page_action_icon = "filter";
     }
 
 
@@ -182,11 +179,9 @@ window.page = (function() {
         console.log("[rdr] toggle page filter");
         if (self.view.$data.show_filters) {
             self.view.$data.show_filters = false;
-            self.view.$data.page_action_icon = "filters";
         }
         else {
             self.view.$data.show_filters = true; 
-            self.view.$data.page_action_icon = "";
         }
     });
 
@@ -308,6 +303,7 @@ window.page = (function() {
     self.render()
         .then(function() {
             self.view.$data.page_title = "Supplies";
+            self.view.$data.page_action_icon = "filter";
 
         })
         .then(self.connect)

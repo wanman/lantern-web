@@ -146,15 +146,22 @@ window.LanternDocument = (function(id,stor) {
         var doc = {
             _id: self.id
         };
+
+        if (self.data._rev) {
+            doc._rev = self.data._rev;
+        }
         
         for (var idx in self.data) {
             doc[idx] = self.data[idx];
         }
 
         return stor.post(doc)
-            .then(function(doc) {
-               
+            .then(function(results) {
                 console.log("[doc] saved " + self.id);
+                if (results.rev) {
+                    self.data._rev = results.rev;
+                    console.log("UPDATED DOC REV", self.data._rev);
+                }
                 return doc;
             })
             .catch(function(err) {
@@ -1007,7 +1014,7 @@ window.LanternStor = (function($data, uri) {
         // make sure we don't double-add to cache
         index = getIndexForDoc(doc.id, type);
         if (index != -1) {
-            //console.log("[stor] found existing index for " + doc.id, index);
+            // console.log("[stor] found existing index for " + doc.id, index);
         }
         else {
             $data[type_key].push(obj);
@@ -1023,9 +1030,12 @@ window.LanternStor = (function($data, uri) {
     function replaceInCache(doc) {
         var type = doc.id.split(":")[0];
         var index = getIndexForDoc(doc.id,type);
-        //console.log("[stor] replace cache doc:", obj._id, type, index);
         // replace in cache
         var obj = doc.toJSONFriendly();
+
+
+        console.log("[stor] replace cache doc:", obj._id, type, index);
+
         $data[type+"_docs"].splice(index, 1, obj);
         self.cache[doc.id].index = index;
     }
@@ -1129,7 +1139,7 @@ window.LanternStor = (function($data, uri) {
     };
 
     self.get = function() {
-        //console.log("[stor] get: " + arguments[0]);
+        console.log("[stor] get: " + arguments[0]);
         return self.db.get.apply(self.db, arguments)
             .then(function(data) {
                 var doc = new LanternDocument(data, self);
@@ -1194,16 +1204,21 @@ window.LanternStor = (function($data, uri) {
     self.put = function() {
         var doc = arguments[0];
         console.log("[stor] put: ", doc);
-        return self.db.put.apply(self.db, arguments).then(function() {
-            addToCache(new LanternDocument(doc, self));
+        return self.db.put.apply(self.db, arguments).then(function(results) {
+            refreshDocInCache(new LanternDocument(doc, self));
+            return results;
         });
     };
 
     self.post = function() {
         var doc = arguments[0];
         console.log("[stor] post: ", doc);
-        return self.db.put.apply(self.db, arguments).then(function() {
-            addToCache(new LanternDocument(doc, self));
+        return self.db.put.apply(self.db, arguments).then(function(results) {
+            if (results.rev) { 
+                doc._rev = results.rev;
+            }
+            refreshDocInCache(new LanternDocument(doc, self));
+            return results;
         });
     };
 

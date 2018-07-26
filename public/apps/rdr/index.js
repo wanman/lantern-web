@@ -107,7 +107,6 @@ window.page = (function() {
         console.log("[rdr] show map");
         self.view.$data.show_map = true;
         self.view.$data.show_filters = false;
-
         var icon = null;
         var color = null;
         
@@ -116,8 +115,6 @@ window.page = (function() {
             icon = cat.icon;
             color = cat.style.color;
         }   
-
-        self.view.$data.page_action_icon = "filter";
 
   
         self.renderMap(self.view.$data.filtered_venues, true, icon, color)
@@ -157,7 +154,6 @@ window.page = (function() {
         self.view.$data.show_map = false;
         self.view.$data.show_filters = false;
         self.view.$data.personalizing = false;
-        self.view.$data.page_action_icon = "filter";
     }
 
 
@@ -214,6 +210,8 @@ window.page = (function() {
                 setTimeout(function() {
                     v = self.getHashParameterByName("v");
                     v = v || "list";
+                    self.view.$data.personalizing = false;
+
                     window.location.hash = "#v=" + v + "&cat="+cat.slug;
                 }, 1000);
             })
@@ -307,6 +305,8 @@ window.page = (function() {
     self.render()
         .then(function() {
             self.view.$data.page_title = "Supplies";
+            self.view.$data.page_action_icon = "filter";
+
         })
         .then(self.connect)
         .then(reflowView);

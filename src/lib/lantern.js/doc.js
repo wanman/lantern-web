@@ -144,15 +144,22 @@ window.LanternDocument = (function(id,stor) {
         var doc = {
             _id: self.id
         };
+
+        if (self.data._rev) {
+            doc._rev = self.data._rev;
+        }
         
         for (var idx in self.data) {
             doc[idx] = self.data[idx];
         }
 
         return stor.post(doc)
-            .then(function(doc) {
-               
+            .then(function(results) {
                 console.log("[doc] saved " + self.id);
+                if (results.rev) {
+                    self.data._rev = results.rev;
+                    console.log("UPDATED DOC REV", self.data._rev);
+                }
                 return doc;
             })
             .catch(function(err) {

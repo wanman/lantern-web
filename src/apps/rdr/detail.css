@@ -44,18 +44,25 @@ $light-border: #f2f2f2;
         text-align: center;
 
         .tags-container {
-            padding: 1em 3em;
+            padding-top: 1em;
         }
 
         .tags {
             float: left;
             margin-right: 0.4em;
             margin-top: 0.4em;
-            margin-bottom: 0;
+            margin-bottom: 0.4em;
 
-            .is-primary {
-                padding-left: 1.25em;
+            .tag {
+                border: 1px solid $light-border;
+                border-left: none;
             }
+
+            .tag.is-primary {
+                padding-left: 1.25em;
+                border-color: #00d1b2;
+            }
+
         }
         background: rgba(255,255,255,0.95);
         border-bottom: 1px solid $border;
@@ -75,7 +82,11 @@ $light-border: #f2f2f2;
         }
     }
 
-
+    .more {
+        .icon {
+            color: #3273dc;
+        }
+    }
 
     #map-prompt:hover {
         background: $background;

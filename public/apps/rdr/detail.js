@@ -20,6 +20,40 @@ window.page = (function() {
         }
     }
 
+    function renderDefaultView() {
+
+        self.view.$data.show_input = false
+        self.view.$data.allow_back_button = true;
+        self.view.$data.page_action_icon = "";
+
+        self.stor.get(venue_id).then(function(doc) {
+          
+            self.view.$data.marker = doc.toJSONFriendly();
+            venue_title = doc.get("title");
+            self.view.$data.page_title = venue_title;
+            if (doc.get("status") == 1 && !doc.has("category", "trk")) {
+                self.view.$data.page_tag = "Open Now";
+            }
+            self.renderMap([venue_id]).then(focusMap);
+        })
+        .catch(function(err) {
+            console.log("[detail] could not get: " + venue_id, err);
+        });
+
+        if (item_id) {
+            self.stor.get(item_id).then(function(doc) {
+                self.view.$data.selected_item = doc.toJSONFriendly();
+                self.view.$data.page_loading = false;
+            })
+            .catch(function(err) {
+                console.log("[detail] could not get: " + item_id, err);
+            });
+        }
+        else {
+            self.view.$data.page_loading = false;
+        }
+    }
+
     //------------------------------------------------------------------------
     self.addData("show_map", true);
     self.addData("show_inspector", false);
@@ -74,6 +108,11 @@ window.page = (function() {
 
     self.addHelper("handleShowInput", function(evt) {
         self.view.$data.show_input = true;
+
+        self.view.$data.page_action_icon = "times-circle";
+        self.view.$data.page_title = "Choose Supply Type";
+        self.view.$data.page_tag = "";
+        self.view.$data.allow_back_button = false;
     });
 
     self.addHelper("handleAddItemType", function(item_type) {
@@ -90,9 +129,7 @@ window.page = (function() {
                 }
             });
             doc.set("vote", votes);
-            doc.save().then(function() {
-                self.view.$data.show_input = false;
-            });
+            doc.save().then(renderDefaultView);
         }).catch(function(err) {
             if (err.name == "not_found") {
 
@@ -103,9 +140,7 @@ window.page = (function() {
                 new_doc.set("$ca", new Date());
                 new_doc.push("category", item_type.slug);
 
-                new_doc.save().then(function() {
-                    self.view.$data.show_input = false;
-                });
+                new_doc.save().then(renderDefaultView);
             }
         });
 
@@ -132,10 +167,27 @@ window.page = (function() {
     });
     
 
-    self.addHelper("timestamp", function(item) {
-        // make sure we have a most recent timestamp to work with
-        var timestamp = item.updated_at || item.created_at || item.imported_at;
-        return moment(timestamp).startOf('hour').fromNow();
+    self.addHelper("handleVote", function(json, b) {
+
+        var doc = new LanternDocument(self.stor.getCached(json._id), self.stor);
+
+        if (doc.has("vote")) {
+            var votes = doc.get("vote");
+            for (var idx in votes) { 
+                if (votes[idx].slug == b.slug) {
+                    json.vote[idx].votes = votes[idx].votes = votes[idx].votes+1;
+                    doc.set("vote", votes);
+                    doc.save();
+                    console.log("[detail] upvoted verification", votes[idx].votes);
+                }
+            }
+        }
+    });
+
+
+    self.addHelper("handleActionButton", function() {
+        console.log("HIT THAT");
+        renderDefaultView();
     });
 
     //------------------------------------------------------------------------
@@ -153,36 +205,7 @@ window.page = (function() {
             });
         })
         .then(self.getManyItems)
-        .then(function() {
-            //console.log("[detail]", venue_id);
-
-            self.stor.get(venue_id).then(function(doc) {
-              
-                self.view.$data.marker = doc.toJSONFriendly();
-                venue_title = doc.get("title");
-                self.view.$data.page_title = venue_title;
-                if (doc.get("status") == 1 && !doc.has("category", "trk")) {
-                    self.view.$data.page_tag = "Open Now";
-                }
-                self.renderMap([venue_id]).then(focusMap);
-            })
-            .catch(function(err) {
-                console.log("[detail] could not get: " + venue_id, err);
-            });
-
-            if (item_id) {
-                self.stor.get(item_id).then(function(doc) {
-                    self.view.$data.selected_item = doc.toJSONFriendly();
-                    self.view.$data.page_loading = false;
-                })
-                .catch(function(err) {
-                    console.log("[detail] could not get: " + item_id, err);
-                });
-            }
-            else {
-                self.view.$data.page_loading = false;
-            }
-        });
+        .then(renderDefaultView);
 
     return self;
 })();

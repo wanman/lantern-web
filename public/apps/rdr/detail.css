@@ -31,14 +31,18 @@
     text-align: center;
     margin-bottom: 1em; }
   #detail-page #inspector-view .tags-container {
-    padding: 1em 3em; }
+    padding-top: 1em; }
   #detail-page #inspector-view .tags {
     float: left;
     margin-right: 0.4em;
     margin-top: 0.4em;
-    margin-bottom: 0; }
-    #detail-page #inspector-view .tags .is-primary {
-      padding-left: 1.25em; }
+    margin-bottom: 0.4em; }
+    #detail-page #inspector-view .tags .tag {
+      border: 1px solid #f2f2f2;
+      border-left: none; }
+    #detail-page #inspector-view .tags .tag.is-primary {
+      padding-left: 1.25em;
+      border-color: #00d1b2; }
   #detail-page #inspector-view .buttons {
     display: block;
     text-align: center;
@@ -49,6 +53,9 @@
   #detail-page #inspector-view .unavailable {
     margin-top: 2em;
     text-align: center; }
+
+#detail-page .more .icon {
+  color: #3273dc; }
 
 #detail-page #map-prompt:hover {
   background: #f9fafb;
