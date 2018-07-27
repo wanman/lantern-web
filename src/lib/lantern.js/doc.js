@@ -154,11 +154,10 @@ window.LanternDocument = (function(id,stor) {
         }
 
         return stor.post(doc)
-            .then(function(results) {
-                console.log("[doc] saved " + self.id);
-                if (results.rev) {
-                    self.data._rev = results.rev;
-                }
+            .then(function(results) {               
+
+                console.log("[doc] saved " + self.id, results.rev);
+                self.data._rev = results.rev;
                 return doc;
             })
             .catch(function(err) {

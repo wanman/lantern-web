@@ -13845,7 +13845,7 @@ L.TileLayer.addInitHook(function() {
 // 🍂section PouchDB tile caching options
 // 🍂option useCache: Boolean = false
 // Whether to use a PouchDB cache on this tile layer, or not
-L.TileLayer.prototype.options.useCache     = false;
+L.TileLayer.prototype.options.useCache     = true;
 
 // 🍂option saveToCache: Boolean = true
 // When caching is enabled, whether to save new tiles to the cache or not
@@ -14235,8 +14235,10 @@ window.LanternMapManager = function() {
     };
 
     self.fitToMarkers = function() {
-        var group = new L.featureGroup(self.markers);
-        self.map.fitBounds(group.getBounds(), {padding: [50,50]});
+        if (self.markers.length) {
+            var group = new L.featureGroup(self.markers);
+            self.map.fitBounds(group.getBounds(), {padding: [50,50]});            
+        }
     };
 
 

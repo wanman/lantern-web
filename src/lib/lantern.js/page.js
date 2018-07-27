@@ -142,7 +142,7 @@ window.LanternPage = (function(id) {
         }
 
 
-        if (window.location.host == "lantern.global") {
+        if (window.location.host == "lantern.global" && !self.stor.cloud_connected) {
             self.view.$data.cloud_connected = true;
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = true;
@@ -155,41 +155,46 @@ window.LanternPage = (function(id) {
         else {
 
 
-            // check to see if we have cloud access before attempting sync
-            // this could be blocked because we're offline or server is down
-            fetch("https://lantern.global/api/id").then(function(res) {
-                if (res.status == 200) {
-                    self.stor.syncWithCloud(continuous, function(status) {
-                        self.view.$data.cloud_connected = status;
-                    },function(changed_doc) {
-                        console.log("[page] doc changed", changed_doc);
-                        refreshCached(changed_doc);
-                        showSyncIcon(changed_doc);
-                    });
-                }
-            }).catch(function(err) {
-                self.view.$data.cloud_connected = false;
-            });
-
-
-            // check to see if we have rpi access before attempting sync
-            fetch(self.getBaseURI() + "/api/id").then(function(res) {
-                if (res.status == 200) {
-                    self.stor.syncWithLantern(continuous, function(status) {
-                        self.view.$data.lantern_connected = status;
-                        if (status == true) {
-                            loadLanternName();
-                        }
-                    },function(changed_doc) {
-                        // don't display sync message for map cache
-                        if (!changed_doc.dataUrl) {
+            if (self.stor.cloud_connected === null) {
+                // check to see if we have cloud access before attempting sync
+                // this could be blocked because we're offline or server is down
+                fetch("https://lantern.global/api/id").then(function(res) {
+                    if (res.status == 200) {
+                        self.stor.syncWithCloud(continuous, function(status) {
+                            self.view.$data.cloud_connected = status;
+                        },function(changed_doc) {
+                            console.log("[page] doc changed", changed_doc);
+                            refreshCached(changed_doc);
                             showSyncIcon(changed_doc);
-                        }
-                    });
-                }
-            }).catch(function(err) {
-                self.view.$data.lantern_connected = false;
-            });
+                        });
+                    }
+                }).catch(function(err) {
+                    self.view.$data.cloud_connected = null;
+                });
+            }
+
+
+            if (self.stor.lantern_connected === null) {
+
+                // check to see if we have rpi access before attempting sync
+                fetch(self.getBaseURI() + "/api/id").then(function(res) {
+                    if (res.status == 200) {
+                        self.stor.syncWithLantern(continuous, function(status) {
+                            self.view.$data.lantern_connected = status;
+                            if (status == true) {
+                                loadLanternName();
+                            }
+                        },function(changed_doc) {
+                            // don't display sync message for map cache
+                            if (!changed_doc.dataUrl) {
+                                showSyncIcon(changed_doc);
+                            }
+                        });
+                    }
+                }).catch(function(err) {
+                    self.view.$data.lantern_connected = null;
+                });
+            }
         }
     }
 
@@ -357,6 +362,7 @@ window.LanternPage = (function(id) {
     */
     self.sendGeohashToLantern = function(geohash) {
 
+
         // only try to set location once per page-load
         if (did_assign_location) {
             return;
@@ -367,9 +373,11 @@ window.LanternPage = (function(id) {
 
         // increase privacy
         geohash = geohash.substr(0,4);
+        
+        console.log(self.stor.lantern_connected);
 
         // tell device to use this as it's most recent location (skip GPS)
-        if (self.stor.lantern_connceted) {
+        if (self.getBaseURI() != "https://lantern.global") {
             fetch(self.getBaseURI() + "/api/geo",
             {
                 method: "POST",

@@ -72,8 +72,10 @@ window.LanternMapManager = function() {
     };
 
     self.fitToMarkers = function() {
-        var group = new L.featureGroup(self.markers);
-        self.map.fitBounds(group.getBounds(), {padding: [50,50]});
+        if (self.markers.length) {
+            var group = new L.featureGroup(self.markers);
+            self.map.fitBounds(group.getBounds(), {padding: [50,50]});            
+        }
     };
 
 
