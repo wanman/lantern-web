@@ -23,16 +23,23 @@ $light-border: #f2f2f2;
         }
     }
 
-    table {
-        width: 100%;
-        border: 1px solid $light-border;
-
-        .icon {
-            color: #EEE;
+    #host-list {
+        .card-content {
+            padding: 0em;
+            border-bottom: 1px solid $border;
         }
 
-        .icon.online {
-            color: rgb(115, 204, 114);
+        table {
+            width: 100%;
+            border: 1px solid $light-border;
+
+            .icon {
+                color: #EEE;
+            }
+
+            .icon.online {
+                color: rgb(115, 204, 114);
+            }
         }
     }
 }

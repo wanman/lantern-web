@@ -172,12 +172,16 @@ section nav.global {
 
 .card {
     border-radius: 5px;
-    border: 1px solid $border;
+    border: 1px solid $light-border;
 }
 
 .card-header {
-    border-bottom: 1px solid $border;
+    border-bottom: 1px solid $light-border;
     box-shadow: none;
+}
+
+.table td, .table th {
+    border: 0;
 }
 
 

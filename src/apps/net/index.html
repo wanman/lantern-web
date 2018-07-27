@@ -16,13 +16,6 @@ block content
                             i.fas.fa-user
             .card-content {{ u_docs.length }} 
 
-        .card()
-            .card-header 
-                .card-header-title Verifications  
-                .card-header-icon 
-                    span.icon
-                            i.fas.fa-check-double
-            .card-content {{ verifications }} 
 
         .card(@click="handleInspectDevices") 
             .card-header 
@@ -32,17 +25,18 @@ block content
                         i.fas.fa-server
             .card-content {{ d_docs.length }}
 
-        .card
 
+        .card#host-list
             .card-header 
                 .card-header-title Host List 
+            .card-content
+                #map
 
             table.table.is-striped(@click="handleInspectDevices")
                 thead
                     th 
-                    th Name
+                    th Server
                     th Last Seen
-                    th Location
                 tbody
                     tr(v-for="item in d_docs")
                         td
@@ -50,9 +44,15 @@ block content
                                 i.fas.fa-circle
                         td {{ item.title }}
                         td {{ timestamp(item) }}
-                        td
-                            span(v-if="item.geo && item.geo.length") {{ item.geo[item.geo.length-1] }}
 
+
+        .card()
+            .card-header 
+                .card-header-title Verifications  
+                .card-header-icon 
+                    span.icon
+                            i.fas.fa-check-double
+            .card-content {{ verifications }} 
 
 block styles
     link(rel="stylesheet" type="text/css" href="/lib/map.css")

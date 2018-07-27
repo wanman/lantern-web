@@ -59,6 +59,20 @@ window.page = (function() {
             });
             self.view.$data.page_title = "Network";
             self.view.$data.page_loading = false;
+
+            setTimeout(function() {
+
+                self.map = new LanternMapManager();
+
+                self.view.$data.d_docs.forEach(function(d) {
+                    if (d.geo && d.geo.length) {
+                        var coords = Geohash.decode(d.geo[0]);
+                        var pt = self.map.addPoint(d.title, coords, "server", "3273dc");                        
+                    }
+                });
+                self.map.fitToMarkers();
+                self.map.map.setZoom(4);
+            }, 100);        
         })
         .then(setVerificationCount);
     return self;

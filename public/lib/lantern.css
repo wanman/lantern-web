@@ -4993,11 +4993,15 @@ section nav.global {
 
 .card {
   border-radius: 5px;
-  border: 1px solid #c6c8cd; }
+  border: 1px solid #f2f2f2; }
 
 .card-header {
-  border-bottom: 1px solid #c6c8cd;
+  border-bottom: 1px solid #f2f2f2;
   box-shadow: none; }
+
+.table td,
+.table th {
+  border: 0; }
 
 .panel {
   font-size: small;

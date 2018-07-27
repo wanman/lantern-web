@@ -8,11 +8,14 @@
       font-size: x-large; }
     #network-page .card .icon {
       float: right; }
-  #network-page table {
+  #network-page #host-list .card-content {
+    padding: 0em;
+    border-bottom: 1px solid #c6c8cd; }
+  #network-page #host-list table {
     width: 100%;
     border: 1px solid #f2f2f2; }
-    #network-page table .icon {
+    #network-page #host-list table .icon {
       color: #EEE; }
-    #network-page table .icon.online {
+    #network-page #host-list table .icon.online {
       color: #73cc72; }
 

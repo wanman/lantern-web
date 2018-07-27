@@ -59,13 +59,6 @@
                             </div>
                             <div class="card-content">{{ u_docs.length }} </div>
                         </div>
-                        <div class="card">
-                            <div class="card-header"> 
-                                <div class="card-header-title">Verifications  </div>
-                                <div class="card-header-icon"> <span class="icon"><i class="fas fa-check-double"></i></span></div>
-                            </div>
-                            <div class="card-content">{{ verifications }} </div>
-                        </div>
                         <div class="card" @click="handleInspectDevices"> 
                             <div class="card-header"> 
                                 <div class="card-header-title">Active Hosts </div>
@@ -73,26 +66,34 @@
                             </div>
                             <div class="card-content">{{ d_docs.length }}</div>
                         </div>
-                        <div class="card">
+                        <div class="card" id="host-list">
                             <div class="card-header"> 
                                 <div class="card-header-title">Host List </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="map"></div>
                             </div>
                             <table class="table is-striped" @click="handleInspectDevices">
                                 <thead>
                                     <th> </th>
-                                    <th>Name</th>
+                                    <th>Server</th>
                                     <th>Last Seen</th>
-                                    <th>Location</th>
                                 </thead>
                                 <tbody>
                                     <tr v-for="item in d_docs">
                                         <td><span class="icon" v-bind:class="item.status == 1 ? 'online' : ''"><i class="fas fa-circle"></i></span></td>
                                         <td>{{ item.title }}</td>
                                         <td>{{ timestamp(item) }}</td>
-                                        <td><span v-if="item.geo &amp;&amp; item.geo.length">{{ item.geo[item.geo.length-1] }}</span></td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="card">
+                            <div class="card-header"> 
+                                <div class="card-header-title">Verifications  </div>
+                                <div class="card-header-icon"> <span class="icon"><i class="fas fa-check-double"></i></span></div>
+                            </div>
+                            <div class="card-content">{{ verifications }} </div>
                         </div>
                     </div>
                 </div>

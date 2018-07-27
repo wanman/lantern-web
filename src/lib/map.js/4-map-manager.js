@@ -15,7 +15,8 @@ window.LanternMapManager = function() {
             dbName: "lantern-maps",
             maxZoom: 16,
             useCache: true,
-            crossOrigin: true
+            crossOrigin: true,
+            noWrap: true
         }).addTo(self.map);
 
         // default to center of US as starting location for map
