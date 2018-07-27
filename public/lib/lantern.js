@@ -868,7 +868,7 @@ window.LanternPage = (function(id) {
     self.addHelper("timestamp", function(item) {
         // make sure we have a most recent timestamp to work with
         var timestamp = item.updated_at || item.created_at || item.imported_at;
-        return moment(timestamp).startOf('hour').fromNow();
+        return moment(timestamp).fromNow();
     });
 
     /**
@@ -1007,7 +1007,7 @@ window.LanternStor = (function($data, uri) {
         if (obj._deleted == true) {
             return;
         }
-        console.log("[stor] add " + doc.id + " to cache",  obj);
+        //console.log("[stor] add " + doc.id + " to cache",  obj);
         var type_key = type+"_docs";
         if (!$data.hasOwnProperty(type_key)) {
             $data[type_key] = [];
@@ -1185,6 +1185,10 @@ window.LanternStor = (function($data, uri) {
         return self.db.remove.apply(self.db, arguments).then(function(result) {
             removeFromCache(doc_id);
             return result;
+        })
+        .catch(function (err) {
+            console.log(err);
+            // error!
         });
     };
 
@@ -1222,6 +1226,10 @@ window.LanternStor = (function($data, uri) {
             }
             refreshDocInCache(new LanternDocument(doc, self));
             return results;
+        })
+        .catch(function (err) {
+            console.log(err);
+            // error!
         });
     };
 
@@ -1242,6 +1250,10 @@ window.LanternStor = (function($data, uri) {
             new_doc.set("_rev", results.rev);
             refreshDocInCache(new_doc);
             return results;
+        })
+        .catch(function (err) {
+            console.log(err);
+            // error!
         });
     };
 
@@ -1250,6 +1262,12 @@ window.LanternStor = (function($data, uri) {
         var cached = self.doc_cache[id];
         if (!cached) return;
         return $data[cached.type+"_docs"][cached.index];
+    };
+
+    self.getCachedIndex = function(id) {
+        var cached = self.doc_cache[id];
+        if (!cached) return;
+        return cached.index;
     };
 
 

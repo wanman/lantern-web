@@ -41,13 +41,8 @@ window.page = (function() {
         });
 
         if (item_id) {
-            self.stor.get(item_id).then(function(doc) {
-                self.view.$data.selected_item = doc.toJSONFriendly();
-                self.view.$data.page_loading = false;
-            })
-            .catch(function(err) {
-                console.log("[detail] could not get: " + item_id, err);
-            });
+            self.view.$data.selected_item = self.stor.getCachedIndex(item_id);
+            self.view.$data.page_loading = false;
         }
         else {
             self.view.$data.page_loading = false;
@@ -67,7 +62,7 @@ window.page = (function() {
     self.addHelper("makeItemStyle", function(item) {
         var category = self.stor.getCached("c:"+item.category[0]);
         var style = "border-color: #" +  category.style.color;
-        if (item._id == self.view.$data.selected_item._id) {
+        if (item._id == item_id) {
             style += "; border-width: 2px;";
         }
 
@@ -78,18 +73,22 @@ window.page = (function() {
         return style;
     });
 
-    self.addHelper("handleSelectItem", function(item) {
-        if (self.view.$data.selected_item._id == item._id) {
+    self.addHelper("handleToggleSelectItem", function(item) {
+        
+        if (item._id == item_id) {
+            //console.log("[detail] hide inspector");
+            item_id = null;
             self.map.addZoomControl();
+            self.view.$data.show_inspector = false;
             self.view.$data.selected_item = {};
-            self.view.$data.show_inspector = false;      
         }
         else {
-            self.map.removeZoomControl();
-            self.view.$data.selected_item = item;
+            self.view.$data.selected_item = self.stor.getCachedIndex(item._id);
+            item_id = item._id;
+            //console.log("[detail] show inspector");
             self.view.$data.show_inspector = true;
+            self.map.removeZoomControl();
         }
-        
     });
 
     self.addHelper("clearSelectItem", function() {
@@ -138,13 +137,21 @@ window.page = (function() {
                 new_doc.set("status", 1);
                 new_doc.push("parent", venue_id);
                 new_doc.set("$ca", new Date());
+                new_doc.push("vote", {
+                    "slug": "neighbors",
+                    "title": "Neighbors",
+                    "votes": 0
+                });
+                new_doc.push("vote", {
+                    "slug": "town",
+                    "title": "Town Officials",
+                    "votes": 0
+                });
                 new_doc.push("category", item_type.slug);
 
                 new_doc.save().then(renderDefaultView);
             }
         });
-
-
 
     });
 
@@ -186,13 +193,13 @@ window.page = (function() {
 
 
     self.addHelper("handleActionButton", function() {
-        console.log("HIT THAT");
         renderDefaultView();
     });
 
     //------------------------------------------------------------------------
     self.render()
         .then(self.connect)
+        .then(self.getItems)
         .then(function() {
             self.view.$data.allow_back_button = true;
             return self.getCategories();
@@ -204,7 +211,6 @@ window.page = (function() {
                 }
             });
         })
-        .then(self.getItems)
         .then(renderDefaultView);
 
     return self;

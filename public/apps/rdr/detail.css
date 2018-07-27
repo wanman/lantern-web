@@ -55,7 +55,11 @@
     text-align: center; }
 
 #detail-page .more .icon {
+  padding: 2em;
   color: #3273dc; }
+
+#detail-page .more .icon:hover {
+  cursor: pointer; }
 
 #detail-page #map-prompt:hover {
   background: #f9fafb;

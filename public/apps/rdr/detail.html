@@ -58,23 +58,23 @@
                     </div>
                     <div v-cloak>
                         <div id="inspector-view" v-if="show_inspector &amp;&amp; !show_input">
-                            <h3>{{ getCategory(selected_item.category).title }} Verifications</h3>
-                            <div v-if="selected_item.status &amp;&amp; selected_item.vote">
-                                <h4 class="time">Last vote {{ timestamp(selected_item) }}</h4>
-                                <div class="tags-container"><a class="tags has-addons" v-for="row in selected_item.vote" v-if="row.votes &gt; 0" @click="handleVote(selected_item, row)"> <span class="tag is-primary">
+                            <h3>{{ getCategory(i_docs[selected_item].category).title }} Verifications</h3>
+                            <div v-if="i_docs[selected_item].status &amp;&amp; i_docs[selected_item].vote">
+                                <h4 class="time">Last vote {{ timestamp(i_docs[selected_item]) }}</h4>
+                                <div class="tags-container"><a class="tags has-addons" v-for="row in i_docs[selected_item].vote" @click="handleVote(i_docs[selected_item], row)"> <span class="tag is-primary">
                                             <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ row.votes }}</span><span class="tag"> {{ row.title }}</span></a></div>
                             </div>
-                            <div class="unavailable" v-if="!selected_item.vote">
-                                <p>Nobody has verified this report just yet. Please check back soon.</p>
-                            </div>
-                            <div class="unavailable" v-if="selected_item.status == 0">
+                            <div class="unavailable" v-if="i_docs[selected_item].status == 0">
                                 <p>Sorry, this item has been reported unavailable. Please check back soon.</p>
+                            </div>
+                            <div class="unavailable" v-if="!i_docs[selected_item].vote">
+                                <p>Nobody has verified this report just yet. Please check back soon.</p>
                             </div>
                         </div>
                         <div id="map-prompt" v-if="!show_inspector &amp;&amp; !show_map" @click="handleShowMap"><span class="icon"><i class="fas fa-map"></i></span><span>Show Map</span></div>
                         <div id="map" v-bind:style="'display:'  + (show_map &amp;&amp; !show_input ? 'block' : 'none')"></div>
                         <div v-cloak v-if="!page_loading &amp;&amp; !show_input">
-                            <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)"><span class="status" v-if="item.status">
+                            <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleToggleSelectItem(item)"><span class="status" v-if="item.status">
                                     <div class="tags">
                                         <div class="tag"> 
                                             <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ countVotes(item) }}

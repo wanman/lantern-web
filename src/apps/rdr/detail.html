@@ -20,16 +20,14 @@ block content
       
         #inspector-view(v-if="show_inspector && !show_input")
 
-            h3 {{ getCategory(selected_item.category).title }} Verifications
+            h3 {{ getCategory(i_docs[selected_item].category).title }} Verifications
 
-            div(v-if="selected_item.status && selected_item.vote")
+            div(v-if="i_docs[selected_item].status && i_docs[selected_item].vote")
 
-
-                h4.time Last vote {{ timestamp(selected_item) }}
-
+                h4.time Last vote {{ timestamp(i_docs[selected_item]) }}
 
                 .tags-container
-                    a.tags.has-addons(v-for="row in selected_item.vote" v-if="row.votes > 0" @click="handleVote(selected_item, row)") 
+                    a.tags.has-addons(v-for="row in i_docs[selected_item].vote" @click="handleVote(i_docs[selected_item], row)") 
                      
                         span.tag.is-primary
                             .icon
@@ -37,11 +35,12 @@ block content
                             | {{ row.votes }}
                         span.tag  {{ row.title }}
 
-            div.unavailable(v-if="!selected_item.vote")
-                p Nobody has verified this report just yet. Please check back soon.
-            div.unavailable(v-if="selected_item.status == 0")
+            div.unavailable(v-if="i_docs[selected_item].status == 0")
                 p Sorry, this item has been reported unavailable. Please check back soon.
-                
+                    
+            div.unavailable(v-if="!i_docs[selected_item].vote")
+                p Nobody has verified this report just yet. Please check back soon.
+            
         #map-prompt(v-if="!show_inspector && !show_map" @click="handleShowMap")
             span.icon
                 i.fas.fa-map
@@ -51,7 +50,7 @@ block content
         #map(v-bind:style="'display:'  + (show_map && !show_input ? 'block' : 'none')")
 
         div(v-cloak v-if="!page_loading && !show_input")
-            .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleSelectItem(item)")
+            .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleToggleSelectItem(item)")
 
                
                 span.status(v-if="item.status")
