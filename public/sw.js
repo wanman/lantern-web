@@ -31,7 +31,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/chk/index.js",
-    "revision": "e51eb7b26b20eb6cb08854a8107dfcba"
+    "revision": "fe983633ee9f074af4d98c03dc9ca960"
   },
   {
     "url": "apps/dba/index.css",
@@ -67,7 +67,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rdr/detail.js",
-    "revision": "bd9e57c6b7a92d07d0633453cc133498"
+    "revision": "1ef8d9ee35e3cb1760308774d82b5fb3"
   },
   {
     "url": "apps/rdr/index.css",
@@ -75,11 +75,11 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rdr/index.html",
-    "revision": "bf1e357bf4f00aaae5a84928840a08d7"
+    "revision": "6a0e237c29f489caf60f1fba053c5a2c"
   },
   {
     "url": "apps/rdr/index.js",
-    "revision": "ada01733a7626020fd03567e88306506"
+    "revision": "71239917f8a9e543d6969abc5c557cb7"
   },
   {
     "url": "apps/rpt/index.css",

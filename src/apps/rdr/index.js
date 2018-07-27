@@ -12,18 +12,21 @@ window.page = (function() {
 
     function reflowView() {
         category_id = self.getHashParameterByName("cat");
-        loadVenues().then(function() {
-            if (self.getHashParameterByName("v") == "map") {
+        loadVenues();
+
+        if (self.getHashParameterByName("v") == "map") {
+            setTimeout(function() {
                 showMap();
-            }
-            else if (self.getHashParameterByName("v") == "list") {
-                showList();
-            }
-            else {
-                self.view.$data.show_filters = false;
-                self.view.$data.personalizing = false;
-            }
-        });
+            }, 50);
+        }
+        else if (self.getHashParameterByName("v") == "list") {
+            showList();
+        }
+        else {
+            self.view.$data.show_list = true;
+            self.view.$data.show_filters = false;
+            self.view.$data.personalizing = false;
+        }
     }
 
 
@@ -31,60 +34,56 @@ window.page = (function() {
     * Make sure we have venues to work with
     */
     function loadVenues() {
-        return self.getVenues().then(function(venues) {
 
-            return self.getCategories().then(function(categories) {
+        self.view.$data.item_categories = [];
 
-                // cache items for future association with venues
-                return self.getItems().then(function(items) {
+        var categories = Object.values(self.stor.type_cache.c);
+        var items = Object.values(self.stor.type_cache.i);
 
-                    self.view.$data.item_categories = [];
+
+        categories.forEach(function(cat) {
+            if (cat.has("tag", "itm")) {
+                var data = cat.toJSONFriendly();
+                data.count = 0;
+
+                items.forEach(function(item) {
+                    var categories = item.get("category") || [];
 
                     categories.forEach(function(cat) {
-                        if (cat.has("tag", "itm")) {
-                            var data = cat.toJSONFriendly();
-                            data.count = 0;
 
-                            items.forEach(function(item) {
-                                var categories = item.get("category") || [];
-
-                                categories.forEach(function(cat) {
-
-                                    if (item.id[2] == "v" && cat == data.slug) {
-                                        data.count++;
-                                    }
-                                });
-                            });
-
-                            self.view.$data.item_categories.push(data);
+                        if (item.id[2] == "v" && cat == data.slug) {
+                            data.count++;
                         }
                     });
-
-
-                    self.view.$data.filtered_venues = [];
-
-
-                    if (category_id) {
-                        self.view.$data.page_title = "Supplies : " + 
-                            self.stor.getCached("c:" + category_id).title;
-                    }
-                    else {
-                        self.view.$data.page_title = "Supplies";
-                    }
-
-                    items.forEach(function(item) {
-                        if (!category_id || item.has("category", category_id)) {
-                            var venue = item.get("parent")[0];
-                            if (venue && venue[0] == "v") {
-                                self.view.$data.filtered_venues.push(venue);
-                            }
-                        }
-                    });
-                    self.view.$data.category = category_id;
-                    self.view.$data.page_loading = false;
                 });
-            });
+
+                self.view.$data.item_categories.push(data);
+            }
         });
+
+
+        self.view.$data.filtered_venues = [];
+
+
+        if (category_id) {
+            self.view.$data.page_title = "Supplies : " + 
+                self.stor.getCached("c:" + category_id).title;
+        }
+        else {
+            self.view.$data.page_title = "Supplies";
+        }
+
+        items.forEach(function(item) {
+            if (!category_id || item.has("category", category_id)) {
+                var venue = item.get("parent")[0];
+                if (venue && venue[0] == "v") {
+                    self.view.$data.filtered_venues.push(venue);
+                }
+            }
+        });
+        self.view.$data.category = category_id;
+        self.view.$data.page_loading = false;
+
     }
 
 
@@ -104,6 +103,7 @@ window.page = (function() {
 
         console.log("[rdr] show map");
         self.view.$data.show_map = true;
+        self.view.$data.show_list = false;
         self.view.$data.show_filters = false;
         var icon = null;
         var color = null;
@@ -150,6 +150,7 @@ window.page = (function() {
     function showList() {
         console.log("[rdr] show list");
         self.view.$data.show_map = false;
+        self.view.$data.show_list = true;
         self.view.$data.show_filters = false;
         self.view.$data.personalizing = false;
     }
@@ -168,6 +169,7 @@ window.page = (function() {
     self.addData("category", null);
     self.addData("filtered_venues", []);
     self.addData("show_map", null);
+    self.addData("show_list", null);
     self.addData("geolocation", null);
 
 
@@ -304,9 +306,11 @@ window.page = (function() {
         .then(function() {
             self.view.$data.page_title = "Supplies";
             self.view.$data.page_action_icon = "filter";
-
         })
         .then(self.connect)
+        .then(self.getVenues)
+        .then(self.getCategories)
+        .then(self.getItems)
         .then(reflowView);
 
     return self; 

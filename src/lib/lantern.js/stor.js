@@ -5,7 +5,8 @@ window.LanternStor = (function($data, uri) {
     uri = uri.replace(":3000", "");
 
     var self = {
-        cache: {},        
+        doc_cache: {},
+        type_cache: {},  
         browser_db: null,
         lantern_db: new PouchDB(uri + "/db/lantern/", {
             skip_setup: true,
@@ -52,7 +53,9 @@ window.LanternStor = (function($data, uri) {
         if (!index) return;
         //console.log("[stor] remove from cache", doc_id, index);
         $data[type+"_docs"].splice(index, 1);
-        self.cache[doc_id] = null;
+        self.doc_cache[doc_id] = null;
+        if (self.type_cache[type] && self.type_cache[type][doc_id]);
+        delete self.type_cache[type][doc_id];
     }
 
     function addToCache(doc) {
@@ -77,11 +80,14 @@ window.LanternStor = (function($data, uri) {
         else {
             $data[type_key].push(obj);
             index = getIndexForDoc(doc.id, type);
-            self.cache[doc.id] = {
+            self.doc_cache[doc.id] = {
                 id: doc.id, 
                 type: type,
                 index: index
             };
+
+            self.type_cache[type] = self.type_cache[type] || {};
+            self.type_cache[type][doc.id] = doc;
         }
     }
 
@@ -92,21 +98,25 @@ window.LanternStor = (function($data, uri) {
         var obj = doc.toJSONFriendly();
 
 
-        console.log("[stor] replace cache doc:", obj._id, type, index);
+        //console.log("[stor] replace cache doc:", obj._id, type, index);
 
         $data[type+"_docs"].splice(index, 1, obj);
-        self.cache[doc.id].index = index;
+        self.doc_cache[doc.id].index = index;
+
+
+        self.type_cache[type] = self.type_cache[type] || {};
+        self.type_cache[type][doc.id] = doc;
     }
 
 
     function refreshDocInCache(doc) {
         var type = doc.id.split(":")[0];
-        var obj = doc.toJSONFriendly();
         var index;
+
         // is the document already cached?
-        if (self.cache[doc.id]) {
+        if (self.doc_cache[doc.id]) {
             index = getIndexForDoc(doc.id,type);
-            if (obj._deleted) {
+            if (doc.data._deleted) {
                 removeFromCache(doc.id);
             }
             else {
@@ -221,7 +231,7 @@ window.LanternStor = (function($data, uri) {
         return self.db.allDocs(params)
             .then(function(result) {
 
-                //console.log("[stor] loading type: " + type + " (" + result.rows.length + ")");
+               console.log("[stor] loading type: " + type + " (" + result.rows.length + ")");
 
                 return Promise.all(result.rows.map(function(result) {
 
@@ -302,7 +312,7 @@ window.LanternStor = (function($data, uri) {
 
 
     self.getCached = function(id) {
-        var cached = self.cache[id];
+        var cached = self.doc_cache[id];
         if (!cached) return;
         return $data[cached.type+"_docs"][cached.index];
     };

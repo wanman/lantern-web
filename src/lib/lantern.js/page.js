@@ -278,62 +278,64 @@ window.LanternPage = (function(id) {
         return new Promise(function(resolve, reject) {
 
             var venue_options = {};
-            self.getItems().then(function(items) {
-                
-                items.forEach(function(item){
-                    var v = item.get("parent")[0];
-                    if (item.get("category") ) {
-                        var c_doc = "c:"+item.get("category")[0];
-                        venue_options[v] = venue_options[v] || [];
-                        venue_options[v].push(self.stor.getCached(c_doc));
-                    }
-                });
 
-                // add venues to map
-
-                venues.forEach(function(v_id) {
-                    var coords = [];
-                    var venue = self.stor.getCached(v_id);
-                    
-                    if (venue.geo) {
-                        for (var idx in venue.geo) {
-                            try {
-                                var c = Geohash.decode(venue.geo[idx]);
-                                coords.push(c);
-                            }
-                            catch(e) {
-                                console.error("[page] invalid geohash " + venue.geo + " for: " + v_id);
-                            }
-                        }   
-                    }
-
-                    if (coords.length == 1) {
-                        // point
-                        var final_icon = icon || venue_options[venue._id][0].icon;
-                        var final_color = color || venue_options[venue._id][0].style.color;
-                        var pt = self.map.addPoint(venue.title, coords[0], final_icon, final_color);
-                       
-
-                        if (show_tooltip) {
-                            
-                            pt.on("click", function(e) {
-                                window.location = "/apps/rdr/detail.html#mrk=" + v_id;
-                            });
-
-                            pt.openTooltip();
-                        }
-
-                    }
-                    else if (coords.length == 2) {
-                        // draw a shape
-                        self.map.addPolygon(venue.title, coords);
-                    }
-                });
-                resolve(self.map);
-
+            items = [];
+            if (self.stor.type_cache.hasOwnProperty("i")) {
+                items = Object.values(self.stor.type_cache.i);  
+            } 
+            
+            items.forEach(function(item){
+                var v = item.get("parent")[0];
+                if (item.get("category") ) {
+                    var c_doc = "c:"+item.get("category")[0];
+                    venue_options[v] = venue_options[v] || [];
+                    venue_options[v].push(self.stor.getCached(c_doc));
+                }
             });
-        });
 
+            // add venues to map
+
+            venues.forEach(function(v_id) {
+                var coords = [];
+                var venue = self.stor.getCached(v_id);
+                
+                if (venue.geo) {
+                    for (var idx in venue.geo) {
+                        try {
+                            var c = Geohash.decode(venue.geo[idx]);
+                            coords.push(c);
+                        }
+                        catch(e) {
+                            console.error("[page] invalid geohash " + venue.geo + " for: " + v_id);
+                        }
+                    }   
+                }
+
+                if (coords.length == 1) {
+                    // point
+                    var final_icon = icon || venue_options[venue._id][0].icon;
+                    var final_color = color || venue_options[venue._id][0].style.color;
+                    var pt = self.map.addPoint(venue.title, coords[0], final_icon, final_color);
+                   
+
+                    if (show_tooltip) {
+                        
+                        pt.on("click", function(e) {
+                            window.location = "/apps/rdr/detail.html#mrk=" + v_id;
+                        });
+
+                        pt.openTooltip();
+                    }
+
+                }
+                else if (coords.length == 2) {
+                    // draw a shape
+                    self.map.addPolygon(venue.title, coords);
+                }
+            });
+            resolve(self.map);
+
+        });
     };
     
     self.askForLocation = function() {

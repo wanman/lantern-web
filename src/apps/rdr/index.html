@@ -20,7 +20,7 @@ block content
   
 
   
-        #map-prompt(v-if="!show_filters")
+        #map-prompt(v-if="!show_filters && (show_list || show_map)")
             .buttons.has-addons.is-centered
 
                 span.button(@click="handleShowList" v-bind:class="show_map ? '' : 'is-info is-selected'")
@@ -63,7 +63,7 @@ block content
 
 
         // venues view -------------------------------------------------------
-        #venues-view(v-if="!show_map && !show_filters")
+        #venues-view(v-if="show_list && !show_filters")
             #venues
                 p(v-if="!filtered_venues.length" ) No items have been reported to match your search yet. Please check back soon.
 

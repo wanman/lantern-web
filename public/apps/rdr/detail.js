@@ -204,7 +204,7 @@ window.page = (function() {
                 }
             });
         })
-        .then(self.getManyItems)
+        .then(self.getItems)
         .then(renderDefaultView);
 
     return self;

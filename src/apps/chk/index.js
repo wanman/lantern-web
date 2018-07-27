@@ -51,6 +51,7 @@ window.page = (function() {
 
     self.render()
         .then(self.connect)
+        .then(self.getItems)
         .then(function() {
             self.view.$data.page_title = "Safety Check-In";
             self.view.$data.page_loading = false;

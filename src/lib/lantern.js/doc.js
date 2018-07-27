@@ -158,7 +158,6 @@ window.LanternDocument = (function(id,stor) {
                 console.log("[doc] saved " + self.id);
                 if (results.rev) {
                     self.data._rev = results.rev;
-                    console.log("UPDATED DOC REV", self.data._rev);
                 }
                 return doc;
             })
