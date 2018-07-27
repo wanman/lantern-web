@@ -147,6 +147,8 @@ window.LanternPage = (function(id) {
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = true;
             }, function(changed_doc) {
+                console.log(changed_doc);
+                refreshCached(changed_doc);
                 // showSyncIcon();
             });
         }
@@ -160,6 +162,8 @@ window.LanternPage = (function(id) {
                     self.stor.syncWithCloud(continuous, function(status) {
                         self.view.$data.cloud_connected = status;
                     },function(changed_doc) {
+                        console.log("[page] doc changed", changed_doc);
+                        refreshCached(changed_doc);
                         showSyncIcon(changed_doc);
                     });
                 }
@@ -279,15 +283,12 @@ window.LanternPage = (function(id) {
 
             var venue_options = {};
 
-            items = [];
-            if (self.stor.type_cache.hasOwnProperty("i")) {
-                items = Object.values(self.stor.type_cache.i);  
-            } 
+            items = self.stor.getManyCachedByType("i");
             
             items.forEach(function(item){
-                var v = item.get("parent")[0];
-                if (item.get("category") ) {
-                    var c_doc = "c:"+item.get("category")[0];
+                if (item.parent && item.category) {
+                    var v = item.parent[0];
+                    var c_doc = "c:"+item.category[0];
                     venue_options[v] = venue_options[v] || [];
                     venue_options[v].push(self.stor.getCached(c_doc));
                 }

@@ -37,29 +37,23 @@ window.page = (function() {
     */
     function loadVenues() {
 
-        self.view.$data.item_categories = [];
 
-        var categories = Object.values(self.stor.type_cache.c);
-        var items = Object.values(self.stor.type_cache.i);
-
+        var categories = self.stor.getManyCachedByType("c");
+        var items = self.stor.getManyCachedByType("i");
 
         categories.forEach(function(cat) {
-            if (cat.has("tag", "itm")) {
-                var data = cat.toJSONFriendly();
-                data.count = 0;
 
+            if (cat.tag && cat.tag.indexOf("itm") != -1) {
+                cat.count = 0;
                 items.forEach(function(item) {
-                    var categories = item.get("category") || [];
-
-                    categories.forEach(function(cat) {
-
-                        if (item.id[2] == "v" && cat == data.slug) {
-                            data.count++;
-                        }
-                    });
+                    if (item.category && item.category.length) {
+                        item.category.forEach(function(cat_slug) {
+                            if (item._id[2] == "v" && cat.slug == cat_slug) {
+                                cat.count++;
+                            }
+                        });   
+                    }
                 });
-
-                self.view.$data.item_categories.push(data);
             }
         });
 
@@ -76,10 +70,12 @@ window.page = (function() {
         }
 
         items.forEach(function(item) {
-            if (!category_id || item.has("category", category_id)) {
-                var venue = item.get("parent")[0];
-                if (venue && venue[0] == "v") {
-                    self.view.$data.filtered_venues.push(venue);
+            if (!category_id || item.category && item.category.indexOf(category_id) != -1) {
+                if (item.parent && item.parent[0]) {   
+                    var venue = item.parent[0];
+                    if (venue && venue[0] == "v") {
+                        self.view.$data.filtered_venues.push(venue);
+                    }
                 }
             }
         });
@@ -161,7 +157,6 @@ window.page = (function() {
     //------------------------------------------------------------------------
         
     // filter view
-    self.addData("item_categories", []);
     self.addData("selected_category", null);
     self.addData("personalizing", false);
     self.addData("last_sync_check", new Date());

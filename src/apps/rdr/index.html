@@ -45,7 +45,7 @@ block content
 
 
             ul.item-list
-                li.item(v-for="cat in item_categories" v-bind:id="cat._id" v-bind:ref="cat.slug" 
+                li.item(v-for="cat in c_docs" v-if="cat.tag && cat.tag[0] == 'itm'" v-bind:id="cat._id" v-bind:ref="cat.slug" 
                    @click="handleCategorySelect(cat)" 
                     )
                         span.icon.is-large(v-bind:style="makeCategoryStyle(cat)") 

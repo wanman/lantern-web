@@ -571,6 +571,8 @@ window.LanternPage = (function(id) {
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = true;
             }, function(changed_doc) {
+                console.log(changed_doc);
+                refreshCached(changed_doc);
                 // showSyncIcon();
             });
         }
@@ -584,6 +586,8 @@ window.LanternPage = (function(id) {
                     self.stor.syncWithCloud(continuous, function(status) {
                         self.view.$data.cloud_connected = status;
                     },function(changed_doc) {
+                        console.log("[page] doc changed", changed_doc);
+                        refreshCached(changed_doc);
                         showSyncIcon(changed_doc);
                     });
                 }
@@ -703,15 +707,12 @@ window.LanternPage = (function(id) {
 
             var venue_options = {};
 
-            items = [];
-            if (self.stor.type_cache.hasOwnProperty("i")) {
-                items = Object.values(self.stor.type_cache.i);  
-            } 
+            items = self.stor.getManyCachedByType("i");
             
             items.forEach(function(item){
-                var v = item.get("parent")[0];
-                if (item.get("category") ) {
-                    var c_doc = "c:"+item.get("category")[0];
+                if (item.parent && item.category) {
+                    var v = item.parent[0];
+                    var c_doc = "c:"+item.category[0];
                     venue_options[v] = venue_options[v] || [];
                     venue_options[v].push(self.stor.getCached(c_doc));
                 }
@@ -948,8 +949,7 @@ window.LanternStor = (function($data, uri) {
     uri = uri.replace(":3000", "");
 
     var self = {
-        doc_cache: {},
-        type_cache: {},  
+        doc_cache: {}, 
         browser_db: null,
         lantern_db: new PouchDB(uri + "/db/lantern/", {
             skip_setup: true,
@@ -994,11 +994,9 @@ window.LanternStor = (function($data, uri) {
         var type = doc_id.split(":")[0];
         var index = getIndexForDoc(doc_id,type);
         if (!index) return;
-        //console.log("[stor] remove from cache", doc_id, index);
+        console.log("[stor] remove from cache", doc_id, index);
         $data[type+"_docs"].splice(index, 1);
         self.doc_cache[doc_id] = null;
-        if (self.type_cache[type] && self.type_cache[type][doc_id]);
-        delete self.type_cache[type][doc_id];
     }
 
     function addToCache(doc) {
@@ -1009,7 +1007,7 @@ window.LanternStor = (function($data, uri) {
         if (obj._deleted == true) {
             return;
         }
-        //console.log("[stor] cache doc:", obj);
+        console.log("[stor] add " + doc.id + " to cache",  obj);
         var type_key = type+"_docs";
         if (!$data.hasOwnProperty(type_key)) {
             $data[type_key] = [];
@@ -1029,8 +1027,6 @@ window.LanternStor = (function($data, uri) {
                 index: index
             };
 
-            self.type_cache[type] = self.type_cache[type] || {};
-            self.type_cache[type][doc.id] = doc;
         }
     }
 
@@ -1041,14 +1037,10 @@ window.LanternStor = (function($data, uri) {
         var obj = doc.toJSONFriendly();
 
 
-        //console.log("[stor] replace cache doc:", obj._id, type, index);
+        console.log("[stor] replace cache doc:", obj._id, type, index);
 
         $data[type+"_docs"].splice(index, 1, obj);
         self.doc_cache[doc.id].index = index;
-
-
-        self.type_cache[type] = self.type_cache[type] || {};
-        self.type_cache[type][doc.id] = doc;
     }
 
 
@@ -1258,6 +1250,16 @@ window.LanternStor = (function($data, uri) {
         var cached = self.doc_cache[id];
         if (!cached) return;
         return $data[cached.type+"_docs"][cached.index];
+    };
+
+
+    self.getManyCachedByType = function(type) {
+        return $data[type+"_docs"] || [];
+    };
+
+
+    self.refreshCached = function(doc) {
+        return refreshDocInCache(doc);
     };
 
 
