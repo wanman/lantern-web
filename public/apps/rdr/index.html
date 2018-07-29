@@ -78,7 +78,7 @@
                         <!-- venues view --------------------------------------------------------->
                         <div id="venues-view" v-if="show_list &amp;&amp; !show_filters">
                             <div id="venues">
-                                <p v-if="!filtered_venues.length">No items have been reported to match your search yet. Please check back soon.</p>
+                                <p v-if="!filtered_venues.length">No venues found to match your search. Please check back soon.</p>
                                 <div v-if="filtered_venues.length">
                                     <div class="panel" v-bind:data-id="venue._id" v-for="venue in v_docs" v-if="filtered_venues.indexOf(venue._id) != -1">
                                         <div class="panel-heading" @click="handleVenueSelect(venue)">

@@ -65,6 +65,9 @@ html, body {
   padding: 1em; }
   #browse-page #venues-view h3 {
     text-align: left; }
+  #browse-page #venues-view p {
+    margin: 4em;
+    text-align: center; }
 
 #filters {
   z-index: 10002;

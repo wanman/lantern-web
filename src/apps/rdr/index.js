@@ -34,7 +34,65 @@ window.page = (function() {
     * Make sure we have venues to work with
     */
     function loadVenues() {
+        if (category_id) {
+            self.view.$data.page_title = "Supplies : " + 
+                self.stor.getCached("c:" + category_id).title;
+        }
+        else {
+            self.view.$data.page_title = "Supplies";
+        }
+        updateFilteredVenues(category_id);
+        self.view.$data.category = category_id;
+        self.view.$data.page_loading = false;
 
+    }
+
+    function updateFilteredVenues(cat) {
+
+        var venues = [];
+        var items = self.stor.getManyCachedByType("i");
+
+        self.view.$data.v_docs.forEach(function(venue) {
+            var is_match = false;
+
+            if (!cat) {
+                // no category filter selected
+                is_match = true;
+            }
+            else {
+                items.forEach(function(item) {
+                    if (item.hasOwnProperty("parent") && item.parent[0] == venue._id) {
+                        if (item.category.indexOf(cat) != -1) {
+                            is_match = true;
+                        }
+                    }
+                });
+            }
+
+            var index = self.view.$data.filtered_venues.indexOf(venue._id);
+
+            if (index == -1) {
+                if (is_match) {
+                    self.view.$data.filtered_venues.push(venue._id);         
+                }
+            }
+            else {
+                if (is_match) {
+                    // already added              
+                }
+                else {
+                    // remove bad match
+                    self.view.$data.filtered_venues.splice(index,1);
+                }
+            }
+        });
+        return venues;
+    }
+
+
+    function showFilterMenu() {
+
+        self.view.$data.show_filters = true; 
 
         var categories = self.stor.getManyCachedByType("c");
         var items = self.stor.getManyCachedByType("i");
@@ -54,35 +112,7 @@ window.page = (function() {
                 });
             }
         });
-
-
-        self.view.$data.filtered_venues = [];
-
-
-        if (category_id) {
-            self.view.$data.page_title = "Supplies : " + 
-                self.stor.getCached("c:" + category_id).title;
-        }
-        else {
-            self.view.$data.page_title = "Supplies";
-        }
-
-        items.forEach(function(item) {
-            if (!category_id || item.category && item.category.indexOf(category_id) != -1) {
-                if (item.parent && item.parent[0]) {   
-                    var venue = item.parent[0];
-                    if (venue && venue[0] == "v") {
-                        self.view.$data.filtered_venues.push(venue);
-                    }
-                }
-            }
-        });
-        self.view.$data.category = category_id;
-        self.view.$data.page_loading = false;
-
     }
-
-
 
     /**
     * Update interface based on user's changing geolocation
@@ -96,8 +126,6 @@ window.page = (function() {
 
     
     function showMap() {
-
-        console.log("[rdr] show map");
         self.view.$data.show_map = true;
         self.view.$data.show_list = false;
         self.view.$data.show_filters = false;
@@ -110,11 +138,11 @@ window.page = (function() {
             color = cat.style.color;
         }   
 
+
   
         self.renderMap(self.view.$data.filtered_venues, true, icon, color)
             .then(function() {
 
-                console.log("[rdr] rendering map");
                 self.map.fitAll();
 
                 self.askForLocation()
@@ -144,7 +172,6 @@ window.page = (function() {
 
 
     function showList() {
-        console.log("[rdr] show list");
         self.view.$data.show_map = false;
         self.view.$data.show_list = true;
         self.view.$data.show_filters = false;
@@ -159,10 +186,10 @@ window.page = (function() {
     self.addData("personalizing", false);
     self.addData("last_sync_check", new Date());
     self.addData("show_filters", false);
+    self.addData("filtered_venues", []);
 
     // map and list view
     self.addData("category", null);
-    self.addData("filtered_venues", []);
     self.addData("show_map", null);
     self.addData("show_list", null);
     self.addData("geolocation", null);
@@ -178,7 +205,7 @@ window.page = (function() {
             self.view.$data.show_filters = false;
         }
         else {
-            self.view.$data.show_filters = true; 
+            showFilterMenu();
         }
     });
 

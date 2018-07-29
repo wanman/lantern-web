@@ -69,15 +69,15 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rdr/index.css",
-    "revision": "05cac61cc0f1bfb5d9c989f3457a8068"
+    "revision": "8c2fe6c5e7e7afc694ac3f8d054b18fd"
   },
   {
     "url": "apps/rdr/index.html",
-    "revision": "e77138c76031cb158f951f0a64da4b52"
+    "revision": "a36c1f00d849f0ee82ff8f609693d28f"
   },
   {
     "url": "apps/rdr/index.js",
-    "revision": "ca89799bbb4791845938161d0dc9a977"
+    "revision": "4d7523b7b043aa4764ef7fff03ff780d"
   },
   {
     "url": "apps/rpt/index.css",
