@@ -1,8 +1,51 @@
 
+$light-border: #f2f2f2;
+$primary: #6ae1c4;
+
 html, body {
     background: #FFF;
 }
 
 #home-view {
+    padding-top: 2em;
 
+    .apps { 
+        
+        .card {
+            background: #00d1b2;
+        }
+
+        li {
+            margin: 1em;
+            border-bottom: 1px solid $light-border;
+        }
+
+        .edge {
+            float: left;
+            color: #FFF;
+            width: 2em;
+
+
+            .icon.app-icon {
+                font-size: xx-large;
+                padding: 1.1em 1.25em;
+            }
+
+        }
+
+        .main {
+            background: #FFF;
+            margin-left: 4em;
+            padding: 1em;
+        }
+
+        p {
+            font-size: small;
+            white-space: nowrap;
+        }
+
+        h3 {
+            font-size: large;
+        }
+    }
 }

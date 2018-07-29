@@ -97,7 +97,7 @@ window.page = (function() {
         }
         else {
             self.view.$data.view = "report";
-            self.view.$data.page_title = "Contribute";
+            self.view.$data.page_title = "Report";
             self.view.$data.venue_categories = [];
             
             //async load in categories we can use for reporting

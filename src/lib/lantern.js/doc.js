@@ -1,6 +1,9 @@
 window.LanternDocument = (function(id,stor) {
  
-
+    if (!stor) {
+        console.log("[doc] missing required stor object");
+    }
+    
     // used to preserve keyspace when storing and sending low-bandwidth
     var REG = {
         

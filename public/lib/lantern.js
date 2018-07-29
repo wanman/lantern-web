@@ -2,7 +2,10 @@ __base = "../";
 
 window.LanternDocument = (function(id,stor) {
  
-
+    if (!stor) {
+        console.log("[doc] missing required stor object");
+    }
+    
     // used to preserve keyspace when storing and sending low-bandwidth
     var REG = {
         
@@ -490,7 +493,6 @@ window.LanternPage = (function(id) {
     function registerUser() {
         console.log("[user] create");
         var doc = new LanternDocument("u:"+getUserId(), self.stor);
-        doc.set("title", "User");
         doc.save();
         return doc;
     }
@@ -793,11 +795,8 @@ window.LanternPage = (function(id) {
 
         did_assign_location = true;
 
-
         // increase privacy
         geohash = geohash.substr(0,4);
-        
-        console.log(self.stor.lantern_connected);
 
         // tell device to use this as it's most recent location (skip GPS)
         if (self.getBaseURI() != "https://lantern.global") {
@@ -810,6 +809,9 @@ window.LanternPage = (function(id) {
                 body: JSON.stringify({"geo": geohash })
             }).then(function() {
                 console.log("[page] assigned geohash to lantern: " + geohash);
+            })
+            .catch(function(err) {
+                console.log("[page] skipping geo assignment since no lantern connection");
             });
         }
 

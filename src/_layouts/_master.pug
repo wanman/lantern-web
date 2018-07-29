@@ -85,23 +85,23 @@ html(lang="en")
                                     i.fas.fa-map
                                 | Supplies
                         li
+                            a(href="/apps/chk/") 
+                                span.icon
+                                    i.fas.fa-thumbtack
+                                | Checkin
+                       
+                        li
+                            a(href="/apps/rpt/") 
+                                span.icon
+                                    i.fas.fa-clipboard
+                                | Report
+                        
+                        li
                             a(href="/apps/net/") 
                                 span.icon
                                     i.fas.fa-globe-americas
                                 | Network
                        
-                        li
-                            a(href="/apps/chk/") 
-                                span.icon
-                                    i.fas.fa-check
-                                | Check In
-                       
-                        li
-                            a(href="/apps/rpt/") 
-                                span.icon
-                                    i.fas.fa-plus-circle
-                                | Contribute
-
                         li.user-count
                             span(v-if="u_docs.length") 
                                 span.icon

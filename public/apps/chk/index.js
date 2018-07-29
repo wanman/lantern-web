@@ -64,7 +64,7 @@ window.page = (function() {
                 self.view.$data.user_status = self.user.get("status");
             }
 
-            var tags = self.user.get("tag");
+            var tags = self.user.get("tag") || [];
             tags.forEach(function(tag) {
                 if (tag.indexOf("chk:") !== -1) {
                     tag = tag.replace("chk:", "");

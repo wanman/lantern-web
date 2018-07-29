@@ -31,7 +31,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/chk/index.js",
-    "revision": "fe983633ee9f074af4d98c03dc9ca960"
+    "revision": "ef783fcc94c6cc9392383817212fb477"
   },
   {
     "url": "apps/dba/index.css",
@@ -91,7 +91,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rpt/index.js",
-    "revision": "316929fd605038100c3131877e7f42fd"
+    "revision": "992ed4f479443c2ad011a8c84cda0377"
   },
   {
     "url": "hotspot.html",
@@ -99,15 +99,15 @@ self.__precacheManifest = [
   },
   {
     "url": "index.css",
-    "revision": "a322f731098100fce84df5680568ec57"
+    "revision": "3e87e598e049848383c20481437d2f60"
   },
   {
     "url": "index.html",
-    "revision": "37dfe042de7b760aa5262f69a0f478f0"
+    "revision": "00ed6d01c74526988e6c8383cb11b386"
   },
   {
     "url": "index.js",
-    "revision": "4f85092a76f4e2deffd5e35100746db3"
+    "revision": "87a1bc3789319242eeaaa70022e9dd6b"
   },
   {
     "url": "intro/a.html",
