@@ -3,6 +3,9 @@ html, body {
 
 #home-view {
   padding-top: 2em; }
+  #home-view .loading {
+    text-align: center;
+    padding: 2em; }
   #home-view .apps .card {
     background: #00d1b2;
     overflow: hidden;

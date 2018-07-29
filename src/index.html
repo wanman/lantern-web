@@ -6,17 +6,21 @@ extends _layouts/_master.pug
 
 block content
     #home-view(v-cloak v-if="!page_loading")
-        h1 App Directory
 
-        ul.apps
-            li.card(v-for="app in apps" @click="goToApp(app.id)")
-                .edge
-                    span.icon.app-icon 
-                        i.fas(v-bind:class="'fa-'+app.icon")
-                .main                    
-                    h3 {{ app.title }}
-                    p {{ app.text }}
-                
+        div(v-if="v_docs.length && d_docs.length")
+            h1 App Directory
+
+            ul.apps
+                li.card(v-for="app in apps" @click="goToApp(app.id)")
+                    .edge
+                        span.icon.app-icon 
+                            i.fas(v-bind:class="'fa-'+app.icon")
+                    .main                    
+                        h3 {{ app.title }}
+                        p {{ app.text }}
+        div.loading(v-if="!v_docs.length || !d_docs.length")
+            p Please wait while we import data from the nearest Lantern&hellip;
+
 block styles
     link(rel="stylesheet" type="text/css" href="/index.css")
 

@@ -333,6 +333,11 @@ window.page = (function() {
         })
         .then(self.connect)
         .then(self.getVenues)
+        .then(function(venues) {
+            if (venues.length == 0 ) {
+                window.location = "/";
+            }
+        })
         .then(self.getCategories)
         .then(self.getItems)
         .then(reflowView);

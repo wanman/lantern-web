@@ -220,6 +220,12 @@ window.page = (function() {
 
     self.render()
         .then(self.connect)
+        .then(self.getCategories)
+        .then(function(categories) {
+            if (categories.length == 0 ) {
+                window.location = "/";
+            }
+        })
         .then(refreshView);
     
     window.onhashchange = refreshView;

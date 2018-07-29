@@ -9,6 +9,12 @@ html, body {
 #home-view {
     padding-top: 2em;
 
+    .loading {
+        text-align: center;
+        padding: 2em;
+
+
+    }
     .apps { 
         
         .card {

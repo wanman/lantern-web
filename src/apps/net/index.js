@@ -43,6 +43,11 @@ window.page = (function() {
     self.render()
         .then(self.connect)
         .then(self.getDevices)
+        .then(function(devices) {
+            if (devices.length == 0 ) {
+                window.location = "/";
+            }
+        })
         .then(self.getUsers)
         .then(function(users) {
             users.forEach(function(user) {

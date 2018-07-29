@@ -28,7 +28,8 @@ window.page = (function() {
             $data.page_title = "Lantern Network";
         })
         .then(self.getVenues)
-        .then(function(venues) {
+        .then(self.getDevices)
+        .then(function() {
             $data.page_loading = false;
         });
         

@@ -31,7 +31,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/chk/index.js",
-    "revision": "ef783fcc94c6cc9392383817212fb477"
+    "revision": "417b5cbadfdbb74e39ec5347269ba03a"
   },
   {
     "url": "apps/dba/index.css",
@@ -39,7 +39,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/dba/index.html",
-    "revision": "1fa22fb692783a92333001a38b624a22"
+    "revision": "2620d44ab150db9a4e14e6cd89a7943f"
   },
   {
     "url": "apps/dba/index.js",
@@ -55,7 +55,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/net/index.js",
-    "revision": "61c6c31d7b6ce04968fa7418e03119fa"
+    "revision": "ff184171effd604ada8c8f7be9e08c7d"
   },
   {
     "url": "apps/rdr/detail.css",
@@ -79,7 +79,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rdr/index.js",
-    "revision": "4d7523b7b043aa4764ef7fff03ff780d"
+    "revision": "4fb2c52099280959cc18bf8bdb504418"
   },
   {
     "url": "apps/rpt/index.css",
@@ -91,7 +91,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rpt/index.js",
-    "revision": "992ed4f479443c2ad011a8c84cda0377"
+    "revision": "ca83090ca6e3e29c8def344bc2b7a9cd"
   },
   {
     "url": "hotspot.html",
@@ -99,15 +99,15 @@ self.__precacheManifest = [
   },
   {
     "url": "index.css",
-    "revision": "3fe9340e5ce2099cc13e36ef74bdd476"
+    "revision": "24c5a3eea744bceff077e90f172cd43e"
   },
   {
     "url": "index.html",
-    "revision": "15e51a30dab5a85d2b726d9d04ba3602"
+    "revision": "1eec6501a24e4aff5dc005f97125cdd8"
   },
   {
     "url": "index.js",
-    "revision": "87a1bc3789319242eeaaa70022e9dd6b"
+    "revision": "85789baceacb6b5e20cf40454d9a9ff3"
   },
   {
     "url": "intro/a.html",
@@ -120,6 +120,10 @@ self.__precacheManifest = [
   {
     "url": "intro/c.html",
     "revision": "534b5ca33996ff547f0a272ed478f198"
+  },
+  {
+    "url": "lib/import.js",
+    "revision": "a90ab8b8bed7f7a7248eb424122e0332"
   },
   {
     "url": "lib/lantern.css",
