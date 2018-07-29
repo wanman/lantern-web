@@ -1,8 +1,5 @@
 window.LanternDocument = (function(id,stor) {
  
-    if (!stor) {
-        console.log("[doc] missing required stor object");
-    }
     
     // used to preserve keyspace when storing and sending low-bandwidth
     var REG = {
@@ -44,11 +41,38 @@ window.LanternDocument = (function(id,stor) {
         }
     }
 
-    function hex8(val) {
-        val &= 0xFF;
-        var hex = val.toString(16).toUpperCase();
-        return ("00" + hex).slice(-2);
+    function post(doc) {
+        return stor.post(doc)
+            .then(function(results) { 
+                console.log("[" + self.id + "] saved", results.rev);
+                self.data._rev = results.rev;
+                return doc;
+            })
+            .catch(function(err) {
+                if(err.name === "conflict") {
+                    console.log("["+self.id+"] conflicted", err);
+                }
+                else {
+                    console.log("["+self.id+"] err", err);
+                }
+            }); 
     }
+
+    function hasNewData(old_doc) {
+        for (var k in old_doc.data) {
+            var old_val =  JSON.stringify(old_doc.data[k]);
+
+            // don't compare $ meta
+            if (k[0] != "$" && self.has(k)) {
+                var new_val = JSON.stringify(self.data[k]);
+                if (old_val != new_val) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
 
     //------------------------------------------------------------------------
@@ -135,7 +159,7 @@ window.LanternDocument = (function(id,stor) {
         }
     };
 
-    self.save = function() {
+    self.save = function(check_existing, skip_if_exists) {
 
         if (!self.has("created_at")) {
             self.set("created_at", new Date());
@@ -156,21 +180,25 @@ window.LanternDocument = (function(id,stor) {
             doc[idx] = self.data[idx];
         }
 
-        return stor.post(doc)
-            .then(function(results) {               
-
-                console.log("[doc] saved " + self.id, results.rev);
-                self.data._rev = results.rev;
-                return doc;
-            })
-            .catch(function(err) {
-                if(err.name === "conflict") {
-                    console.log("[doc] conflicted: " + doc._id, err);
+        if (check_existing) {
+            // make sure we're not saving duplicate document
+            return stor.get(self.id, true).then(function(old_doc) {
+                if (!skip_if_exists && hasNewData(old_doc)) {
+                    console.log(self.id, "has new data");
+                    return post(doc);
                 }
                 else {
-                    console.log("[doc] err", err);
+                    //console.log("[" + self.id + "] skipping save by request");
+                    return;
                 }
+            })
+            .catch(function(err) {
+                return post(doc);
             });
+        }
+        else {
+            return post(doc);
+        }
     };
 
 
@@ -227,6 +255,10 @@ window.LanternDocument = (function(id,stor) {
 
     // random identifiers for new docs to avoid sync conflicts
     self.id = self.id.replace("%%", Math.round(Math.random() * 1000));
+
+    if (!stor) {
+        console.log("[" + self.id + "] missing required stor object");
+    }
 
     return self;
 });

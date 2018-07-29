@@ -13,11 +13,12 @@ html, body {
         
         .card {
             background: #00d1b2;
+            overflow: hidden;
+            cursor: pointer;
         }
 
         li {
             margin: 1em;
-            border-bottom: 1px solid $light-border;
         }
 
         .edge {
@@ -25,10 +26,9 @@ html, body {
             color: #FFF;
             width: 2em;
 
-
             .icon.app-icon {
                 font-size: xx-large;
-                padding: 1.1em 1.25em;
+                padding: 1.05em 1.25em;
             }
 
         }
@@ -40,7 +40,7 @@ html, body {
         }
 
         p {
-            font-size: small;
+            font-size: x-small;
             white-space: nowrap;
         }
 

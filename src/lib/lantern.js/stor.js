@@ -204,14 +204,36 @@ window.LanternStor = (function($data, uri) {
             });
     };
 
-    self.get = function() {
-        console.log("[stor] get: " + arguments[0]);
-        return self.db.get.apply(self.db, arguments)
-            .then(function(data) {
-                var doc = new LanternDocument(data, self);
-                refreshDocInCache(doc);
-                return doc;
-            });
+    self.get = function(id, allow_cached) {
+
+        
+        var doc;
+
+        return new Promise(function(resolve, reject) {
+            if (allow_cached) {
+                var cached = self.getCached(id);
+                if (cached) {
+                    doc = new LanternDocument(cached, self);
+                    console.log("[stor] get (cached): " + id);
+                    return resolve(doc);
+                }
+            }
+            
+            self.db.get(id)
+                .then(function(data) {
+                    console.log("[stor] get: " + id);
+                    doc = new LanternDocument(data, self);
+                    refreshDocInCache(doc);
+                    resolve(doc);
+                })
+                .catch(function(err) {
+                    if (err.name == "not_found") {
+                        console.log("[stor] get (not found): " + id);                        
+                    }
+                    reject(err);
+                });
+        });
+
     };
 
     self.print = function(id) {
@@ -266,9 +288,6 @@ window.LanternStor = (function($data, uri) {
             }).then(function () {
                 console.log("[stor] finished deleting all docs");
               // done!
-            }).catch(function (err) {
-                console.log(err);
-              // error!
             });
      };
 
@@ -288,10 +307,6 @@ window.LanternStor = (function($data, uri) {
             doc._rev = results.rev;
             refreshDocInCache(new LanternDocument(doc, self));
             return results;
-        })
-        .catch(function (err) {
-            console.log(err);
-            // error!
         });
     };
 
@@ -312,10 +327,6 @@ window.LanternStor = (function($data, uri) {
             new_doc.set("_rev", results.rev);
             refreshDocInCache(new_doc);
             return results;
-        })
-        .catch(function (err) {
-            console.log(err);
-            // error!
         });
     };
 
@@ -354,10 +365,7 @@ window.LanternStor = (function($data, uri) {
         return self.db.compact().then(function (info) {
             // compaction complete
             console.log("[stor] compaction complete", info);
-        }).catch(function (err) {
-            // handle errors
-            console.error(err);
-        });
+        })
     };
 
 

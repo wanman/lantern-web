@@ -48,10 +48,10 @@ $light-border: #f2f2f2;
         }
 
         .tags {
+            font-size: x-small;
             float: left;
-            margin-right: 0.4em;
-            margin-top: 0.4em;
-            margin-bottom: 0.4em;
+            margin: 0.2em 1em 0.2em;
+
 
             .tag {
                 border: 1px solid $light-border;

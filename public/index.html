@@ -52,7 +52,7 @@
                 <div class="page-content">
                     <div id="home-view" v-cloak v-if="!page_loading">
                         <h1>App Directory</h1>
-                        <ul class="apps" v-if="v_docs &amp;&amp; apps"> 
+                        <ul class="apps">
                             <li class="card" v-for="app in apps" @click="goToApp(app.id)">
                                 <div class="edge"><span class="icon app-icon"> <i class="fas" v-bind:class="'fa-'+app.icon"></i></span></div>
                                 <div class="main">                   
@@ -61,9 +61,6 @@
                                 </div>
                             </li>
                         </ul>
-                        <div v-if="v_docs.length == 0">
-                            <p>No Apps</p>
-                        </div>
                     </div>
                 </div>
             </section>

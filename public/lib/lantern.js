@@ -2,9 +2,6 @@ __base = "../";
 
 window.LanternDocument = (function(id,stor) {
  
-    if (!stor) {
-        console.log("[doc] missing required stor object");
-    }
     
     // used to preserve keyspace when storing and sending low-bandwidth
     var REG = {
@@ -46,11 +43,38 @@ window.LanternDocument = (function(id,stor) {
         }
     }
 
-    function hex8(val) {
-        val &= 0xFF;
-        var hex = val.toString(16).toUpperCase();
-        return ("00" + hex).slice(-2);
+    function post(doc) {
+        return stor.post(doc)
+            .then(function(results) { 
+                console.log("[" + self.id + "] saved", results.rev);
+                self.data._rev = results.rev;
+                return doc;
+            })
+            .catch(function(err) {
+                if(err.name === "conflict") {
+                    console.log("["+self.id+"] conflicted", err);
+                }
+                else {
+                    console.log("["+self.id+"] err", err);
+                }
+            }); 
     }
+
+    function hasNewData(old_doc) {
+        for (var k in old_doc.data) {
+            var old_val =  JSON.stringify(old_doc.data[k]);
+
+            // don't compare $ meta
+            if (k[0] != "$" && self.has(k)) {
+                var new_val = JSON.stringify(self.data[k]);
+                if (old_val != new_val) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
 
     //------------------------------------------------------------------------
@@ -137,7 +161,7 @@ window.LanternDocument = (function(id,stor) {
         }
     };
 
-    self.save = function() {
+    self.save = function(check_existing, skip_if_exists) {
 
         if (!self.has("created_at")) {
             self.set("created_at", new Date());
@@ -158,21 +182,25 @@ window.LanternDocument = (function(id,stor) {
             doc[idx] = self.data[idx];
         }
 
-        return stor.post(doc)
-            .then(function(results) {               
-
-                console.log("[doc] saved " + self.id, results.rev);
-                self.data._rev = results.rev;
-                return doc;
-            })
-            .catch(function(err) {
-                if(err.name === "conflict") {
-                    console.log("[doc] conflicted: " + doc._id, err);
+        if (check_existing) {
+            // make sure we're not saving duplicate document
+            return stor.get(self.id, true).then(function(old_doc) {
+                if (!skip_if_exists && hasNewData(old_doc)) {
+                    console.log(self.id, "has new data");
+                    return post(doc);
                 }
                 else {
-                    console.log("[doc] err", err);
+                    //console.log("[" + self.id + "] skipping save by request");
+                    return;
                 }
+            })
+            .catch(function(err) {
+                return post(doc);
             });
+        }
+        else {
+            return post(doc);
+        }
     };
 
 
@@ -230,6 +258,10 @@ window.LanternDocument = (function(id,stor) {
     // random identifiers for new docs to avoid sync conflicts
     self.id = self.id.replace("%%", Math.round(Math.random() * 1000));
 
+    if (!stor) {
+        console.log("[" + self.id + "] missing required stor object");
+    }
+
     return self;
 });
 window.LanternImport = function(stor) {
@@ -264,7 +296,7 @@ window.LanternImport = function(stor) {
         doc.set("$ia", time);
         doc.set("$ua", time);
         doc.set("$ca", time);
-        doc.save();
+        doc.save(true, true);
     }
 
 
@@ -284,7 +316,7 @@ window.LanternImport = function(stor) {
         venue_doc.push("category", cat);
         venue_doc.set("$ia", now);
         venue_doc.set("$ca", now);
-        venue_doc.save();
+        venue_doc.save(true, true);
 
 
         for (var idx in cats) {
@@ -324,7 +356,7 @@ window.LanternImport = function(stor) {
             doc.set("$ia", now);
             doc.set("$ua", now);
             doc.set("$ca", now);
-            doc.save();
+            doc.save(true, true);
         }
 
     }
@@ -394,7 +426,7 @@ window.LanternImport = function(stor) {
         doc.set("$ia", time);
         doc.set("$ua", time);
         doc.set("$ca", time);
-        doc.save();
+        doc.save(true, true);
     };
 
 
@@ -406,7 +438,7 @@ window.LanternImport = function(stor) {
         doc.set("$ia", time);
         doc.set("$ua", time);
         doc.set("$ca", time);
-        doc.save();
+        doc.save(true, true);
     };
 
     self.all = function() {
@@ -1157,14 +1189,36 @@ window.LanternStor = (function($data, uri) {
             });
     };
 
-    self.get = function() {
-        console.log("[stor] get: " + arguments[0]);
-        return self.db.get.apply(self.db, arguments)
-            .then(function(data) {
-                var doc = new LanternDocument(data, self);
-                refreshDocInCache(doc);
-                return doc;
-            });
+    self.get = function(id, allow_cached) {
+
+        
+        var doc;
+
+        return new Promise(function(resolve, reject) {
+            if (allow_cached) {
+                var cached = self.getCached(id);
+                if (cached) {
+                    doc = new LanternDocument(cached, self);
+                    console.log("[stor] get (cached): " + id);
+                    return resolve(doc);
+                }
+            }
+            
+            self.db.get(id)
+                .then(function(data) {
+                    console.log("[stor] get: " + id);
+                    doc = new LanternDocument(data, self);
+                    refreshDocInCache(doc);
+                    resolve(doc);
+                })
+                .catch(function(err) {
+                    if (err.name == "not_found") {
+                        console.log("[stor] get (not found): " + id);                        
+                    }
+                    reject(err);
+                });
+        });
+
     };
 
     self.print = function(id) {
@@ -1219,9 +1273,6 @@ window.LanternStor = (function($data, uri) {
             }).then(function () {
                 console.log("[stor] finished deleting all docs");
               // done!
-            }).catch(function (err) {
-                console.log(err);
-              // error!
             });
      };
 
@@ -1241,10 +1292,6 @@ window.LanternStor = (function($data, uri) {
             doc._rev = results.rev;
             refreshDocInCache(new LanternDocument(doc, self));
             return results;
-        })
-        .catch(function (err) {
-            console.log(err);
-            // error!
         });
     };
 
@@ -1265,10 +1312,6 @@ window.LanternStor = (function($data, uri) {
             new_doc.set("_rev", results.rev);
             refreshDocInCache(new_doc);
             return results;
-        })
-        .catch(function (err) {
-            console.log(err);
-            // error!
         });
     };
 
@@ -1307,10 +1350,7 @@ window.LanternStor = (function($data, uri) {
         return self.db.compact().then(function (info) {
             // compaction complete
             console.log("[stor] compaction complete", info);
-        }).catch(function (err) {
-            // handle errors
-            console.error(err);
-        });
+        })
     };
 
 

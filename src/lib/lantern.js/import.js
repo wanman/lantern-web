@@ -30,7 +30,7 @@ window.LanternImport = function(stor) {
         doc.set("$ia", time);
         doc.set("$ua", time);
         doc.set("$ca", time);
-        doc.save();
+        doc.save(true, true);
     }
 
 
@@ -50,7 +50,7 @@ window.LanternImport = function(stor) {
         venue_doc.push("category", cat);
         venue_doc.set("$ia", now);
         venue_doc.set("$ca", now);
-        venue_doc.save();
+        venue_doc.save(true, true);
 
 
         for (var idx in cats) {
@@ -90,7 +90,7 @@ window.LanternImport = function(stor) {
             doc.set("$ia", now);
             doc.set("$ua", now);
             doc.set("$ca", now);
-            doc.save();
+            doc.save(true, true);
         }
 
     }
@@ -160,7 +160,7 @@ window.LanternImport = function(stor) {
         doc.set("$ia", time);
         doc.set("$ua", time);
         doc.set("$ca", time);
-        doc.save();
+        doc.save(true, true);
     };
 
 
@@ -172,7 +172,7 @@ window.LanternImport = function(stor) {
         doc.set("$ia", time);
         doc.set("$ua", time);
         doc.set("$ca", time);
-        doc.save();
+        doc.save(true, true);
     };
 
     self.all = function() {
