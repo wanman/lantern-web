@@ -146,8 +146,7 @@ window.LanternPage = (function(id) {
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = true;
             }, function(changed_doc) {
-                console.log(changed_doc);
-                refreshCached(changed_doc);
+                console.log("[page] doc changed", changed_doc);
                 // showSyncIcon();
             });
         }

@@ -412,8 +412,7 @@ window.LanternPage = (function(id) {
             self.stor.syncWithCloud(continuous, function(status) {
                 self.view.$data.cloud_connected = true;
             }, function(changed_doc) {
-                console.log(changed_doc);
-                refreshCached(changed_doc);
+                console.log("[page] doc changed", changed_doc);
                 // showSyncIcon();
             });
         }
@@ -1310,9 +1309,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
                 console.log("[" + label + "] %s: %s docs", 
                         info.direction, 
                         info.change.docs.length);
-                info.change.docs.forEach(function(doc) {
-                    change_fn(doc);
-                });            
+                info.change.docs.forEach(change_fn);            
             }
         }
 
