@@ -793,18 +793,18 @@ if ("serviceWorker" in navigator) {
 }
 window.LanternStor = (function($data, uri) {
 
-    var cloud_uri = "https://lantern.global/db/lantern/";
+    var cloud_uri = "https://lantern.global/db/lnt/";
     var did_sync_maps = false;
     uri = uri.replace(":3000", "");
 
     var self = {
         doc_cache: {}, 
         browser_db: null,
-        lantern_db: new PouchDB(uri + "/db/lantern/", {
+        lantern_db: new PouchDB(uri + "/db/lnt/", {
             skip_setup: true,
             withCredentials: false        
         }),
-        lantern_maps_db: new PouchDB( uri + "/db/lantern-maps/", {
+        lantern_maps_db: new PouchDB( uri + "/db/map/", {
             skip_setup: true,
             withCredentials: false        
         }),
@@ -819,7 +819,7 @@ window.LanternStor = (function($data, uri) {
     };
 
     try {
-        self.browser_db = new PouchDB("lantern");
+        self.browser_db = new PouchDB("lnt");
     }
     catch(e) {
         // browser refuses to use local storage...
@@ -1158,8 +1158,11 @@ window.LanternStor = (function($data, uri) {
         return self.db.compact().then(function (info) {
             // compaction complete
             console.log("[stor] compaction complete", info);
-        })
+        });
     };
+
+
+
 
 
     /**
@@ -1212,11 +1215,8 @@ window.LanternStor = (function($data, uri) {
 
 
                     try {
-                        var local_maps_db = new PouchDB("lantern-maps");
-
-                        LanternSync(local_maps_db, self.lantern_maps_db, "lantern-maps", continuous, function() {}, function(changed_doc) {
-                            //console.log("[stor] map update", changed_doc._id);
-                        });
+                        var local_maps_db = new PouchDB("map");
+                        LanternSync(local_maps_db, self.lantern_maps_db, "map", continuous);
                     }
                     catch(e) {
                         // browser refuses to use local storage...
@@ -1305,14 +1305,17 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     })
     .on('change', function (info) {
         setStatus(true);
-        if (info.change.docs) {
-            console.log("[" + label + "] %s: %s docs", 
-                    info.direction, 
-                    info.change.docs.length);
-            for (var idx in info.change.docs) {
-                change_fn(info.change.docs[idx]);
+        if (change_fn && typeof(change_fn) == "function") {
+            if (info.change.docs) {
+                console.log("[" + label + "] %s: %s docs", 
+                        info.direction, 
+                        info.change.docs.length);
+                info.change.docs.forEach(function(doc) {
+                    change_fn(doc);
+                });            
             }
         }
+
     })
     .on('error', function (err) {
         console.log("[stor] sync " + label + "err", err);

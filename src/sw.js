@@ -101,7 +101,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.html",
-    "revision": "1eec6501a24e4aff5dc005f97125cdd8"
+    "revision": "1024a57e98a5942f18ed6687246db017"
   },
   {
     "url": "index.js",
@@ -257,7 +257,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.js",
-    "revision": "f2461b979fd4674682ad5f54e2b9084d"
+    "revision": "abde3620a184eece7b15bd7a01b82831"
   },
   {
     "url": "lib/map.css",
@@ -265,7 +265,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/map.js",
-    "revision": "31701fbd71c170ef08ca72aef768d0c6"
+    "revision": "39b3aa9a1558ab72827c39e9773e47d1"
   },
   {
     "url": "lib/vendor.js",
@@ -275,4 +275,4 @@ self.__precacheManifest = [
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.staleWhileRevalidate({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":10,"purgeOnQuotaError":false})] }), 'GET');
+workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.networkFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":10,"purgeOnQuotaError":false})] }), 'GET');

@@ -12,7 +12,7 @@ window.LanternMapManager = function() {
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: false,
-            dbName: "lantern-maps",
+            dbName: "map",
             maxZoom: 16,
             useCache: true,
             crossOrigin: true,

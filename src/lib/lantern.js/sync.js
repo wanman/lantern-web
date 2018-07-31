@@ -52,14 +52,17 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     })
     .on('change', function (info) {
         setStatus(true);
-        if (info.change.docs) {
-            console.log("[" + label + "] %s: %s docs", 
-                    info.direction, 
-                    info.change.docs.length);
-            for (var idx in info.change.docs) {
-                change_fn(info.change.docs[idx]);
+        if (change_fn && typeof(change_fn) == "function") {
+            if (info.change.docs) {
+                console.log("[" + label + "] %s: %s docs", 
+                        info.direction, 
+                        info.change.docs.length);
+                info.change.docs.forEach(function(doc) {
+                    change_fn(doc);
+                });            
             }
         }
+
     })
     .on('error', function (err) {
         console.log("[stor] sync " + label + "err", err);
