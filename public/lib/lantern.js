@@ -282,8 +282,14 @@ window.LanternPage = (function(id) {
             user: null
         },
         methods: {
-            handleGoBack: function() {
-                window.history.go(-1);
+            handleGoBack: function() {  
+                if (window.history.length) {
+                    window.history.go(-1);
+                }
+                else {
+                    var url = window.location.href;
+                    window.location = url.substring(0,url.lastIndexOf("/"));
+                }
             }
 
         }
@@ -539,11 +545,12 @@ window.LanternPage = (function(id) {
     // @todo handle re-render when new venues are selected
     self.renderMap = function(venues, show_tooltip, icon, color) {
 
-        if (!self.map) {
-            self.map = new LanternMapManager();
+        if (self.map) {
+            self.map.clear();
         }
-
-        self.map.clear();
+        else {                   
+            self.map = new LanternMapManager();     
+        }
 
         venues = venues || [];
 
@@ -944,7 +951,7 @@ window.LanternStor = (function($data, uri) {
             var timer = setTimeout(function() {
                 console.log("timed out looking for local db. use remote storage...");
                 if (!self.db) {
-                    return lanternOrCloud();
+                    return lanternOrCloud().then(resolve);
                 }
             }, 1000);
 
@@ -1098,26 +1105,6 @@ window.LanternStor = (function($data, uri) {
         return self.db.put.apply(self.db, arguments).then(function(results) {
             doc._rev = results.rev;
             refreshDocInCache(new LanternDocument(doc, self));
-            return results;
-        });
-    };
-
-    self.upsert = function() {
-        //console.log("[stor] upsert " + arguments[0]);
-        var fn = arguments[1];
-        var obj;
-
-        var wrapper_fn = function(old_doc) {
-            obj = fn(old_doc);
-            return obj;
-        };
-
-        arguments[1] = wrapper_fn;
-
-        return self.db.upsert.apply(self.db, arguments).then(function(results) {
-            var new_doc = new LanternDocument(obj);
-            new_doc.set("_rev", results.rev);
-            refreshDocInCache(new_doc);
             return results;
         });
     };

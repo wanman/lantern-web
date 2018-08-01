@@ -122,7 +122,7 @@ window.page = (function() {
     function onLocationChange(position) {
         if (!position || !position.coords) return;
         self.geo = Geohash.encode(position.coords.latitude, position.coords.longitude, 7);
-        console.log("[page] my geo", self.geo);
+        //console.log("[page] my geo", self.geo);
         self.map.setOwnLocation({lat:position.coords.latitude, lng:position.coords.longitude});
     }
 
@@ -141,17 +141,15 @@ window.page = (function() {
         }   
 
 
-  
         self.renderMap(self.view.$data.filtered_venues, true, icon, color)
             .then(function() {
-
                 self.map.fitAll();
 
                 self.askForLocation()
                     .then(function(res) {
 
                         self.geo = Geohash.encode(res.coords.latitude, res.coords.longitude, 7);
-                        console.log("[rdr] my geo", self.geo);
+                        //console.log("[rdr] my geo", self.geo);
 
                         self.sendGeohashToLantern(self.geo);
 

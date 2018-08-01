@@ -152,7 +152,7 @@ window.LanternStor = (function($data, uri) {
             var timer = setTimeout(function() {
                 console.log("timed out looking for local db. use remote storage...");
                 if (!self.db) {
-                    return lanternOrCloud();
+                    return lanternOrCloud().then(resolve);
                 }
             }, 1000);
 
@@ -306,26 +306,6 @@ window.LanternStor = (function($data, uri) {
         return self.db.put.apply(self.db, arguments).then(function(results) {
             doc._rev = results.rev;
             refreshDocInCache(new LanternDocument(doc, self));
-            return results;
-        });
-    };
-
-    self.upsert = function() {
-        //console.log("[stor] upsert " + arguments[0]);
-        var fn = arguments[1];
-        var obj;
-
-        var wrapper_fn = function(old_doc) {
-            obj = fn(old_doc);
-            return obj;
-        };
-
-        arguments[1] = wrapper_fn;
-
-        return self.db.upsert.apply(self.db, arguments).then(function(results) {
-            var new_doc = new LanternDocument(obj);
-            new_doc.set("_rev", results.rev);
-            refreshDocInCache(new_doc);
             return results;
         });
     };

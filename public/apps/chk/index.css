@@ -5,11 +5,14 @@ body {
   overflow: hidden; }
 
 #checkin-page {
-  background: rgba(255, 255, 255, 0.8);
+  background: white;
   background: none;
   padding: 1em; }
   #checkin-page label {
     text-align: left; }
+  #checkin-page #report-view, #checkin-page #success-view {
+    max-width: 50em;
+    margin: auto; }
   #checkin-page .panel {
     margin: 1.5em;
     margin-top: 1em; }
@@ -30,7 +33,7 @@ body {
     background: #FCFCFC; }
   #checkin-page #success-view {
     border: 1px solid #f2f2f2;
-    background: rgba(255, 255, 255, 0.8);
+    background: white;
     border-radius: 8px;
     padding: 3em;
     text-align: center; }
@@ -39,7 +42,7 @@ body {
       #checkin-page #success-view .button .icon {
         margin-left: 0.75em; }
   #checkin-page #map-cover, #checkin-page #map {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.5);
     height: 100%;
     width: 100%;
     position: fixed !important;

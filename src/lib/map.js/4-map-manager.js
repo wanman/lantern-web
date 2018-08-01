@@ -9,7 +9,6 @@ window.LanternMapManager = function() {
 
 
     function init() {
-
         L.tileLayer('https://maps.tilehosting.com/c/ade1b05a-496f-40d1-ae23-5d5aeca37da2/styles/streets/{z}/{x}/{y}.png?key=ZokpyarACItmA6NqGNhr', {
             attribution: false,
             dbName: "map",
@@ -32,9 +31,7 @@ window.LanternMapManager = function() {
         self.map.eachLayer(function (layer) {
             self.map.removeLayer(layer);
         });
-
         init();
-
     };
 
     self.addPoint = function(title, coords,  icon, color) {

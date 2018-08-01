@@ -18,7 +18,7 @@ window.page = (function() {
 
             // add birthday identifier but remove any previous ones saved
             var birthday_tag = [self.view.$data.birth_day, self.view.$data.birth_month].join("-");
-            var tags = self.user.get("tag");
+            var tags = self.user.get("tag") || [];
             var final_tags = [];
             tags.forEach(function(tag) {
                 if (tag.indexOf("chk:") == -1) {

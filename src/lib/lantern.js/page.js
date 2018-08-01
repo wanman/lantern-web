@@ -16,8 +16,14 @@ window.LanternPage = (function(id) {
             user: null
         },
         methods: {
-            handleGoBack: function() {
-                window.history.go(-1);
+            handleGoBack: function() {  
+                if (window.history.length) {
+                    window.history.go(-1);
+                }
+                else {
+                    var url = window.location.href;
+                    window.location = url.substring(0,url.lastIndexOf("/"));
+                }
             }
 
         }
@@ -273,11 +279,12 @@ window.LanternPage = (function(id) {
     // @todo handle re-render when new venues are selected
     self.renderMap = function(venues, show_tooltip, icon, color) {
 
-        if (!self.map) {
-            self.map = new LanternMapManager();
+        if (self.map) {
+            self.map.clear();
         }
-
-        self.map.clear();
+        else {                   
+            self.map = new LanternMapManager();     
+        }
 
         venues = venues || [];
 

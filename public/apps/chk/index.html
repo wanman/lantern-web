@@ -151,14 +151,14 @@
                     <div id="success-view" v-cloak v-if="!page_loading &amp;&amp; show_form === false"><span class="icon is-large"><i class="fas fa-check-circle fa-3x"></i></span>
                         <h1>Thank you!</h1>
                         <div v-if="confirmation_count &lt; 5">
+                            <p>Sharing status with the network&hellip;</p>
+                        </div>
+                        <div v-if="confirmation_count &gt;= 5">
                             <p v-if="cloud_connected">Your status was successfully shared over the internet.</p>
                             <p v-if="!cloud_connected &amp;&amp; lantern_connected">Your status was successfully shared with a nearby device. </p>
                             <p v-if="!cloud_connected &amp;&amp; !lantern_connected">Your status will be shared once your device regains internet.</p>
                         </div>
-                        <div v-if="confirmation_count &gt;= 5">
-                            <p>Your status has been shared across the network.</p>
-                        </div>
-                        <h5 class="waiting">Received By Users</h5>
+                        <h5 class="waiting">Confirmed Receipt</h5>
                         <div class="confirmations" v-bind:class="confirmation_count &lt; 5 ? 'is-loading' : ''">{{ confirmation_count }} / <span>5</span></div>
                         <div class="action-panel">
                             <div class="button" @click="handleReturnHome"> <span>Continue</span><span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>

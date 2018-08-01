@@ -7,7 +7,7 @@ extends _layouts/_master.pug
 block content
     #home-view(v-cloak v-if="!page_loading")
 
-        div(v-if="v_docs.length && d_docs.length")
+        div(v-if="v_docs.length")
             h1 App Directory
 
             ul.apps
@@ -18,7 +18,7 @@ block content
                     .main                    
                         h3 {{ app.title }}
                         p {{ app.text }}
-        div.loading(v-if="!v_docs.length || !d_docs.length")
+        div.loading(v-if="!v_docs.length")
             p Gathering data for offline use&hellip;
 
 block styles

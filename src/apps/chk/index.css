@@ -14,12 +14,17 @@ body {
 }
 
 #checkin-page {    
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,1);
     background: none;
     padding: 1em;
     
     label {
         text-align: left;
+    }
+
+    #report-view, #success-view {
+        max-width: 50em;
+        margin: auto;
     }
 
     .panel {
@@ -55,7 +60,7 @@ body {
 
     #success-view {
         border: 1px solid $light-border;
-        background: rgba(255,255,255,0.8);
+        background: rgba(255,255,255,1);
         border-radius: 8px;
         padding: 3em;
         text-align: center;
@@ -67,7 +72,7 @@ body {
 
 
     #map-cover, #map {
-        background: rgba(255,255,255,0.8);
+        background: rgba(255,255,255,0.5);
         height: 100%;
         width: 100%;
         position: fixed !important;

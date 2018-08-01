@@ -51,7 +51,7 @@
                 <!-- main page content-->
                 <div class="page-content">
                     <div id="home-view" v-cloak v-if="!page_loading">
-                        <div v-if="v_docs.length &amp;&amp; d_docs.length">
+                        <div v-if="v_docs.length">
                             <h1>App Directory</h1>
                             <ul class="apps">
                                 <li class="card" v-for="app in apps" @click="goToApp(app.id)">
@@ -63,7 +63,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="loading" v-if="!v_docs.length || !d_docs.length">
+                        <div class="loading" v-if="!v_docs.length">
                             <p>Gathering data for offline use&hellip;</p>
                         </div>
                     </div>

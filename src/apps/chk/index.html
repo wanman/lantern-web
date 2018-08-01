@@ -107,16 +107,17 @@ block content
         h1 Thank you!
         
         div(v-if="confirmation_count < 5")
+            p Sharing status with the network&hellip;
+
+        div(v-if="confirmation_count >= 5")
+            
             p(v-if="cloud_connected") Your status was successfully shared over the internet.
 
             p(v-if="!cloud_connected && lantern_connected") Your status was successfully shared with a nearby device. 
 
             p(v-if="!cloud_connected && !lantern_connected") Your status will be shared once your device regains internet.
 
-        div(v-if="confirmation_count >= 5")
-            p Your status has been shared across the network.
-
-        h5.waiting Received By Users
+        h5.waiting Confirmed Receipt
 
         .confirmations(v-bind:class="confirmation_count < 5 ? 'is-loading' : ''")
             | {{ confirmation_count }} / 

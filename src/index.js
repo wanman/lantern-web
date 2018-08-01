@@ -28,9 +28,16 @@ window.page = (function() {
             $data.page_title = "Lantern Network";
         })
         .then(self.getVenues)
-        .then(self.getDevices)
         .then(function() {
             $data.page_loading = false;
+
+            // backup check for new data in case sync fails
+            // @todo fix bug where change log is trigger for just 1 document
+            setInterval(function() {
+                if (!self.view.$data.v_docs.length) {
+                    self.getVenues();
+                }
+            }, 2000);
         });
         
     return self;

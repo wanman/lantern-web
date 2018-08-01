@@ -198,6 +198,11 @@ window.page = (function() {
     self.render()
         .then(self.connect)
         .then(self.getItems)
+        .then(function(items) {
+            if (items.length == 0 ) {
+                window.location = "/";
+            }
+        })
         .then(function() {
             self.view.$data.allow_back_button = true;
             return self.getCategories();
