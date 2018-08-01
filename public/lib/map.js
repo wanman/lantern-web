@@ -14173,7 +14173,7 @@ window.LanternMapManager = function() {
 
     function init() {
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://maps.tilehosting.com/c/ade1b05a-496f-40d1-ae23-5d5aeca37da2/styles/streets/{z}/{x}/{y}.png?key=ZokpyarACItmA6NqGNhr', {
             attribution: false,
             dbName: "map",
             maxZoom: 16,

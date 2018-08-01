@@ -265,7 +265,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/map.js",
-    "revision": "39b3aa9a1558ab72827c39e9773e47d1"
+    "revision": "b2a6926ce70b99f284dab533cce7696d"
   },
   {
     "url": "lib/vendor.js",
