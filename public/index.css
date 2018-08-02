@@ -24,7 +24,7 @@ html, body {
     margin-left: 4em;
     padding: 1em; }
   #home-view .apps p {
-    font-size: x-small;
+    font-size: small;
     white-space: nowrap; }
   #home-view .apps h3 {
     font-size: large; }

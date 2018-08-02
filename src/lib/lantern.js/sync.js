@@ -35,11 +35,10 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     };
 
     
-    src.sync(dest, opts)
-    .on('complete', function() {
-        console.log("[" + label + "] started sync");
-        setStatus(true);
-    })
+    var replication_handler = src.sync(dest, opts);
+
+
+    replication_handler
     .on('paused', function(err) {
         if (err) {
             console.log("[" + label +"] lost connection");
@@ -65,4 +64,17 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     .on('error', function (err) {
         console.log("[stor] sync " + label + "err", err);
     });
+
+
+    window.addEventListener('beforeunload', function(event) {
+        try {
+            replication_handler.cancel();
+
+            console.log("[" + label + "] stop sync");
+        }
+        catch(e) {
+            console.log("failed to stop sync", label);
+        }
+    });
+
 };

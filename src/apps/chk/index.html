@@ -7,17 +7,7 @@ extends ../../_layouts/_master.pug
 block content
     
     #report-view(v-cloak v-if="!page_loading && show_form === true")
-        h1 Share Your Status
        
-        h2(v-if="lantern_connected === false && cloud_connected === false") 
-            | Will Wait for Internet
-        
-        h2(v-if="cloud_connected") 
-            | Will Send Globally
-
-        h2(v-if="!cloud_connected && lantern_connected") 
-            | Will Send To Nearby Devices
- 
 
         form.panel(@submit.prevent="handleSubmit")
 

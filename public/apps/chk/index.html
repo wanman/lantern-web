@@ -42,7 +42,7 @@
                 <nav class="global" v-if="showNavMenu" v-cloak>
                     <ul>
                         <li><a href="/index.html"> <span class="icon"><i class="fas fa-home"></i></span>Home</a></li>
-                        <li><a href="/apps/rdr/"> <span class="icon"><i class="fas fa-map"></i></span>Supplies</a></li>
+                        <li><a href="/apps/rdr/"> <span class="icon"><i class="fas fa-box"></i></span>Supplies</a></li>
                         <li><a href="/apps/chk/"> <span class="icon"><i class="fas fa-thumbtack"></i></span>Checkin</a></li>
                         <li><a href="/apps/rpt/"> <span class="icon"><i class="fas fa-clipboard"></i></span>Report</a></li>
                         <li><a href="/apps/net/"> <span class="icon"><i class="fas fa-globe-americas"></i></span>Network</a></li>
@@ -52,13 +52,6 @@
                 <!-- main page content-->
                 <div class="page-content">
                     <div id="report-view" v-cloak v-if="!page_loading &amp;&amp; show_form === true">
-                        <h1>Share Your Status</h1>
-                        <h2 v-if="lantern_connected === false &amp;&amp; cloud_connected === false">
-                             Will Wait for Internet</h2>
-                        <h2 v-if="cloud_connected">
-                             Will Send Globally</h2>
-                        <h2 v-if="!cloud_connected &amp;&amp; lantern_connected">
-                             Will Send To Nearby Devices</h2>
                         <form class="panel" @submit.prevent="handleSubmit">
                             <div class="panel-block">
                                 <div class="field">

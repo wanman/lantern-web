@@ -6,7 +6,7 @@ window.page = (function() {
     
     //------------------------------------------------------------------------
     self.addData("apps", [
-        {"title": "Supplies", "id": "rdr", "icon": "map", "text": "Find nearby water, power and more"},
+        {"title": "Supplies", "id": "rdr", "icon": "box", "text": "Find nearby water, power and more"},
         {"title": "Checkin", "id": "chk", "icon": "thumbtack", "text": "Let loved ones know you are safe"},
         {"title": "Report", "id": "rpt", "icon": "clipboard", "text": "Help verify local conditions"},
         {"title": "Network", "id": "net", "icon": "globe-americas", "text": "See who else is connected"},

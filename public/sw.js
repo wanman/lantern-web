@@ -27,7 +27,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/chk/index.html",
-    "revision": "897fee1161a16ffef5c97bafa50dc8e8"
+    "revision": "18b8c29d7680a5c47bdb3be98da06dfd"
   },
   {
     "url": "apps/chk/index.js",
@@ -83,11 +83,11 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rpt/index.css",
-    "revision": "119c3d34a72dd988d167680196b55ade"
+    "revision": "9094bccc910a43f3bc92e5643d0ac9ad"
   },
   {
     "url": "apps/rpt/index.html",
-    "revision": "f1b26d8a684e045cd9079f0f9639f6c2"
+    "revision": "e0b99539c474b6eb80e28bcc467bf804"
   },
   {
     "url": "apps/rpt/index.js",
@@ -99,7 +99,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.css",
-    "revision": "24c5a3eea744bceff077e90f172cd43e"
+    "revision": "474948eb994d38905f89f01947d80a90"
   },
   {
     "url": "index.html",
@@ -107,7 +107,7 @@ self.__precacheManifest = [
   },
   {
     "url": "index.js",
-    "revision": "131d46543485ed8473c1d4c9849b8585"
+    "revision": "03eb5555d4c89ddc7f87d8a1b7705b77"
   },
   {
     "url": "intro/a.html",
@@ -259,7 +259,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.js",
-    "revision": "f75797cff791e2432359c0d3552d2152"
+    "revision": "1c570472c3f919dba8f42570dbab8348"
   },
   {
     "url": "lib/map.css",

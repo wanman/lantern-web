@@ -30,10 +30,8 @@ html, body {
   text-align: center;
   margin-top: 2em; }
 
-#add-page #report-view {
-  overflow-y: scroll; }
-  #add-page #report-view h1 {
-    margin-top: 1em; }
+#add-page #report-view h1 {
+  margin-top: 1em; }
 
 #add-page #subcategory-view .button, #add-page #input-selector-view .button, #add-page #map-selector-view .button {
   width: 20em; }

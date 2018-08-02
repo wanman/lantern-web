@@ -32,24 +32,24 @@ block content
 
 
         #input-selector-view(v-if="view == 'input'")
-            h1 Select Condition Coverage
             ul
                 li.box(@click="presentAddressForm") 
 
                     span.icon.is-large
                         i.fas.fa-map-pin
-                    | An Address
-                li.box(@click="presentAreaForm") 
+                    | Address
 
-                    span.icon.is-large
-                        i.fas.fa-circle
-                    | An Area
                 li.box(@click="presentLineForm") 
 
                     span.icon.is-large
                         i.fas.fa-road
-                    | A Line
+                    | Road
 
+                li.box(@click="presentAreaForm") 
+
+                    span.icon.is-large
+                        i.fas.fa-circle
+                    | Area
 
         #map-selector-view(v-if="view == 'map'")
 
