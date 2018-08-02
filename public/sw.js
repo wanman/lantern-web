@@ -51,11 +51,11 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/net/index.html",
-    "revision": "a6163c687ee78e426b53870e074fb615"
+    "revision": "a907c3991ecbc0dd09670be2be875536"
   },
   {
     "url": "apps/net/index.js",
-    "revision": "171ef1837bbeb2f1478815e3cdd3604d"
+    "revision": "8e4899e1f08733bd32d5486260ca7a65"
   },
   {
     "url": "apps/rdr/detail.css",
@@ -83,15 +83,15 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rpt/index.css",
-    "revision": "9094bccc910a43f3bc92e5643d0ac9ad"
+    "revision": "4bbd2c7004c6be9962cde5762d925eb0"
   },
   {
     "url": "apps/rpt/index.html",
-    "revision": "e0b99539c474b6eb80e28bcc467bf804"
+    "revision": "4bb3e1b342ebaf634b0152c2f091df1c"
   },
   {
     "url": "apps/rpt/index.js",
-    "revision": "ca83090ca6e3e29c8def344bc2b7a9cd"
+    "revision": "04426c3f54358e0bcda07254a18638ea"
   },
   {
     "url": "hotspot.html",
@@ -127,7 +127,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.css",
-    "revision": "fcd965cd0a87e251066bf417ef666b2d"
+    "revision": "40b8a3cc61ff2a8ff1e7fb468b52aaf6"
   },
   {
     "url": "manifest.json",
@@ -267,7 +267,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/map.js",
-    "revision": "94f8101425257c222da2742d9f179cda"
+    "revision": "bd8dd2497787dff078514a060f82e3b3"
   },
   {
     "url": "lib/vendor.js",

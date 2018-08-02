@@ -14177,8 +14177,7 @@ window.LanternMapManager = function() {
             dbName: "map",
             maxZoom: 16,
             useCache: true,
-            crossOrigin: true,
-            noWrap: true
+            crossOrigin: true
         }).addTo(self.map);
 
         // default to center of US as starting location for map
@@ -14197,7 +14196,7 @@ window.LanternMapManager = function() {
         init();
     };
 
-    self.addPoint = function(title, coords,  icon, color) {
+    self.addPoint = function(title, coords,  icon, color, draggable) {
 
         var opts = {};
         icon = icon || "info-circle";
@@ -14208,6 +14207,8 @@ window.LanternMapManager = function() {
             markerColor: color,
             iconColor: '#FFF'
         });        
+
+        opts.draggable = (draggable ? true : false);
 
         var marker = L.marker(coords, opts).addTo(self.map);
         self.markers.push(marker);
@@ -14222,7 +14223,31 @@ window.LanternMapManager = function() {
 
     self.addCircle = function(title, coords, opts) {
         //console.log("[map] adding circle: ", coords);
-        return L.circle(coords, opts || {}).addTo(self.map);
+        var circle = L.circle(coords, opts || {}).addTo(self.map);
+
+        if (opts.draggable) {
+            circle.on('mousedown', function (event) {
+              //L.DomEvent.stop(event);
+              self.map.dragging.disable();
+              let {lat: circleStartingLat, lng: circleStartingLng} = circle._latlng;
+              let {lat: mouseStartingLat, lng: mouseStartingLng} = event.latlng;
+              self.map.on('mousemove', event => {
+                let {lat: mouseNewLat, lng: mouseNewLng} = event.latlng;
+                let latDifference = mouseStartingLat - mouseNewLat;
+                let lngDifference = mouseStartingLng - mouseNewLng;
+
+                let center = [circleStartingLat-latDifference, circleStartingLng-lngDifference];
+                circle.setLatLng(center);
+              });
+            });
+
+            self.map.on('mouseup', () => { 
+              self.map.dragging.enable();
+              self.map.removeEventListener('mousemove');
+            });
+        }
+
+        return circle;
     };
     
 

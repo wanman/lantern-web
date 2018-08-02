@@ -19,32 +19,33 @@ window.page = (function() {
                 .then(self.askForLocation)
                 .then(function(position) {
                     
-                    self.view.$data.map_loaded = true;
-
+                    console.log("render", position);
                     var lat = position.coords.latitude;
                     var lon = position.coords.longitude;
-                    self.map.setPosition(lat, lon, 12);
+                    self.map.setPosition(lat, lon, 10);
 
-                    if (tag != "ara") {
-                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, {
-                            draggable: true
-                        }));
+
+                    self.view.$data.map_loaded = true;
+
+                    if (tag == "adr") {
+                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, "flag", null, true));
                     }
-                    else {
-                        venues.push(self.map.addCircle(new_doc.get("title"), {lat: lat, lon: lon},{
+                    else if (tag == "ara") {
+                        var circle = self.map.addCircle(new_doc.get("title"), {lat: lat, lon: lon},{
                             radius: 1000,
                             color: "#72A2EF",
                             fillColor: '#72A2E5',
                             opacity: 0.9,
                             draggable: true
-                        }));
+                        });
+
+
+
+                        venues.push(circle);
                     }
-
-
-                    if (tag == "lne") {
-                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat-0.01, lon: lon-0.01}, {
-                            draggable: true
-                        }));
+                    else if (tag == "lne") {
+                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, "arrow-circle-left", null, true));
+                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat-0.01, lon: lon-0.1}, "arrow-circle-right", null, true));
                     }
                 })
                 .catch(function(err) {
@@ -58,14 +59,15 @@ window.page = (function() {
     function setCategory(id) {
         console.log("[add] setting category to: " + id);
 
+        self.view.$data.lock_doc = false;
 
-        new_doc = new LanternDocument( "m:" + Math.round(Math.random()*100000), self.stor);
-        new_doc.set("title", "New Place " + Math.round(Math.random()*100));
+        // we're creating a geo-scoped note for the community shared map
+        new_doc = new LanternDocument( "n:" + Math.round(Math.random()*100000), self.stor);
         new_doc.push("tag", id);
 
         self.stor.get("c:"+id).then(function(result) {
             self.view.$data.category  = result.toJSONFriendly();
-            self.view.$data.page_title = "Report " + result.get("title");
+            self.view.$data.page_title = result.get("title");
             self.view.$data.allow_back_button = true;
 
             self.stor.getManyByType("c").then(function(results) {
@@ -119,7 +121,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.addHelper("handleShowInputSelector", function(subcategory) {
         console.log("[add] selected subcategory: " + subcategory.title);
-        self.view.$data.page_title = "Report " + subcategory.title;
+        self.view.$data.page_title =  subcategory.title;
         new_doc.push("category", subcategory._id.split(":")[1]);
 
 
@@ -171,18 +173,20 @@ window.page = (function() {
                 new_doc.save().then(function() {
                     evt.target.className="button is-primary";
                     self.view.$data.view = "success";
+                    self.map.addZoomControl();
                 });
             }
             else {
 
                 venues.forEach(function(venue) {
                     var coords = venue.getLatLng();
-                    var hash = Geohash.encode(coords.lat, coords.lng, 10);
+                    var hash = Geohash.encode(coords.lat, coords.lng, 6);
                     new_doc.push("geo", hash);
                     if (venue.getRadius) {
                         new_doc.set("radius", venue.getRadius());
                     }
                     self.view.$data.lock_doc = true;
+                    self.map.removeZoomControl();
                     evt.target.className="button is-primary";
 
                 });
@@ -192,7 +196,7 @@ window.page = (function() {
     });
 
     self.addHelper("handleReturnToMap", function() {
-        window.location = "/apps/rdr/";
+        window.location = "/";
     });
     
 
@@ -212,7 +216,7 @@ window.page = (function() {
     self.addData("category", null);
     self.addData("subcategories", []);
     self.addData("venue_categories", []);
-    self.addData("view", "report");
+    self.addData("view", "");
     self.addData("map_loaded", false);
     self.addData("area_radius", 0);
     self.addData("lock_doc", false); // for preview before saving

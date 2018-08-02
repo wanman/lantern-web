@@ -40,6 +40,12 @@ window.page = (function() {
         console.log(tag_tally);
     });
 
+    self.addHelper("handleInspectNotes", function() {
+        self.view.$data.n_docs.forEach(function(doc) {
+            console.log(JSON.stringify(doc));
+        });
+    });
+
 
     //------------------------------------------------------------------------
     self.render()
@@ -80,6 +86,7 @@ window.page = (function() {
                 self.map.map.setZoom(4);
             }, 100);        
         })
+        .then(self.getNotes)
         .then(setVerificationCount);
     return self;
 })();

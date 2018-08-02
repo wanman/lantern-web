@@ -535,6 +535,10 @@ window.LanternPage = (function(id) {
         return self.stor.getManyByType("r");
     };
 
+    self.getNotes = function() {
+        return self.stor.getManyByType("n");
+    };
+
 
 
 

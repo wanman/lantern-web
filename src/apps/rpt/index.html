@@ -11,7 +11,6 @@ block content
         // report view
         #report-view(v-if="view == 'report'")
             h1 Help Us Map Your Region
-            h2 What to report?
             ul.menu
                 li(v-for="category in venue_categories" @click="handleVenueCategory(category)" v-bind:id="category._id")
                     span {{ category.title }}
@@ -20,8 +19,7 @@ block content
          
 
         #subcategory-view(v-if="view == 'subcategory'")
-            h1 {{ category.title }}
-            h2 Pick Best Description
+            h1 Pick Best Description
             ul.menu
                 li(v-for="sc in subcategories" @click="handleShowInputSelector(sc)" v-bind:id="sc._id") 
                 
@@ -32,6 +30,7 @@ block content
 
 
         #input-selector-view(v-if="view == 'input'")
+            h1 Describe The Area
             ul
                 li.box(@click="presentAddressForm") 
 
@@ -49,33 +48,32 @@ block content
 
                     span.icon.is-large
                         i.fas.fa-circle
-                    | Area
+                    | Region
 
         #map-selector-view(v-if="view == 'map'")
 
       
             div(v-if="map_loaded && !lock_doc")
-                h1(v-if="area_radius") Drag Pin And Adjust Radius
+                h1(v-if="area_radius") Drag &amp; Adjust Radius
                 h1(v-if="!area_radius") Drag Pin
-            div(v-if="map_loaded &&  lock_doc")
-                h1 Preview
             div(v-if="!map_loaded")
                 h1 Loading Map&hellip;
             .card 
                 #map
 
-                p(v-if="lock_doc && lantern_connected") This is a preview of your report. If you choose to submit, it will be added to a shared map for people near you to see and verify.
+                .card-content(v-if="lock_doc && (cloud_connected || lantern_connected)") This is a preview of your report. If you choose to submit, it will be added to a shared map for people near you to see and verify.
 
 
-                p(v-if="lock_doc && !lantern_connected") This is a preview of your report. Since you are offline, your report will be automatically shared once you reconnect to a Lantern or the internet.
+                .card-content(v-if="lock_doc && (!cloud_connected && !lantern_connected)") This is a preview of your report. Since you are offline, your report will be automatically shared once you reconnect to a Lantern or the internet.
 
 
-                input.slider.is-fullwidth(v-if="map_loaded && !lock_doc && area_radius > 0" step="5" min="1" max="5000" v-model="area_radius" type="range")
+                .card-content(v-if="map_loaded && !lock_doc && area_radius > 0")
+                    input.slider.is-fullwidth(step="5" min="1" max="5000" v-model="area_radius" type="range")
 
             .action-panel(v-if="map_loaded")
                 .button.is-primary(v-if="!lock_doc" @click="handleButtonPush") Next
-                .button.is-primary(v-if="lock_doc & lantern_connected" @click="handleButtonPush") Send Now
-                .button.is-primary(v-if="lock_doc & !lantern_connected" @click="handleButtonPush") Send When Possible
+                .button.is-primary(v-if="lock_doc && (cloud_connected || lantern_connected)" @click="handleButtonPush") Send Now
+                .button.is-primary(v-if="lock_doc && (!cloud_connected && !lantern_connected)" @click="handleButtonPush") Send When Possible
 
         #success-view(v-if="view == 'success'")
 

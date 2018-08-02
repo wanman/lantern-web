@@ -2,7 +2,7 @@ html, body {
   background: #f9fafb; }
 
 #add-page h1 {
-  margin-top: 0.5em; }
+  margin-bottom: 1em; }
 
 #add-page h2 {
   margin-bottom: 2em; }
@@ -15,9 +15,11 @@ html, body {
 
 #add-page .card {
   margin: 0em auto 1em;
-  max-width: 22em;
-  border-radius: 1em;
+  width: 100%;
+  border-radius: 0.5em;
   overflow: hidden; }
+  #add-page .card #map {
+    min-height: 25em; }
   #add-page .card p {
     padding: 2em;
     font-size: small;
@@ -30,8 +32,8 @@ html, body {
   text-align: center;
   margin-top: 2em; }
 
-#add-page #report-view h1 {
-  margin-top: 1em; }
+#add-page #report-view, #add-page #subcategory-view, #add-page #map-selector-view {
+  padding-top: 1em; }
 
 #add-page #subcategory-view .button, #add-page #input-selector-view .button, #add-page #map-selector-view .button {
   width: 20em; }
@@ -40,10 +42,10 @@ html, body {
   padding: 1em; }
 
 #add-page #map-selector-view {
-  padding: 0em 2em; }
-  #add-page #map-selector-view input {
-    margin: 2em auto;
-    max-width: 19em; }
+  padding: 2em; }
+  #add-page #map-selector-view .card-content {
+    text-align: center;
+    font-size: small; }
 
 #add-page #success-view {
   background: #f9fafb;

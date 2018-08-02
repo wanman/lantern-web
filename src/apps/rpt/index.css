@@ -10,7 +10,7 @@ html, body {
 #add-page {
     
     h1 {
-        margin-top: 0.5em;
+        margin-bottom: 1em;
     }
 
     h2 {
@@ -25,9 +25,14 @@ html, body {
     }
 
     .card {
+        #map {
+
+            min-height: 25em;
+        }
+
         margin: 0em auto 1em;
-        max-width: 22em;
-        border-radius: 1em;
+        width: 100%;
+        border-radius: 0.5em;
         overflow: hidden;
 
         p {
@@ -47,13 +52,9 @@ html, body {
         text-align: center;
         margin-top: 2em;   
     }
-    
-    #report-view {
 
-        h1 {
-            margin-top: 1em;
-        }
-
+    #report-view, #subcategory-view, #map-selector-view {
+        padding-top: 1em;
     }
 
 
@@ -68,10 +69,10 @@ html, body {
     }
 
     #map-selector-view {
-        padding: 0em 2em;
-        input {
-            margin: 2em auto;
-            max-width: 19em;
+        padding: 2em;
+        .card-content {
+            text-align: center;
+            font-size: small;
         }
 
     }

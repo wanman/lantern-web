@@ -55,46 +55,44 @@
                         <!-- report view-->
                         <div id="report-view" v-if="view == 'report'">
                             <h1>Help Us Map Your Region</h1>
-                            <h2>What to report?</h2>
                             <ul class="menu">
                                 <li v-for="category in venue_categories" @click="handleVenueCategory(category)" v-bind:id="category._id"><span>{{ category.title }}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
                         </div>
                         <div id="subcategory-view" v-if="view == 'subcategory'">
-                            <h1>{{ category.title }}</h1>
-                            <h2>Pick Best Description</h2>
+                            <h1>Pick Best Description</h1>
                             <ul class="menu">
                                 <li v-for="sc in subcategories" @click="handleShowInputSelector(sc)" v-bind:id="sc._id"> <span>{{sc.title}}</span><span class="icon is-large"><i class="fas fa-angle-right"></i></span></li>
                             </ul>
                         </div>
                         <div id="input-selector-view" v-if="view == 'input'">
+                            <h1>Describe The Area</h1>
                             <ul>
                                 <li class="box" @click="presentAddressForm"> <span class="icon is-large"><i class="fas fa-map-pin"></i></span>Address</li>
                                 <li class="box" @click="presentLineForm"> <span class="icon is-large"><i class="fas fa-road"></i></span>Road</li>
-                                <li class="box" @click="presentAreaForm"> <span class="icon is-large"><i class="fas fa-circle"></i></span>Area</li>
+                                <li class="box" @click="presentAreaForm"> <span class="icon is-large"><i class="fas fa-circle"></i></span>Region</li>
                             </ul>
                         </div>
                         <div id="map-selector-view" v-if="view == 'map'">
                             <div v-if="map_loaded &amp;&amp; !lock_doc">
-                                <h1 v-if="area_radius">Drag Pin And Adjust Radius</h1>
+                                <h1 v-if="area_radius">Drag &amp; Adjust Radius</h1>
                                 <h1 v-if="!area_radius">Drag Pin</h1>
-                            </div>
-                            <div v-if="map_loaded &amp;&amp;  lock_doc">
-                                <h1>Preview</h1>
                             </div>
                             <div v-if="!map_loaded">
                                 <h1>Loading Map&hellip;</h1>
                             </div>
                             <div class="card"> 
                                 <div id="map"></div>
-                                <p v-if="lock_doc &amp;&amp; lantern_connected">This is a preview of your report. If you choose to submit, it will be added to a shared map for people near you to see and verify.</p>
-                                <p v-if="lock_doc &amp;&amp; !lantern_connected">This is a preview of your report. Since you are offline, your report will be automatically shared once you reconnect to a Lantern or the internet.</p>
-                                <input class="slider is-fullwidth" v-if="map_loaded &amp;&amp; !lock_doc &amp;&amp; area_radius &gt; 0" step="5" min="1" max="5000" v-model="area_radius" type="range">
+                                <div class="card-content" v-if="lock_doc &amp;&amp; (cloud_connected || lantern_connected)">This is a preview of your report. If you choose to submit, it will be added to a shared map for people near you to see and verify.</div>
+                                <div class="card-content" v-if="lock_doc &amp;&amp; (!cloud_connected &amp;&amp; !lantern_connected)">This is a preview of your report. Since you are offline, your report will be automatically shared once you reconnect to a Lantern or the internet.</div>
+                                <div class="card-content" v-if="map_loaded &amp;&amp; !lock_doc &amp;&amp; area_radius &gt; 0">
+                                    <input class="slider is-fullwidth" step="5" min="1" max="5000" v-model="area_radius" type="range">
+                                </div>
                             </div>
                             <div class="action-panel" v-if="map_loaded">
                                 <div class="button is-primary" v-if="!lock_doc" @click="handleButtonPush">Next</div>
-                                <div class="button is-primary" v-if="lock_doc &amp; lantern_connected" @click="handleButtonPush">Send Now</div>
-                                <div class="button is-primary" v-if="lock_doc &amp; !lantern_connected" @click="handleButtonPush">Send When Possible</div>
+                                <div class="button is-primary" v-if="lock_doc &amp;&amp; (cloud_connected || lantern_connected)" @click="handleButtonPush">Send Now</div>
+                                <div class="button is-primary" v-if="lock_doc &amp;&amp; (!cloud_connected &amp;&amp; !lantern_connected)" @click="handleButtonPush">Send When Possible</div>
                             </div>
                         </div>
                         <div id="success-view" v-if="view == 'success'"><span class="icon is-large"><i class="fas fa-check-circle fa-3x"></i></span>

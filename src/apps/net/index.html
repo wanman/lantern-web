@@ -8,22 +8,24 @@ block content
     div(v-cloak v-if="!page_loading")
 
 
-        .card(@click="handleInspectUsers")
-            .card-header 
-                .card-header-title Active Users  
-                .card-header-icon 
-                    span.icon
-                            i.fas.fa-user
-            .card-content {{ u_docs.length }} 
+        .columns
+            .column
+                .card(@click="handleInspectUsers")
+                    .card-header 
+                        .card-header-title Active Users  
+                        .card-header-icon 
+                            span.icon
+                                    i.fas.fa-user
+                    .card-content {{ u_docs.length }} 
 
-
-        .card(@click="handleInspectDevices") 
-            .card-header 
-                .card-header-title Active Hosts 
-                .card-header-icon                     
-                    span.icon
-                        i.fas.fa-server
-            .card-content {{ d_docs.length }}
+            .column
+                .card(@click="handleInspectDevices") 
+                    .card-header 
+                        .card-header-title Active Hosts 
+                        .card-header-icon                     
+                            span.icon
+                                i.fas.fa-server
+                    .card-content {{ d_docs.length }}
 
 
         .card#host-list
@@ -46,13 +48,27 @@ block content
                         td {{ timestamp(item) }}
 
 
-        .card()
-            .card-header 
-                .card-header-title Verifications  
-                .card-header-icon 
-                    span.icon
-                            i.fas.fa-check-double
-            .card-content {{ verifications }} 
+        .columns
+            .column
+                .card(@click="handleInspectNotes") 
+                    .card-header
+                        .card-header-title Notes 
+                        .card-header-icon                     
+                            span.icon
+                                i.fas.fa-sticky-note
+                    .card-content {{ n_docs.length }}
+
+
+            .column
+                .card
+                    .card-header 
+                        .card-header-title Verifications  
+                        .card-header-icon 
+                            span.icon
+                                    i.fas.fa-check-double
+                    .card-content {{ verifications }} 
+
+
 
 block styles
     link(rel="stylesheet" type="text/css" href="/lib/map.css")
