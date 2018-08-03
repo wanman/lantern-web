@@ -25,7 +25,7 @@ window.page = (function() {
         })
         .then(self.connect)
         .then(function() {
-            $data.page_title = "Lantern Network";
+            $data.page_title = "App Directory";
         })
         .then(self.getVenues)
         .then(function() {

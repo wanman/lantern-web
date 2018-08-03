@@ -8,8 +8,6 @@ block content
     #home-view(v-cloak v-if="!page_loading")
 
         div(v-if="v_docs.length")
-            h1 App Directory
-
             ul.apps
                 li.card(v-for="app in apps" @click="goToApp(app.id)")
                     .edge

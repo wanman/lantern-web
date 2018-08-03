@@ -100,7 +100,7 @@
                             <p v-if="lantern_connected || cloud_connected">Your contribution was successfully saved to the map. Next, others on the network will be asked to verify the accuracy of this data.</p>
                             <p v-if="!lantern_connected &amp;&amp; !cloud_connected">Your contribution was saved and will be shared with others as soon as we have a network connection.</p>
                             <div class="action-panel">
-                                <div class="button" @click="handleReturnToMap"> <span>Continue</span><span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>
+                                <div class="button" @click="handleReturnHome"> <span>Continue</span><span class="icon is-small"><i class="fas fa-arrow-right"></i></span></div>
                             </div>
                         </div>
                     </div>

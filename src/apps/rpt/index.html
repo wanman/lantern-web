@@ -83,7 +83,7 @@ block content
             p(v-if="lantern_connected || cloud_connected") Your contribution was successfully saved to the map. Next, others on the network will be asked to verify the accuracy of this data.
             p(v-if="!lantern_connected && !cloud_connected") Your contribution was saved and will be shared with others as soon as we have a network connection.
             .action-panel
-                .button(@click="handleReturnToMap") 
+                .button(@click="handleReturnHome") 
                     span Continue
                     span.icon.is-small
                         i.fas.fa-arrow-right
