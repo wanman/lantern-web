@@ -148,13 +148,9 @@ window.page = (function() {
 
                         self.geo = Geohash.encode(res.coords.latitude, res.coords.longitude, 7);
                         //console.log("[rdr] my geo", self.geo);
-
                         self.sendGeohashToLantern(self.geo);
-
                         self.view.$data.geolocation = self.geo;
                         self.map.setOwnLocation({lat:res.coords.latitude, lng:res.coords.longitude});
-                        self.map.fitAll();
-
                     })
                     .catch(function(err) {
                         console.log("[rdr] err fitting map", err);
