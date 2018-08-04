@@ -79,7 +79,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rdr/index.js",
-    "revision": "3be0edb7723e052e1eae56f679d47fcf"
+    "revision": "d4008e980670014ecb4277ed7d75d2a9"
   },
   {
     "url": "apps/rpt/index.css",
@@ -87,7 +87,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rpt/index.html",
-    "revision": "4bb3e1b342ebaf634b0152c2f091df1c"
+    "revision": "d042ad87960a3f188ac8014114bdc2a1"
   },
   {
     "url": "apps/rpt/index.js",
@@ -103,11 +103,11 @@ self.__precacheManifest = [
   },
   {
     "url": "index.html",
-    "revision": "d439c3dc00b6570e93517f7e78e507a2"
+    "revision": "c0e410eef26b050e4cccce51ea796d3e"
   },
   {
     "url": "index.js",
-    "revision": "03eb5555d4c89ddc7f87d8a1b7705b77"
+    "revision": "23f17b32d8717c0827774414de7e6328"
   },
   {
     "url": "intro/a.html",
@@ -119,11 +119,11 @@ self.__precacheManifest = [
   },
   {
     "url": "intro/c.html",
-    "revision": "534b5ca33996ff547f0a272ed478f198"
+    "revision": "42bf7f03de21ed48c6d6934ebac0cbc3"
   },
   {
     "url": "lib/import.js",
-    "revision": "a90ab8b8bed7f7a7248eb424122e0332"
+    "revision": "aebb0739d8dac11ba1d20fa6af9d3f88"
   },
   {
     "url": "lib/lantern.css",

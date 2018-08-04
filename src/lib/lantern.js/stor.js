@@ -1,7 +1,7 @@
 window.LanternStor = (function($data, uri) {
 
     var cloud_uri = "https://lantern.global/db/lnt/";
-    var did_sync_maps = false;
+    var did_sync_maps = true; // @todo disable browser cache by default
     uri = uri.replace(":3000", "");
 
     var self = {
@@ -49,10 +49,11 @@ window.LanternStor = (function($data, uri) {
     function removeFromCache(doc_id) {
         var type = doc_id.split(":")[0];
         var index = getIndexForDoc(doc_id,type);
-        if (!index) return;
+
+        if (index == -1) return;
         $data[type+"_docs"].splice(index, 1);
         self.doc_cache[doc_id] = null;
-        //console.log("[cache] remove", doc_id);
+        console.log("[cache] remove", doc_id);
     }
 
     function addToCache(doc) {
@@ -395,6 +396,9 @@ window.LanternStor = (function($data, uri) {
         
         LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, function(status) {
                 status_fn(status);
+
+
+                // @todo allow user control, but for now we disable local storage by default
 
                 // don't bother trying map sync until main sync is working...
                 if (status && !did_sync_maps) {

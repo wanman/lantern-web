@@ -184,6 +184,35 @@ window.LanternImport = function(stor) {
     };
 
 
+    self.clean = function() {
+        
+        stor.getManyByType("d").then(function(devices) {
+            devices.forEach(function(device) {
+                if (device.has("tag", "dev")) {
+                    console.log(device);
+                    device.remove();
+                }
+            });
+        });
+
+        stor.getManyByType("i").then(function(items) {
+
+            items.forEach(function(item) {
+                stor.get(item.get("parent")[0]).then(function(doc) {
+
+                })
+                .catch(function(err) {
+                    if (err.name == "not_found") {
+                        console.log(item.id, err);
+                        item.remove();
+                    }
+                });
+            });
+
+
+        });
+    };
+
 
     //------------------------------------------------------------------------
     return self;

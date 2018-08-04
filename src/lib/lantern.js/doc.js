@@ -203,7 +203,7 @@ window.LanternDocument = (function(id,stor) {
 
 
     self.remove = function() {
-        return stor.remove(self.id);
+        return stor.remove(self.id, self.data._rev);
     };
 
     /**

@@ -7,15 +7,21 @@ window.LanternMapManager = function() {
         user: null
     };
 
-
     function init() {
-        L.tileLayer('https://maps.tilehosting.com/c/ade1b05a-496f-40d1-ae23-5d5aeca37da2/styles/streets/{z}/{x}/{y}.png?key=ZokpyarACItmA6NqGNhr', {
+
+        var opts = {
             attribution: false,
             dbName: "map",
             maxZoom: 16,
+            // always check PouchDB for map tiles
             useCache: true,
+            // if we are definitely offline, don't try network requests
+            useOnlyCache: (window.location.hostname != "lantern.global"),
+            cacheMaxAge: 365*24*3600*1000,
             crossOrigin: true
-        }).addTo(self.map);
+        };
+
+        L.tileLayer('https://maps.tilehosting.com/c/ade1b05a-496f-40d1-ae23-5d5aeca37da2/styles/streets/{z}/{x}/{y}.png?key=ZokpyarACItmA6NqGNhr', opts).addTo(self.map);
 
         // default to center of US as starting location for map
         self.setPosition(38.42,-102.79, 4);
