@@ -86,7 +86,11 @@ L.TileLayer.include({
             tile.onload = L.bind(this._tileOnLoad, this, done, tile);
         }
 
-        tile.src = tileUrl;
+        // when only using cache, prevent browser from attempting a direct URL request to external resource
+        if (!this.options.useOnlyCache) {
+            tile.src = tileUrl;
+        }
+
         return tile;
     },
 
