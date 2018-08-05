@@ -1,6 +1,7 @@
 window.LanternSync = function LanternSync(src, dest, label, continuous, status_fn, change_fn) {
     var reset_delay;
 
+
     function setStatus(status) {
         if (status == true) {
             reset_delay = true;
@@ -37,44 +38,48 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     
     var replication_handler = src.sync(dest, opts);
 
-
     replication_handler
     .on('paused', function(err) {
         if (err) {
-            console.log("[" + label +"] lost connection");
+            console.log("[db:" + label +"] lost connection");
             setStatus(false);
         }
     })
     .on('active', function() {
-        //console.log("[" + label + "] active sync");
+        //console.log("[db:" + label + "] active sync");
         setStatus(true);
     })
     .on('change', function (info) {
         setStatus(true);
         if (change_fn && typeof(change_fn) == "function") {
             if (info.change.docs) {
-                console.log("[" + label + "] %s: %s docs", 
+                console.log("[db:" + label + "] %s: %s docs", 
                         info.direction, 
                         info.change.docs.length);
-                info.change.docs.forEach(change_fn);            
+                info.change.docs.forEach(function(changed_doc) {
+                    console.log("[db:" + label + "] " + changed_doc._id + " change", changed_doc);
+                    change_fn(changed_doc);
+                });            
             }
         }
 
     })
     .on('error', function (err) {
-        console.log("[stor] sync " + label + "err", err);
+        console.log("[db:" + label + "] sync err", err);
     });
 
 
+    // make sure to cancel any outstanding replication
     window.addEventListener('beforeunload', function(event) {
         try {
             replication_handler.cancel();
 
-            console.log("[" + label + "] stop sync");
+            console.log("[db:" + label + "] stop sync");
         }
         catch(e) {
             console.log("failed to stop sync", label);
         }
     });
 
+    return replication_handler;
 };

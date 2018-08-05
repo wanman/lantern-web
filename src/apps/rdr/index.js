@@ -147,10 +147,20 @@ window.page = (function() {
                     .then(function(res) {
 
                         self.geo = Geohash.encode(res.coords.latitude, res.coords.longitude, 7);
-                        //console.log("[rdr] my geo", self.geo);
-                        self.sendGeohashToLantern(self.geo);
-                        self.view.$data.geolocation = self.geo;
                         self.map.setOwnLocation({lat:res.coords.latitude, lng:res.coords.longitude});
+                        self.view.$data.geolocation = self.geo;
+
+                        // update user document to include location
+                        var geo = self.geo.substr(0,4);
+                        if (!self.user.get("geo") || !self.user.has("geo", geo)) {                        
+                            console.log("[page] updating user location");
+                            self.user.push("geo", geo);
+                            self.user.save();
+                        }
+
+                        console.log("[rdr] my geo:", self.geo);
+
+                        self.sendGeohashToLantern(geo);
                     })
                     .catch(function(err) {
                         console.log("[rdr] err fitting map", err);

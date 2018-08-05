@@ -60,10 +60,10 @@ html(lang="en")
                                     i.fas.fa-wifi(style="color: #DDD")
                             | Offline
 
-                        span(v-if="lantern_connected") 
+                        span(v-if="lantern && lantern_connected") 
                             span.icon
                                     i.fas.fa-wifi
-                            | Lantern {{ lantern_name }}
+                            | Lantern {{ lantern.name }}
                         span(v-if="cloud_connected") 
                             span.icon
                                     i.fas.fa-cloud

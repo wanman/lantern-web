@@ -46,6 +46,7 @@ html, body {
         }
 
         p {
+            margin-top: 0.3em;
             font-size: small;
             white-space: nowrap;
         }

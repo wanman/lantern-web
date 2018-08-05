@@ -267,11 +267,11 @@ window.LanternDocument = (function(id,stor) {
 window.LanternPage = (function(id) {
 
     // view options
-    var opts = {
+    var vue_opts = {
         data: {
             cloud_connected: null,
             lantern_connected: null,
-            lantern_name: "",
+            lantern: {},
             page_title: "",
             page_tag: "",     
             page_action_icon: "",
@@ -295,6 +295,15 @@ window.LanternPage = (function(id) {
         }
     };
 
+    // default cross-domain JSON request options
+    var fetch_opts = {
+         mode: "cors",
+         cache: "no-cache",
+         headers: {
+            "Content-Type": "application/json; charset=utf-8"
+         }
+    };
+
     // geolocation options
     var geo_options = {
         enableHighAccuracy: false, 
@@ -302,6 +311,10 @@ window.LanternPage = (function(id) {
         timeout           : 27000
     };
 
+
+
+
+    //------------------------------------------------------------------------
     var self = {
         geo: null, // user geohash location
         stor: null, // database storage
@@ -310,16 +323,59 @@ window.LanternPage = (function(id) {
         map: null // leaflet map
     };
 
-    var did_assign_location = false;
 
+    // prevents duplicate assignments of same location to device
+    var did_assign_location = false;
 
     // initialize arrays for each type of doc
     // only these document types will ever be accepted by the system
     (["v", "i", "c", "r", "n", "u", "d"]).forEach(function(type) {
-        opts.data[type+"_docs"] = [];
+        vue_opts.data[type+"_docs"] = [];
     });
 
+
+
+
     //------------------------------------------------------------------------
+    function findBestLanternDevice() {
+        var domain = "lantern.global";
+
+
+        // @todo gracefully handle local testing through docker
+        // if (window.location.host.indexOf("localhost") != -1) {
+        //     domain = "localhost";
+        // }
+
+        self.setBaseURI(window.location.protocol + "//" + domain);
+
+        var cloud = false;
+        var lantern = false;
+
+        return fetch(self.getBaseURI() + "/api/info", fetch_opts)
+            .then(function(result) {
+                return result.json();
+            })
+            .then(function(json) {
+                console.log("[page] lantern selected:", json);
+                self.view.$data.lantern = json;
+                try {
+                    cloud = (json.cloud == true);
+                    lantern = (json.cloud == false);                    
+                }
+                catch(e) {
+                    // if missing "cloud" value, leave defaults...
+                }
+
+                self.view.cloud_connected = cloud;
+                self.view.lantern_connected = lantern;
+            })
+            .catch(function(err) {
+
+                self.view.cloud_connected = cloud;
+                self.view.lantern_connected = lantern;
+            });
+    }
+
 
     /**
     * Get anonymous user identifier retained in local storage per browser
@@ -388,106 +444,44 @@ window.LanternPage = (function(id) {
         }, 50);
     }
 
+
     /**
-    * Get name of the lantern we're connected to and save for view
-    **/
-    function loadLanternName() {
-        fetch(self.stor.lantern_uri + "/api/name").then(function(response) {
-            return response.json();
-        }).then(function(json) {
-            self.view.$data.lantern_name = json.name;
-        })
-        .catch(function(err) {
-            console.log(err);
-        });
+    * Handle each document change
+    */
+    function handleDocumentChange(changed_doc) {
+        if (changed_doc._id == "d:" + lantern_id) {
+            self.view.$data.lantern_name = changed_doc.tt;
+        }
+        showSyncIcon();
     }
 
 
-    function sync(continuous) {
-
-        self.view.$data.cloud_connected = self.stor.cloud_connected;
-        self.view.$data.lantern_connected = self.stor.lantern_connceted;
-
-        if (self.stor.lantern_connected) {
-            loadLanternName();
-        }
-
-
-        if (window.location.host == "lantern.global" && !self.stor.cloud_connected) {
-            self.view.$data.cloud_connected = true;
-            self.stor.syncWithCloud(continuous, function(status) {
-                self.view.$data.cloud_connected = true;
-            }, function(changed_doc) {
-                console.log("[page] doc changed", changed_doc);
-                // showSyncIcon();
-            });
-        }
-        else {
-
-
-            if (self.stor.cloud_connected === null) {
-                // check to see if we have cloud access before attempting sync
-                // this could be blocked because we're offline or server is down
-                fetch("https://lantern.global/api/id").then(function(res) {
-                    if (res.status == 200) {
-                        self.stor.syncWithCloud(continuous, function(status) {
-                            self.view.$data.cloud_connected = status;
-                        },function(changed_doc) {
-                            console.log("[page] doc changed", changed_doc);
-                            refreshCached(changed_doc);
-                            showSyncIcon(changed_doc);
-                        });
-                    }
-                }).catch(function(err) {
-                    self.view.$data.cloud_connected = null;
-                });
-            }
-
-
-            if (self.stor.lantern_connected === null) {
-
-                // check to see if we have rpi access before attempting sync
-                fetch(self.getBaseURI() + "/api/id").then(function(res) {
-                    if (res.status == 200) {
-                        self.stor.syncWithLantern(continuous, function(status) {
-                            self.view.$data.lantern_connected = status;
-                            if (status == true) {
-                                loadLanternName();
-                            }
-                        },function(changed_doc) {
-                            // don't display sync message for map cache
-                            if (!changed_doc.dataUrl) {
-                                showSyncIcon(changed_doc);
-                            }
-                        });
-                    }
-                }).catch(function(err) {
-                    self.view.$data.lantern_connected = null;
-                });
-            }
-        }
+    function handleSyncStatusChange(status) {
+        //console.log("[db] sync status", status); 
     }
+
+
 
     //------------------------------------------------------------------------
     /** 
     * Define helper for user interactions
     **/
     self.addHelper = function(name, fn) {
-        opts.methods[name] = fn;
+        vue_opts.methods[name] = fn;
     };
     
     /** 
     * Define data for vue templates
     **/
     self.addData = function(name, val) {
-        opts.data[name] = val;
+        vue_opts.data[name] = val;
     };
 
     /** 
     * Mount vue to our top-level document object
     **/
     self.render = function() {
-        self.view = new Vue(opts);
+        self.view = new Vue(vue_opts);
         self.view.$mount(["#", id, "-page"].join(""));
         return Promise.resolve();
     };
@@ -496,19 +490,37 @@ window.LanternPage = (function(id) {
     * Add in data from PouchDB and identify network status
     */
     self.connect = function() {
-        self.stor = new LanternStor(opts.data, self.getBaseURI());
-        return self.stor.setup()
+        return findBestLanternDevice()
+            .then(function() {
+                self.stor = new LanternStor(self.getBaseURI(), "lnt", vue_opts.data);
+                return self.stor.setup();
+            })
             .then(getOrCreateUser)
             .then(function(user) {
                 // make sure we have an anonymous user all the time
-                self.user = user;
-                var cached = self.stor.getCached(user.id);
-                self.view.$data.user = cached;
-                // device wifi or local testing
-                sync(true);
+                self.user = self.view.$data.user = user;
+            })
+            .then(function() {
+                // if we can access the database, start sync
+                self.stor.host_db.info().then(function() {
+                    self.stor.sync(true, handleSyncStatusChange, handleDocumentChange);                    
+                });
+
+
+                if (self.view.$data.lantern_connected) {
+                    // we have a map cache we can use
+                    var map_stor = new LanternStor(self.getBaseURI(), "map", {});
+                    map_stor.setup().then(function() {
+                        setTimeout(function() {
+                            // download maps after some time...
+                            map_stor.sync(false, function() {}, function(changed_doc) {
+                                console.log(changed_doc);
+                            });
+                        }, 2000);
+                    });
+                }
             });
     };
-
 
     self.getVenues = function() {
         return self.stor.getManyByType("v");
@@ -540,6 +552,19 @@ window.LanternPage = (function(id) {
     };
 
 
+    self.createMapManager = function() {
+       var cache = !(self.view.$data.lantern && self.view.$data.lantern.cloud);
+            var db_uri;
+            
+            if (self.view.$data.lantern && self.view.$data.lantern.cloud == false) {
+                db_uri = self.getBaseURI() + "/db/map";
+            }
+            else {
+                // fall-back to offline cache if we are not connected direct to lantern
+                db_uri = "map";
+            }
+        return new LanternMapManager(db_uri, cache, cache);
+    };
 
 
 
@@ -552,12 +577,11 @@ window.LanternPage = (function(id) {
         if (self.map) {
             self.map.clear();
         }
-        else {                   
-            self.map = new LanternMapManager();     
+        else {
+            self.map = self.createMapManager();
         }
 
         venues = venues || [];
-
 
         return new Promise(function(resolve, reject) {
 
@@ -621,7 +645,7 @@ window.LanternPage = (function(id) {
     
     self.askForLocation = function() {
         return new Promise(function(resolve, reject) {
-            console.log("[page] asking for location");
+            //console.log("[page] asking for location");
             navigator.geolocation.getCurrentPosition(function(position) {
                 resolve(position);
             }, function(err) {
@@ -645,30 +669,22 @@ window.LanternPage = (function(id) {
 
         did_assign_location = true;
 
-        // increase privacy
-        geohash = geohash.substr(0,4);
-
         // tell device to use this as it's most recent location (skip GPS)
-        if (self.getBaseURI() != "https://lantern.global") {
-            fetch(self.getBaseURI() + "/api/geo",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8"
-                }, 
-                body: JSON.stringify({"geo": geohash })
-            }).then(function() {
-                console.log("[page] assigned geohash to lantern: " + geohash);
-            })
-            .catch(function(err) {
-                console.log("[page] skipping geo assignment since no lantern connection");
-            });
-        }
-
-        // update user document to include location
-        console.log("[page] updating user location");
-        self.user.push("geo", geohash);
-        self.user.save();
+        fetch(self.getBaseURI() + "/api/geo",
+        {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            }, 
+            body: JSON.stringify({"geo": geohash })
+        }).then(function() {
+            console.log("[page] assigned geohash to lantern: " + geohash);
+        })
+        .catch(function(err) {
+            console.log("[page] skipping geo assignment since no lantern connection");
+        });
 
     };
 
@@ -678,9 +694,12 @@ window.LanternPage = (function(id) {
     * Points to the right server for processing requests
     */
     self.getBaseURI = function() {
+        return lantern_uri;
+    };
 
-        return window.location.protocol + "//" + (window.location.host == "localhost:3000" ? 
-            "localhost" :  window.location.host);
+
+    self.setBaseURI = function(uri) {
+        lantern_uri = uri;
     };
 
     
@@ -770,12 +789,12 @@ window.LanternPage = (function(id) {
     /**
     * Setup universal template variables
     */
-    opts.data.showNavMenu = false;
+    vue_opts.data.showNavMenu = false;
 
     /**
     * Setup global view helpers
     */
-    opts.methods.toggleNavigation = function(el) {
+    vue_opts.methods.toggleNavigation = function(el) {
         self.view.$data.showNavMenu = !self.view.$data.showNavMenu;
 
         if (self.view.$data.showNavMenu) {
@@ -801,35 +820,21 @@ if ("serviceWorker" in navigator) {
         console.log("[sw] err", e);
     });
 }
-window.LanternStor = (function($data, uri) {
+window.LanternStor = (function(uri, db_name, $data) {
 
-    var cloud_uri = "https://lantern.global/db/lnt/";
-    var did_sync_maps = true; // @todo disable browser cache by default
-    uri = uri.replace(":3000", "");
 
     var self = {
         doc_cache: {}, 
         browser_db: null,
-        lantern_db: new PouchDB(uri + "/db/lnt/", {
+        host_db: new PouchDB(uri + "/db/" + db_name, {
             skip_setup: true,
             withCredentials: false        
         }),
-        lantern_maps_db: new PouchDB( uri + "/db/map/", {
-            skip_setup: true,
-            withCredentials: false        
-        }),
-        cloud_db: new PouchDB(cloud_uri, {
-            skip_setup: true,
-            withCredentials: false        
-        }),
-        cloud_connected: null,
-        lantern_connected: null,
-        lantern_uri: uri,
         db: null
     };
 
     try {
-        self.browser_db = new PouchDB("lnt");
+        self.browser_db = new PouchDB(db_name);
     }
     catch(e) {
         // browser refuses to use local storage...
@@ -853,10 +858,10 @@ window.LanternStor = (function($data, uri) {
         var type = doc_id.split(":")[0];
         var index = getIndexForDoc(doc_id,type);
 
+        console.log("[cache] remove", doc_id, index);
         if (index == -1) return;
         $data[type+"_docs"].splice(index, 1);
         self.doc_cache[doc_id] = null;
-        console.log("[cache] remove", doc_id);
     }
 
     function addToCache(doc) {
@@ -931,24 +936,18 @@ window.LanternStor = (function($data, uri) {
         }
     }
 
-    function lanternOrCloud() {
-        return self.cloud_db.info().then(function() {
-            self.db = self.cloud_db;
-            self.cloud_connected = true;
-            return self.db;
-        })
-        .catch(function() {
-            return self.lantern_db.info().then(function() {
-                self.db = self.lantern_db;
-                self.lantern_connected = true;
-                return self.db;
-            });
-        });
-    }
+    //------------------------------------------------------------------------
 
-    function pickDatabase() {
-        //console.log("[stor] picking database");
+    /**
+    * Select remote or local database
+    */
+    self.setup = function() {
+
+         //console.log("[stor] picking database");
         if (self.db) return Promise.resolve(self.db);
+
+        // default to host db
+        self.db = self.host_db;
 
         return new Promise(function(resolve, reject) {
 
@@ -956,12 +955,12 @@ window.LanternStor = (function($data, uri) {
             var timer = setTimeout(function() {
                 console.log("timed out looking for local db. use remote storage...");
                 if (!self.db) {
-                    return lanternOrCloud().then(resolve);
+                    resolve();
                 }
             }, 1000);
 
             if (!self.browser_db) {
-                return lanternOrCloud().then(resolve);
+                return resolve(self.db);
             }
 
             self.browser_db.info()
@@ -971,19 +970,18 @@ window.LanternStor = (function($data, uri) {
                     resolve(self.db);
                 }).catch(function(err) {
                     clearTimeout(timer);
-                    
                     if (err.status == 500) {
                         if (err.reason == "Failed to open indexedDB, are you in private browsing mode?") {
                             // may be in private browsing mode
                             // attempt in-memory stor
                             // some browsers may not allow us to stor data locally
                             console.log("may be in private browsing mode. using remote storage...");
-                            lanternOrCloud().then(resolve);
+                            resolve(self.db);
                         }
                         else if (err.reason == "QuotaExceededError") {
                             console.log(err);
                             console.log("quota exceeded for local storage. using remote storage...");
-                            lanternOrCloud().then(resolve);
+                            resolve(self.db);
                         }
                     }
                     else {
@@ -992,25 +990,11 @@ window.LanternStor = (function($data, uri) {
                     }
                 });
         });
-    }
-
-    /**
-    * Slowly backs off and slows down attempts to connect
-    */
-
-
-    //------------------------------------------------------------------------
-
-    self.setup = function() {
-        return pickDatabase()
-            .then(function(db) {
-                console.log("[stor] using database:", db.name);
-            });
     };
+
 
     self.get = function(id, allow_cached) {
 
-        
         var doc;
 
         return new Promise(function(resolve, reject) {
@@ -1025,7 +1009,7 @@ window.LanternStor = (function($data, uri) {
             
             self.db.get(id)
                 .then(function(data) {
-                    console.log("[stor] get: " + id);
+                    //console.log("[stor] get: " + id);
                     doc = new LanternDocument(data, self);
                     refreshDocInCache(doc);
                     resolve(doc);
@@ -1106,7 +1090,7 @@ window.LanternStor = (function($data, uri) {
 
     self.post = function() {
         var doc = arguments[0];
-        console.log("[stor] post: ", doc);
+        //console.log("[stor] post: ", doc);
         return self.db.put.apply(self.db, arguments).then(function(results) {
             doc._rev = results.rev;
             refreshDocInCache(new LanternDocument(doc, self));
@@ -1153,100 +1137,32 @@ window.LanternStor = (function($data, uri) {
     };
 
 
-
-
-
-    /**
-    * Check if we're connected to cloud instance (and therefore internet)
-    */
-    self.isCloudAvailable = function() {
-        return self.cloud_db.info().then(function(results) {
-            return true;
-        })
-        .catch(function() {
-            return false;
-        });
-    };
-
-
-
-
-    /**
-    * Check if we're connected to a Lantern device
-    */
-    self.isLanternAvailable = function() {
-        return self.lantern_db.info().then(function(results) {
-            return true;
-        })
-        .catch(function() {
-            return false;
-        });
-    };
-
-
-
     /**
     * Sync our in-browser database with the one on a physical device over wifi
     */
-    self.syncWithLantern = function(continuous, status_fn, change_fn) {
-        //console.log("[stor] trying sync with lantern");
-        if (self.db.adapter == "http") {
+    self.sync = function(continuous, status_fn, change_fn) {
+       
+        console.log("[stor] sync %s <--> %s", self.browser_db.name, self.host_db.name);
+
+        if (self.db.name == self.host_db.name) {
             console.log("[stor] skipping sync since target is lantern already");
             status_fn(true);
             return;
         }
 
-        
-        LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, function(status) {
-                status_fn(status);
-
-
-                // @todo allow user control, but for now we disable local storage by default
-
-                // don't bother trying map sync until main sync is working...
-                if (status && !did_sync_maps) {
-                    did_sync_maps = true;
-
-
-                    try {
-                        var local_maps_db = new PouchDB("map");
-                        LanternSync(local_maps_db, self.lantern_maps_db, "map", continuous);
-                    }
-                    catch(e) {
-                        // browser refuses to use local storage...
-                        console.log("[stor] skip map sync since no in-browser storage available");
-                    }
-
-                }
-
-            }, function(changed_doc) {
+        LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
             change_fn(changed_doc);
         });
 
-
-
         return;
     };
-
-    /**
-    * Sync our in-browser database with the one in the cloud
-    */
-    self.syncWithCloud = function(continuous, status_fn, change_fn) {
-        //console.log("[stor] trying sync with cloud");
-        LanternSync(self.browser_db, self.cloud_db, "cloud", continuous, status_fn, function(changed_doc) {
-            refreshDocInCache(new LanternDocument(changed_doc, self));
-            change_fn(changed_doc);
-        });
-        return;
-    };
-
-
 
     return self;
 });
 window.LanternSync = function LanternSync(src, dest, label, continuous, status_fn, change_fn) {
     var reset_delay;
+
 
     function setStatus(status) {
         if (status == true) {
@@ -1284,44 +1200,48 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     
     var replication_handler = src.sync(dest, opts);
 
-
     replication_handler
     .on('paused', function(err) {
         if (err) {
-            console.log("[" + label +"] lost connection");
+            console.log("[db:" + label +"] lost connection");
             setStatus(false);
         }
     })
     .on('active', function() {
-        //console.log("[" + label + "] active sync");
+        //console.log("[db:" + label + "] active sync");
         setStatus(true);
     })
     .on('change', function (info) {
         setStatus(true);
         if (change_fn && typeof(change_fn) == "function") {
             if (info.change.docs) {
-                console.log("[" + label + "] %s: %s docs", 
+                console.log("[db:" + label + "] %s: %s docs", 
                         info.direction, 
                         info.change.docs.length);
-                info.change.docs.forEach(change_fn);            
+                info.change.docs.forEach(function(changed_doc) {
+                    console.log("[db:" + label + "] " + changed_doc._id + " change", changed_doc);
+                    change_fn(changed_doc);
+                });            
             }
         }
 
     })
     .on('error', function (err) {
-        console.log("[stor] sync " + label + "err", err);
+        console.log("[db:" + label + "] sync err", err);
     });
 
 
+    // make sure to cancel any outstanding replication
     window.addEventListener('beforeunload', function(event) {
         try {
             replication_handler.cancel();
 
-            console.log("[" + label + "] stop sync");
+            console.log("[db:" + label + "] stop sync");
         }
         catch(e) {
             console.log("failed to stop sync", label);
         }
     });
 
+    return replication_handler;
 };

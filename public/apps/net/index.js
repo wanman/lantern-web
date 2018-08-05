@@ -72,7 +72,7 @@ window.page = (function() {
             self.view.$data.page_loading = false;
 
             setTimeout(function() {
-                self.map = new LanternMapManager();
+                self.map = self.createMapManager();
                 self.view.$data.d_docs.forEach(function(d) {
                     try {
                         var coords = Geohash.decode(d.geo[0]);

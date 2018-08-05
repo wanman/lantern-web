@@ -1,32 +1,18 @@
-window.LanternStor = (function($data, uri) {
+window.LanternStor = (function(uri, db_name, $data) {
 
-    var cloud_uri = "https://lantern.global/db/lnt/";
-    var did_sync_maps = true; // @todo disable browser cache by default
-    uri = uri.replace(":3000", "");
 
     var self = {
         doc_cache: {}, 
         browser_db: null,
-        lantern_db: new PouchDB(uri + "/db/lnt/", {
+        host_db: new PouchDB(uri + "/db/" + db_name, {
             skip_setup: true,
             withCredentials: false        
         }),
-        lantern_maps_db: new PouchDB( uri + "/db/map/", {
-            skip_setup: true,
-            withCredentials: false        
-        }),
-        cloud_db: new PouchDB(cloud_uri, {
-            skip_setup: true,
-            withCredentials: false        
-        }),
-        cloud_connected: null,
-        lantern_connected: null,
-        lantern_uri: uri,
         db: null
     };
 
     try {
-        self.browser_db = new PouchDB("lnt");
+        self.browser_db = new PouchDB(db_name);
     }
     catch(e) {
         // browser refuses to use local storage...
@@ -50,10 +36,10 @@ window.LanternStor = (function($data, uri) {
         var type = doc_id.split(":")[0];
         var index = getIndexForDoc(doc_id,type);
 
+        console.log("[cache] remove", doc_id, index);
         if (index == -1) return;
         $data[type+"_docs"].splice(index, 1);
         self.doc_cache[doc_id] = null;
-        console.log("[cache] remove", doc_id);
     }
 
     function addToCache(doc) {
@@ -128,24 +114,18 @@ window.LanternStor = (function($data, uri) {
         }
     }
 
-    function lanternOrCloud() {
-        return self.cloud_db.info().then(function() {
-            self.db = self.cloud_db;
-            self.cloud_connected = true;
-            return self.db;
-        })
-        .catch(function() {
-            return self.lantern_db.info().then(function() {
-                self.db = self.lantern_db;
-                self.lantern_connected = true;
-                return self.db;
-            });
-        });
-    }
+    //------------------------------------------------------------------------
 
-    function pickDatabase() {
-        //console.log("[stor] picking database");
+    /**
+    * Select remote or local database
+    */
+    self.setup = function() {
+
+         //console.log("[stor] picking database");
         if (self.db) return Promise.resolve(self.db);
+
+        // default to host db
+        self.db = self.host_db;
 
         return new Promise(function(resolve, reject) {
 
@@ -153,12 +133,12 @@ window.LanternStor = (function($data, uri) {
             var timer = setTimeout(function() {
                 console.log("timed out looking for local db. use remote storage...");
                 if (!self.db) {
-                    return lanternOrCloud().then(resolve);
+                    resolve();
                 }
             }, 1000);
 
             if (!self.browser_db) {
-                return lanternOrCloud().then(resolve);
+                return resolve(self.db);
             }
 
             self.browser_db.info()
@@ -168,19 +148,18 @@ window.LanternStor = (function($data, uri) {
                     resolve(self.db);
                 }).catch(function(err) {
                     clearTimeout(timer);
-                    
                     if (err.status == 500) {
                         if (err.reason == "Failed to open indexedDB, are you in private browsing mode?") {
                             // may be in private browsing mode
                             // attempt in-memory stor
                             // some browsers may not allow us to stor data locally
                             console.log("may be in private browsing mode. using remote storage...");
-                            lanternOrCloud().then(resolve);
+                            resolve(self.db);
                         }
                         else if (err.reason == "QuotaExceededError") {
                             console.log(err);
                             console.log("quota exceeded for local storage. using remote storage...");
-                            lanternOrCloud().then(resolve);
+                            resolve(self.db);
                         }
                     }
                     else {
@@ -189,25 +168,11 @@ window.LanternStor = (function($data, uri) {
                     }
                 });
         });
-    }
-
-    /**
-    * Slowly backs off and slows down attempts to connect
-    */
-
-
-    //------------------------------------------------------------------------
-
-    self.setup = function() {
-        return pickDatabase()
-            .then(function(db) {
-                console.log("[stor] using database:", db.name);
-            });
     };
+
 
     self.get = function(id, allow_cached) {
 
-        
         var doc;
 
         return new Promise(function(resolve, reject) {
@@ -222,7 +187,7 @@ window.LanternStor = (function($data, uri) {
             
             self.db.get(id)
                 .then(function(data) {
-                    console.log("[stor] get: " + id);
+                    //console.log("[stor] get: " + id);
                     doc = new LanternDocument(data, self);
                     refreshDocInCache(doc);
                     resolve(doc);
@@ -303,7 +268,7 @@ window.LanternStor = (function($data, uri) {
 
     self.post = function() {
         var doc = arguments[0];
-        console.log("[stor] post: ", doc);
+        //console.log("[stor] post: ", doc);
         return self.db.put.apply(self.db, arguments).then(function(results) {
             doc._rev = results.rev;
             refreshDocInCache(new LanternDocument(doc, self));
@@ -350,95 +315,26 @@ window.LanternStor = (function($data, uri) {
     };
 
 
-
-
-
-    /**
-    * Check if we're connected to cloud instance (and therefore internet)
-    */
-    self.isCloudAvailable = function() {
-        return self.cloud_db.info().then(function(results) {
-            return true;
-        })
-        .catch(function() {
-            return false;
-        });
-    };
-
-
-
-
-    /**
-    * Check if we're connected to a Lantern device
-    */
-    self.isLanternAvailable = function() {
-        return self.lantern_db.info().then(function(results) {
-            return true;
-        })
-        .catch(function() {
-            return false;
-        });
-    };
-
-
-
     /**
     * Sync our in-browser database with the one on a physical device over wifi
     */
-    self.syncWithLantern = function(continuous, status_fn, change_fn) {
-        //console.log("[stor] trying sync with lantern");
-        if (self.db.adapter == "http") {
+    self.sync = function(continuous, status_fn, change_fn) {
+       
+        console.log("[stor] sync %s <--> %s", self.browser_db.name, self.host_db.name);
+
+        if (self.db.name == self.host_db.name) {
             console.log("[stor] skipping sync since target is lantern already");
             status_fn(true);
             return;
         }
 
-        
-        LanternSync(self.browser_db, self.lantern_db, "lantern", continuous, function(status) {
-                status_fn(status);
-
-
-                // @todo allow user control, but for now we disable local storage by default
-
-                // don't bother trying map sync until main sync is working...
-                if (status && !did_sync_maps) {
-                    did_sync_maps = true;
-
-
-                    try {
-                        var local_maps_db = new PouchDB("map");
-                        LanternSync(local_maps_db, self.lantern_maps_db, "map", continuous);
-                    }
-                    catch(e) {
-                        // browser refuses to use local storage...
-                        console.log("[stor] skip map sync since no in-browser storage available");
-                    }
-
-                }
-
-            }, function(changed_doc) {
+        LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
             change_fn(changed_doc);
         });
 
-
-
         return;
     };
-
-    /**
-    * Sync our in-browser database with the one in the cloud
-    */
-    self.syncWithCloud = function(continuous, status_fn, change_fn) {
-        //console.log("[stor] trying sync with cloud");
-        LanternSync(self.browser_db, self.cloud_db, "cloud", continuous, status_fn, function(changed_doc) {
-            refreshDocInCache(new LanternDocument(changed_doc, self));
-            change_fn(changed_doc);
-        });
-        return;
-    };
-
-
 
     return self;
 });

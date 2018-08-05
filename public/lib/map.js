@@ -14165,7 +14165,7 @@ L.icon.fontAwesome = function (options) {
 };
 
 L.Icon.FontAwesome.prototype.options.markerPath = 'M16,1 C7.7146,1 1,7.65636364 1,15.8648485 C1,24.0760606 16,51 16,51 C16,51 31,24.0760606 31,15.8648485 C31,7.65636364 24.2815,1 16,1 L16,1 Z';
-window.LanternMapManager = function() {
+window.LanternMapManager = function(db_uri, use_cache, use_only_cache) {
 
     var self = {
         map: L.map('map'),
@@ -14176,21 +14176,22 @@ window.LanternMapManager = function() {
 
     function init() {
 
-        var base_uri = window.location.protocol + "//" + (window.location.host == "localhost:3000" ? 
-            "localhost" :  window.location.host);
-
         var opts = {
             attribution: false,
-            dbName: base_uri + "/db/map",
+            dbName: db_uri,
             maxZoom: 16,
             // always check PouchDB for map tiles
-            useCache:  (window.location.hostname != "lantern.global"),
+            useCache:  use_cache,
             // if we are definitely offline, don't try network requests
-            useOnlyCache: (window.location.hostname != "lantern.global"),
+            useOnlyCache: use_only_cache,
             cacheMaxAge: 365*24*3600*1000,
             crossOrigin: true
         };
         
+
+        console.log("[map] cache: " + opts.dbName);
+        console.log("[map] use only cache? " + opts.useOnlyCache);
+
         L.tileLayer('https://maps.tilehosting.com/c/ade1b05a-496f-40d1-ae23-5d5aeca37da2/styles/streets/{z}/{x}/{y}.png?key=ZokpyarACItmA6NqGNhr', opts).addTo(self.map);
 
         // default to center of US as starting location for map
