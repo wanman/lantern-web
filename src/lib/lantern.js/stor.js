@@ -330,7 +330,12 @@ window.LanternStor = (function(uri, db_name, $data) {
 
         LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
-            change_fn(changed_doc);
+            try {
+                change_fn(changed_doc);
+            }
+            catch(e) {
+                console.log(e);
+            }
         });
 
         return;

@@ -183,10 +183,13 @@ window.LanternPage = (function(id) {
     * Handle each document change
     */
     function handleDocumentChange(changed_doc) {
-        if (changed_doc._id == "d:" + lantern_id) {
-            self.view.$data.lantern_name = changed_doc.tt;
+
+        console.log("[db:lnt] " + changed_doc._id + " change");
+
+        if (changed_doc._id == ("d:" + self.view.$data.lantern.id)) {
+            self.view.$data.lantern.name = changed_doc.tt;
         }
-        showSyncIcon();
+        showSyncIcon(changed_doc);
     }
 
 
@@ -248,7 +251,7 @@ window.LanternPage = (function(id) {
                         setTimeout(function() {
                             // download maps after some time...
                             map_stor.sync(false, function() {}, function(changed_doc) {
-                                console.log(changed_doc);
+                                console.log("[db:map] " + changed_doc._id + " change");
                             });
                         }, 2000);
                     });

@@ -259,7 +259,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.js",
-    "revision": "ba97d60851c4f963ce1b891b04204830"
+    "revision": "5c588fc9519a321e7e19c79648584b33"
   },
   {
     "url": "lib/map.css",

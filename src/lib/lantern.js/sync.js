@@ -56,10 +56,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
                 console.log("[db:" + label + "] %s: %s docs", 
                         info.direction, 
                         info.change.docs.length);
-                info.change.docs.forEach(function(changed_doc) {
-                    console.log("[db:" + label + "] " + changed_doc._id + " change", changed_doc);
-                    change_fn(changed_doc);
-                });            
+                info.change.docs.forEach(change_fn);            
             }
         }
 

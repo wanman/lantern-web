@@ -449,10 +449,13 @@ window.LanternPage = (function(id) {
     * Handle each document change
     */
     function handleDocumentChange(changed_doc) {
-        if (changed_doc._id == "d:" + lantern_id) {
-            self.view.$data.lantern_name = changed_doc.tt;
+
+        console.log("[db:lnt] " + changed_doc._id + " change");
+
+        if (changed_doc._id == ("d:" + self.view.$data.lantern.id)) {
+            self.view.$data.lantern.name = changed_doc.tt;
         }
-        showSyncIcon();
+        showSyncIcon(changed_doc);
     }
 
 
@@ -514,7 +517,7 @@ window.LanternPage = (function(id) {
                         setTimeout(function() {
                             // download maps after some time...
                             map_stor.sync(false, function() {}, function(changed_doc) {
-                                console.log(changed_doc);
+                                console.log("[db:map] " + changed_doc._id + " change");
                             });
                         }, 2000);
                     });
@@ -1152,7 +1155,12 @@ window.LanternStor = (function(uri, db_name, $data) {
 
         LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
             refreshDocInCache(new LanternDocument(changed_doc, self));
-            change_fn(changed_doc);
+            try {
+                change_fn(changed_doc);
+            }
+            catch(e) {
+                console.log(e);
+            }
         });
 
         return;
@@ -1218,10 +1226,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
                 console.log("[db:" + label + "] %s: %s docs", 
                         info.direction, 
                         info.change.docs.length);
-                info.change.docs.forEach(function(changed_doc) {
-                    console.log("[db:" + label + "] " + changed_doc._id + " change", changed_doc);
-                    change_fn(changed_doc);
-                });            
+                info.change.docs.forEach(change_fn);            
             }
         }
 
