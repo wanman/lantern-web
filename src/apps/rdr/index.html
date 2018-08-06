@@ -85,7 +85,7 @@ block content
 
                             .category(v-for="item in i_docs" v-if="item.parent && item.parent == venue._id && item.category[0]" @click="handleItemSelect(item, venue)" v-bind:data-id="item._id")
 
-                                span.icon.is-large(v-bind:style="makeCategoryStyle(getCategory(item.category))") 
+                                span.icon.is-large(v-bind:class="(item.status ? 'active' : 'inactive')" v-bind:style="makeCategoryStyle(getCategory(item.category))") 
                                     i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
 
 

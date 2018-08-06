@@ -1,74 +1,52 @@
 __base = "../../";
 
 window.page = (function() {
-    var self = new LanternPage("add");
 
+    var self = new LanternPage("add");
     var new_doc;
     var venues = [];
 
+
+
+    //------------------------------------------------------------------------
+    function drawAtPosition(lat, lon, tag) {
+        
+        self.view.$data.map_loaded = true;
+
+        if (tag == "adr") {
+            venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, "flag", null, true));
+        }
+        else if (tag == "ara") {
+            var circle = self.map.addCircle(new_doc.get("title"), {lat: lat, lon: lon},{
+                radius: self.view.$data.area_radius,
+                color: "#72A2EF",
+                fillColor: '#72A2E5',
+                opacity: 0.9,
+                draggable: true
+            });
+
+            venues.push(circle);
+        }
+        else if (tag == "lne") {
+            venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, "arrow-circle-left", null, true));
+            venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat-0.01, lon: lon-0.1}, "arrow-circle-right", null, true));
+        }
+    }
+
     function setupMapSelector(tag, label) {
-        console.log("[add] " + label + " form");
-        new_doc.push("tag", "adr");
-
-        self.view.$data.view = "map";
-
-
-        setTimeout(function() {
-
-            self.renderMap()
-                .then(self.askForLocation)
-                .then(function(position) {
-                    
-                    console.log("render", position);
-                    var lat = position.coords.latitude;
-                    var lon = position.coords.longitude;
-                    self.map.setPosition(lat, lon, 10);
-
-
-                    self.view.$data.map_loaded = true;
-
-                    if (tag == "adr") {
-                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, "flag", null, true));
-                    }
-                    else if (tag == "ara") {
-                        var circle = self.map.addCircle(new_doc.get("title"), {lat: lat, lon: lon},{
-                            radius: 1000,
-                            color: "#72A2EF",
-                            fillColor: '#72A2E5',
-                            opacity: 0.9,
-                            draggable: true
-                        });
-
-
-
-                        venues.push(circle);
-                    }
-                    else if (tag == "lne") {
-                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat, lon: lon}, "arrow-circle-left", null, true));
-                        venues.push(self.map.addPoint(new_doc.get("title"), {lat: lat-0.01, lon: lon-0.1}, "arrow-circle-right", null, true));
-                    }
-                })
-                .catch(function(err) {
-                    console.log("[add] err setting map selector", err);
-                });
-
-        }, 200);
-            
+        console.log("[add] " + label + " form - " + tag);
+        window.location.hash = window.location.hash + "&tag="+tag;
     }
 
     function setCategory(id) {
         console.log("[add] setting category to: " + id);
 
         self.view.$data.lock_doc = false;
-
-        // we're creating a geo-scoped note for the community shared map
-        new_doc = new LanternDocument( "n:" + Math.round(Math.random()*100000), self.stor);
         new_doc.push("tag", id);
 
         self.stor.get("c:"+id).then(function(result) {
             self.view.$data.category  = result.toJSONFriendly();
             self.view.$data.page_title = result.get("title");
-            self.view.$data.allow_back_button = true;
 
             self.stor.getManyByType("c").then(function(results) {
                 results.forEach(function(cat) {
@@ -92,11 +70,60 @@ window.page = (function() {
     }
 
     function refreshView() {
+
+
+
+        self.view.$data.allow_back_button = (window.location.hash ? true : false);
+
         cat_id = self.getHashParameterByName("ct");
+        venues = [];
 
         self.view.$data.subcategories = [];
 
-        if (cat_id) {
+        if (!new_doc) {
+            // we're creating a geo-scoped note for the community shared map
+            new_doc = new LanternDocument( "n:" + Math.round(Math.random()*100000), self.stor);
+        }
+        var tag = self.getHashParameterByName("tag");
+        if (tag) {
+            new_doc.push("tag", tag);
+
+
+            if (tag == "ara") {
+                self.view.$data.area_radius = 50000;
+                self.view.$watch("area_radius", function(new_val, old_val) {
+                    if (venues[0]) {
+                        venues[0].setRadius(new_val);
+                    }
+                });
+            }
+            else {
+
+                self.view.$data.area_radius = 0;
+            }
+
+
+            self.view.$data.view = "map";
+            setTimeout(function() {
+                self.renderMap()
+                    .then(self.askForLocation)
+                    .then(function(position) {
+                        var lat = position.coords.latitude;
+                        var lon = position.coords.longitude;
+                        self.map.setPosition(lat, lon, 4);
+                        drawAtPosition(lat, lon, tag);
+                    })
+                    .catch(function(err) {
+                        // handle case where we cannot get location
+                        var center_default = self.map.map.getCenter();
+                        drawAtPosition(center_default.lat, center_default.lng, tag);
+                        self.map.setPosition(center_default.lat, center_default.lng, 3);
+                        console.log("[add] err setting map selector", err);
+                    });
+
+            }, 200);
+        }
+        else if (cat_id) {
             setCategory(cat_id);
         }
         else {
@@ -117,6 +144,9 @@ window.page = (function() {
         }
 
     }
+
+
+
 
     //------------------------------------------------------------------------
     self.addHelper("handleShowInputSelector", function(subcategory) {
@@ -149,12 +179,6 @@ window.page = (function() {
     });
 
     self.addHelper("presentAreaForm", function() {
-        self.view.$data.area_radius = 1000;
-        self.view.$watch("area_radius", function(new_val, old_val) {
-            if (venues[0]) {
-                venues[0].setRadius(new_val);
-            }
-        });
         setupMapSelector("ara", "area");
 
     });
@@ -211,19 +235,19 @@ window.page = (function() {
     });    
 
     
+
     //------------------------------------------------------------------------
- 
     self.addData("category", null);
     self.addData("subcategories", []);
     self.addData("venue_categories", []);
     self.addData("view", "");
     self.addData("map_loaded", false);
-    self.addData("area_radius", 0);
+    self.addData("area_radius", 50000);
     self.addData("lock_doc", false); // for preview before saving
 
-    //------------------------------------------------------------------------
-    
 
+
+    //------------------------------------------------------------------------
     self.render()
         .then(self.connect)
         .then(self.getCategories)

@@ -19,9 +19,9 @@ html, body {
   border-radius: 0.5em;
   overflow: hidden; }
   #add-page .card #map {
-    min-height: 25em; }
+    min-height: 15em; }
   #add-page .card p {
-    padding: 2em;
+    padding: 1em;
     font-size: small;
     font-weight: normal; }
 

@@ -37,7 +37,7 @@ html(lang="en")
                         span {{ page_title }}
 
                         .tags(v-if="page_tag")
-                            .tag {{ page_tag }}
+                            .tag(v-html="page_tag")
 
                     .action(v-if="page_action_icon && handleActionButton" @click="handleActionButton")
                         span.icon
@@ -88,7 +88,7 @@ html(lang="en")
                             a(href="/apps/chk/") 
                                 span.icon
                                     i.fas.fa-thumbtack
-                                | Checkin
+                                | Safety Check
                        
                         li
                             a(href="/apps/rpt/") 

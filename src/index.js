@@ -7,7 +7,7 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.addData("apps", [
         {"title": "Supplies", "id": "rdr", "icon": "box", "text": "Find nearby water, power and more"},
-        {"title": "Checkin", "id": "chk", "icon": "thumbtack", "text": "Let loved ones know you are safe"},
+        {"title": "Safety Check", "id": "chk", "icon": "thumbtack", "text": "Let loved ones know you are safe"},
         {"title": "Report", "id": "rpt", "icon": "clipboard", "text": "Help verify local conditions"},
         {"title": "Network", "id": "net", "icon": "globe-americas", "text": "See who else is connected"},
     ]);
@@ -25,7 +25,7 @@ window.page = (function() {
         })
         .then(self.connect)
         .then(function() {
-            $data.page_title = "App Directory";
+            $data.page_title = "Home";
         })
         .then(self.getVenues)
         .then(function() {

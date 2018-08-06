@@ -12,6 +12,9 @@ html, body {
 #browse-page {
 
 
+    .category .inactive {
+        opacity: 0.35;
+    }
 
     h2 {
 

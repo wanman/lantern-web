@@ -27,7 +27,7 @@ html, body {
     .card {
         #map {
 
-            min-height: 25em;
+            min-height: 15em;
         }
 
         margin: 0em auto 1em;
@@ -36,7 +36,7 @@ html, body {
         overflow: hidden;
 
         p {
-            padding: 2em;
+            padding: 1em;
             font-size: small;
             font-weight: normal;
         }

@@ -1,6 +1,9 @@
 html, body {
   background: #FFF; }
 
+#browse-page .category .inactive {
+  opacity: 0.35; }
+
 #browse-page h2 {
   margin-bottom: 2em; }
 

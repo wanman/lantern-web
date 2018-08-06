@@ -50,7 +50,7 @@ block content
                         i.fas.fa-circle
                     | Region
 
-        #map-selector-view(v-if="view == 'map'")
+        #map-selector-view(v-bind:style="'visibility:' + (view == 'map' ? 'visible' : 'hidden')")
 
       
             div(v-if="map_loaded && !lock_doc")
@@ -68,7 +68,7 @@ block content
 
 
                 .card-content(v-if="map_loaded && !lock_doc && area_radius > 0")
-                    input.slider.is-fullwidth(step="5" min="1" max="5000" v-model="area_radius" type="range")
+                    input.slider.is-fullwidth(step="100" min="500" max="100000" v-model="area_radius" type="range")
 
             .action-panel(v-if="map_loaded")
                 .button.is-primary(v-if="!lock_doc" @click="handleButtonPush") Next

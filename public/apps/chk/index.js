@@ -60,7 +60,7 @@ window.page = (function() {
             }
         })
         .then(function() {
-            self.view.$data.page_title = "Safety Check-In";
+            self.view.$data.page_title = "Safety Check";
             self.view.$data.page_loading = false;
             if (self.user.has("title")) {
                 self.view.$data.initials = self.user.get("title");
@@ -82,22 +82,28 @@ window.page = (function() {
             });
 
         })
-        .then(function() {
-            self.renderMap()
-                .then(function(map) {
-                    map.removeZoomControl();
-                })
-                .then(self.askForLocation)
-                .then(function(position) {
-                    self.view.$data.map_loaded = true;
-                    var lat = position.coords.latitude;
-                    var lon = position.coords.longitude;
-                    self.geo = Geohash.encode(lat, lon, 4);
-                    self.map.setPosition(lat, lon, 12);
-                    var marker = self.map.addPoint("You Are Here", {lat: lat, lon: lon}, {
-                        draggable: false
-                    });
-                });
+        .then(self.renderMap)
+        .then(self.getUsers)
+        .then(function(users) {
+            self.map.removeZoomControl();
+            self.view.$data.map_loaded = true;
+            users.forEach(function(user) {
+                // @todo show population counts and safety levels on map
+                if (user.has("status") && user.has("geo") && user.get("geo")[0]) {
+                    var coords = Geohash.decode(user.get("geo")[0]);
+                    var point = self.map.addPoint(user.get("title"), {lat: coords.lat, lon: coords.lon}, "check", "6ae1c4", true);
+                }
+            });
+        })
+        .then(self.askForLocation)
+        .then(function(position) {
+            
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            self.geo = Geohash.encode(lat, lon, 4);
+            self.map.setPosition(lat, lon, 12);
+            var marker = self.map.addPoint("You Are Here", {lat: lat, lon: lon}, "user", null, true);
+
         });
 
     return self;

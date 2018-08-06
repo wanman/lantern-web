@@ -1,17 +1,20 @@
 __base = "../../";
 
 window.page = (function() {
-    var self = new LanternPage("detail");
 
+    var self = new LanternPage("detail");
     var venue_id = self.getHashParameterByName("mrk");
     var item_id = self.getHashParameterByName("itm");
     var venue_title;
-
+    var did_vote = {};
     if (!venue_id) {
         window.location = "/";
         return;
     }
 
+
+
+    //------------------------------------------------------------------------
     function focusMap() {
         //console.log("[detail] showing map");
         if (self.view.$data.marker) {
@@ -19,10 +22,10 @@ window.page = (function() {
             self.map.setPosition(coords.lat, coords.lon, 12);
         }
     }
-
+    
     function renderDefaultView() {
 
-        self.view.$data.show_input = false
+        self.view.$data.show_input = false;
         self.view.$data.allow_back_button = true;
         self.view.$data.page_action_icon = "";
 
@@ -32,7 +35,7 @@ window.page = (function() {
             venue_title = doc.get("title");
             self.view.$data.page_title = venue_title;
             if (doc.get("status") == 1 && !doc.has("category", "trk")) {
-                self.view.$data.page_tag = "Open Now";
+                self.view.$data.page_tag = "<div class='icon'><i class='fas fa-clock'></i></div>Open Now";
             }
             self.renderMap([venue_id]).then(focusMap);
         })
@@ -49,6 +52,8 @@ window.page = (function() {
         }
     }
 
+
+
     //------------------------------------------------------------------------
     self.addData("show_map", true);
     self.addData("show_inspector", false);
@@ -56,6 +61,7 @@ window.page = (function() {
     self.addData("marker", {});
     self.addData("item_types", []);
     self.addData("selected_item", {});
+
 
 
     //------------------------------------------------------------------------
@@ -120,6 +126,9 @@ window.page = (function() {
 
         self.stor.get(doc_id).then(function(doc) {
             doc.set("updated_at", new Date());
+
+            doc.set("status", 1);
+
             var votes = doc.get("vote");
             votes.forEach(function(vote) {
                 if (vote.slug == "neighbors") {
@@ -147,6 +156,17 @@ window.page = (function() {
                     "title": "Town Officials",
                     "votes": 0
                 });
+                new_doc.push("vote", {
+                    "slug": "oxfam",
+                    "title": "Oxfam",
+                    "votes": 0
+                });
+                new_doc.push("vote", {
+                    "slug": "red-cross",
+                    "title": "Red Cross",
+                    "votes": 0
+                });
+
                 new_doc.push("category", item_type.slug);
 
                 new_doc.save().then(renderDefaultView);
@@ -182,9 +202,15 @@ window.page = (function() {
             var votes = doc.get("vote");
             for (var idx in votes) { 
                 if (votes[idx].slug == b.slug) {
+                    if (did_vote[b.slug]) {
+                        console.log("[detail] skip duplicate upvote");
+                        return;
+                    }
+
                     json.vote[idx].votes = votes[idx].votes = votes[idx].votes+1;
                     doc.set("vote", votes);
                     doc.save();
+                    did_vote[b.slug] = true;
                     console.log("[detail] upvoted verification", votes[idx].votes);
                 }
             }
