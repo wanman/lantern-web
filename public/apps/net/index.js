@@ -72,18 +72,19 @@ window.page = (function() {
             self.view.$data.page_loading = false;
 
             setTimeout(function() {
-                self.map = self.createMapManager();
-                self.view.$data.d_docs.forEach(function(d) {
-                    try {
-                        var coords = Geohash.decode(d.geo[0]);
-                        var pt = self.map.addPoint(d.title, coords, "server", "3273dc");                        
-                    }
-                    catch(err) {
-                        // if we can't find a valid geohash we omit from map, which is fine...
-                    }
+                self.createMapManager().then(function() {
+                    self.view.$data.d_docs.forEach(function(d) {
+                        try {
+                            var coords = Geohash.decode(d.geo[0]);
+                            var pt = self.map.addPoint(d.title, coords, "server", "3273dc");                        
+                        }
+                        catch(err) {
+                            // if we can't find a valid geohash we omit from map, which is fine...
+                        }
+                    });
+                    self.map.fitToMarkers();
+                    self.map.map.setZoom(4);
                 });
-                self.map.fitToMarkers();
-                self.map.map.setZoom(4);
             }, 100);        
         })
         .then(self.getNotes)

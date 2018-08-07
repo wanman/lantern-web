@@ -245,15 +245,12 @@ window.LanternPage = (function(id) {
 
 
                 if (self.view.$data.lantern_connected) {
+                    console.log("[page] sync for browser offline maps cache");
                     // we have a map cache we can use
                     var map_stor = new LanternStor(self.getBaseURI(), "map", {});
                     map_stor.setup().then(function() {
-                        setTimeout(function() {
-                            // download maps after some time...
-                            map_stor.sync(false, function() {}, function(changed_doc) {
-                                console.log("[db:map] " + changed_doc._id + " change");
-                            });
-                        }, 2000);
+                        // download maps after some time...
+                        map_stor.sync(false, null, null);
                     });
                 }
             });
@@ -289,18 +286,49 @@ window.LanternPage = (function(id) {
     };
 
 
+    
     self.createMapManager = function() {
-       var cache = !(self.view.$data.lantern && self.view.$data.lantern.cloud);
-            var db_uri;
-            
-            if (self.view.$data.lantern && self.view.$data.lantern.cloud == false) {
-                db_uri = self.getBaseURI() + "/db/map";
+        return new Promise(function(resolve, reject) {
+            console.log("[page] map manager");
+
+
+            if (self.map) {
+                self.map.clear();
+                resolve(self.map);
             }
             else {
-                // fall-back to offline cache if we are not connected direct to lantern
-                db_uri = "map";
+
+                var cache = !(self.view.$data.lantern && self.view.$data.lantern.cloud);
+                var db_uri;
+                
+                if (self.view.$data.lantern && self.view.$data.lantern.cloud == false) {
+
+                    // working offline connected to device
+                    db_uri = self.getBaseURI() + "/db/map";
+
+                    var min_docs = 1000;
+
+                    new PouchDB("map").info().then(function(local_res) {
+                        var current_docs = local_res.doc_count;
+
+                        console.log("[page] map cache: " + current_docs + " / " + min_docs);
+
+                        if (current_docs > min_docs) {
+                            db_uri = "map";
+                            console.log("[page] using offline map cache");
+                        }
+
+                        self.map = new LanternMapManager(db_uri, cache, cache);
+                        resolve(self.map);
+                    });
+                }
+                else {
+                    // fall-back to offline cache if we are not connected direct to lantern
+                    self.map = new LanternMapManager("map", cache, cache);
+                    resolve(self.map);
+                }
             }
-        return new LanternMapManager(db_uri, cache, cache);
+        });
     };
 
 
@@ -308,78 +336,70 @@ window.LanternPage = (function(id) {
     /**
     * Display the map for the user based on approx. location
     */
-    // @todo handle re-render when new venues are selected
     self.renderMap = function(venues, show_tooltip, icon, color) {
-
-        if (self.map) {
-            self.map.clear();
-        }
-        else {
-            self.map = self.createMapManager();
-        }
 
         venues = venues || [];
 
         return new Promise(function(resolve, reject) {
-
-            var venue_options = {};
-
-            items = self.stor.getManyCachedByType("i");
-            
-            items.forEach(function(item){
-                if (item.parent && item.category) {
-                    var v = item.parent[0];
-                    var c_doc = "c:"+item.category[0];
-                    venue_options[v] = venue_options[v] || [];
-                    venue_options[v].push(self.stor.getCached(c_doc));
-                }
-            });
-
-            // add venues to map
-
-            venues.forEach(function(v_id) {
-                var coords = [];
-                var venue = self.stor.getCached(v_id);
+            self.createMapManager().then(function() {
+                var venue_options = {};
+                items = self.stor.getManyCachedByType("i");
                 
-                if (venue.geo) {
-                    for (var idx in venue.geo) {
-                        try {
-                            var c = Geohash.decode(venue.geo[idx]);
-                            coords.push(c);
-                        }
-                        catch(e) {
-                            console.error("[page] invalid geohash " + venue.geo + " for: " + v_id);
-                        }
-                    }   
-                }
+                items.forEach(function(item){
+                    if (item.parent && item.category) {
+                        var v = item.parent[0];
+                        var c_doc = "c:"+item.category[0];
+                        venue_options[v] = venue_options[v] || [];
+                        venue_options[v].push(self.stor.getCached(c_doc));
+                    }
+                });
 
-                if (coords.length == 1) {
-                    // point
-                    var final_icon = icon || venue_options[venue._id][0].icon;
-                    var final_color = color || venue_options[venue._id][0].style.color;
-                    var pt = self.map.addPoint(venue.title, coords[0], final_icon, final_color);
-                   
+                // add venues to map
 
-                    if (show_tooltip) {
-                        
-                        pt.on("click", function(e) {
-                            window.location = "/apps/rdr/detail.html#mrk=" + v_id;
-                        });
-
-                        pt.openTooltip();
+                venues.forEach(function(v_id) {
+                    var coords = [];
+                    var venue = self.stor.getCached(v_id);
+                    
+                    if (venue.geo) {
+                        for (var idx in venue.geo) {
+                            try {
+                                var c = Geohash.decode(venue.geo[idx]);
+                                coords.push(c);
+                            }
+                            catch(e) {
+                                console.error("[page] invalid geohash " + venue.geo + " for: " + v_id);
+                            }
+                        }   
                     }
 
-                }
-                else if (coords.length == 2) {
-                    // draw a shape
-                    self.map.addPolygon(venue.title, coords);
-                }
-            });
-            resolve(self.map);
+                    if (coords.length == 1) {
+                        // point
+                        var final_icon = icon || venue_options[venue._id][0].icon;
+                        var final_color = color || venue_options[venue._id][0].style.color;
+                        var pt = self.map.addPoint(venue.title, coords[0], final_icon, final_color);
+                       
 
+                        if (show_tooltip) {
+                            
+                            pt.on("click", function(e) {
+                                window.location = "/apps/rdr/detail.html#mrk=" + v_id;
+                            });
+
+                            pt.openTooltip();
+                        }
+
+                    }
+                    else if (coords.length == 2) {
+                        // draw a shape
+                        self.map.addPolygon(venue.title, coords);
+                    }
+                });
+                resolve(self.map);
+            });
         });
     };
-    
+        
+    // @todo fall-back to lantern geolocation if GPS sensor not available
     self.askForLocation = function() {
         return new Promise(function(resolve, reject) {
             //console.log("[page] asking for location");

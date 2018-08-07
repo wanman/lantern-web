@@ -55,7 +55,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/net/index.js",
-    "revision": "6a14580373d490e71f9ec5f35a1cf587"
+    "revision": "701ea082b771bf71168b5c5e9c50a52c"
   },
   {
     "url": "apps/rdr/detail.css",
@@ -277,5 +277,5 @@ self.__precacheManifest = [
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.networkFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":10,"purgeOnQuotaError":false})] }), 'GET');
+workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.cacheFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":25,"purgeOnQuotaError":false})] }), 'GET');
 
