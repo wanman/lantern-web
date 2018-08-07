@@ -184,7 +184,7 @@ window.LanternPage = (function(id) {
     */
     function handleDocumentChange(changed_doc) {
 
-        console.log("[db:lnt] " + changed_doc._id + " change");
+        console.log("[db:lnt] change: " + changed_doc._id);
 
         if (changed_doc._id == ("d:" + self.view.$data.lantern.id)) {
             self.view.$data.lantern.name = changed_doc.tt;
@@ -243,16 +243,12 @@ window.LanternPage = (function(id) {
                     self.stor.sync(true, handleSyncStatusChange, handleDocumentChange);                    
                 });
 
-
-                if (self.view.$data.lantern_connected) {
-                    console.log("[page] sync for browser offline maps cache");
-                    // we have a map cache we can use
-                    var map_stor = new LanternStor(self.getBaseURI(), "map", {});
-                    map_stor.setup().then(function() {
-                        // download maps after some time...
-                        map_stor.sync(false, null, null);
-                    });
-                }
+                // we have a map cache we can use
+                var map_stor = new LanternStor(self.getBaseURI(), "map", {});
+                map_stor.setup().then(function() {
+                    // download maps after some time...
+                    map_stor.sync(false, null, null);
+                });
             });
     };
 
@@ -306,7 +302,7 @@ window.LanternPage = (function(id) {
                     // working offline connected to device
                     db_uri = self.getBaseURI() + "/db/map";
 
-                    var min_docs = 1000;
+                    var min_docs = 300;
 
                     new PouchDB("map").info().then(function(local_res) {
                         var current_docs = local_res.doc_count;
