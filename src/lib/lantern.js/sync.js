@@ -66,17 +66,19 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
     });
 
 
-    // make sure to cancel any outstanding replication
-    window.addEventListener('beforeunload', function(event) {
-        try {
-            replication_handler.cancel();
+    if (continuous) {
+        // make sure to cancel any outstanding replication
+        window.addEventListener('beforeunload', function(event) {
+            try {
+                replication_handler.cancel();
 
-            console.log("[db:" + label + "] stop sync");
-        }
-        catch(e) {
-            console.log("failed to stop sync", label);
-        }
-    });
-
+                console.log("[db:" + label + "] stop sync");
+            }
+            catch(e) {
+                console.log("failed to stop sync", label);
+            }
+        });
+    }
+    
     return replication_handler;
 };

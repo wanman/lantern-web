@@ -94,7 +94,10 @@ window.LanternStor = (function(uri, db_name, $data) {
     }
 
 
-    function refreshDocInCache(doc) {
+
+    //------------------------------------------------------------------------
+
+    self.refreshDocInCache = function(doc) {
         var type = doc.id.split(":")[0];
         var index;
 
@@ -112,9 +115,7 @@ window.LanternStor = (function(uri, db_name, $data) {
             // insert new to cache
             addToCache(doc);
         }
-    }
-
-    //------------------------------------------------------------------------
+    };
 
     /**
     * Select remote or local database
@@ -189,7 +190,7 @@ window.LanternStor = (function(uri, db_name, $data) {
                 .then(function(data) {
                     //console.log("[stor] get: " + id);
                     doc = new LanternDocument(data, self);
-                    refreshDocInCache(doc);
+                    self.refreshDocInCache(doc);
                     resolve(doc);
                 })
                 .catch(function(err) {
@@ -222,7 +223,7 @@ window.LanternStor = (function(uri, db_name, $data) {
                 return Promise.all(result.rows.map(function(result) {
 
                     var doc = new LanternDocument(result.doc, self);
-                    refreshDocInCache(doc);
+                    self.refreshDocInCache(doc);
                     return doc;
                 }));
             });
@@ -261,7 +262,7 @@ window.LanternStor = (function(uri, db_name, $data) {
         var doc = arguments[0];
         console.log("[stor] put: ", doc);
         return self.db.put.apply(self.db, arguments).then(function(results) {
-            refreshDocInCache(new LanternDocument(doc, self));
+            self.refreshDocInCache(new LanternDocument(doc, self));
             return results;
         });
     };
@@ -271,7 +272,7 @@ window.LanternStor = (function(uri, db_name, $data) {
         //console.log("[stor] post: ", doc);
         return self.db.put.apply(self.db, arguments).then(function(results) {
             doc._rev = results.rev;
-            refreshDocInCache(new LanternDocument(doc, self));
+            self.refreshDocInCache(new LanternDocument(doc, self));
             return results;
         });
     };
@@ -296,7 +297,7 @@ window.LanternStor = (function(uri, db_name, $data) {
 
 
     self.refreshCached = function(doc) {
-        return refreshDocInCache(doc);
+        return self.refreshDocInCache(doc);
     };
 
 
@@ -329,12 +330,14 @@ window.LanternStor = (function(uri, db_name, $data) {
         }
 
         LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
-            refreshDocInCache(new LanternDocument(changed_doc, self));
-            try {
-                change_fn(changed_doc);
-            }
-            catch(e) {
-                console.log(e);
+
+            if (change_fn && typeof(change_fn) == "function") {
+                try {
+                    change_fn(changed_doc);
+                }
+                catch(e) {
+                    console.log(e);
+                }
             }
         });
 
