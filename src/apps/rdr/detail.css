@@ -33,6 +33,7 @@ $light-border: #f2f2f2;
         padding: 1em;
 
         h3 {
+            margin-top: 1em;
             font-weight: bold;
             text-align: center;
         }
@@ -44,7 +45,7 @@ $light-border: #f2f2f2;
         text-align: center;
 
         .tags-container {
-            padding-top: 1em;
+            padding: 1em 2em;
         }
 
         .tags {
@@ -75,10 +76,6 @@ $light-border: #f2f2f2;
 
             top: 200px;
             width: 100%;
-        }
-        .unavailable {
-            margin-top: 2em;
-            text-align: center;
         }
     }
 

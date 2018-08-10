@@ -28,7 +28,15 @@ window.LanternDocument = (function(id,stor) {
         style: "sl",        // css styles,
         parent: "pt",       // parent document reference
         child: "cd",        // child document reference,
-        vote: "vt"          // votes for accuracy of data    
+
+        // verification parameters / votes for accuracy
+        vote: "vt", // @todo remove depracated vote dictionary
+        vote_red_cross: "vr",
+        vote_neighbors: "vn",
+        vote_officials: "vo",
+        vote_oxfam: "vx",
+        vote_un: "vu",
+        vote_fema: "vf"
 
     };
 
@@ -61,15 +69,21 @@ window.LanternDocument = (function(id,stor) {
     }
 
     function hasNewData(old_doc) {
-        for (var k in old_doc.data) {
-            var old_val =  JSON.stringify(old_doc.data[k]);
 
-            // don't compare $ meta
-            if (k[0] != "$" && self.has(k)) {
-                var new_val = JSON.stringify(self.data[k]);
-                if (old_val != new_val) {
-                    return true;
-                }
+        for (var k in self.data) {
+            if (old_doc.data.hasOwnProperty(k)) {
+                var old_val = JSON.stringify(old_doc.data[k]);
+                // don't compare $ meta
+                if (k[0] != "$" && self.has(k)) {
+                    var new_val = JSON.stringify(self.data[k]);
+                    if (old_val != new_val) {
+                        console.log("[" + self.id + "] has new data:",  k, new_val)
+                        return true;
+                    }
+                }   
+            }
+            else {
+                return true;
             }
         }
         return false;
@@ -185,8 +199,9 @@ window.LanternDocument = (function(id,stor) {
         if (check_existing) {
             // make sure we're not saving duplicate document
             return stor.get(self.id, true).then(function(old_doc) {
+                
                 if (!skip_if_exists && hasNewData(old_doc)) {
-                    console.log(self.id, "has new data");
+                    doc._rev = old_doc.get("_rev");
                     return post(doc);
                 }
                 else {
@@ -195,6 +210,7 @@ window.LanternDocument = (function(id,stor) {
                 }
             })
             .catch(function(err) {
+                console.log(err);
                 return post(doc);
             });
         }
@@ -278,6 +294,7 @@ window.LanternPage = (function(id) {
             page_action_helper: null,
             page_loading: true,
             is_syncing: false,
+            sync_label: "Syncing",
             allow_back_button: false,
             user: null
         },
@@ -337,15 +354,7 @@ window.LanternPage = (function(id) {
 
 
     //------------------------------------------------------------------------
-    function findBestLanternDevice() {
-        var domain = "lantern.global";
-
-
-        // @todo gracefully handle local testing through docker
-        // if (window.location.host.indexOf("localhost") != -1) {
-        //     domain = "localhost";
-        // }
-
+    function findBestLanternDevice(domain) {
         self.setBaseURI(window.location.protocol + "//" + domain);
 
         var cloud = false;
@@ -370,9 +379,15 @@ window.LanternPage = (function(id) {
                 self.view.lantern_connected = lantern;
             })
             .catch(function(err) {
-
-                self.view.cloud_connected = cloud;
-                self.view.lantern_connected = lantern;
+                console.log(err);
+                if (window.location.hostname == "localhost" && domain == "lantern.global") {
+                    // allow developers to use localhost docker image
+                    return findBestLanternDevice("localhost");
+                }
+                else {
+                    self.view.cloud_connected = cloud;
+                    self.view.lantern_connected = lantern;
+                }
             });
     }
 
@@ -427,21 +442,37 @@ window.LanternPage = (function(id) {
     * Display a sync icon in footer momentarily
     */
     function showSyncIcon(doc) {
+
         if (doc._deleted == true) {
-            // don't interrupt interface for basic document deletes
+            self.view.$data.sync_label = "Syncing";
+            self.view.$data.is_syncing  = true;
             return;
         }
+
         setTimeout(function() {
             if (self.view.$data.is_syncing) return;
             self.view.$data.is_syncing = true;
+            
             // display title of doc where possible
             if (doc && doc.hasOwnProperty("tt")) {
                 self.view.$data.is_syncing = doc.tt;
+                
+
+                if (doc._rev.split("-")[0] == "1") {
+                    self.view.$data.sync_label = "Adding";
+                }
+                else {
+                    self.view.$data.sync_label = "Updating";
+                }
+
             }
+
             setTimeout(function() {
+                self.view.$data.sync_label = "Syncing";
                 self.view.$data.is_syncing = false;
             }, 2000);
-        }, 50);
+
+        }, 40);
     }
 
 
@@ -493,7 +524,7 @@ window.LanternPage = (function(id) {
     * Add in data from PouchDB and identify network status
     */
     self.connect = function() {
-        return findBestLanternDevice()
+        return findBestLanternDevice("lantern.global")
             .then(function() {
                 self.stor = new LanternStor(self.getBaseURI(), "lnt", vue_opts.data);
                 return self.stor.setup();
@@ -508,7 +539,7 @@ window.LanternPage = (function(id) {
                 self.stor.host_db.info().then(function() {
                     self.stor.sync(true, handleSyncStatusChange, handleDocumentChange);                    
                 });
-
+                
                 // we have a map cache we can use
                 var map_stor = new LanternStor(self.getBaseURI(), "map", {});
                 map_stor.setup().then(function() {
@@ -841,6 +872,7 @@ if ("serviceWorker" in navigator) {
 }
 window.LanternStor = (function(uri, db_name, $data) {
 
+    console.log("[stor] creating with uri: " + uri);
 
     var self = {
         doc_cache: {}, 
@@ -1172,6 +1204,10 @@ window.LanternStor = (function(uri, db_name, $data) {
 
         LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
 
+            // always refresh document cache after change
+            var doc = new LanternDocument(changed_doc, self);
+            self.refreshDocInCache(doc);
+            
             if (change_fn && typeof(change_fn) == "function") {
                 try {
                     change_fn(changed_doc);

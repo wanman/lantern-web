@@ -26,7 +26,15 @@ window.LanternDocument = (function(id,stor) {
         style: "sl",        // css styles,
         parent: "pt",       // parent document reference
         child: "cd",        // child document reference,
-        vote: "vt"          // votes for accuracy of data    
+
+        // verification parameters / votes for accuracy
+        vote: "vt", // @todo remove depracated vote dictionary
+        vote_red_cross: "vr",
+        vote_neighbors: "vn",
+        vote_officials: "vo",
+        vote_oxfam: "vx",
+        vote_un: "vu",
+        vote_fema: "vf"
 
     };
 
@@ -59,15 +67,21 @@ window.LanternDocument = (function(id,stor) {
     }
 
     function hasNewData(old_doc) {
-        for (var k in old_doc.data) {
-            var old_val =  JSON.stringify(old_doc.data[k]);
 
-            // don't compare $ meta
-            if (k[0] != "$" && self.has(k)) {
-                var new_val = JSON.stringify(self.data[k]);
-                if (old_val != new_val) {
-                    return true;
-                }
+        for (var k in self.data) {
+            if (old_doc.data.hasOwnProperty(k)) {
+                var old_val = JSON.stringify(old_doc.data[k]);
+                // don't compare $ meta
+                if (k[0] != "$" && self.has(k)) {
+                    var new_val = JSON.stringify(self.data[k]);
+                    if (old_val != new_val) {
+                        console.log("[" + self.id + "] has new data:",  k, new_val)
+                        return true;
+                    }
+                }   
+            }
+            else {
+                return true;
             }
         }
         return false;
@@ -183,8 +197,9 @@ window.LanternDocument = (function(id,stor) {
         if (check_existing) {
             // make sure we're not saving duplicate document
             return stor.get(self.id, true).then(function(old_doc) {
+                
                 if (!skip_if_exists && hasNewData(old_doc)) {
-                    console.log(self.id, "has new data");
+                    doc._rev = old_doc.get("_rev");
                     return post(doc);
                 }
                 else {
@@ -193,6 +208,7 @@ window.LanternDocument = (function(id,stor) {
                 }
             })
             .catch(function(err) {
+                console.log(err);
                 return post(doc);
             });
         }

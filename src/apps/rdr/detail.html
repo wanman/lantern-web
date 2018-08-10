@@ -20,26 +20,26 @@ block content
       
         #inspector-view(v-if="show_inspector && !show_input")
 
-            h3 {{ getCategory(i_docs[selected_item].category).title }} Verifications
-
-            div(v-if="i_docs[selected_item].status && i_docs[selected_item].vote")
-
-                h4.time Last vote {{ timestamp(i_docs[selected_item]) }}
-
-                .tags-container
-                    a.tags.has-addons(v-for="row in i_docs[selected_item].vote" @click="handleVote(i_docs[selected_item], row)") 
-                     
-                        span.tag.is-primary
-                            .icon
-                                i.fas.fa-thumbs-up
-                            | {{ row.votes }}
-                        span.tag  {{ row.title }}
+            
+            div(v-if="i_docs[selected_item].status > 0")
+                h3 {{ getCategory(i_docs[selected_item].category).title }} Available
+                h4.time Last verified {{ timestamp(i_docs[selected_item]) }}
 
             div.unavailable(v-if="i_docs[selected_item].status == 0")
-                p Sorry, this item has been reported unavailable. Please check back soon.
+                h3 Sorry, this item has been reported unavailable. 
+                h4.time Last verified {{ timestamp(i_docs[selected_item]) }}
                     
-            div.unavailable(v-if="!i_docs[selected_item].vote")
-                p Nobody has verified this report just yet. Please check back soon.
+
+            .tags-container
+
+                a.tags.has-addons(v-for="row in vote_type" @click="handleVote(i_docs[selected_item]._id, row.key)") 
+                 
+                    span.tag.is-primary
+                        .icon
+                            i.fas.fa-thumbs-up
+                        | {{ i_docs[selected_item][row.key] || 0 }}
+                    span.tag  {{ row.title }}
+
             
         #map-prompt(v-if="!show_inspector && !show_map" @click="handleShowMap")
             span.icon
@@ -53,7 +53,7 @@ block content
             .box(v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleToggleSelectItem(item)")
 
                
-                span.status(v-if="item.status")
+                span.status
                     .tags
                         .tag 
                             .icon

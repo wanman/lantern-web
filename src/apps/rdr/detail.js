@@ -12,7 +12,11 @@ window.page = (function() {
 
 
 
+
     //------------------------------------------------------------------------
+    /**
+    * Centers map on currently selected venue position
+    */
     function focusMap() {
         //console.log("[detail] showing map");
         if (self.view.$data.marker) {
@@ -50,6 +54,20 @@ window.page = (function() {
         }
     }
 
+   
+
+
+    /**
+    * Updates interface to select specific item
+    * e.g. Water, fuel, or clothing at venue
+    */
+    function selectItem(id) {
+        item_id = id;
+        console.log("[detail] selected item = " + id);
+        var cached_item = self.stor.getCached(item_id);
+        self.view.$data.selected_item = self.stor.getCachedIndex(item_id);
+    }
+
 
 
     //------------------------------------------------------------------------
@@ -59,6 +77,12 @@ window.page = (function() {
     self.addData("marker", {});
     self.addData("item_types", []);
     self.addData("selected_item", {});
+    self.addData("vote_type", [
+        {key: "vote_red_cross", title: "Red Cross"},
+        {key: "vote_neighbors", title: "Neighbors"},
+        {key: "vote_officials", title: "Town Officials"},
+        {key: "vote_oxfam", title: "OXFAM"}
+    ]);
 
 
 
@@ -87,8 +111,7 @@ window.page = (function() {
             self.view.$data.selected_item = {};
         }
         else {
-            self.view.$data.selected_item = self.stor.getCachedIndex(item._id);
-            item_id = item._id;
+            selectItem(item._id);
             //console.log("[detail] show inspector");
             self.view.$data.show_inspector = true;
             self.map.removeZoomControl();
@@ -118,55 +141,27 @@ window.page = (function() {
         self.view.$data.allow_back_button = false;
     });
 
+
     self.addHelper("handleAddItemType", function(item_type) {
         var doc_id = "i:" + venue_id + ":" + item_type.slug;
 
-
         self.stor.get(doc_id).then(function(doc) {
             doc.set("updated_at", new Date());
-
             doc.set("status", 1);
-
-            var votes = doc.get("vote");
-            votes.forEach(function(vote) {
-                if (vote.slug == "neighbors") {
-                    console.log("[detail] signing new vote");
-                    vote.votes++;
-                }
-            });
-            doc.set("vote", votes);
+            var existing_votes = Number(doc.get("vote_neighbors")) || 0;
+            doc.set("vote_neighbors", existing_votes+1)
             doc.save().then(renderDefaultView);
         }).catch(function(err) {
             if (err.name == "not_found") {
-
                 new_doc = new LanternDocument(doc_id, self.stor);
-
                 new_doc.set("status", 1);
                 new_doc.push("parent", venue_id);
-                new_doc.set("$ca", new Date());
-                new_doc.push("vote", {
-                    "slug": "neighbors",
-                    "title": "Neighbors",
-                    "votes": 0
-                });
-                new_doc.push("vote", {
-                    "slug": "town",
-                    "title": "Town Officials",
-                    "votes": 0
-                });
-                new_doc.push("vote", {
-                    "slug": "oxfam",
-                    "title": "Oxfam",
-                    "votes": 0
-                });
-                new_doc.push("vote", {
-                    "slug": "red-cross",
-                    "title": "Red Cross",
-                    "votes": 0
-                });
-
+                new_doc.set("created_at", new Date());
+                new_doc.set("vote_neighbors", 0);
+                new_doc.set("vote_officials", 0);
+                new_doc.set("vote_oxfam", 0);
+                new_doc.set("vote_red_cross", 0);
                 new_doc.push("category", item_type.slug);
-
                 new_doc.save().then(renderDefaultView);
             }
         });
@@ -174,45 +169,39 @@ window.page = (function() {
     });
 
 
-
-
     // @todo use actual verifications
     self.addHelper("makeVerifications", function(item) {
         return Math.round(Math.random()*10);
     });
 
-    self.addHelper("countVotes", function(item) {
+
+    /**
+    * Looks for and tallies votes to verify data accuracy
+    * e.g. Red Cross (2) + Town Officials (2) + Neighbors (5)
+    */
+    self.addHelper("countVotes", function countVotes(item) {
         var count = 0;
-        if (item.hasOwnProperty("vote")) {
-            for (var idx in item.vote) {
-                count += item.vote[idx].votes;
+        for (var idx in self.view.$data.vote_type) {
+            var key = self.view.$data.vote_type[idx].key;
+            if (item.hasOwnProperty(key)) {
+                count += item[key];
             }
         }
         return count;
     });
-    
 
-    self.addHelper("handleVote", function(json, b) {
-
-        var doc = new LanternDocument(self.stor.getCached(json._id), self.stor);
-
-        if (doc.has("vote")) {
-            var votes = doc.get("vote");
-            for (var idx in votes) { 
-                if (votes[idx].slug == b.slug) {
-                    if (did_vote[b.slug]) {
-                        console.log("[detail] skip duplicate upvote");
-                        return;
-                    }
-
-                    json.vote[idx].votes = votes[idx].votes = votes[idx].votes+1;
-                    doc.set("vote", votes);
-                    doc.save();
-                    did_vote[b.slug] = true;
-                    console.log("[detail] upvoted verification", votes[idx].votes);
-                }
-            }
+    self.addHelper("handleVote", function(doc_id, vote_key) {
+        
+        if (did_vote[vote_key]) {
+            console.log("[detail] skip duplicate upvote");
+            return;
         }
+        
+        var doc = new LanternDocument(self.stor.getCached(doc_id), self.stor);
+        var votes = doc.get(vote_key) || 0;
+        doc.set(vote_key, votes+1);
+        did_vote[vote_key] = true;
+        doc.save();
     });
 
 

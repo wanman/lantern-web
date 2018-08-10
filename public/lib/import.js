@@ -29,9 +29,8 @@ window.LanternImport = function(stor) {
 
         var time = new Date();
 
-        doc.set("$ia", time);
-        doc.set("$ua", time);
-        doc.set("$ca", time);
+        doc.set("imported_at", time);
+        doc.set("created_at", time);
         doc.save(true, true);
     }
 
@@ -50,8 +49,9 @@ window.LanternImport = function(stor) {
         venue_doc.set("icon", icon);
         venue_doc.set("status", 1);
         venue_doc.push("category", cat);
-        venue_doc.set("$ia", now);
-        venue_doc.set("$ca", now);
+        venue_doc.set("imported_at", now);
+        venue_doc.set("created_at", now);
+
         venue_doc.save(true, true);
 
 
@@ -65,34 +65,14 @@ window.LanternImport = function(stor) {
             doc.push("category", cats[idx]);
 
             // simulate verification of data for accuracy
-            doc.push("vote",{
-                slug: "oxfam",
-                title: "OXFAM",
-                votes: Math.round(Math.random()*1)
-            });
+            doc.set("vote_oxfam", Math.round(Math.random()*1));
+            doc.set("vote_red_cross", Math.round(Math.random()*3));
+            doc.set("vote_neighbors", Math.round(Math.random()*5));
+            doc.set("vote_officials", Math.round(Math.random()*2));
 
-            doc.push("vote",{
-                slug: "red-cross",
-                title: "Red Cross",
-                votes: Math.round(Math.random()*3)
-            });
-
-            doc.push("vote",{
-                slug: "neighbors",
-                title: "Neighbors",
-                votes: Math.round(Math.random()*10)
-            });
-
-            doc.push("vote",{
-                slug: "town",
-                title: "Town Officials",
-                votes: Math.round(Math.random()*2)
-            });
-
-            doc.set("$ia", now);
-            doc.set("$ua", now);
-            doc.set("$ca", now);
-            doc.save(true, true);
+            doc.set("imported_at", now);
+            doc.set("created_at", now);
+            doc.save(true, false);
         }
 
     }
@@ -136,18 +116,13 @@ window.LanternImport = function(stor) {
         //console.log("[import] adding default venues");
 
         // temporary shelters or forward operating bases
-        addVenue("css", "Central City Shelter", "drs4b7s", "tmp", "home", ["bed", "eat"]);
-        addVenue("rcm", "Red Cross HQ", "drs4b75", "tmp", "plus-square", ["med", "clo"]);
-
-        // permanent buildings that now offer some safety
-        addVenue("aic", "AJ's Cafe", "drs4b77", "bld", "coffee", ["eat", "wtr", "pwr"]);
-        addVenue("hsf", "High School Field House", "drs4b79", "bld", "basketball-ball", ["bed", "clo", "net", "wtr"]);
-        addVenue("cth", "UCG Hospital", "drs4b73", "bld", "hospital-symbol", ["med"]);
-        addVenue("shl", "Shell Station", "drs4b71", "bld", "gas-pump", ["ful", "wtr"]);
-        addVenue("mst", "Main Street Theatre", "drs4b41", "bld", "film", ["net", "pwr"]);
-        //addVenue("emb", "Embassy", "drs4b46", "sfe", "suitcase", ["sup"]);
-
-        addVenue("wtk", "Water Truck", "drs4b72", "trk", "truck", ["wtr"]);
+        addVenue("enp", "Encinal Park", "9q9hwnw", "tmp", "home", ["bed", "eat"]);
+        addVenue("ajc", "AJ's Cafe", "9q9hy3m", "bld", "coffee", ["eat", "wtr", "pwr"]);
+        addVenue("hfh", "High School Field House", "9q9hwu2", "bld", "basketball-ball", ["bed", "clo", "net", "wtr"]);
+        addVenue("ech", "El Camino Hospital", "9q9htv5", "bld", "hospital-symbol", ["med"]);
+        addVenue("slg", "Shell Station", "9q9hqzq", "bld", "gas-pump", ["ful", "wtr"]);
+        addVenue("mnt", "Main Street Theatre", "9q9hv8y", "bld", "film", ["net", "pwr"]);
+        addVenue("wwt", "Water Truck", "9q9hykv", "trk", "truck", ["wtr"]);
     };
 
     self.item = function() {
@@ -159,9 +134,8 @@ window.LanternImport = function(stor) {
         var doc = new LanternDocument("r:%%", stor);
         doc.set("geo", ['drs4b77e8', 'drs4b77e9']);
         var time = new Date();
-        doc.set("$ia", time);
-        doc.set("$ua", time);
-        doc.set("$ca", time);
+        doc.set("imported_at", time);
+        doc.set("created_at", time);
         doc.save(true, true);
     };
 
@@ -171,9 +145,8 @@ window.LanternImport = function(stor) {
         var doc = new LanternDocument("n:%%", stor);
         doc.push("tag", "v:test-place");
         var time = new Date();
-        doc.set("$ia", time);
-        doc.set("$ua", time);
-        doc.set("$ca", time);
+        doc.set("imported_at", time);
+        doc.set("created_at", time);
         doc.save(true, true);
     };
 

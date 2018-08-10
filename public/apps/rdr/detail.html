@@ -34,7 +34,7 @@
             </nav>
             <nav class="navbar is-fixed-bottom" id="status-footer" v-cloak v-if="cloud_connected !== null || lantern_connected !== null" v-bind:class="is_syncing ? 'is-syncing' : ''">
                 <div class="navbar-brand">
-                    <div class="navbar-item" v-if="is_syncing"><span class="icon"><i class="fas fa-sync"></i></span><span v-if="is_syncing === true">Syncing</span><span v-if="is_syncing !== true">Syncing {{ is_syncing }}</span></div>
+                    <div class="navbar-item" v-if="is_syncing"><span class="icon"><i class="fas fa-sync"></i></span><span v-if="is_syncing === true">{{ sync_label }}</span><span v-if="is_syncing !== true">{{ sync_label }} {{ is_syncing }}</span></div>
                     <div class="navbar-item" v-if="!is_syncing"><span v-if="!cloud_connected &amp;&amp; !lantern_connected"> <span class="icon"><i class="fas fa-wifi" style="color: #DDD;"></i></span>Offline</span><span v-if="lantern &amp;&amp; lantern_connected"> <span class="icon"><i class="fas fa-wifi"></i></span>Lantern {{ lantern.name }}</span><span v-if="cloud_connected"> <span class="icon"><i class="fas fa-cloud"></i></span>Online</span></div>
                 </div>
             </nav>
@@ -58,23 +58,21 @@
                     </div>
                     <div v-cloak>
                         <div id="inspector-view" v-if="show_inspector &amp;&amp; !show_input">
-                            <h3>{{ getCategory(i_docs[selected_item].category).title }} Verifications</h3>
-                            <div v-if="i_docs[selected_item].status &amp;&amp; i_docs[selected_item].vote">
-                                <h4 class="time">Last vote {{ timestamp(i_docs[selected_item]) }}</h4>
-                                <div class="tags-container"><a class="tags has-addons" v-for="row in i_docs[selected_item].vote" @click="handleVote(i_docs[selected_item], row)"> <span class="tag is-primary">
-                                            <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ row.votes }}</span><span class="tag"> {{ row.title }}</span></a></div>
+                            <div v-if="i_docs[selected_item].status &gt; 0">
+                                <h3>{{ getCategory(i_docs[selected_item].category).title }} Available</h3>
+                                <h4 class="time">Last verified {{ timestamp(i_docs[selected_item]) }}</h4>
                             </div>
                             <div class="unavailable" v-if="i_docs[selected_item].status == 0">
-                                <p>Sorry, this item has been reported unavailable. Please check back soon.</p>
+                                <h3>Sorry, this item has been reported unavailable. </h3>
+                                <h4 class="time">Last verified {{ timestamp(i_docs[selected_item]) }}</h4>
                             </div>
-                            <div class="unavailable" v-if="!i_docs[selected_item].vote">
-                                <p>Nobody has verified this report just yet. Please check back soon.</p>
-                            </div>
+                            <div class="tags-container"><a class="tags has-addons" v-for="row in vote_type" @click="handleVote(i_docs[selected_item]._id, row.key)"> <span class="tag is-primary">
+                                        <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ i_docs[selected_item][row.key] || 0 }}</span><span class="tag"> {{ row.title }}</span></a></div>
                         </div>
                         <div id="map-prompt" v-if="!show_inspector &amp;&amp; !show_map" @click="handleShowMap"><span class="icon"><i class="fas fa-map"></i></span><span>Show Map</span></div>
                         <div id="map" v-bind:style="'display:'  + (show_map &amp;&amp; !show_input ? 'block' : 'none')"></div>
                         <div v-cloak v-if="!page_loading &amp;&amp; !show_input">
-                            <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleToggleSelectItem(item)"><span class="status" v-if="item.status">
+                            <div class="box" v-for="item in i_docs" v-if="item.parent == marker._id" v-bind:data-id="item._id" v-bind:style="makeItemStyle(item)" @click="handleToggleSelectItem(item)"><span class="status">
                                     <div class="tags">
                                         <div class="tag"> 
                                             <div class="icon"><i class="fas fa-thumbs-up"></i></div>{{ countVotes(item) }}

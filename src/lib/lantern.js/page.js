@@ -12,6 +12,7 @@ window.LanternPage = (function(id) {
             page_action_helper: null,
             page_loading: true,
             is_syncing: false,
+            sync_label: "Syncing",
             allow_back_button: false,
             user: null
         },
@@ -71,15 +72,7 @@ window.LanternPage = (function(id) {
 
 
     //------------------------------------------------------------------------
-    function findBestLanternDevice() {
-        var domain = "lantern.global";
-
-
-        // @todo gracefully handle local testing through docker
-        // if (window.location.host.indexOf("localhost") != -1) {
-        //     domain = "localhost";
-        // }
-
+    function findBestLanternDevice(domain) {
         self.setBaseURI(window.location.protocol + "//" + domain);
 
         var cloud = false;
@@ -104,9 +97,15 @@ window.LanternPage = (function(id) {
                 self.view.lantern_connected = lantern;
             })
             .catch(function(err) {
-
-                self.view.cloud_connected = cloud;
-                self.view.lantern_connected = lantern;
+                console.log(err);
+                if (window.location.hostname == "localhost" && domain == "lantern.global") {
+                    // allow developers to use localhost docker image
+                    return findBestLanternDevice("localhost");
+                }
+                else {
+                    self.view.cloud_connected = cloud;
+                    self.view.lantern_connected = lantern;
+                }
             });
     }
 
@@ -161,21 +160,37 @@ window.LanternPage = (function(id) {
     * Display a sync icon in footer momentarily
     */
     function showSyncIcon(doc) {
+
         if (doc._deleted == true) {
-            // don't interrupt interface for basic document deletes
+            self.view.$data.sync_label = "Syncing";
+            self.view.$data.is_syncing  = true;
             return;
         }
+
         setTimeout(function() {
             if (self.view.$data.is_syncing) return;
             self.view.$data.is_syncing = true;
+            
             // display title of doc where possible
             if (doc && doc.hasOwnProperty("tt")) {
                 self.view.$data.is_syncing = doc.tt;
+                
+
+                if (doc._rev.split("-")[0] == "1") {
+                    self.view.$data.sync_label = "Adding";
+                }
+                else {
+                    self.view.$data.sync_label = "Updating";
+                }
+
             }
+
             setTimeout(function() {
+                self.view.$data.sync_label = "Syncing";
                 self.view.$data.is_syncing = false;
             }, 2000);
-        }, 50);
+
+        }, 40);
     }
 
 
@@ -227,7 +242,7 @@ window.LanternPage = (function(id) {
     * Add in data from PouchDB and identify network status
     */
     self.connect = function() {
-        return findBestLanternDevice()
+        return findBestLanternDevice("lantern.global")
             .then(function() {
                 self.stor = new LanternStor(self.getBaseURI(), "lnt", vue_opts.data);
                 return self.stor.setup();
@@ -242,7 +257,7 @@ window.LanternPage = (function(id) {
                 self.stor.host_db.info().then(function() {
                     self.stor.sync(true, handleSyncStatusChange, handleDocumentChange);                    
                 });
-
+                
                 // we have a map cache we can use
                 var map_stor = new LanternStor(self.getBaseURI(), "map", {});
                 map_stor.setup().then(function() {

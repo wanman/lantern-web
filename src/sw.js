@@ -57,15 +57,15 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rdr/detail.css",
-    "revision": "ef19a991578578d983d977b4c5e118f0"
+    "revision": "4fc5b672ae709eadc56c9114acb9609a"
   },
   {
     "url": "apps/rdr/detail.html",
-    "revision": "14c73adbdd1ffb95c5d748e5921dbec1"
+    "revision": "424488ea55c561b9ef90ba6feae00766"
   },
   {
     "url": "apps/rdr/detail.js",
-    "revision": "5ce1d4ecedf7f3fd953f70c7a80c2e01"
+    "revision": "0414ab3b1ecf4fbfd7ef89e355ddcb8f"
   },
   {
     "url": "apps/rdr/index.css",
@@ -121,7 +121,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/import.js",
-    "revision": "aebb0739d8dac11ba1d20fa6af9d3f88"
+    "revision": "48bbbd0b19166da5d3118f8dc333fa69"
   },
   {
     "url": "lib/lantern.css",
@@ -275,4 +275,4 @@ self.__precacheManifest = [
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.cacheFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":25,"purgeOnQuotaError":false})] }), 'GET');
+workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.networkFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":25,"purgeOnQuotaError":false})] }), 'GET');
