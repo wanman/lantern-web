@@ -25,7 +25,9 @@ block content
                         .card-header-icon                     
                             span.icon
                                 i.fas.fa-server
-                    .card-content {{ d_docs.length }}
+                    .card-content {{ getActiveHostCount() }}
+
+
 
 
         .card#host-list
@@ -48,7 +50,39 @@ block content
                         td {{ timestamp(item) }}
 
 
+
         .columns
+
+            .column
+                .card(@click="handleInspectVenues") 
+                    .card-header 
+                        .card-header-title Venues  
+                        .card-header-icon 
+                            span.icon
+                                    i.fas.fa-building
+                    .card-content {{ v_docs.length }} 
+
+            .column
+                .card
+                    .card-header
+                        .card-header-title Items 
+                        .card-header-icon                     
+                            span.icon
+                                i.fas.fa-box
+                    .card-content {{ i_docs.length }}
+
+        .columns
+
+
+            .column
+                .card
+                    .card-header
+                        .card-header-title Routes 
+                        .card-header-icon                     
+                            span.icon
+                                i.fas.fa-map
+                    .card-content {{ r_docs.length }}
+
             .column
                 .card(@click="handleInspectNotes") 
                     .card-header
@@ -59,14 +93,6 @@ block content
                     .card-content {{ n_docs.length }}
 
 
-            .column
-                .card
-                    .card-header 
-                        .card-header-title Verifications  
-                        .card-header-icon 
-                            span.icon
-                                    i.fas.fa-check-double
-                    .card-content {{ verifications }} 
 
 
 

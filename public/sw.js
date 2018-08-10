@@ -51,11 +51,11 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/net/index.html",
-    "revision": "a907c3991ecbc0dd09670be2be875536"
+    "revision": "7447a2ed04d2bb2e86730376dd451376"
   },
   {
     "url": "apps/net/index.js",
-    "revision": "701ea082b771bf71168b5c5e9c50a52c"
+    "revision": "a642517c1483ab715aae9db0bf0c40b1"
   },
   {
     "url": "apps/rdr/detail.css",

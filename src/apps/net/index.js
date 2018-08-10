@@ -4,28 +4,24 @@ window.page = (function() {
 
     var tag_tally = {};
 
-    function setVerificationCount() {
-        self.view.$data.verifications = 0;
-        self.getItems().then(function(items) {
-            items.forEach(function(item) {
-                if (item.has("vote")) {
-                    var vt = item.get("vote");
-                    vt.forEach(function(row) {
-                        self.view.$data.verifications += Number(row.votes);
-                    });
-                }
-            });
-        });
-    }
 
     self.addData("needs", 0);
-    self.addData("verifications", 0);
 
     self.addHelper("handleInspectDevices", function() {
         self.view.$data.d_docs.forEach(function(doc) {
             console.log(JSON.stringify(doc));
         });
     });
+
+    self.addHelper("getActiveHostCount", function() {
+        var count = 0;
+        self.view.$data.d_docs.forEach(function(doc) {
+            if (doc.status == 1) {
+                count++;
+            }
+        });
+        return count;
+    })
 
 
     self.addHelper("handleInspectUsers", function() {
@@ -45,6 +41,13 @@ window.page = (function() {
     });
 
 
+    self.addHelper("handleInspectVenues", function() {
+        self.view.$data.v_docs.forEach(function(doc) {
+            console.log(JSON.stringify(doc));
+        });
+    });
+
+
     //------------------------------------------------------------------------
     self.render()
         .then(self.connect)
@@ -54,6 +57,10 @@ window.page = (function() {
                 window.location = "/";
             }
         })
+        .then(self.getNotes)
+        .then(self.getVenues)
+        .then(self.getItems)
+        .then(self.getRoutes)
         .then(self.getUsers)
         .then(function(users) {
             users.forEach(function(user) {
@@ -84,8 +91,6 @@ window.page = (function() {
                     self.map.map.setZoom(4);
                 });
             }, 100);        
-        })
-        .then(self.getNotes)
-        .then(setVerificationCount);
+        });
     return self;
 })();

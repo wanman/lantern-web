@@ -1,7 +1,5 @@
 window.LanternStor = (function(uri, db_name, $data) {
 
-    console.log("[stor] creating with uri: " + uri);
-
     var self = {
         doc_cache: {}, 
         browser_db: null,
