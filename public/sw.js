@@ -63,7 +63,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/rdr/detail.html",
-    "revision": "424488ea55c561b9ef90ba6feae00766"
+    "revision": "5124c2aac4c519b7c1b4fb38761239e1"
   },
   {
     "url": "apps/rdr/detail.js",

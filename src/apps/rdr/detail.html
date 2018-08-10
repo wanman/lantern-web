@@ -23,7 +23,10 @@ block content
             
             div(v-if="i_docs[selected_item].status > 0")
                 h3 {{ getCategory(i_docs[selected_item].category).title }} Available
-                h4.time Last verified {{ timestamp(i_docs[selected_item]) }}
+                h4.time(v-if="countVotes(i_docs[selected_item])") Last verified {{ timestamp(i_docs[selected_item]) }}
+
+                h4.time(v-if="countVotes(i_docs[selected_item]) == 0") Waiting for verification&hellip;
+
 
             div.unavailable(v-if="i_docs[selected_item].status == 0")
                 h3 Sorry, this item has been reported unavailable. 
