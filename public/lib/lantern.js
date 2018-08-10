@@ -865,7 +865,7 @@ window.LanternPage = (function(id) {
 
 
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register('/sw.js', {
+    navigator.serviceWorker.register('/worker/sw.js', {
         scope: "/"
     }).then(function(registration) {
         // success

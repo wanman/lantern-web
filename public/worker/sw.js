@@ -1,3 +1,5 @@
+__base = "../";
+
 /**
  * Welcome to your Workbox-powered service worker!
  *
@@ -11,7 +13,8 @@
  * See https://goo.gl/2aRDsh
  */
 
-importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.3.0/workbox-sw.js");
+importScripts("workbox-v3.3.0/workbox-sw.js");
+workbox.setConfig({modulePathPrefix: "workbox-v3.3.0"});
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
@@ -275,4 +278,3 @@ self.__precacheManifest = [
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerRoute(/\.(?:png|jpg|jpeg)$/, workbox.strategies.networkFirst({ cacheName: "images", plugins: [new workbox.expiration.Plugin({"maxEntries":25,"purgeOnQuotaError":false})] }), 'GET');
