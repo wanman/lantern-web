@@ -93,8 +93,8 @@ window.LanternPage = (function(id) {
                     // if missing "cloud" value, leave defaults...
                 }
 
-                self.view.cloud_connected = cloud;
-                self.view.lantern_connected = lantern;
+                self.view.$data.cloud_connected = cloud;
+                self.view.$data.lantern_connected = lantern;
             })
             .catch(function(err) {
                 console.log(err);
@@ -103,8 +103,8 @@ window.LanternPage = (function(id) {
                     return findBestLanternDevice("localhost");
                 }
                 else {
-                    self.view.cloud_connected = cloud;
-                    self.view.lantern_connected = lantern;
+                    self.view.$data.cloud_connected = cloud;
+                    self.view.$data.lantern_connected = lantern;
                 }
             });
     }
@@ -261,12 +261,14 @@ window.LanternPage = (function(id) {
                     self.stor.sync(true, handleSyncStatusChange, handleDocumentChange);                    
                 });
                 
-                // we have a map cache we can use
-                var map_stor = new LanternStor(self.getBaseURI(), "map", {});
-                map_stor.setup().then(function() {
-                    // download maps after some time...
-                    map_stor.sync(false, null, null);
-                });
+                if (self.view.$data.lantern_connected) {
+                    // we have a map cache we can use
+                    var map_stor = new LanternStor(self.getBaseURI(), "map", {});
+                    map_stor.setup().then(function() {
+                        // download maps after some time...
+                        map_stor.sync(false, null, null);
+                    });   
+                }
             });
     };
 
