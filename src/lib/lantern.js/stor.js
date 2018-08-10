@@ -330,10 +330,6 @@ window.LanternStor = (function(uri, db_name, $data) {
 
         LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
 
-            // always refresh document cache after change
-            var doc = new LanternDocument(changed_doc, self);
-            self.refreshDocInCache(doc);
-            
             if (change_fn && typeof(change_fn) == "function") {
                 try {
                     change_fn(changed_doc);

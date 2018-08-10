@@ -449,30 +449,27 @@ window.LanternPage = (function(id) {
             return;
         }
 
-        setTimeout(function() {
-            if (self.view.$data.is_syncing) return;
-            self.view.$data.is_syncing = true;
+        if (self.view.$data.is_syncing) return;
+        self.view.$data.is_syncing = true;
+        
+        // display title of doc where possible
+        if (doc && doc.hasOwnProperty("tt")) {
+            self.view.$data.is_syncing = doc.tt;
             
-            // display title of doc where possible
-            if (doc && doc.hasOwnProperty("tt")) {
-                self.view.$data.is_syncing = doc.tt;
-                
 
-                if (doc._rev.split("-")[0] == "1") {
-                    self.view.$data.sync_label = "Adding";
-                }
-                else {
-                    self.view.$data.sync_label = "Updating";
-                }
-
+            if (doc._rev.split("-")[0] == "1") {
+                self.view.$data.sync_label = "Adding";
+            }
+            else {
+                self.view.$data.sync_label = "Updating";
             }
 
-            setTimeout(function() {
-                self.view.$data.sync_label = "Syncing";
-                self.view.$data.is_syncing = false;
-            }, 2000);
+        }
 
-        }, 40);
+        setTimeout(function() {
+            self.view.$data.sync_label = "Syncing";
+            self.view.$data.is_syncing = false;
+        }, 2000);
     }
 
 
@@ -486,6 +483,12 @@ window.LanternPage = (function(id) {
         if (changed_doc._id == ("d:" + self.view.$data.lantern.id)) {
             self.view.$data.lantern.name = changed_doc.tt;
         }
+
+
+            // always refresh document cache after change
+        var doc = new LanternDocument(changed_doc, self.stor);
+        self.stor.refreshDocInCache(doc);
+
         showSyncIcon(changed_doc);
     }
 
@@ -1202,10 +1205,6 @@ window.LanternStor = (function(uri, db_name, $data) {
 
         LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
 
-            // always refresh document cache after change
-            var doc = new LanternDocument(changed_doc, self);
-            self.refreshDocInCache(doc);
-            
             if (change_fn && typeof(change_fn) == "function") {
                 try {
                     change_fn(changed_doc);
