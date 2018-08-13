@@ -48,6 +48,7 @@ window.LanternPage = (function(id) {
 
 
 
+    var map_stor;
 
     //------------------------------------------------------------------------
     var self = {
@@ -211,7 +212,23 @@ window.LanternPage = (function(id) {
     }
 
 
+    /**
+    * Do map sync only once we have a good main data sync initiated
+    */ 
     function handleSyncStatusChange(status) {
+        if (status == true && !map_stor) {
+            if (self.view.$data.lantern_connected) {
+                // give main database a head start
+                setTimeout(function() {
+                    // we have a map cache we can use
+                    map_stor = new LanternStor(self.getBaseURI(), "map", {});
+                    map_stor.setup().then(function() {
+                        // download maps after some time...
+                        map_stor.sync(false, null, null, 50);
+                    });  
+                }, 2000); 
+            }
+        }
         //console.log("[db] sync status", status); 
     }
 
@@ -258,17 +275,9 @@ window.LanternPage = (function(id) {
             .then(function() {
                 // if we can access the database, start sync
                 self.stor.host_db.info().then(function() {
-                    self.stor.sync(true, handleSyncStatusChange, handleDocumentChange);                    
+                    self.stor.sync(true, handleSyncStatusChange, handleDocumentChange, 100);                    
                 });
                 
-                if (self.view.$data.lantern_connected) {
-                    // we have a map cache we can use
-                    var map_stor = new LanternStor(self.getBaseURI(), "map", {});
-                    map_stor.setup().then(function() {
-                        // download maps after some time...
-                        map_stor.sync(false, null, null);
-                    });   
-                }
             });
     };
 

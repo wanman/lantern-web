@@ -28,7 +28,7 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/chk/index.html",
-    "revision": "18b8c29d7680a5c47bdb3be98da06dfd"
+    "revision": "dc58b4cf08639de6cf8ee839d04fdd6d"
   },
   {
     "url": "apps/chk/index.js",
@@ -56,11 +56,11 @@ self.__precacheManifest = [
   },
   {
     "url": "apps/net/index.js",
-    "revision": "a642517c1483ab715aae9db0bf0c40b1"
+    "revision": "05fa49a037864ae565b1a0ffbb2075cf"
   },
   {
     "url": "apps/rdr/detail.css",
-    "revision": "4fc5b672ae709eadc56c9114acb9609a"
+    "revision": "3e66d62a7469c94632947123b24f7731"
   },
   {
     "url": "apps/rdr/detail.html",
@@ -260,7 +260,7 @@ self.__precacheManifest = [
   },
   {
     "url": "lib/lantern.js",
-    "revision": "47f8e9c34b5a435103ee5df12c58dc2a"
+    "revision": "27c62e8b13b148c98e3a6defd7acc4cc"
   },
   {
     "url": "lib/map.css",

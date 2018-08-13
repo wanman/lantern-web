@@ -31,8 +31,6 @@
   #detail-page #inspector-view h4 {
     text-align: center;
     margin-bottom: 1em; }
-  #detail-page #inspector-view .tags-container {
-    padding: 1em 2em; }
   #detail-page #inspector-view .tags {
     font-size: x-small;
     float: left;

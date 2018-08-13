@@ -330,6 +330,7 @@ window.LanternPage = (function(id) {
 
 
 
+    var map_stor;
 
     //------------------------------------------------------------------------
     var self = {
@@ -493,7 +494,23 @@ window.LanternPage = (function(id) {
     }
 
 
+    /**
+    * Do map sync only once we have a good main data sync initiated
+    */ 
     function handleSyncStatusChange(status) {
+        if (status == true && !map_stor) {
+            if (self.view.$data.lantern_connected) {
+                // give main database a head start
+                setTimeout(function() {
+                    // we have a map cache we can use
+                    map_stor = new LanternStor(self.getBaseURI(), "map", {});
+                    map_stor.setup().then(function() {
+                        // download maps after some time...
+                        map_stor.sync(false, null, null, 50);
+                    });  
+                }, 2000); 
+            }
+        }
         //console.log("[db] sync status", status); 
     }
 
@@ -540,17 +557,9 @@ window.LanternPage = (function(id) {
             .then(function() {
                 // if we can access the database, start sync
                 self.stor.host_db.info().then(function() {
-                    self.stor.sync(true, handleSyncStatusChange, handleDocumentChange);                    
+                    self.stor.sync(true, handleSyncStatusChange, handleDocumentChange, 100);                    
                 });
                 
-                if (self.view.$data.lantern_connected) {
-                    // we have a map cache we can use
-                    var map_stor = new LanternStor(self.getBaseURI(), "map", {});
-                    map_stor.setup().then(function() {
-                        // download maps after some time...
-                        map_stor.sync(false, null, null);
-                    });   
-                }
             });
     };
 
@@ -1195,13 +1204,15 @@ window.LanternStor = (function(uri, db_name, $data) {
     /**
     * Sync our in-browser database with the one on a physical device over wifi
     */
-    self.sync = function(continuous, status_fn, change_fn) {
+    self.sync = function(continuous, status_fn, change_fn, batch_size, pull_only) {
        
         console.log("[stor] sync %s <--> %s", self.browser_db.name, self.host_db.name);
 
         if (self.db.name == self.host_db.name) {
             console.log("[stor] skipping sync since target is lantern already");
-            status_fn(true);
+            if (status_fn && typeof(status_fn) == "function") {
+                status_fn(true);
+            }
             return;
         }
 
@@ -1215,14 +1226,14 @@ window.LanternStor = (function(uri, db_name, $data) {
                     console.log(e);
                 }
             }
-        });
+        }, batch_size, pull_only);
 
         return;
     };
 
     return self;
 });
-window.LanternSync = function LanternSync(src, dest, label, continuous, status_fn, change_fn) {
+window.LanternSync = function LanternSync(src, dest, label, continuous, status_fn, change_fn, batch_size) {
     var reset_delay;
 
 
@@ -1253,7 +1264,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
 
     var opts =  {
         since: 0,
-        batch_size: 500,
+        batch_size: batch_size || 500,
         live: continuous || false,
         retry: true,
         back_off_function: backOffSync

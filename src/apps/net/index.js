@@ -66,11 +66,14 @@ window.page = (function() {
             users.forEach(function(user) {
                 if (user.has("tag")) {
                     var tags = user.get("tag");
-                    tags.forEach(function(tag) {
-                        tag_tally[tag] = tag_tally[tag] || 0;
-                        tag_tally[tag]++; 
-                        self.view.$data.needs++;
-                    });
+                    if (tags instanceof Array) {
+
+                        tags.forEach(function(tag) {
+                            tag_tally[tag] = tag_tally[tag] || 0;
+                            tag_tally[tag]++; 
+                            self.view.$data.needs++;
+                        });
+                    }
                 }
             });
             self.view.$data.page_title = "Network";

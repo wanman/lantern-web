@@ -44,9 +44,6 @@ $light-border: #f2f2f2;
         }
         text-align: center;
 
-        .tags-container {
-            padding: 1em 2em;
-        }
 
         .tags {
             font-size: x-small;

@@ -318,13 +318,15 @@ window.LanternStor = (function(uri, db_name, $data) {
     /**
     * Sync our in-browser database with the one on a physical device over wifi
     */
-    self.sync = function(continuous, status_fn, change_fn) {
+    self.sync = function(continuous, status_fn, change_fn, batch_size, pull_only) {
        
         console.log("[stor] sync %s <--> %s", self.browser_db.name, self.host_db.name);
 
         if (self.db.name == self.host_db.name) {
             console.log("[stor] skipping sync since target is lantern already");
-            status_fn(true);
+            if (status_fn && typeof(status_fn) == "function") {
+                status_fn(true);
+            }
             return;
         }
 
@@ -338,7 +340,7 @@ window.LanternStor = (function(uri, db_name, $data) {
                     console.log(e);
                 }
             }
-        });
+        }, batch_size, pull_only);
 
         return;
     };

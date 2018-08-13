@@ -1,4 +1,4 @@
-window.LanternSync = function LanternSync(src, dest, label, continuous, status_fn, change_fn) {
+window.LanternSync = function LanternSync(src, dest, label, continuous, status_fn, change_fn, batch_size) {
     var reset_delay;
 
 
@@ -29,7 +29,7 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
 
     var opts =  {
         since: 0,
-        batch_size: 500,
+        batch_size: batch_size || 500,
         live: continuous || false,
         retry: true,
         back_off_function: backOffSync
