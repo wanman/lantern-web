@@ -191,8 +191,11 @@ window.LanternDocument = (function(id,stor) {
         }
         
         for (var idx in self.data) {
-            doc[idx] = self.data[idx];
+            if (idx != "$ra" && idx != "$rx" ) {
+                doc[idx] = self.data[idx];
+            }
         }
+
 
         if (check_existing) {
             // make sure we're not saving duplicate document
