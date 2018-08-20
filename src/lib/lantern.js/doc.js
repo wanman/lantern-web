@@ -7,9 +7,13 @@ window.LanternDocument = (function(id,stor) {
         // private metadata won't relay over LoRa
         created_at: "$ca",   // creation date
         updated_at: "$ua",   // doc update date
-        received_at: "$ra",  // doc received at (from radio)
         sent_at: "$sa",      // doc sent (with radio)
         imported_at: "$ia", // doc imported from disk, do not send over radio
+
+
+        // radio-specific metadata
+        received_at: "$ra",  // doc received at (from radio)
+        version: "$rv", // passed across radio messages
 
         // public data for all sync and broadcast
         title: "tt",        // title or name of object

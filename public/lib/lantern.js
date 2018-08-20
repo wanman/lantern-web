@@ -9,9 +9,13 @@ window.LanternDocument = (function(id,stor) {
         // private metadata won't relay over LoRa
         created_at: "$ca",   // creation date
         updated_at: "$ua",   // doc update date
-        received_at: "$ra",  // doc received at (from radio)
         sent_at: "$sa",      // doc sent (with radio)
         imported_at: "$ia", // doc imported from disk, do not send over radio
+
+
+        // radio-specific metadata
+        received_at: "$ra",  // doc received at (from radio)
+        version: "$rv", // passed across radio messages
 
         // public data for all sync and broadcast
         title: "tt",        // title or name of object
@@ -331,10 +335,6 @@ window.LanternPage = (function(id) {
         timeout           : 27000
     };
 
-
-
-    var map_stor;
-
     //------------------------------------------------------------------------
     var self = {
         geo: null, // user geohash location
@@ -446,34 +446,32 @@ window.LanternPage = (function(id) {
     * Display a sync icon in footer momentarily
     */
     function showSyncIcon(doc) {
-
+        
         if (doc._deleted == true) {
             self.view.$data.sync_label = "Syncing";
             self.view.$data.is_syncing  = true;
-            return;
         }
 
-        if (self.view.$data.is_syncing) return;
-        self.view.$data.is_syncing = true;
-        
-        // display title of doc where possible
-        if (doc && doc.hasOwnProperty("tt")) {
-            self.view.$data.is_syncing = doc.tt;
+        else {
+            self.view.$data.is_syncing = true;
             
+            // display title of doc where possible
+            if (doc && doc.hasOwnProperty("tt")) {
+                self.view.$data.is_syncing = doc.tt;
 
-            if (doc._rev.split("-")[0] == "1") {
-                self.view.$data.sync_label = "Adding";
-            }
-            else {
-                self.view.$data.sync_label = "Updating";
-            }
-
+                if (doc._rev.split("-")[0] == "1") {
+                    self.view.$data.sync_label = "Adding";
+                }
+                else {
+                    self.view.$data.sync_label = "Updating";
+                }
+            } 
         }
 
         setTimeout(function() {
             self.view.$data.sync_label = "Syncing";
             self.view.$data.is_syncing = false;
-        }, 2000);
+        }, 1000);
     }
 
 
@@ -484,16 +482,14 @@ window.LanternPage = (function(id) {
 
         console.log("[db:lnt] change: " + changed_doc._id);
 
+        showSyncIcon(changed_doc);
+
         if (changed_doc._id == ("d:" + self.view.$data.lantern.id)) {
             self.view.$data.lantern.name = changed_doc.tt;
         }
-
-
-            // always refresh document cache after change
+        // always refresh document cache after change
         var doc = new LanternDocument(changed_doc, self.stor);
         self.stor.refreshDocInCache(doc);
-
-        showSyncIcon(changed_doc);
     }
 
 
@@ -501,19 +497,6 @@ window.LanternPage = (function(id) {
     * Do map sync only once we have a good main data sync initiated
     */ 
     function handleSyncStatusChange(status) {
-        if (status == true && !map_stor) {
-            if (self.view.$data.lantern_connected) {
-                // give main database a head start
-                setTimeout(function() {
-                    // we have a map cache we can use
-                    map_stor = new LanternStor(self.getBaseURI(), "map", {});
-                    map_stor.setup().then(function() {
-                        // download maps after some time...
-                        map_stor.sync(false, null, null, 50);
-                    });  
-                }, 2000); 
-            }
-        }
         //console.log("[db] sync status", status); 
     }
 
@@ -968,6 +951,10 @@ window.LanternStor = (function(uri, db_name, $data) {
         var obj = doc.toJSONFriendly();
 
         var cached = self.getCached(doc.id);
+        if(!cached) {
+            console.log("[stor] skip missing cache for: " + doc.id);
+            return;
+        }
         if (cached._rev == obj._rev) {
             //console.log("[stor] skip cache replace since same rev", obj._id, obj._rev);
         }

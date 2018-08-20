@@ -79,6 +79,10 @@ window.LanternStor = (function(uri, db_name, $data) {
         var obj = doc.toJSONFriendly();
 
         var cached = self.getCached(doc.id);
+        if(!cached) {
+            console.log("[stor] skip missing cache for: " + doc.id);
+            return;
+        }
         if (cached._rev == obj._rev) {
             //console.log("[stor] skip cache replace since same rev", obj._id, obj._rev);
         }
