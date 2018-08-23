@@ -22,11 +22,9 @@ $panel-item-border: 1px solid rgba($black, 0.05);
 @import "bulma/sass/elements/table";
 @import "bulma/sass/elements/progress";
 @import "bulma/sass/components/navbar";
-@import "bulma/sass/elements/notification";
 @import "bulma/sass/components/panel";
 @import "bulma/sass/components/dropdown";
 @import "bulma/sass/components/card";
-@import "bulma/sass/components/modal";
 @import "bulma/sass/extensions/_all";
 
 

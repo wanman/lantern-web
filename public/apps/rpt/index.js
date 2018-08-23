@@ -263,3 +263,5 @@ window.page = (function() {
     return self;
 }());
 
+// support Bulma Slider
+(function(){'use strict';function a(a){for(var b=a.id,c=document.getElementsByTagName('output'),d=0;d<c.length;d++)if(c[d].htmlFor==b)return c[d]}function b(a){var b,c,d=window.getComputedStyle(a,null),e=parseInt(d.getPropertyValue('width'),10);c=a.getAttribute('min')?a.getAttribute('min'):0;var f=(a.value-c)/(a.getAttribute('max')-c);return b=0>f?0:1<f?e:e*f,{position:b+'px'}}document.addEventListener('DOMContentLoaded',function(){var c=document.querySelectorAll('input[type="range"].slider');[].forEach.call(c,function(c){var d=a(c);if(d){if(c.classList.contains('has-output-tooltip')){var e=b(c);d.style.left=e.position}c.addEventListener('input',function(a){if(a.target.classList.contains('has-output-tooltip')){var c=b(a.target);d.style.left=c.position}var e=d.hasAttribute('data-prefix')?d.getAttribute('data-prefix'):'',f=d.hasAttribute('data-postfix')?d.getAttribute('data-postfix'):'';d.value=e+a.target.value+f})}})})})();
