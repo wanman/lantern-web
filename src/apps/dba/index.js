@@ -2,7 +2,7 @@ window.page = (function() {
 
 
 
-    var self = new LanternPage("admin");
+    var self = new LX.Page("admin");
     
 
     function validateForm() {

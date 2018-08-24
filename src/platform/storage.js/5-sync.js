@@ -1,4 +1,4 @@
-window.LanternSync = function LanternSync(src, dest, label, continuous, change_fn, batch_size) {
+LX.Sync = (function(src, dest, label, continuous, change_fn, batch_size) {
     var reset_delay;
 
     function setStatus(status) {
@@ -80,4 +80,4 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, change_f
     }
     
     return replication_handler;
-};
+});

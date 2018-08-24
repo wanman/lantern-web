@@ -1,8 +1,5 @@
+@import "platform/variables";
 
-$background: #f9fafb;
-$border: #c6c8cd;
-
-$light-border: #f2f2f2;
 body {
     background: none;
 }

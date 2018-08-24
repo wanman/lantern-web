@@ -1,7 +1,7 @@
 __base = "../../";
 
 window.page = (function() {
-    var self = new LanternPage("network");
+    var self = new LX.Page("network");
 
 
     var tag_tally = {};

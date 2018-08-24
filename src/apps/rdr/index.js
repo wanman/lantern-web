@@ -1,6 +1,6 @@
 window.page = (function() {
 
-    var self = new LanternPage("browse");
+    var self = new LX.Page("browse");
     var category_id;
     
     // geolocation options
@@ -259,7 +259,7 @@ window.page = (function() {
 
     self.addHelper("makeBadgeStyle", function(cat) {
         if (!cat) return;
-        var doc = new LanternDocument(cat, self.stor);
+        var doc = new LX.Document(cat, self.stor);
         var style = [];
         style.push("background-color: #" + doc.get("style", "color"));
         return style.join("; ");

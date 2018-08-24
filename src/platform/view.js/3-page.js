@@ -1,4 +1,4 @@
-window.LanternPage = (function(id) {
+LX.Page = (function(id) {
 
     // view options
     var vue_opts = {
@@ -125,7 +125,7 @@ window.LanternPage = (function(id) {
     */
     function registerUser() {
         console.log("[user] create");
-        var doc = new LanternDocument("u:"+getUserId(), self.stor);
+        var doc = new LX.Document("u:"+getUserId(), self.stor);
         doc.save();
         return doc;
     }
@@ -200,7 +200,7 @@ window.LanternPage = (function(id) {
             self.view.$data.lantern.name = changed_doc.tt;
         }
         // always refresh document cache after change
-        var doc = new LanternDocument(changed_doc, self.stor);
+        var doc = new LX.Document(changed_doc, self.stor);
         self.stor.refreshDocInCache(doc);
     }
 
@@ -235,7 +235,7 @@ window.LanternPage = (function(id) {
     self.connect = function() {
         return findBestLanternDevice("lantern.global")
             .then(function() {
-                self.stor = new LanternStor(self.getBaseURI(), "lnt", vue_opts.data);
+                self.stor = new LX.Stor(self.getBaseURI(), "lnt", vue_opts.data);
                 return self.stor.setup();
             })
             .then(getOrCreateUser)
@@ -263,7 +263,7 @@ window.LanternPage = (function(id) {
             return;
         }
 
-        LanternSync(
+        LX.Sync(
             self.stor.browser_db, 
             self.stor.host_db, 
             self.stor.name, 
@@ -350,13 +350,13 @@ window.LanternPage = (function(id) {
                             console.log("[page] using offline map cache");
                         }
 
-                        self.map = new LanternMapManager(db_uri, cache, cache);
+                        self.map = new LX.Map(db_uri, cache, cache);
                         resolve(self.map);
                     });
                 }
                 else {
                     // fall-back to offline cache if we are not connected direct to lantern
-                    self.map = new LanternMapManager("map", cache, cache);
+                    self.map = new LX.Map("map", cache, cache);
                     resolve(self.map);
                 }
             }
@@ -543,7 +543,7 @@ window.LanternPage = (function(id) {
     */
     self.addHelper("makeCategoryStyle", function(cat) {
         if (!cat) return;
-        var doc = new LanternDocument(cat, self.stor);
+        var doc = new LX.Document(cat, self.stor);
         var style = ["color: #" + doc.get("style","color")];
         style.push("background-color: #" + doc.get("style", "background-color"));
         style.push("border-color: #" + doc.get("style", "color"));

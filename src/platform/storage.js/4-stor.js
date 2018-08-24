@@ -1,5 +1,4 @@
-window.LanternStor = (function(uri, db_name, $data) {
-
+LX.Stor = (function(uri, db_name, $data) {
     var self = {
         doc_cache: {}, 
         name: db_name,
@@ -184,7 +183,7 @@ window.LanternStor = (function(uri, db_name, $data) {
             if (allow_cached) {
                 var cached = self.getCached(id);
                 if (cached) {
-                    doc = new LanternDocument(cached, self);
+                    doc = new LX.Document(cached, self);
                     console.log("[stor] get (cached): " + id);
                     return resolve(doc);
                 }
@@ -193,7 +192,7 @@ window.LanternStor = (function(uri, db_name, $data) {
             self.db.get(id)
                 .then(function(data) {
                     //console.log("[stor] get: " + id);
-                    doc = new LanternDocument(data, self);
+                    doc = new LX.Document(data, self);
                     self.refreshDocInCache(doc);
                     resolve(doc);
                 })
@@ -226,7 +225,7 @@ window.LanternStor = (function(uri, db_name, $data) {
 
                 return Promise.all(result.rows.map(function(result) {
 
-                    var doc = new LanternDocument(result.doc, self);
+                    var doc = new LX.Document(result.doc, self);
                     self.refreshDocInCache(doc);
                     return doc;
                 }));
@@ -266,7 +265,7 @@ window.LanternStor = (function(uri, db_name, $data) {
         var doc = arguments[0];
         console.log("[stor] put: ", doc);
         return self.db.put.apply(self.db, arguments).then(function(results) {
-            self.refreshDocInCache(new LanternDocument(doc, self));
+            self.refreshDocInCache(new LX.Document(doc, self));
             return results;
         });
     };
@@ -276,7 +275,7 @@ window.LanternStor = (function(uri, db_name, $data) {
         //console.log("[stor] post: ", doc);
         return self.db.put.apply(self.db, arguments).then(function(results) {
             doc._rev = results.rev;
-            self.refreshDocInCache(new LanternDocument(doc, self));
+            self.refreshDocInCache(new LX.Document(doc, self));
             return results;
         });
     };

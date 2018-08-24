@@ -1,4 +1,4 @@
-window.LanternMapManager = function(db_uri, use_cache, use_only_cache) {
+LX.Map = function(db_uri, use_cache, use_only_cache) {
 
     var self = {
         map: L.map('map'),

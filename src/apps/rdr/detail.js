@@ -1,6 +1,6 @@
 window.page = (function() {
 
-    var self = new LanternPage("detail");
+    var self = new LX.Page("detail");
     var venue_id = self.getHashParameterByName("mrk");
     var item_id = self.getHashParameterByName("itm");
     var venue_title;
@@ -154,7 +154,7 @@ window.page = (function() {
             doc.save().then(renderDefaultView);
         }).catch(function(err) {
             if (err.name == "not_found") {
-                new_doc = new LanternDocument(doc_id, self.stor);
+                new_doc = new LX.Document(doc_id, self.stor);
                 new_doc.set("status", 1);
                 new_doc.push("parent", venue_id);
                 new_doc.set("created_at", new Date());
@@ -198,7 +198,7 @@ window.page = (function() {
             return;
         }
         
-        var doc = new LanternDocument(self.stor.getCached(doc_id), self.stor);
+        var doc = new LX.Document(self.stor.getCached(doc_id), self.stor);
         var votes = doc.get(vote_key) || 0;
         doc.set(vote_key, votes+1);
         did_vote[vote_key] = true;

@@ -8,7 +8,7 @@ window.LanternImport = function(stor) {
     * Allows for dynamically adding new interests over over time.
     */
     function addCategory(slug, title, tag, color, background_color, icon) {
-        var doc = new LanternDocument("c:"+slug, stor);
+        var doc = new LX.Document("c:"+slug, stor);
         doc.set("slug", slug);
         doc.set("title", title);
         doc.push("tag", tag);
@@ -40,7 +40,7 @@ window.LanternImport = function(stor) {
         var now = new Date();
 
         // first define the building or vehicle venue for supply items
-        var venue_doc = new LanternDocument("v:"+id, stor);
+        var venue_doc = new LX.Document("v:"+id, stor);
         venue_doc.set("title", title);
         venue_doc.set("geo", [geo]);
         
@@ -56,7 +56,7 @@ window.LanternImport = function(stor) {
         for (var idx in cats) {
 
             // add supply item for desired categories (water, fuel, etc.)
-            var doc = new LanternDocument(["i", venue_doc.id, cats[idx]].join(":"), stor);
+            var doc = new LX.Document(["i", venue_doc.id, cats[idx]].join(":"), stor);
             doc.set("status", (Math.random() > 0.1 ? 1 : 0));
             // attach a supply item to a venue
             doc.push("parent", venue_doc.id);
@@ -129,7 +129,7 @@ window.LanternImport = function(stor) {
 
     self.route = function() {
         //console.log("[import] adding default geo routes"); 
-        var doc = new LanternDocument("r:%%", stor);
+        var doc = new LX.Document("r:%%", stor);
         doc.set("geo", ['drs4b77e8', 'drs4b77e9']);
         var time = new Date();
         doc.set("imported_at", time);
@@ -140,7 +140,7 @@ window.LanternImport = function(stor) {
 
     self.note = function() {
         //console.log("[import] adding default notes");
-        var doc = new LanternDocument("n:%%", stor);
+        var doc = new LX.Document("n:%%", stor);
         doc.push("tag", "v:test-place");
         var time = new Date();
         doc.set("imported_at", time);

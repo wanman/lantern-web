@@ -1,6 +1,6 @@
 window.page = (function() {
 
-    var self = new LanternPage("home");
+    var self = new LX.Page("home");
     var $data;
 
     

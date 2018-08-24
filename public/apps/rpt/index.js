@@ -2,7 +2,7 @@ __base = "../../";
 
 window.page = (function() {
 
-    var self = new LanternPage("add");
+    var self = new LX.Page("add");
     var new_doc;
     var venues = [];
 
@@ -82,7 +82,7 @@ window.page = (function() {
 
         if (!new_doc) {
             // we're creating a geo-scoped note for the community shared map
-            new_doc = new LanternDocument( "n:" + Math.round(Math.random()*100000), self.stor);
+            new_doc = new LX.Document( "n:" + Math.round(Math.random()*100000), self.stor);
         }
         var tag = self.getHashParameterByName("tag");
         if (tag) {

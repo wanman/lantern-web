@@ -1,5 +1,7 @@
 __base = "../";
 
+var LX = window.LX || {};
+window.LX = LX;
 /* @preserve
  * Leaflet 1.3.4+Detached: 0e566b2ad5e696ba9f79a9d48a7e51c8f4892441.0e566b2, a JS library for interactive maps. http://leafletjs.com
  * (c) 2010-2018 Vladimir Agafonkin, (c) 2010-2011 CloudMade
@@ -367,7 +369,7 @@ L.icon.fontAwesome = function (options) {
 };
 
 L.Icon.FontAwesome.prototype.options.markerPath = 'M16,1 C7.7146,1 1,7.65636364 1,15.8648485 C1,24.0760606 16,51 16,51 C16,51 31,24.0760606 31,15.8648485 C31,7.65636364 24.2815,1 16,1 L16,1 Z';
-window.LanternMapManager = function(db_uri, use_cache, use_only_cache) {
+LX.Map = function(db_uri, use_cache, use_only_cache) {
 
     var self = {
         map: L.map('map'),

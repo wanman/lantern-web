@@ -1,5 +1,5 @@
 window.page = (function() {
-    var self = new LanternPage("checkin");
+    var self = new LX.Page("checkin");
 
     self.addData("show_form", true);
     self.addData("user_status", "");

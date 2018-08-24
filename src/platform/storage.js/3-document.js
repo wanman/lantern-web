@@ -1,6 +1,5 @@
-window.LanternDocument = (function(id,stor) {
+LX.Document = (function(id,stor) {
  
-    
     // used to preserve keyspace when storing and sending low-bandwidth
     var REG = {
         
@@ -261,7 +260,7 @@ window.LanternDocument = (function(id,stor) {
     //------------------------------------------------------------------------
 
     if (!id) {
-         throw new Error("LanternDocument missing required ID");
+         throw new Error("LX.Document missing required ID");
     }
 
 

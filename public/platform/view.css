@@ -1843,7 +1843,7 @@ a.has-text-danger:hover, a.has-text-danger:focus {
 .box {
   background-color: white;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(10, 10, 10, 0.05), 0 0 0 1px rgba(10, 10, 10, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
   color: #595959;
   display: block;
   padding: 1.25rem; }
@@ -3747,13 +3747,13 @@ a.tag:hover {
   padding: 0;
   width: 100%; }
   .progress::-webkit-progress-bar {
-    background-color: #86b2ee; }
+    background-color: #c6c8cd; }
   .progress::-webkit-progress-value {
-    background-color: #2c7df6; }
+    background-color: #595959; }
   .progress::-moz-progress-bar {
-    background-color: #2c7df6; }
+    background-color: #595959; }
   .progress::-ms-fill {
-    background-color: #2c7df6;
+    background-color: #595959;
     border: none; }
   .progress.is-white::-webkit-progress-value {
     background-color: white; }
@@ -4545,13 +4545,13 @@ a.navbar-item,
 .panel-heading,
 .panel-tabs,
 .panel-block {
-  border-bottom: 1px solid rgba(10, 10, 10, 0.05);
-  border-left: 1px solid rgba(10, 10, 10, 0.05);
-  border-right: 1px solid rgba(10, 10, 10, 0.05); }
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-left: 1px solid rgba(0, 0, 0, 0.05);
+  border-right: 1px solid rgba(0, 0, 0, 0.05); }
   .panel-heading:first-child,
   .panel-tabs:first-child,
   .panel-block:first-child {
-    border-top: 1px solid rgba(10, 10, 10, 0.05); }
+    border-top: 1px solid rgba(0, 0, 0, 0.05); }
 
 .panel-heading {
   background-color: #f9fafb;
@@ -4679,7 +4679,7 @@ a.dropdown-item {
 
 .card {
   background-color: white;
-  box-shadow: 0 2px 10px rgba(10, 10, 10, 0.02), 0 0 0 1px rgba(10, 10, 10, 0.02);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(0, 0, 0, 0.02);
   color: #595959;
   max-width: 100%;
   position: relative; }
@@ -5660,7 +5660,7 @@ section nav.global {
   font-size: small;
   background: #FFF;
   border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(10, 10, 10, 0.02), 0 0 0 1px rgba(10, 10, 10, 0.02); }
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(0, 0, 0, 0.02); }
   .panel h4 {
     font-size: small; }
   .panel .content {
@@ -5736,17 +5736,19 @@ nav.global {
   .user-count i {
     color: #595959; }
 
-#status-footer {
-  background: rgba(255, 255, 255, 0.9);
-  border-top: 1px solid #f2f2f2;
-  border-bottom: 0px; }
-  #status-footer span {
-    font-size: small;
-    padding: 0em 1em; }
-  #status-footer .icon i {
-    transition-duration: 1s;
-    transition-property: transform;
-    color: #595959; }
+#index-page, #welcome-page {
+  background: #FFF;
+  text-align: center;
+  border-bottom: 1px solid #f2f2f2;
+  border-top: 1px solid #FFF; }
+  #index-page .page-content, #welcome-page .page-content {
+    padding: 2em;
+    margin-top: 2em;
+    margin-bottom: 2em; }
+  #index-page .button, #welcome-page .button {
+    padding: 2em 1em;
+    margin-top: 2em;
+    width: 100%; }
 
 @-moz-keyframes spin {
   100% {
@@ -5761,6 +5763,18 @@ nav.global {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg); } }
 
+#status-footer {
+  background: rgba(255, 255, 255, 0.9);
+  border-top: 1px solid #f2f2f2;
+  border-bottom: 0px; }
+  #status-footer span {
+    font-size: small;
+    padding: 0em 1em; }
+  #status-footer .icon i {
+    transition-duration: 1s;
+    transition-property: transform;
+    color: #595959; }
+
 #status-footer.is-syncing {
   background: #3273dc; }
   #status-footer.is-syncing .navbar-item {
@@ -5772,18 +5786,4 @@ nav.global {
       -webkit-animation: spin 1.5s linear infinite;
       -moz-animation: spin 1.5s linear infinite;
       animation: spin 1.5s linear infinite; }
-
-#index-page, #welcome-page {
-  background: #FFF;
-  text-align: center;
-  border-bottom: 1px solid #f2f2f2;
-  border-top: 1px solid #FFF; }
-  #index-page .page-content, #welcome-page .page-content {
-    padding: 2em;
-    margin-top: 2em;
-    margin-bottom: 2em; }
-  #index-page .button, #welcome-page .button {
-    padding: 2em 1em;
-    margin-top: 2em;
-    width: 100%; }
 
