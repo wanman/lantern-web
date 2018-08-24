@@ -50,7 +50,7 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <div id="home-view" v-cloak v-if="!page_loading">
+                    <div id="home-view">
                         <div v-if="v_docs.length">
                             <ul class="apps">
                                 <li class="card" v-for="app in apps" @click="goToApp(app.id)">

@@ -102,6 +102,9 @@ window.page = (function() {
             self.map.setPosition(lat, lon, 12);
             var marker = self.map.addPoint("You Are Here", {lat: lat, lon: lon}, "user", null, true);
 
+        })
+        .catch(function() {
+            self.map.setDefaultPosition();
         });
 
     return self;

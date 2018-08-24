@@ -2,6 +2,7 @@ window.LanternStor = (function(uri, db_name, $data) {
 
     var self = {
         doc_cache: {}, 
+        name: db_name,
         browser_db: null,
         host_db: new PouchDB(uri + "/db/" + db_name, {
             skip_setup: true,
@@ -318,36 +319,6 @@ window.LanternStor = (function(uri, db_name, $data) {
         });
     };
 
-
-    /**
-    * Sync our in-browser database with the one on a physical device over wifi
-    */
-    self.sync = function(continuous, status_fn, change_fn, batch_size, pull_only) {
-       
-        console.log("[stor] sync %s <--> %s", self.browser_db.name, self.host_db.name);
-
-        if (self.db.name == self.host_db.name) {
-            console.log("[stor] skipping sync since target is lantern already");
-            if (status_fn && typeof(status_fn) == "function") {
-                status_fn(true);
-            }
-            return;
-        }
-
-        LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
-
-            if (change_fn && typeof(change_fn) == "function") {
-                try {
-                    change_fn(changed_doc);
-                }
-                catch(e) {
-                    console.log(e);
-                }
-            }
-        }, batch_size, pull_only);
-
-        return;
-    };
 
     return self;
 });

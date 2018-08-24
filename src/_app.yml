@@ -5,5 +5,5 @@ map:
 mock:
     .html:
         title: "Lantern Network"
-sw: ./worker/sw.js
+sw: /worker/sw.js
 

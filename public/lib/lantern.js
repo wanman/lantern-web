@@ -307,6 +307,7 @@ window.LanternPage = (function(id) {
         },
         methods: {
             handleGoBack: function() {  
+
                 if (window.history.length) {
                     window.history.go(-1);
                 }
@@ -493,15 +494,6 @@ window.LanternPage = (function(id) {
     }
 
 
-    /**
-    * Do map sync only once we have a good main data sync initiated
-    */ 
-    function handleSyncStatusChange(status) {
-        //console.log("[db] sync status", status); 
-    }
-
-
-
     //------------------------------------------------------------------------
     /** 
     * Define helper for user interactions
@@ -540,14 +532,53 @@ window.LanternPage = (function(id) {
                 // make sure we have an anonymous user all the time
                 self.user = self.view.$data.user = user;
             })
+            .then(self.pull)
             .then(function() {
-                // if we can access the database, start sync
-                self.stor.host_db.info().then(function() {
-                    self.stor.sync(true, handleSyncStatusChange, handleDocumentChange, 100);                    
-                });
-                
+                // // once we have up-to-date information, we can try sending back and syncing updates
+                setTimeout(function() {
+                    self.sync(true, 100);   
+                }, 3500);
             });
     };
+
+
+    /**
+    * Sync our in-browser database with the one on a physical device over wifi
+    */
+    self.sync = function(continuous, batch_size) {
+        console.log("[page] sync %s <--> %s", self.stor.browser_db.name, self.stor.host_db.name);
+        if (self.stor.db.name == self.stor.host_db.name) {
+            console.log("[page] skipping sync since target is lantern already");
+            return;
+        }
+
+        LanternSync(
+            self.stor.browser_db, 
+            self.stor.host_db, 
+            self.stor.name, 
+            continuous, 
+            handleDocumentChange, 
+            batch_size
+        );
+        return;
+    };
+
+    self.pull = function() {
+
+         if (self.stor.db.name == self.stor.host_db.name) {
+            console.log("[page] skipping pull since target is lantern already");
+            return;
+        }
+
+        return self.stor.browser_db.replicate.from(self.stor.host_db, {
+            live: false
+        }).then(function(results) {
+            if (results.ok == true) {}
+            console.log(results);
+        });
+
+    }
+
 
     self.getVenues = function() {
         return self.stor.getManyByType("v");
@@ -582,9 +613,6 @@ window.LanternPage = (function(id) {
     
     self.createMapManager = function() {
         return new Promise(function(resolve, reject) {
-            console.log("[page] map manager");
-
-
             if (self.map) {
                 self.map.clear();
                 resolve(self.map);
@@ -867,13 +895,14 @@ if ("serviceWorker" in navigator) {
         console.log("[sw] registered service worker");
     }).catch(function(e) {
         // failed
-        console.log("[sw] err", e);
+        console.log("[sw] service worker err", e);
     });
 }
 window.LanternStor = (function(uri, db_name, $data) {
 
     var self = {
         doc_cache: {}, 
+        name: db_name,
         browser_db: null,
         host_db: new PouchDB(uri + "/db/" + db_name, {
             skip_setup: true,
@@ -1191,48 +1220,14 @@ window.LanternStor = (function(uri, db_name, $data) {
     };
 
 
-    /**
-    * Sync our in-browser database with the one on a physical device over wifi
-    */
-    self.sync = function(continuous, status_fn, change_fn, batch_size, pull_only) {
-       
-        console.log("[stor] sync %s <--> %s", self.browser_db.name, self.host_db.name);
-
-        if (self.db.name == self.host_db.name) {
-            console.log("[stor] skipping sync since target is lantern already");
-            if (status_fn && typeof(status_fn) == "function") {
-                status_fn(true);
-            }
-            return;
-        }
-
-        LanternSync(self.browser_db, self.host_db, db_name, continuous, status_fn, function(changed_doc) {
-
-            if (change_fn && typeof(change_fn) == "function") {
-                try {
-                    change_fn(changed_doc);
-                }
-                catch(e) {
-                    console.log(e);
-                }
-            }
-        }, batch_size, pull_only);
-
-        return;
-    };
-
     return self;
 });
-window.LanternSync = function LanternSync(src, dest, label, continuous, status_fn, change_fn, batch_size) {
+window.LanternSync = function LanternSync(src, dest, label, continuous, change_fn, batch_size) {
     var reset_delay;
-
 
     function setStatus(status) {
         if (status == true) {
             reset_delay = true;
-        }
-        if (status_fn && typeof(status_fn) == "function") {
-            status_fn(status);
         }
     }
 
@@ -1271,8 +1266,11 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         }
     })
     .on('active', function() {
-        //console.log("[db:" + label + "] active sync");
+        console.log("[db:" + label + "] active sync");
         setStatus(true);
+    })
+    .on('complete', function() {
+        console.log("[db:" + label + "] complete");
     })
     .on('change', function (info) {
         setStatus(true);

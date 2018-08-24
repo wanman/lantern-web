@@ -5,8 +5,7 @@ id: "home"
 extends _layouts/_master.pug
 
 block content
-    #home-view(v-cloak v-if="!page_loading")
-
+    #home-view
         div(v-if="v_docs.length")
             ul.apps
                 li.card(v-for="app in apps" @click="goToApp(app.id)")

@@ -10,6 +10,7 @@ window.page = (function() {
         return;
     }
 
+    // @todo make votes stand-alone documents
 
 
 
@@ -18,7 +19,7 @@ window.page = (function() {
     * Centers map on currently selected venue position
     */
     function focusMap() {
-        //console.log("[detail] showing map");
+       console.log("[detail] showing map");
         if (self.view.$data.marker) {
             var coords = Geohash.decode(self.view.$data.marker.geo[0]);
             self.map.setPosition(coords.lat, coords.lon, 12);

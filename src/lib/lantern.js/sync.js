@@ -1,13 +1,9 @@
-window.LanternSync = function LanternSync(src, dest, label, continuous, status_fn, change_fn, batch_size) {
+window.LanternSync = function LanternSync(src, dest, label, continuous, change_fn, batch_size) {
     var reset_delay;
-
 
     function setStatus(status) {
         if (status == true) {
             reset_delay = true;
-        }
-        if (status_fn && typeof(status_fn) == "function") {
-            status_fn(status);
         }
     }
 
@@ -46,8 +42,11 @@ window.LanternSync = function LanternSync(src, dest, label, continuous, status_f
         }
     })
     .on('active', function() {
-        //console.log("[db:" + label + "] active sync");
+        console.log("[db:" + label + "] active sync");
         setStatus(true);
+    })
+    .on('complete', function() {
+        console.log("[db:" + label + "] complete");
     })
     .on('change', function (info) {
         setStatus(true);

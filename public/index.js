@@ -18,17 +18,13 @@ window.page = (function() {
         window.location = "/apps/" + id + "/";
     });
 
-
-
     //------------------------------------------------------------------------
     self.render()
         .then(function() {
             $data = self.view.$data;
-        })
-        .then(self.connect)
-        .then(function() {
             $data.page_title = "Home";
         })
+        .then(self.connect)
         .then(self.getVenues)
         .then(function() {
             $data.page_loading = false;

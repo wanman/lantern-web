@@ -6,6 +6,6 @@ if ("serviceWorker" in navigator) {
         console.log("[sw] registered service worker");
     }).catch(function(e) {
         // failed
-        console.log("[sw] err", e);
+        console.log("[sw] service worker err", e);
     });
 }
