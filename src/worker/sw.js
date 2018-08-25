@@ -94,7 +94,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/rpt/index.js",
-    "revision": "75aea9556f84d30f39761cf131f20ee9"
+    "revision": "c136b30513e94d0ae46760f5d128698f"
   },
   {
     "url": "/hotspot.html",

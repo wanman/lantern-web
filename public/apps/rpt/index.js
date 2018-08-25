@@ -114,13 +114,13 @@ window.page = (function() {
                         drawAtPosition(lat, lon, tag);
                     })
                     .catch(function(err) {
+                        console.log(err);
                         // handle case where we cannot get location
+                        self.map.setDefaultPosition();
                         var center_default = self.map.map.getCenter();
                         drawAtPosition(center_default.lat, center_default.lng, tag);
-                        self.map.setPosition(center_default.lat, center_default.lng, 3);
                         console.log("[add] err setting map selector", err);
                     });
-
             }, 200);
         }
         else if (cat_id) {
