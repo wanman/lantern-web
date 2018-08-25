@@ -14,7 +14,7 @@ window.page = (function() {
         $data.processing = true;
         
         console.log("[network] storing wifi credentials...");
-        self.view.$http.post(self.getBaseURI() + "/api/config/ssid", {
+        self.view.$http.post(self.server.uri + "/api/config/ssid", {
             "ssid": $data.network_ssid,
             "pass": $data.network_pass
         }).then(function(response) {

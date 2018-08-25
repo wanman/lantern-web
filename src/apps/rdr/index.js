@@ -143,7 +143,7 @@ window.page = (function() {
             .then(function() {
                 self.map.fitAll();
 
-                self.askForLocation()
+                LX.Location.getCurrentPosition()
                     .then(function(res) {
 
                         self.geo = Geohash.encode(res.coords.latitude, res.coords.longitude, 7);

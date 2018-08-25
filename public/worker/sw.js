@@ -32,7 +32,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/chk/index.js",
-    "revision": "ccdc9dc3fcb2bdf08565a8de5c610f60"
+    "revision": "bb0714704cc060998ab2d3dc37d5a826"
   },
   {
     "url": "/apps/dba/import.js",
@@ -48,7 +48,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/dba/index.js",
-    "revision": "58ba7eb3d4f64c3d3bfa066555759750"
+    "revision": "1c3c9fd5f8a79787c619920fa4bcf10d"
   },
   {
     "url": "/apps/net/index.css",
@@ -84,7 +84,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/rdr/index.js",
-    "revision": "7cf9465e825a8d0dd8f2115ed0867cb7"
+    "revision": "9f4d816924f4110ed3d5c7d2743c6904"
   },
   {
     "url": "/apps/rpt/index.css",
@@ -96,7 +96,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/rpt/index.js",
-    "revision": "f6bfd569992492ed292f696e31cb3700"
+    "revision": "75aea9556f84d30f39761cf131f20ee9"
   },
   {
     "url": "/hotspot.html",
@@ -255,6 +255,10 @@ self.__precacheManifest = [
     "revision": "888091ffca41d02ca6150b33cbd29d35"
   },
   {
+    "url": "/platform/controller.js",
+    "revision": "b8f1c4aded6ed15e583da38f3b2327e58252409412b0a01cff1b5ec0543b169921661ab90f1aa121fb5f30d03647498f1086a032c9ee9f6a4e2481c7c7811534dea5e73414155a64c3429add75cea7f3"
+  },
+  {
     "url": "/platform/map.css",
     "revision": "d1a8ab27978cdf7bb95502a041f0d6dba6df400ad01a751ea3a9ff3afe499c069b465e5f4c4d62749c489bcc8b88da62"
   },
@@ -276,7 +280,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/view.js",
-    "revision": "b8f1c4aded6ed15e583da38f3b2327e55283b86cbf48a538ee3cbebac633ccd42424177957c131efab437d13ba8f28b24007906293af100a77c4251b9d7e8e3821661ab90f1aa121fb5f30d03647498f"
+    "revision": "0a9285651bc1d594222ce0bb2e4c59885283b86cbf48a538ee3cbebac633ccd42424177957c131efab437d13ba8f28b2f685e1f5b4be6507c9377844e440e633"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();

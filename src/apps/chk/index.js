@@ -93,7 +93,7 @@ window.page = (function() {
                 }
             });
         })
-        .then(self.askForLocation)
+        .then(LX.Location.getCurrentPosition)
         .then(function(position) {
             
             var lat = position.coords.latitude;

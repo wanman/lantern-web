@@ -1,112 +1,29 @@
 LX.Page = (function(id) {
 
-    // view options
-    var vue_opts = {
-        data: {
-            cloud_connected: null,
-            lantern_connected: null,
-            lantern: {},
-            page_title: "",
-            page_tag: "",     
-            page_action_icon: "",
-            page_action_helper: null,
-            page_loading: true,
-            is_syncing: false,
-            sync_label: "Syncing",
-            allow_back_button: false,
-            user: null
-        },
-        methods: {
-            handleGoBack: function() {  
+    // where we store our desired view methods before creating our app on the page
+    var _methods = {};
 
-                if (window.history.length) {
-                    window.history.go(-1);
-                }
-                else {
-                    var url = window.location.href;
-                    window.location = url.substring(0,url.lastIndexOf("/"));
-                }
-            }
+    // where we store our starting data before we create the app
+    var _data = {};
 
-        }
-    };
-
-    // default cross-domain JSON request options
-    var fetch_opts = {
-         mode: "cors",
-         cache: "no-cache",
-         headers: {
-            "Content-Type": "application/json; charset=utf-8"
-         }
-    };
-
-    // geolocation options
-    var geo_options = {
-        enableHighAccuracy: false, 
-        maximumAge        : 30000, 
-        timeout           : 27000
-    };
 
     //------------------------------------------------------------------------
     var self = {
+        view: null, // vue app
         geo: null, // user geohash location
         stor: null, // database storage
         user: null, // user document
-        view: null, // vue app
-        map: null // leaflet map
+        map: null,// leaflet map
+        server: new LX.Server() // server instance connected
     };
 
 
     // prevents duplicate assignments of same location to device
     var did_assign_location = false;
 
-    // initialize arrays for each type of doc
-    // only these document types will ever be accepted by the system
-    (["v", "i", "c", "r", "n", "u", "d"]).forEach(function(type) {
-        vue_opts.data[type+"_docs"] = [];
-    });
-
-
 
 
     //------------------------------------------------------------------------
-    function findBestLanternDevice(domain) {
-        self.setBaseURI(window.location.protocol + "//" + domain);
-
-        var cloud = false;
-        var lantern = false;
-
-        return fetch(self.getBaseURI() + "/api/info", fetch_opts)
-            .then(function(result) {
-                return result.json();
-            })
-            .then(function(json) {
-                console.log("[page] lantern selected:", json);
-                self.view.$data.lantern = json;
-                try {
-                    cloud = (json.cloud == true);
-                    lantern = (json.cloud == false);                    
-                }
-                catch(e) {
-                    // if missing "cloud" value, leave defaults...
-                }
-
-                self.view.$data.cloud_connected = cloud;
-                self.view.$data.lantern_connected = lantern;
-            })
-            .catch(function(err) {
-                console.log(err);
-                if (window.location.hostname == "localhost" && domain == "lantern.global") {
-                    // allow developers to use localhost docker image
-                    return findBestLanternDevice("localhost");
-                }
-                else {
-                    self.view.$data.cloud_connected = cloud;
-                    self.view.$data.lantern_connected = lantern;
-                }
-            });
-    }
-
 
     /**
     * Get anonymous user identifier retained in local storage per browser
@@ -205,26 +122,27 @@ LX.Page = (function(id) {
     }
 
 
+
     //------------------------------------------------------------------------
     /** 
     * Define helper for user interactions
     **/
     self.addHelper = function(name, fn) {
-        vue_opts.methods[name] = fn;
+        _methods[name] = fn;
     };
     
     /** 
     * Define data for vue templates
     **/
     self.addData = function(name, val) {
-        vue_opts.data[name] = val;
+        _data[name] = val;
     };
 
     /** 
     * Mount vue to our top-level document object
     **/
     self.render = function() {
-        self.view = new Vue(vue_opts);
+        self.view = new LX.View(_data,_methods)
         self.view.$mount(["#", id, "-page"].join(""));
         return Promise.resolve();
     };
@@ -233,9 +151,14 @@ LX.Page = (function(id) {
     * Add in data from PouchDB and identify network status
     */
     self.connect = function() {
-        return findBestLanternDevice("lantern.global")
+        return self.server.connect("lantern.global")
             .then(function() {
-                self.stor = new LX.Stor(self.getBaseURI(), "lnt", vue_opts.data);
+                self.view.lantern_connected = self.server.lantern;
+                self.view.cloud_connected = self.server.cloud;
+                self.view.lantern = self.server.info;
+            })
+            .then(function() {
+                self.stor = new LX.Stor(self.server.uri, "lnt", self.view.$data);
                 return self.stor.setup();
             })
             .then(getOrCreateUser)
@@ -336,7 +259,7 @@ LX.Page = (function(id) {
                 if (self.view.$data.lantern && self.view.$data.lantern.cloud == false) {
 
                     // working offline connected to device
-                    db_uri = self.getBaseURI() + "/db/map";
+                    db_uri = self.server.uri + "/db/map";
 
                     var min_docs = 300;
 
@@ -411,6 +334,7 @@ LX.Page = (function(id) {
                         var pt = self.map.addPoint(venue.title, coords[0], final_icon, final_color);
                        
 
+                        // @todo de-couple from page controller
                         if (show_tooltip) {
                             
                             pt.on("click", function(e) {
@@ -430,19 +354,6 @@ LX.Page = (function(id) {
             });
         });
     };
-        
-    // @todo fall-back to lantern geolocation if GPS sensor not available
-    self.askForLocation = function() {
-        return new Promise(function(resolve, reject) {
-            //console.log("[page] asking for location");
-            navigator.geolocation.getCurrentPosition(function(position) {
-                resolve(position);
-            }, function(err) {
-                reject(err);
-            }, geo_options);
-          
-        });
-    };
 
 
     /**
@@ -459,7 +370,7 @@ LX.Page = (function(id) {
         did_assign_location = true;
 
         // tell device to use this as it's most recent location (skip GPS)
-        fetch(self.getBaseURI() + "/api/geo",
+        fetch(self.server.uri + "/api/geo",
         {
             method: "POST",
             mode: "cors",
@@ -478,20 +389,6 @@ LX.Page = (function(id) {
     };
 
 
-
-    /**
-    * Points to the right server for processing requests
-    */
-    self.getBaseURI = function() {
-        return lantern_uri;
-    };
-
-
-    self.setBaseURI = function(uri) {
-        lantern_uri = uri;
-    };
-
-    
     /**
     * Get a query parameter value
     */
@@ -505,6 +402,10 @@ LX.Page = (function(id) {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     };    
 
+
+
+
+    //------------------------------------------------------------------------
     /**
     * Extract a category object from meaningful input such as a tag
     */
@@ -530,13 +431,19 @@ LX.Page = (function(id) {
         }
         return obj;
     });
+            
 
-
-    self.addHelper("timestamp", function(item) {
-        // make sure we have a most recent timestamp to work with
-        var timestamp = item.updated_at || item.created_at || item.imported_at;
-        return moment(timestamp).fromNow();
+    self.addHelper("handleGoBack", function() {
+        if (window.history.length) {
+            window.history.go(-1);
+        }
+        else {
+            var url = window.location.href;
+            window.location = url.substring(0,url.lastIndexOf("/"));
+        }
     });
+
+
 
     /**
     * Extract background and stroke colors from database
@@ -562,7 +469,6 @@ LX.Page = (function(id) {
     /**
     * Display proper pluralization for users
     */
-
     self.addHelper("pluralize", function(count) {
         if (count === 0) {
             return 'No Users';
@@ -574,22 +480,17 @@ LX.Page = (function(id) {
         }
     });
 
-    //------------------------------------------------------------------------
-    /**
-    * Setup universal template variables
-    */
-    vue_opts.data.showNavMenu = false;
 
     /**
     * Setup global view helpers
     */
-    vue_opts.methods.toggleNavigation = function(el) {
+    self.addHelper("toggleNavigation", function(el) {
         self.view.$data.showNavMenu = !self.view.$data.showNavMenu;
 
         if (self.view.$data.showNavMenu) {
             self.getUsers();
         }
-    };
+    });
 
 
 

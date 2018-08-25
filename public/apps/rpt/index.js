@@ -106,7 +106,7 @@ window.page = (function() {
             self.view.$data.view = "map";
             setTimeout(function() {
                 self.renderMap()
-                    .then(self.askForLocation)
+                    .then(LX.Location.getCurrentPosition)
                     .then(function(position) {
                         var lat = position.coords.latitude;
                         var lon = position.coords.longitude;
