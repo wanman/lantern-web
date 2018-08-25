@@ -108,7 +108,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/index.html",
-    "revision": "96145c62203e1f66225bf9b4cec1a3b7"
+    "revision": "3499fc7ecbc7ac623abade7c546fbf33"
   },
   {
     "url": "/index.js",
@@ -252,7 +252,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/welcome.html",
-    "revision": "888091ffca41d02ca6150b33cbd29d35"
+    "revision": "85e5eeca1e608c14c184260ac64265bf"
   },
   {
     "url": "/platform/controller.js",

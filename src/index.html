@@ -6,7 +6,7 @@ extends _layouts/_master.pug
 
 block content
     #home-view
-        div(v-if="v_docs.length")
+        div(v-cloak v-if="v_docs.length")
             ul.apps
                 li.card(v-for="app in apps" @click="goToApp(app.id)")
                     .edge

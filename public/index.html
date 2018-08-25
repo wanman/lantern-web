@@ -51,7 +51,7 @@
                 <!-- main page content-->
                 <div class="page-content">
                     <div id="home-view">
-                        <div v-if="v_docs.length">
+                        <div v-cloak v-if="v_docs.length">
                             <ul class="apps">
                                 <li class="card" v-for="app in apps" @click="goToApp(app.id)">
                                     <div class="edge"><span class="icon app-icon"> <i class="fas" v-bind:class="'fa-'+app.icon"></i></span></div>
