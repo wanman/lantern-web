@@ -69,7 +69,9 @@ LX.View = (function(data,methods) {
         */
         timestamp: function(item) {
             var timestamp = item.updated_at || item.created_at || item.imported_at;
-            return moment(timestamp).fromNow();
+            if (timestamp) {
+                return moment(timestamp).fromNow();
+            }
         }
     }
 

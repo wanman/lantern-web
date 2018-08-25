@@ -278,7 +278,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/view.js",
-    "revision": "0a9285651bc1d594222ce0bb2e4c59885283b86cbf48a538ee3cbebac633ccd42424177957c131efab437d13ba8f28b2f685e1f5b4be6507c9377844e440e633"
+    "revision": "0a9285651bc1d594222ce0bb2e4c59885283b86cbf48a538ee3cbebac633ccd42424177957c131efab437d13ba8f28b219e45d9789737a3246cd728a9ca614ee"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();

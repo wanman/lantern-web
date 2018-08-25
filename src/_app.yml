@@ -1,7 +1,6 @@
 map:
     .html: text/pug
     .css: text/scss
-    .lock.css: text/css
 mock:
     .html:
         title: "Lantern Network"
