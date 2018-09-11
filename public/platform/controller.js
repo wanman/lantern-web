@@ -100,6 +100,9 @@ LX.Page = (function(id) {
     // where we store our starting data before we create the app
     var _data = {};
 
+    // computed properties
+    var _computed = {};
+
 
     //------------------------------------------------------------------------
     var self = {
@@ -232,11 +235,21 @@ LX.Page = (function(id) {
         _data[name] = val;
     };
 
+
+    /** 
+    * Define data for vue templates
+    **/
+    self.addComputed = function(name, val) {
+        _computed[name] = val;
+    };
+
+    
+
     /** 
     * Mount vue to our top-level document object
     **/
     self.render = function() {
-        self.view = new LX.View(_data,_methods)
+        self.view = new LX.View(_data,_methods,_computed)
         self.view.$mount(["#", id, "-page"].join(""));
         return Promise.resolve();
     };

@@ -290,7 +290,12 @@ LX.Document = (function(id,stor) {
 
 
     self.remove = function() {
-        return stor.remove(self.id, self.data._rev);
+        if (!self.data._rev) {
+            console.log("Missing revision while removing document", self.id);
+        }
+        else {
+            return stor.remove(self.id, self.data._rev);
+        }
     };
 
     /**

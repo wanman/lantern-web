@@ -61,6 +61,18 @@ self.__precacheManifest = [
     "revision": "84f0daf1f654418c35f527ae4a721dc8"
   },
   {
+    "url": "/apps/ote/index.css",
+    "revision": "193e645f8a7471bd792a31331613382b"
+  },
+  {
+    "url": "/apps/ote/index.html",
+    "revision": "1483b3395e27c94ce8cfceb985bc7b9b"
+  },
+  {
+    "url": "/apps/ote/index.js",
+    "revision": "5c8eba70cdb75fb9967d8f6e5f393b40"
+  },
+  {
     "url": "/apps/rdr/detail.css",
     "revision": "40d39d7a7e95b26a9a86f8a81fbaae62"
   },
@@ -98,7 +110,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/hotspot.html",
-    "revision": "7e0530ffd9941b46ea3a501997d26048"
+    "revision": "20a36a70284a8d51a868ba35a3cf38c2"
   },
   {
     "url": "/index.css",
@@ -110,19 +122,19 @@ self.__precacheManifest = [
   },
   {
     "url": "/index.js",
-    "revision": "76d6775eb25ea301fabd0867c0a79b7b"
+    "revision": "e536f3a7fa898f941494d4934ca53fd2"
   },
   {
     "url": "/intro/a.html",
-    "revision": "e0f56160179b90620dc2ab6cb5da3c85"
+    "revision": "17a629df130e2c1ca259f42ca06fc901"
   },
   {
     "url": "/intro/b.html",
-    "revision": "8ba3d4e05f1319a7456c888ba4a5dd25"
+    "revision": "0a13f631f1c30616c03b9af90aae722f"
   },
   {
     "url": "/intro/c.html",
-    "revision": "5ed8f481e942e4b4dff2993c28f36776"
+    "revision": "74413e02c18d5a03a23fce63640c37dc"
   },
   {
     "url": "/theme/favicon/safari-pinned-tab.svg",
@@ -254,7 +266,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/controller.js",
-    "revision": "b8f1c4aded6ed15e583da38f3b2327e58252409412b0a01cff1b5ec0543b169921661ab90f1aa121fb5f30d03647498f1086a032c9ee9f6a4e2481c7c7811534dea5e73414155a64c3429add75cea7f3"
+    "revision": "b8f1c4aded6ed15e583da38f3b2327e58252409412b0a01cff1b5ec0543b169921661ab90f1aa121fb5f30d03647498f1086a032c9ee9f6a4e2481c7c7811534cf01b090d13ad968dd0d0d6ff06ec78d"
   },
   {
     "url": "/platform/map.css",
@@ -266,7 +278,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/storage.js",
-    "revision": "b8f1c4aded6ed15e583da38f3b2327e512d23e3295590b71657939cdb7aba4517799fac1cd9535e7246401d494e406d689ee0ec84cc1bd10e79ca0abbdcce97f28ab5dc7da56d524505f9964cb3a51b16f3819893aa80e31363cf31b4606e9b7"
+    "revision": "b8f1c4aded6ed15e583da38f3b2327e512d23e3295590b71657939cdb7aba4517799fac1cd9535e7246401d494e406d6929a5abc605ec017288441cb84098cf228ab5dc7da56d524505f9964cb3a51b16f3819893aa80e31363cf31b4606e9b7"
   },
   {
     "url": "/platform/util.js",
@@ -278,7 +290,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/view.js",
-    "revision": "0a9285651bc1d594222ce0bb2e4c59885283b86cbf48a538ee3cbebac633ccd42424177957c131efab437d13ba8f28b219e45d9789737a3246cd728a9ca614ee"
+    "revision": "0a9285651bc1d594222ce0bb2e4c59885283b86cbf48a538ee3cbebac633ccd42424177957c131efab437d13ba8f28b267338341885804566724cbb0db486bf4"
   }
 ].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();

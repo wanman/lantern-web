@@ -1,4 +1,4 @@
-LX.View = (function(data,methods) {
+LX.View = (function(data,methods,computed) {
 
 
     // define a few variables that are always used for any application
@@ -57,8 +57,11 @@ LX.View = (function(data,methods) {
         }
     }
 
+    var _global_computed = {};
+    
 	return new Vue({
         data: Object.assign(data, _global_data),
-        methods: Object.assign(methods, _global_methods)
+        methods: Object.assign(methods, _global_methods),
+        computed: Object.assign(computed, _global_computed)
     });
 });

@@ -10,6 +10,7 @@ window.page = (function() {
         {"title": "Safety Check", "id": "chk", "icon": "thumbtack", "text": "Let loved ones know you are safe"},
         {"title": "Report", "id": "rpt", "icon": "clipboard", "text": "Help verify local conditions"},
         {"title": "Network", "id": "net", "icon": "globe-americas", "text": "See who else is connected"},
+        {"title": "Notes", "id": "ote", "icon": "sticky-note", "text": "Post messages for community"}
     ]);
 
     self.addHelper("goToApp", function(id) {

@@ -1,0 +1,17 @@
+#notes-page table {
+  width: 100%;
+  border-top: 1px solid EEE;
+  border-bottom: 1px solid #EEE; }
+
+#notes-page .status {
+  padding: 2em;
+  color: #FFF;
+  text-align: center;
+  background: #3273dc; }
+
+#notes-page .button {
+  margin: 1em; }
+
+#notes-page #map {
+  margin-top: 4em; }
+

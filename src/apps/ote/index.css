@@ -1,0 +1,25 @@
+@import "platform/variables";
+
+#notes-page {
+	
+	table {
+		width: 100%;
+		border-top: 1px solid EEE;
+		border-bottom: 1px solid #EEE;
+	}
+	.status {
+		padding: 2em;
+		color: #FFF;
+		text-align: center;
+		background: $blue;
+	}
+
+
+	.button {
+		margin: 1em;
+	}
+
+	#map {
+		margin-top: 4em;
+	}
+}

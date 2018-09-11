@@ -15,10 +15,11 @@
         <link rel="manifest" href="/theme/manifest.json">
         <link rel="stylesheet" type="text/css" href="/platform/view.css">
         <link rel="stylesheet" type="text/css" href="/theme/icons/css/all.css">
-        <link rel="stylesheet" type="text/css" href="/index.css">
+        <link rel="stylesheet" type="text/css" href="/platform/map.css">
+        <link rel="stylesheet" type="text/css" href="./index.css">
     </head>
     <body>
-        <div id="home-page">
+        <div id="notes-page">
             <!-- global navigation-->
             <nav class="navbar is-fixed-top" v-cloak role="navigation" aria-label="main navigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']">
                 <div class="navbar-brand"><a class="navbar-burger" v-if="!allow_back_button" role="button" aria-label="menu" v-bind:aria-expanded="[showNavMenu ? true : false]" @click="toggleNavigation" v-bind:class="[showNavMenu ? 'is-active' : 'is-inactive']"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a>
@@ -51,21 +52,26 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <div id="home-view">
-                        <div v-cloak v-if="v_docs.length">
-                            <ul class="apps">
-                                <li class="card" v-for="app in apps" @click="goToApp(app.id)">
-                                    <div class="edge"><span class="icon app-icon"> <i class="fas" v-bind:class="'fa-'+app.icon"></i></span></div>
-                                    <div class="main">                   
-                                        <h3>{{ app.title }}</h3>
-                                        <p>{{ app.text }}</p>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="loading" v-if="!v_docs.length">
-                            <p>Gathering data for offline use&hellip;</p>
-                        </div>
+                    <div id="map" v-cloak v-if="!page_loading"></div>
+                    <div v-cloak>
+                        <div class="status" v-if="status_message &amp;&amp; is_sending">{{ status_message }}</div>
+                        <div class="button is-primary" v-on:click="addDemoNote" :class="is_sending ? 'is-loading' : ''">Add Demo Note</div>
+                        <table class="table is-striped">
+                            <thead>
+                                <th>Message</th>
+                                <th>Time</th>
+                                <th>Place</th>
+                                <th>From Radio</th>
+                            </thead>
+                            <tbody>
+                                <tr :id="item._id" v-for="item in notes_by_recency" v-if="item.geo &amp;&amp; item.text">
+                                    <td> <span class="icon"><i class="fas fa-sticky-note"></i></span>{{ item.text }}</td>
+                                    <td>{{ timestamp(item) }}</td>
+                                    <td>{{ item.geo[0] }}</td>
+                                    <td>{{ item.$rx ? "Yes" : "No"}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
@@ -73,7 +79,8 @@
             <script src="/platform/storage.js"></script>
             <script src="/platform/view.js"></script>
             <script src="/platform/controller.js"></script>
-            <script src="/index.js"></script>
+            <script src="/platform/map.js"></script>
+            <script src="./index.js"></script>
         </div>
     </body>
 </html>

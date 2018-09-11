@@ -1,0 +1,46 @@
+---
+id: "notes"
+---
+
+extends ../../_layouts/_master.pug
+
+block content
+
+    #map(v-cloak v-if="!page_loading")
+
+    div(v-cloak)
+
+
+        .status(v-if="status_message && is_sending") {{ status_message }}
+
+        .button.is-primary(v-on:click="addDemoNote" :class="is_sending ? 'is-loading' : ''") Add Demo Note
+         
+
+
+        table.table.is-striped
+            thead
+                th Message
+                th Time
+                th Place
+                th From Radio
+            tbody
+                tr(:id="item._id" v-for="item in notes_by_recency" v-if="item.geo && item.text")
+                    td 
+                        span.icon
+                            i.fas.fa-sticky-note
+                        | {{ item.text }}
+                    td {{ timestamp(item) }}
+                    td {{ item.geo[0] }}
+                    td {{ item.$rx ? "Yes" : "No"}}
+
+
+
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/platform/map.css")
+    link(rel="stylesheet" type="text/css" href="./index.css")
+
+
+block scripts
+    script(src="/platform/map.js")
+    script(src="./index.js")
