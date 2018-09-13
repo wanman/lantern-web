@@ -34,7 +34,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/dba/import.js",
-    "revision": "4395c220bde5f25612b041c1c43a3b3e"
+    "revision": "c028cec5821fee50af9c2de70382216f"
   },
   {
     "url": "/apps/dba/index.css",
@@ -266,7 +266,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/controller.js",
-    "revision": "b8f1c4aded6ed15e583da38f3b2327e58252409412b0a01cff1b5ec0543b169921661ab90f1aa121fb5f30d03647498f1086a032c9ee9f6a4e2481c7c7811534cf01b090d13ad968dd0d0d6ff06ec78d"
+    "revision": "b8f1c4aded6ed15e583da38f3b2327e58252409412b0a01cff1b5ec0543b169921661ab90f1aa121fb5f30d03647498f1086a032c9ee9f6a4e2481c7c781153465f921cd4cf3a51682d2879cba0fa409"
   },
   {
     "url": "/platform/map.css",
@@ -278,7 +278,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/storage.js",
-    "revision": "b8f1c4aded6ed15e583da38f3b2327e512d23e3295590b71657939cdb7aba4517799fac1cd9535e7246401d494e406d6929a5abc605ec017288441cb84098cf228ab5dc7da56d524505f9964cb3a51b16f3819893aa80e31363cf31b4606e9b7"
+    "revision": "b8f1c4aded6ed15e583da38f3b2327e512d23e3295590b71657939cdb7aba4517799fac1cd9535e7246401d494e406d60964036fd761dca8f93da2499940fc4228ab5dc7da56d524505f9964cb3a51b16f3819893aa80e31363cf31b4606e9b7"
   },
   {
     "url": "/platform/util.js",

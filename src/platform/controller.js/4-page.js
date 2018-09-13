@@ -342,8 +342,15 @@ LX.Page = (function(id) {
 
                     if (coords.length == 1) {
                         // point
-                        var final_icon = icon || venue_options[venue._id][0].icon;
-                        var final_color = color || venue_options[venue._id][0].style.color;
+                        console.log(venue_options);
+
+                        var final_icon = icon;
+                        var final_color = color;
+
+                        if (venue_options[venue._id]) {
+                            final_icon = venue_options[venue._id][0].icon;
+                            final_color = venue_options[venue._id][0].style.color;;
+                        }
                         var pt = self.map.addPoint(venue.title, coords[0], final_icon, final_color);
                        
 

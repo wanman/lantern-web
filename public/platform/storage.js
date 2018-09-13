@@ -85,6 +85,7 @@ LX.Document = (function(id,stor) {
         text: "tx",         // text or label for object
         icon: "ic",         // icon to describe object
         status: "st",       // level or quantity
+        rating: "rt",        // numeric score, rating or quality level
         owner: "ou",        // user array
         editor: "eu",       // user array
         geo: "gp",          // geohash array
