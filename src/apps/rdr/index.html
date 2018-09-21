@@ -18,8 +18,8 @@ block content
 
 
         #waiting-for-location(v-if="!show_map && !show_filters && !show_list")
-            p We use your general location to find nearby supplies and shelters
-  
+            .lds-ripple
+            
 
   
         #map-prompt(v-if="!show_filters && (show_list || show_map)")
@@ -44,7 +44,7 @@ block content
 
             div(v-if="!personalizing && map_is_ready") 
                 h1 Your Map Is Ready
-                h2 {{ supplies_located_count }} Supplies Located
+                h2 We Personalized It For Your Needs
 
             div(v-if="!map_is_ready")
                 h1(v-if="!page_loading && !personalizing") What Do You Need Most Today?
@@ -65,12 +65,14 @@ block content
 
                         .title {{ cat.title }} 
 
+
             div.more
                 a(@click="handleAllCategorySelect" v-bind:class="primary_button_text == 'Launch Map' ? 'button is-primary' : ''") {{ primary_button_text }}
 
-
-
-
+            div.share(v-if="show_supply_count.length")
+                label.checkbox
+                    input(type="checkbox") 
+                    span Share my needs with the network
 
         // venues view -------------------------------------------------------
         #venues-view(v-if="show_list && !show_filters")

@@ -95,6 +95,9 @@ html, body {
     font-weight: bold; }
     #filters .more a {
       padding: 2em; }
+  #filters .share {
+    margin-top: 1em;
+    text-align: center; }
   #filters ul li {
     float: left;
     display: block;

@@ -257,6 +257,11 @@ LX.Page = (function(id) {
     };
 
 
+    self.getEvents = function() {
+        return self.stor.getManyByType("e");
+    };
+
+
     
     self.createMapManager = function() {
         return new Promise(function(resolve, reject) {

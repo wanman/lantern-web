@@ -40,7 +40,8 @@ window.page = (function() {
         {key: "r", slug: "route"},
         {key: "n", slug: "note"},
         {key: "u", slug: "user"},
-        {key: "d", slug: "device"}
+        {key: "d", slug: "device"},
+        {key: "e", slug: "event"}
     ]);
 
     self.addData("warning", "");
@@ -74,7 +75,6 @@ window.page = (function() {
     });
 
     self.addHelper("getDocCount", function(type) {
-
         try {
             var count = self.view.$data[type.key + "_docs"].length;
             if (count === 0) {
@@ -107,19 +107,22 @@ window.page = (function() {
         })
         .then(self.connect)
         .then(function() {
+            var fns = [];
             self.view.$data.types.forEach(function(type) {
-                self.stor.getManyByType(type.key);
+                fns.push( self.stor.getManyByType(type.key));
             });
-
-            self.view.$data.page_loading = false;
-
+            return Promise.all(fns)
+        })
+        .then(function() {
+            
             self.view.$watch("connection", function(new_val, old_val) {
                 if (new_val === false) {
                     self.view.$data.warning = false;
                     self.view.$data.network_pass = "";
                 }
             });
-        });
+            self.view.$data.page_loading = false;
+        }) 
 
     return self;
 }());

@@ -51,7 +51,7 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
-                    <div id="doc-summary" v-cloak><a class="tags has-addons" v-for="item in types" @click="handleSelectType(item)"> <span class="tag">{{ item.slug }}</span><span class="tag is-primary">{{ getDocCount(item) }}</span></a></div>
+                    <div id="doc-summary" v-cloak v-if="!page_loading"><a class="tags has-addons" v-for="item in types" @click="handleSelectType(item)"> <span class="tag">{{ item.slug }}</span><span class="tag is-primary">{{ getDocCount(item) }}</span></a></div>
                     <div class="actions">
                         <div class="button is-primary" v-on:click="loadTestData">Load Test Data</div>
                         <div class="button is-danger is-outlined" v-on:click="removeAllDocs">Clear Data</div>

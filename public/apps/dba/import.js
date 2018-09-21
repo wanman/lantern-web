@@ -147,6 +147,7 @@ window.LanternImport = function(stor) {
         self.item(); // dummy for consistency, see Marker()
         self.route(); // routes between Markers
         self.note(); // notes related to items or Markers or routes
+        self.event();
     };
 
 
@@ -179,6 +180,10 @@ window.LanternImport = function(stor) {
         });
     };
 
+
+    self.event = function() {
+        return;
+    }
 
     //------------------------------------------------------------------------
     return self;

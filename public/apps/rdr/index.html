@@ -57,7 +57,7 @@
                         <!-- map is empty by default - only certain pages will fill this region-->
                         <div id="map" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')"></div>
                         <div id="waiting-for-location" v-if="!show_map &amp;&amp; !show_filters &amp;&amp; !show_list">
-                            <p>We use your general location to find nearby supplies and shelters</p>
+                            <div class="lds-ripple"></div>
                         </div>
                         <div id="map-prompt" v-if="!show_filters &amp;&amp; (show_list || show_map)">
                             <div class="buttons has-addons is-centered"><span class="button" @click="handleShowList" v-bind:class="show_map ? '' : 'is-info is-selected'"><span class="icon"><i class="fas fa-list"></i></span><span>List</span></span><span class="button" @click="handleShowMap" v-bind:class="show_map ? 'is-info is-selected' : ''"><span class="icon"><i class="fas fa-map"></i></span><span>Map</span></span></div>
@@ -70,7 +70,7 @@
                             </div>
                             <div v-if="!personalizing &amp;&amp; map_is_ready"> 
                                 <h1>Your Map Is Ready</h1>
-                                <h2>{{ supplies_located_count }} Supplies Located</h2>
+                                <h2>We Personalized It For Your Needs</h2>
                             </div>
                             <div v-if="!map_is_ready">
                                 <h1 v-if="!page_loading &amp;&amp; !personalizing">What Do You Need Most Today?</h1>
@@ -85,6 +85,11 @@
                                 </li>
                             </ul>
                             <div class="more"><a @click="handleAllCategorySelect" v-bind:class="primary_button_text == 'Launch Map' ? 'button is-primary' : ''">{{ primary_button_text }}</a></div>
+                            <div class="share" v-if="show_supply_count.length">
+                                <label class="checkbox">
+                                    <input type="checkbox"><span>Share my needs with the network</span>
+                                </label>
+                            </div>
                         </div>
                         <!-- venues view --------------------------------------------------------->
                         <div id="venues-view" v-if="show_list &amp;&amp; !show_filters">

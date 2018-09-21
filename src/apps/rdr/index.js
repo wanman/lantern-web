@@ -11,7 +11,10 @@ window.page = (function() {
     };
 
     function reflowView() {
-        category_id = self.getHashParameterByName("cat");
+        category_id = self.getHashParameterByName("cat");       
+
+        self.view.$data.show_supply_count = [];
+
         loadVenues();
         if (self.getHashParameterByName("v") == "map") {
            showMap();
@@ -58,9 +61,10 @@ window.page = (function() {
         else {
             self.view.$data.page_title = "Supplies";
         }
-        updateFilteredVenues(category_id);
-        self.view.$data.category = category_id;
-        self.view.$data.page_loading = false;
+        updateFilteredVenues(category_id).then(function() {
+            self.view.$data.category = category_id;
+            self.view.$data.page_loading = false;
+        });
 
     }
 
@@ -69,66 +73,96 @@ window.page = (function() {
         var venues = [];
         var items = self.stor.getManyCachedByType("i");
 
-        self.view.$data.v_docs.forEach(function(venue) {
-            var is_match = false;
+        return LX.Location.getCurrentGeohash().then(function(geo) {
 
-            if (!cat) {
-                // no category filter selected
-                is_match = true;
-            }
-            else {
-                items.forEach(function(item) {
-                    if (item.hasOwnProperty("parent") && item.parent[0] == venue._id) {
-                        if (item.category.indexOf(cat) != -1) {
-                            is_match = true;
-                        }
+            self.view.$data.v_docs.forEach(function(venue) {
+                var is_match = false;
+
+                var match_geo = venue.geo[0].substr(0,1);
+                if (geo.indexOf(match_geo) != -1) {
+                    if (!cat) {
+                        // no category filter selected
+                        is_match = true;
                     }
-                });
-            }
-
-            var index = self.view.$data.filtered_venues.indexOf(venue._id);
-
-            if (index == -1) {
-                if (is_match) {
-                    self.view.$data.filtered_venues.push(venue._id);         
+                    else {
+                        items.forEach(function(item) {
+                            if (item.hasOwnProperty("parent") && item.parent[0] == venue._id) {
+                                if (item.category.indexOf(cat) != -1) {
+                                    is_match = true;
+                                }
+                            }
+                        });
+                    }
                 }
-            }
-            else {
-                if (is_match) {
-                    // already added              
+
+                var index = self.view.$data.filtered_venues.indexOf(venue._id);
+
+                if (index == -1) {
+                    if (is_match) {
+                        self.view.$data.filtered_venues.push(venue._id);         
+                    }
                 }
                 else {
-                    // remove bad match
-                    self.view.$data.filtered_venues.splice(index,1);
+                    if (is_match) {
+                        // already added              
+                    }
+                    else {
+                        // remove bad match
+                        self.view.$data.filtered_venues.splice(index,1);
+                    }
                 }
-            }
+            });
+            return venues;
         });
-        return venues;
     }
 
 
     function showFilterMenu() {
 
-        self.view.$data.show_filters = true; 
 
         var categories = self.stor.getManyCachedByType("c");
         var items = self.stor.getManyCachedByType("i");
+        var venues = self.stor.getManyCachedByType("v");
 
+        var category_map = {};
+
+        // default count for categories
         categories.forEach(function(cat) {
-
-            if (cat.tag && cat.tag.indexOf("itm") != -1) {
-                cat.count = 0;
-                items.forEach(function(item) {
-                    if (item.category && item.category.length) {
-                        item.category.forEach(function(cat_slug) {
-                            if (item._id[2] == "v" && cat.slug == cat_slug) {
-                                cat.count++;
-                            }
-                        });   
-                    }
-                });
-            }
+            category_map[cat.slug] = 0;
+            cat.count = category_map[cat.slug];
         });
+
+        self.view.$data.show_filters = true; 
+
+        console.log("[rdr] locating nearby venues that may have supplies:")
+        LX.Location.getCurrentGeohash().then(function(geo) {
+            venues.forEach(function(venue) {
+                var match_geo = venue.geo[0].substr(0,1);
+                if (geo.indexOf(match_geo) != -1) {
+                    console.log(venue.title);                    
+                   
+                    categories.forEach(function(cat) {
+                        var check_for_doc = self.stor.getCached("i:" + venue._id + ":" + cat.slug);
+                        if (check_for_doc) {
+                            console.log(check_for_doc)
+                            category_map[cat.slug]++;
+                        }
+
+                    });
+                }
+            });
+
+
+            console.log(category_map);
+            categories.forEach(function(cat) {
+                cat.count = category_map[cat.slug];
+            });
+            
+
+        });
+
+
+
     }
 
     /**
@@ -252,7 +286,7 @@ window.page = (function() {
                     self.view.$data.primary_button_text = "Launch Map";
                     self.view.$data.map_is_ready = true;
                     self.view.$data.personalizing = false;
-                }, 500+(500*Math.random()));
+                }, 100+(200*Math.random()));
             });
     });
 

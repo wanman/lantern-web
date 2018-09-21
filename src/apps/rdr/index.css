@@ -149,6 +149,11 @@ html, body {
         }
     }
 
+    .share {
+        margin-top: 1em;
+        text-align: center;
+    }
+
     ul {
 
         li {
@@ -191,7 +196,6 @@ html, body {
             li:nth-child(3n):nth-last-child(4)~ li,
             li:nth-child(3n) + li:nth-last-child(1)
             {border-bottom: none }
-
 
         .badge {
             color: #FFF;
