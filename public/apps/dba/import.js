@@ -125,85 +125,11 @@ window.LanternImport = function(stor) {
         addVenue("slg", "Shell Station", "9q9hqzq", "bld", "gas-pump", ["ful", "wtr"]);
         addVenue("mnt", "Main Street Theatre", "9q9hv8y", "bld", "film", ["net", "pwr"]);
         addVenue("wwt", "Water Truck", "9q9hykv", "trk", "truck", ["wtr"]);
-
-        addVenue("fen", "Fenway", Geohash.encode(42.345829, -71.096882, 10), "bld", "basketball-ball", ["bed", "pwr"])
-        addVenue("frn", "Franklin Park", Geohash.encode(42.313245, -71.095177, 10), "tmp", "home", [])
-        addVenue("bwf", "Whole Foods", Geohash.encode(42.3429892,-71.0910806, 10), "bld", "shopping-basket", ["wtr", "eat"])
     };
 
     self.item = function() {
         // items to be added directly along-side Markers
     };
-
-    self.route = function() {
-
-        var start_fenway = Geohash.encode(42.345829, -71.096882, 10);
-        var pickup_water_whole_foods = Geohash.encode(42.3429892,-71.0910806, 10);
-        var franklin_park = Geohash.encode(42.313245, -71.095177, 10);
-
-
-        // route 1 
-        var mass_ave_tremont = Geohash.encode(42.339320, -71.080325, 10);
-        var roxbury_columbus_washington = Geohash.encode(42.315772, -71.098237, 10);
-        var route1 = [start_fenway, pickup_water_whole_foods, mass_ave_tremont, roxbury_columbus_washington, franklin_park];
-
-
-        // route 2 (water delay)
-        var westland_hemenway = Geohash.encode(42.343967, -71.089956, 10);
-        var parker_ruggles = Geohash.encode(42.336952, -71.093588, 10);
-        var tremont_ruggles = Geohash.encode(42.334570, -71.089572, 10)
-        var route2 = [start_fenway, pickup_water_whole_foods, westland_hemenway, parker_ruggles, tremont_ruggles, franklin_park];
-
-
-        // route 3
-        var huntington_hemenway = Geohash.encode(42.339503, -71.092514, 10);
-        var huntington_parker = Geohash.encode(42.338508, -71.092684, 10);
-        var heath_square = Geohash.encode(42.326420, -71.100212, 10);
-        var columbus_ave_seaver = Geohash.encode(42.313336, -71.095117, 10);
-        var route3 = [ start_fenway, pickup_water_whole_foods, westland_hemenway, heath_square, columbus_ave_seaver, franklin_park];
-
-
-        var routes = [route1,route2,route3];
-
-
-        //console.log("[import] adding default geo routes"); 
-        var doc = new LX.Document("r:water_franklin_park:1", stor);
-        doc.set("geo", route1);
-        doc.set("status", 1); // complete
-        doc.set("rating", 0.9)
-        doc.push("tag", "flood");
-        doc.push("parent", "v:fen");
-        doc.push("parent", "v:fpk");
-        var time = new Date();
-        doc.set("created_at", time);
-        doc.save(true, false);
-
-
-        var doc = new LX.Document("r:water_franklin_park:2", stor);
-        doc.set("geo", route2);
-        doc.push("tag", "flood");
-        doc.set("status", 1); // complete
-        doc.set("rating", 0.75)
-        doc.push("parent", "v:fen");
-        doc.push("parent", "v:fpk");
-        var time = new Date();
-        doc.set("created_at", time);
-        doc.save(true, false);
-
-        var doc = new LX.Document("r:water_franklin_park:3", stor);
-        doc.set("geo", route3);
-        doc.push("tag", "flood");
-        doc.push("parent", "v:fen");
-        doc.push("parent", "v:fpk");
-        doc.set("status", 1); // complete
-        doc.set("rating", 0.6)
-        var time = new Date();
-        doc.set("created_at", time);
-        doc.save(true, false);
-
-
-    };
-
 
     self.note = function() {
         //console.log("[import] adding default notes");

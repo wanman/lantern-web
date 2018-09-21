@@ -56,25 +56,35 @@
                         <!-- map view ------------------------------------------------------------>
                         <!-- map is empty by default - only certain pages will fill this region-->
                         <div id="map" v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')"></div>
+                        <div id="waiting-for-location" v-if="!show_map &amp;&amp; !show_filters &amp;&amp; !show_list">
+                            <p>We use your general location to find nearby supplies and shelters</p>
+                        </div>
                         <div id="map-prompt" v-if="!show_filters &amp;&amp; (show_list || show_map)">
                             <div class="buttons has-addons is-centered"><span class="button" @click="handleShowList" v-bind:class="show_map ? '' : 'is-info is-selected'"><span class="icon"><i class="fas fa-list"></i></span><span>List</span></span><span class="button" @click="handleShowMap" v-bind:class="show_map ? 'is-info is-selected' : ''"><span class="icon"><i class="fas fa-map"></i></span><span>Map</span></span></div>
                         </div>
                         <!-- filters view -------------------------------------------------------->
                         <div id="filters" v-if="show_filters">
-                            <h1 v-if="personalizing">Finding {{ selected_category.title }} nearby...&hellip;</h1>
-                            <h1 v-if="!page_loading &amp;&amp; !personalizing">Reported Near You</h1>
-                            <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
-                                <h2>What would help today?</h2>
+                            <div v-if="personalizing"> 
+                                <h1>Finding {{ last_selected_category.title }} nearby...&hellip;</h1>
+                                <h2>&nbsp;</h2>
                             </div>
-                            <ul class="item-list">
+                            <div v-if="!personalizing &amp;&amp; map_is_ready"> 
+                                <h1>Your Map Is Ready</h1>
+                                <h2>{{ supplies_located_count }} Supplies Located</h2>
+                            </div>
+                            <div v-if="!map_is_ready">
+                                <h1 v-if="!page_loading &amp;&amp; !personalizing">What Do You Need Most Today?</h1>
+                                <div v-bind:style="personalizing ? 'visibility: hidden' : ''">
+                                    <h2>{{ pluralize(u_docs.length) }} Are Listening</h2>
+                                </div>
+                            </div>
+                            <ul class="item-list is-clearfix">
                                 <li class="item" v-for="cat in c_docs" v-if="cat.tag &amp;&amp; cat.tag[0] == 'itm'" v-bind:id="cat._id" v-bind:ref="cat.slug" @click="handleCategorySelect(cat)"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)"></i>
-                                        <div class="badge" v-bind:style="makeBadgeStyle(cat)">{{ cat.count }}</div></span>
+                                        <div class="badge" v-if="show_supply_count.indexOf(cat.slug) != -1" v-bind:style="makeBadgeStyle(cat)">{{ cat.count }}</div></span>
                                     <div class="title">{{ cat.title }} </div>
                                 </li>
-                                <li class="item" @click="handleAllCategorySelect"><span class="icon is-large" style="background-color: #EEE;"><i class="fas fa-arrow-right"></i></span>
-                                    <div class="title">All</div>
-                                </li>
                             </ul>
+                            <div class="more"><a @click="handleAllCategorySelect" v-bind:class="primary_button_text == 'Launch Map' ? 'button is-primary' : ''">{{ primary_button_text }}</a></div>
                         </div>
                         <!-- venues view --------------------------------------------------------->
                         <div id="venues-view" v-if="show_list &amp;&amp; !show_filters">
@@ -83,7 +93,7 @@
                                 <div v-if="filtered_venues.length">
                                     <div class="panel" v-bind:data-id="venue._id" v-for="venue in v_docs" v-if="filtered_venues.indexOf(venue._id) != -1">
                                         <div class="panel-heading" @click="handleVenueSelect(venue)">
-                                            <div class="distance" v-if="geolocation">{{ getDistanceFromVenue(venue) }}</div>
+                                            <div class="distance">{{ getDistanceFromVenue(venue) }}</div>
                                             <h3> <span class="icon"><i class="fas fa-truck" v-if="venue.category[0] == 'trk'"></i><i class="fas fa-building" v-if="venue.category[0] != 'trk'"></i></span>{{ venue.title }}</h3>
                                         </div>
                                         <div class="panel-block" @click="handleVenueSelect(venue)">

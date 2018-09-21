@@ -2,7 +2,7 @@ window.page = (function() {
 
     var self = new LX.Page("browse");
     var category_id;
-    
+
     // geolocation options
     var geo_options = {
         enableHighAccuracy: false, 
@@ -13,20 +13,37 @@ window.page = (function() {
     function reflowView() {
         category_id = self.getHashParameterByName("cat");
         loadVenues();
-
         if (self.getHashParameterByName("v") == "map") {
-            setTimeout(function() {
-                showMap();
-            }, 50);
+           showMap();
         }
         else if (self.getHashParameterByName("v") == "list") {
             showList();
         }
         else {
-            self.view.$data.show_list = true;
-            self.view.$data.show_filters = false;
-            self.view.$data.personalizing = false;
+            showFilterMenu();
         }
+    }
+
+
+    /*
+    * requireUserLocation
+    *
+    * Ensure we have a location-based context for user before we display any list or map results
+    */
+    function requireUserLocation() {
+        var reuse_known_location = true;
+        return LX.Location.getCurrentGeohash(reuse_known_location)
+            .then(function(geo) {
+                // update user document to include general location (not exact for privacy reasons) 
+                /*if (!self.user.get("geo") || !self.user.has("geo", geo)) {                        
+                    console.log("[rdr] updating user location");
+                    self.user.push("geo", geo);
+                    self.user.save();
+                }*/
+                console.log("[rdr] my geo:", geo);
+                return reuse_known_location
+            })
+            .then(LX.Location.getCurrentPosition)
     }
 
 
@@ -126,6 +143,7 @@ window.page = (function() {
 
     
     function showMap() {
+
         self.view.$data.show_map = true;
         self.view.$data.show_list = false;
         self.view.$data.show_filters = false;
@@ -138,65 +156,64 @@ window.page = (function() {
             color = cat.style.color;
         }   
 
-
-        self.renderMap(self.view.$data.filtered_venues, true, icon, color)
-            .then(function() {
-                self.map.fitAll();
-
-                LX.Location.getCurrentPosition()
-                    .then(function(res) {
-
-                        self.geo = Geohash.encode(res.coords.latitude, res.coords.longitude, 7);
-                        self.map.setOwnLocation({lat:res.coords.latitude, lng:res.coords.longitude});
-                        self.view.$data.geolocation = self.geo;
-
-                        // update user document to include location
-                        var geo = self.geo.substr(0,4);
-                        if (!self.user.get("geo") || !self.user.has("geo", geo)) {                        
-                            console.log("[page] updating user location");
-                            self.user.push("geo", geo);
-                            self.user.save();
-                        }
-
-                        console.log("[rdr] my geo:", self.geo);
-
-                        self.sendGeohashToLantern(geo);
-                    })
-                    .catch(function(err) {
-                        console.log("[rdr] err fitting map", err);
-                    });
+        // give time for map to display in DOM
+        // @todo more elegant than brute timer
+        setTimeout(function() {
+            self.renderMap(self.view.$data.filtered_venues, true, icon, color)
+                .then(self.map.fitAll)
 
 
-            })
-            .catch(function(err) {
-                console.log("[rdr] map error", err);
+            requireUserLocation().then(function(pos) {
+                console.log("[rdr] show map", pos.coords);
+                self.map.setOwnLocation({lat:pos.coords.latitude, lng:pos.coords.longitude});
+                self.map.setPosition(pos.coords.latitude, pos.coords.longitude, 8);
             });
+        }, 500);
         
     }
 
 
     function showList() {
-        self.view.$data.show_map = false;
-        self.view.$data.show_list = true;
-        self.view.$data.show_filters = false;
-        self.view.$data.personalizing = false;
+        console.log("[rdr] show list view");
+        requireUserLocation().then(function() {
+            self.view.$data.show_map = false;
+            self.view.$data.show_list = true;
+            self.view.$data.show_filters = false;
+            self.view.$data.personalizing = false;
+        });
     }
 
+
+
+
+    self.addComputed("filtered_venues_by_distance", function() {
+        return this.filtered_venues.sort(function(a, b) {
+            var dist_a = LX.Location.getDistanceFrom(a.geo[0]);
+            var dist_b = LX.Location.getDistanceFrom(b.geo[0]);
+            if (dist_a > dist_b) return -1;
+            if (dist_a < dist_b) return 1;
+            return 0;
+        });
+    });
 
     //------------------------------------------------------------------------
         
     // filter view
-    self.addData("selected_category", null);
+    self.addData("last_selected_category", null);
+    self.addData("selected_category_list", []);
     self.addData("personalizing", false);
     self.addData("last_sync_check", new Date());
     self.addData("show_filters", false);
     self.addData("filtered_venues", []);
+    self.addData("show_supply_count", [])
 
     // map and list view
     self.addData("category", null);
-    self.addData("show_map", null);
-    self.addData("show_list", null);
-    self.addData("geolocation", null);
+    self.addData("show_map", false);
+    self.addData("show_list", false);
+    self.addData("primary_button_text", "Browse All")
+    self.addData("map_is_ready", false)
+    self.addData("supplies_located_count", 0)
 
 
 
@@ -216,33 +233,26 @@ window.page = (function() {
 
     self.addHelper("handleCategorySelect", function(cat) {
         self.view.$data.personalizing = true;
-
-        self.view.$data.selected_category = cat;
-        self.view.$refs[cat.slug][0].classList.add("active");
         
         var cat_label = cat._id.substr(2, cat._id.length);
 
-        console.log("[home] toggle cat: " + cat_label);
-        // do optimistic UI updates and then listen for sync to confirm
-        if (self.user.has("tag", cat_label)) {
-            // self.user.pop("tag", cat_label);
-        }
-        else {
-            self.user.push("tag", cat_label);
-        }
+        if (self.view.$data.selected_category_list.indexOf(cat_label) != -1){
+            self.view.$data.personalizing = false;
+            return console.log("[rdr] category already added to supply search list");
+        } 
 
-        self.user.save()
-            .then(function() {
+        self.view.$data.last_selected_category = cat;
+        self.view.$refs[cat.slug][0].classList.add("active");
+        self.view.$data.supplies_located_count += cat.count;
+        self.view.$data.selected_category_list.push(cat_label);
+        requireUserLocation()
+            .then(function(res) {
                 setTimeout(function() {
-                    v = self.getHashParameterByName("v");
-                    v = v || "list";
+                    self.view.$data.show_supply_count.push(cat_label);
+                    self.view.$data.primary_button_text = "Launch Map";
+                    self.view.$data.map_is_ready = true;
                     self.view.$data.personalizing = false;
-
-                    window.location.hash = "#v=" + v + "&cat="+cat.slug;
-                }, 1000);
-            })
-            .catch(function(err) {
-                console.log(err);
+                }, 500+(500*Math.random()));
             });
     });
 
@@ -309,12 +319,7 @@ window.page = (function() {
 
     self.addHelper("getDistanceFromVenue", function(venue) {
         if (venue.hasOwnProperty("geo") && typeof(venue.geo[0]) == "string") {
-            var geo = venue.geo[0];
-            if (!self.geo) {
-                console.log("[rdr] skip distance calc since no user geo available", venue._id);
-                return;
-            }
-            var distance = Math.round(Geohash.inKm(geo, self.geo));
+            var distance = LX.Location.getDistanceFrom(venue.geo[0]);
             return distance + "km";
         }
         else {
@@ -331,9 +336,9 @@ window.page = (function() {
     self.render()
         .then(function() {
             self.view.$data.page_title = "Supplies";
-            self.view.$data.page_action_icon = "filter";
         })
         .then(self.connect)
+        .then(self.getUsers)
         .then(self.getVenues)
         .then(function(venues) {
             if (venues.length == 0 ) {

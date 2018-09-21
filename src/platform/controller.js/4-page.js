@@ -342,8 +342,6 @@ LX.Page = (function(id) {
 
                     if (coords.length == 1) {
                         // point
-                        console.log(venue_options);
-
                         var final_icon = icon;
                         var final_color = color;
 

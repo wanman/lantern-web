@@ -17,6 +17,8 @@ block content
 
 
 
+        #waiting-for-location(v-if="!show_map && !show_filters && !show_list")
+            p We use your general location to find nearby supplies and shelters
   
 
   
@@ -36,27 +38,35 @@ block content
         // filters view ------------------------------------------------------
         #filters(v-if="show_filters")
 
+            div(v-if="personalizing") 
+                h1 Finding {{ last_selected_category.title }} nearby...&hellip;
+                h2 &nbsp;
 
-            h1(v-if="personalizing") Finding {{ selected_category.title }} nearby...&hellip;
-            h1(v-if="!page_loading && !personalizing") Reported Near You
+            div(v-if="!personalizing && map_is_ready") 
+                h1 Your Map Is Ready
+                h2 {{ supplies_located_count }} Supplies Located
 
-            div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
-                h2 What would help today?
+            div(v-if="!map_is_ready")
+                h1(v-if="!page_loading && !personalizing") What Do You Need Most Today?
 
 
-            ul.item-list
+                div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
+                    h2 {{ pluralize(u_docs.length) }} Are Listening
+
+
+
+            ul.item-list.is-clearfix
                 li.item(v-for="cat in c_docs" v-if="cat.tag && cat.tag[0] == 'itm'" v-bind:id="cat._id" v-bind:ref="cat.slug" 
                    @click="handleCategorySelect(cat)" 
                     )
                         span.icon.is-large(v-bind:style="makeCategoryStyle(cat)") 
                             i(v-bind:class="makeCategoryIconClass(cat)")
-                            .badge(v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}
+                            .badge(v-if="show_supply_count.indexOf(cat.slug) != -1"  v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}
 
                         .title {{ cat.title }} 
-                li.item(@click="handleAllCategorySelect")
-                    span.icon.is-large(style="background-color: #EEE")
-                        i.fas.fa-arrow-right
-                    .title All
+
+            div.more
+                a(@click="handleAllCategorySelect" v-bind:class="primary_button_text == 'Launch Map' ? 'button is-primary' : ''") {{ primary_button_text }}
 
 
 
@@ -72,7 +82,7 @@ block content
                     .panel(v-bind:data-id="venue._id" v-for="venue in v_docs" v-if="filtered_venues.indexOf(venue._id) != -1")
                         
                         .panel-heading(@click="handleVenueSelect(venue)")
-                            .distance(v-if="geolocation") {{ getDistanceFromVenue(venue) }}
+                            .distance {{ getDistanceFromVenue(venue) }}
                             
 
                             h3 

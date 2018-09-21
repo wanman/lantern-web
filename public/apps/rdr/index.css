@@ -39,6 +39,10 @@ html, body {
     #browse-page .panel-block .icon i {
       margin: auto; }
 
+#browse-page #waiting-for-location {
+  text-align: center;
+  margin: 18em auto; }
+
 #browse-page #map-prompt {
   position: fixed;
   top: 3.89rem;
@@ -73,7 +77,6 @@ html, body {
     text-align: center; }
 
 #filters {
-  z-index: 10002;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -85,6 +88,13 @@ html, body {
   #filters h2 {
     padding: 0em 1em;
     margin-bottom: 1em; }
+  #filters .more {
+    margin-top: 2em;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold; }
+    #filters .more a {
+      padding: 2em; }
   #filters ul li {
     float: left;
     display: block;
@@ -117,9 +127,9 @@ html, body {
     height: 2em;
     padding: 0.25em;
     text-align: center;
-    float: right;
-    margin-right: -1em;
-    margin-top: -2em; }
+    position: absolute; }
+  #filters ul .title {
+    font-weight: bold; }
   #filters ul .icon {
     border-radius: 4em;
     font-weight: bold;
@@ -129,8 +139,7 @@ html, body {
     margin-bottom: 0.5em;
     margin-top: 0.5em; }
     #filters ul .icon i {
-      margin: auto;
-      padding-left: 0.75em; }
+      margin: auto; }
   #filters ul li:last-child .icon i {
     padding-left: 0em; }
 

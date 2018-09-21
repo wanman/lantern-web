@@ -26,6 +26,12 @@ window.page = (function() {
     }
 
 
+    // @todo use this
+    function updateLanternLocation() {
+        LX.Location.getCurrentGeohash().then(self.sendGeohashToLantern);
+    }
+
+
     //------------------------------------------------------------------------
     self.addData("types", [
         {key: "c", slug: "category"},
