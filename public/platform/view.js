@@ -57,7 +57,7 @@ LX.View = (function(data,methods,computed) {
 
     // initialize arrays for each type of doc
     // only these document types will ever be accepted by the system
-    (["v", "i", "c", "r", "n", "u", "d"]).forEach(function(type) {
+    (["v", "i", "c", "r", "n", "u", "d", "e", "q"]).forEach(function(type) {
         _global_data[type+"_docs"] = [];
     });
 

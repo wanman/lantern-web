@@ -36,24 +36,32 @@ block content
 
 
         // filters view ------------------------------------------------------
-        #filters(v-if="show_filters")
+        #filters(v-if="show_filters && !page_loading")
 
             div(v-if="personalizing") 
                 h1 Finding {{ last_selected_category.title }} nearby...&hellip;
-                h2 &nbsp;
+                h2 &nbsp; 
 
-            div(v-if="!personalizing && map_is_ready") 
+            div(v-if="map_is_ready && !personalizing") 
                 h1 Your Map Is Ready
                 h2 We Personalized It For Your Needs
 
-            div(v-if="!map_is_ready")
-                h1(v-if="!page_loading && !personalizing") What Do You Need Most Today?
+            div(v-if="!map_is_ready && !personalizing")
+                h1 What Do You Need Most Today?
+                h2 {{ pluralize(u_docs.length) }} Are Listening
 
 
-                div(v-bind:style="personalizing ? 'visibility: hidden' : ''")
-                    h2 {{ pluralize(u_docs.length) }} Are Listening
-
-
+            #event-selector
+                .dropdown(@click="handleSelectRegion" v-bind:class='(show_region_dropdown ? "is-active" : "")')
+                    .dropdown-trigger
+                        button.button(aria-haspopup="true" controls="dropdown-menu")
+                            span {{ selected_region_name ? selected_region_name : "Select Your Region" }} 
+                            span.icon.is-small
+                                i.fas.fa-angle-down(aria-hidden="true")
+                    #dropdown-menu.dropdown-menu(role="menu")
+                        .dropdown-content
+                            a.dropdown-item(href="#" :class="selected_region == region ? 'is-active' : ''" @click="showRegion(region)" v-for="region in available_regions") Greater Boston Area
+                            a.dropdown-item(href="#" :class="selected_region == 'all' ? 'is-active' : ''" @click="showAllRegions") All Places
 
             ul.item-list.is-clearfix
                 li.item(v-for="cat in c_docs" v-if="cat.tag && cat.tag[0] == 'itm'" v-bind:id="cat._id" v-bind:ref="cat.slug" 
@@ -84,7 +92,7 @@ block content
                     .panel(v-bind:data-id="venue._id" v-for="venue in v_docs" v-if="filtered_venues.indexOf(venue._id) != -1")
                         
                         .panel-heading(@click="handleVenueSelect(venue)")
-                            .distance {{ getDistanceFromVenue(venue) }}
+                            .distance(v-if="my_geo") {{ getDistanceFromVenue(my_geo, venue) }}
                             
 
                             h3 
