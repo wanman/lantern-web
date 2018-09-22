@@ -41,6 +41,10 @@ LX.Location = (function() {
             });
     }
 
+    self.getPositionFrom = function(geo) {
+        return Geohash.decode(geo);
+    }
+
     self.getDistanceFrom = function(geo) {
         return Math.round(Geohash.inKm(geo, _last_known_geohash));
     }

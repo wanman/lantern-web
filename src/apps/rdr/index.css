@@ -39,6 +39,16 @@ html, body {
         font-weight: normal;
     }
 
+    #event-selector {
+        background: $light-border;
+        padding: 1em;
+        text-align: center;
+        margin: auto;
+        button {
+            width: 15em;
+        }
+    }
+
     .panel:hover .panel-heading, .panel:hover {
         cursor: pointer;
     }
@@ -61,12 +71,6 @@ html, body {
         overflow-x: hidden;
 
     }   
-
-    #waiting-for-location {
-        text-align: center;
-        margin: 18em auto;
-
-    }
 
     #map-prompt {
         position: fixed;

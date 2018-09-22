@@ -17,7 +17,20 @@ window.page = (function() {
 
         self.view.$data.show_supply_count = [];
 
-        loadVenues();
+        if (category_id) {
+            self.view.$data.page_title = "Supplies : " + 
+            self.stor.getCached("c:" + category_id).title;
+        }
+        else {
+            self.view.$data.page_title = "Supplies";
+        }
+
+        self.view.$data.category = category_id;
+
+
+        updateFilteredVenues(category_id);
+
+
         if (self.getHashParameterByName("v") == "map") {
            showMap();
         }
@@ -27,15 +40,18 @@ window.page = (function() {
         else {
             showFilterMenu();
         }
+
+        self.view.$data.page_loading = false;
+
     }
 
 
     /*
-    * requireUserLocation
+    * requestUserLocation
     *
     * Ensure we have a location-based context for user before we display any list or map results
     */
-    function requireUserLocation() {
+    function requestUserLocation() {
         var reuse_known_location = true;
         return LX.Location.getCurrentGeohash(reuse_known_location)
             .then(function(geo) {
@@ -49,73 +65,68 @@ window.page = (function() {
                 return reuse_known_location
             })
             .then(LX.Location.getCurrentPosition)
+            .catch(function(err) {
+                console.log("geolocation unavailable");
+                console.log(err);
+            });
     }
 
 
-    /*
-    * Make sure we have venues to work with
-    */
-    function loadVenues() {
-        if (category_id) {
-            self.view.$data.page_title = "Supplies : " + 
-                self.stor.getCached("c:" + category_id).title;
-        }
-        else {
-            self.view.$data.page_title = "Supplies";
-        }
-        updateFilteredVenues(category_id).then(function() {
-            self.view.$data.category = category_id;
-            self.view.$data.page_loading = false;
-        });
-
-    }
 
     function updateFilteredVenues(cat) {
-
         var venues = [];
         var items = self.stor.getManyCachedByType("i");
 
-        return LX.Location.getCurrentGeohash().then(function(geo) {
 
-            self.view.$data.v_docs.forEach(function(venue) {
-                var is_match = false;
+      
+        self.view.$data.v_docs.forEach(function(venue) {
+            var is_match = false;
 
-                var match_geo = venue.geo[0].substr(0,1);
-                if (geo.indexOf(match_geo) != -1) {
-                    if (!cat) {
-                        // no category filter selected
-                        is_match = true;
+            if (!cat) {
+                // no category filter selected
+                is_match = true;
+            }
+            else {
+                items.forEach(function(item) {
+                    if (item.hasOwnProperty("parent") && item.parent[0] == venue._id) {
+                        if (item.category.indexOf(cat) != -1) {
+                            is_match = true;
+                        }
                     }
-                    else {
-                        items.forEach(function(item) {
-                            if (item.hasOwnProperty("parent") && item.parent[0] == venue._id) {
-                                if (item.category.indexOf(cat) != -1) {
-                                    is_match = true;
-                                }
-                            }
-                        });
-                    }
+                });
+            }
+
+
+            if (self.view.$data.selected_region && self.view.$data.selected_region != "all") {
+                var match_geo = venue.geo[0].substr(0,2);
+                if (self.view.$data.selected_region.indexOf(match_geo) == -1) {
+                    console.log("ignoring far away venue: " + venue._id);
+                    is_match = false;
                 }
+            }
 
-                var index = self.view.$data.filtered_venues.indexOf(venue._id);
 
-                if (index == -1) {
-                    if (is_match) {
-                        self.view.$data.filtered_venues.push(venue._id);         
-                    }
+
+
+            var index = self.view.$data.filtered_venues.indexOf(venue._id);
+
+            if (index == -1) {
+                if (is_match) {
+                    self.view.$data.filtered_venues.push(venue._id);         
+                }
+            }
+            else {
+                if (is_match) {
+                    // already added              
                 }
                 else {
-                    if (is_match) {
-                        // already added              
-                    }
-                    else {
-                        // remove bad match
-                        self.view.$data.filtered_venues.splice(index,1);
-                    }
+                    // remove bad match
+                    self.view.$data.filtered_venues.splice(index,1);
                 }
-            });
-            return venues;
+            }
         });
+
+        return venues;
     }
 
 
@@ -136,45 +147,29 @@ window.page = (function() {
 
         self.view.$data.show_filters = true; 
 
-        console.log("[rdr] locating nearby venues that may have supplies:")
-        LX.Location.getCurrentGeohash().then(function(geo) {
-            venues.forEach(function(venue) {
-                var match_geo = venue.geo[0].substr(0,1);
-                if (geo.indexOf(match_geo) != -1) {
-                    console.log(venue.title);                    
-                   
-                    categories.forEach(function(cat) {
-                        var check_for_doc = self.stor.getCached("i:" + venue._id + ":" + cat.slug);
-                        if (check_for_doc) {
-                            console.log(check_for_doc)
-                            category_map[cat.slug]++;
-                        }
+        venues.forEach(function(venue) {
 
-                    });
+            if (self.view.$data.selected_region && self.view.$data.selected_region != "all") {
+                var match_geo = venue.geo[0].substr(0,2);
+                if (self.view.$data.selected_region.indexOf(match_geo) == -1) {
+                    console.log("ignoring far away venue: " + venue._id);
+                    return;
                 }
-            });
+            }
 
 
-            console.log(category_map);
             categories.forEach(function(cat) {
-                cat.count = category_map[cat.slug];
-            });
-            
+                var check_for_doc = self.stor.getCached("i:" + venue._id + ":" + cat.slug);
+                if (check_for_doc) {
+                    category_map[cat.slug]++;
+                }
 
+            });
+        });
+        categories.forEach(function(cat) {
+            cat.count = category_map[cat.slug];
         });
 
-
-
-    }
-
-    /**
-    * Update interface based on user's changing geolocation
-    */
-    function onLocationChange(position) {
-        if (!position || !position.coords) return;
-        self.geo = Geohash.encode(position.coords.latitude, position.coords.longitude, 7);
-        //console.log("[page] my geo", self.geo);
-        self.map.setOwnLocation({lat:position.coords.latitude, lng:position.coords.longitude});
     }
 
     
@@ -195,15 +190,25 @@ window.page = (function() {
         // give time for map to display in DOM
         // @todo more elegant than brute timer
         setTimeout(function() {
-            self.renderMap(self.view.$data.filtered_venues, true, icon, color)
-                .then(self.map.fitAll)
+            self.renderMap(self.view.$data.filtered_venues, true, icon, color);
 
 
-            requireUserLocation().then(function(pos) {
+            requestUserLocation().then(function(pos) {
                 console.log("[rdr] show map", pos.coords);
                 self.map.setOwnLocation({lat:pos.coords.latitude, lng:pos.coords.longitude});
-                self.map.setPosition(pos.coords.latitude, pos.coords.longitude, 8);
-            });
+                self.map.setPosition(pos.coords.latitude, pos.coords.longitude, 9);
+            })
+            .catch(function() {
+                console.log("[rdr] default map start since no geolocation available");
+                if (self.view.$data.selected_region  && self.view.$data.selected_region != "all") {
+                    var coords = LX.Location.getPositionFrom(self.view.$data.selected_region)
+                    console.log(coords);
+                    self.map.setPosition(coords.lat, coords.lon, 12);
+                }
+                else {
+                    self.map.setDefaultPosition();
+                }
+            })
         }, 500);
         
     }
@@ -211,12 +216,10 @@ window.page = (function() {
 
     function showList() {
         console.log("[rdr] show list view");
-        requireUserLocation().then(function() {
-            self.view.$data.show_map = false;
-            self.view.$data.show_list = true;
-            self.view.$data.show_filters = false;
-            self.view.$data.personalizing = false;
-        });
+        self.view.$data.show_map = false;
+        self.view.$data.show_list = true;
+        self.view.$data.show_filters = false;
+        self.view.$data.personalizing = false;
     }
 
 
@@ -247,10 +250,14 @@ window.page = (function() {
     self.addData("category", null);
     self.addData("show_map", false);
     self.addData("show_list", false);
-    self.addData("primary_button_text", "Browse All")
+    self.addData("primary_button_text", "Browse Supplies")
     self.addData("map_is_ready", false)
     self.addData("supplies_located_count", 0)
-
+    self.addData("my_geo", null);
+    self.addData("show_region_dropdown", false);
+    self.addData("selected_region", "");
+    self.addData("selected_region_name", "")
+    self.addData("available_regions", []);
 
 
 
@@ -266,6 +273,26 @@ window.page = (function() {
         }
     });
 
+    self.addHelper("handleSelectRegion", function(e) {
+        console.log("[rdr] prompt user for region to filter venues and items by");
+        self.view.$data.show_region_dropdown = !self.view.$data.show_region_dropdown;
+    });
+
+
+    self.addHelper("showAllRegions", function() {
+        self.view.$data.selected_region = "all";
+        self.view.$data.selected_region_name = "All Places"
+        showFilterMenu();
+        console.log("show all regions");
+    });
+
+    self.addHelper("showRegion", function(region) {
+        self.view.$data.selected_region = region;
+        self.view.$data.selected_region_name = "Greater Boston Area";//@todo use real data
+        showFilterMenu();
+
+        console.log("[rdr] show region: " + region);
+    })
 
     self.addHelper("handleCategorySelect", function(cat) {
         self.view.$data.personalizing = true;
@@ -281,15 +308,12 @@ window.page = (function() {
         self.view.$refs[cat.slug][0].classList.add("active");
         self.view.$data.supplies_located_count += cat.count;
         self.view.$data.selected_category_list.push(cat_label);
-        requireUserLocation()
-            .then(function(res) {
-                setTimeout(function() {
-                    self.view.$data.show_supply_count.push(cat_label);
-                    self.view.$data.primary_button_text = "Launch Map";
-                    self.view.$data.map_is_ready = true;
-                    self.view.$data.personalizing = false;
-                }, 100+(200*Math.random()));
-            });
+        setTimeout(function() {
+            self.view.$data.show_supply_count.push(cat_label);
+            self.view.$data.primary_button_text = "Launch Map";
+            self.view.$data.map_is_ready = true;
+            self.view.$data.personalizing = false;
+        }, 200+(500*Math.random()));
     });
 
     self.addHelper("handleAllCategorySelect", function() {
@@ -353,7 +377,7 @@ window.page = (function() {
     });
 
 
-    self.addHelper("getDistanceFromVenue", function(venue) {
+    self.addHelper("getDistanceFromVenue", function(my_geo, venue) {
         if (venue.hasOwnProperty("geo") && typeof(venue.geo[0]) == "string") {
             var distance = LX.Location.getDistanceFrom(venue.geo[0]);
             return distance + "km";
@@ -367,23 +391,34 @@ window.page = (function() {
 
     //------------------------------------------------------------------------
 
-    window.onhashchange = reflowView;
 
     self.render()
         .then(function() {
             self.view.$data.page_title = "Supplies";
         })
         .then(self.connect)
-        .then(self.getUsers)
         .then(self.getVenues)
         .then(function(venues) {
             if (venues.length == 0 ) {
                 window.location = "/";
             }
         })
+        .then(self.getUsers)
+        .then(self.getEvents)
+        .then(function(events) {
+            events.forEach(function(event) {
+                var geo = event.get("geo")[0];
+                if (self.view.$data.available_regions.indexOf(geo) == -1) {
+                    self.view.$data.available_regions.push(geo);
+                }
+            })
+        })
         .then(self.getCategories)
         .then(self.getItems)
-        .then(reflowView);
+        .then(reflowView)
+        .then(function() {
+            window.onhashchange = reflowView;
+        })
 
     return self; 
 }());

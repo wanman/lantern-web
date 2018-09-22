@@ -110,6 +110,10 @@ LX.Location = (function() {
             });
     }
 
+    self.getPositionFrom = function(geo) {
+        return Geohash.decode(geo);
+    }
+
     self.getDistanceFrom = function(geo) {
         return Math.round(Geohash.inKm(geo, _last_known_geohash));
     }
@@ -162,8 +166,8 @@ LX.Page = (function(id) {
     * Register new user in the database 
     */
     function registerUser() {
-        console.log("[user] create");
         var doc = new LX.Document("u:"+getUserId(), self.stor);
+        console.log("[page] create user:"+getUserId());
         doc.save();
         return doc;
     }
@@ -339,7 +343,7 @@ LX.Page = (function(id) {
             live: false
         }).then(function(results) {
             if (results.ok == true) {}
-            console.log(results);
+            console.log("[page] pull complete:", results);
         });
 
     }
