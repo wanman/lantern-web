@@ -43,6 +43,7 @@ window.page = (function() {
     function selectRegion(region) {
         console.log("[rdr] show region: ", region.title, region.geohash);
         vu.show_supply_count = [];
+        matched = [];
         vu.categories.forEach(function(category) {
             category.count = 0;
         });
@@ -60,12 +61,12 @@ window.page = (function() {
 
     function isItemInRange(item, category, geofilter) {
         // require category match
-        if (!item.has("category", category)) {
+        if (item.category.indexOf(category) == -1) {
             return;
         }
         // try for location match
         if (geofilter) {
-            var venue = self.stor.getCached(item.get("parent")[0]);
+            var venue = self.stor.getCached(item.parent[0]);
             var geohash = venue["geo"][0];
             if (geohash.indexOf(geofilter) == -1) {
                 console.log("ignoring far away venue: " + venue._id, geohash);
@@ -84,34 +85,34 @@ window.page = (function() {
         vu.categories[index].count = 0;
 
         // @todo optimize this query
-        self.getItems().then(function(items) {
-            items.forEach(function(item) {
-                if (isItemInRange(item, category, geofilter)) {
-                        
-                    var is_valid_date = true;
+        vu.i_docs.forEach(function(item) {
+            if (isItemInRange(item, category, geofilter)) {
+                    
+                var is_valid_date = true;
 
-                    var parents = item.get("parent");
-                    parents.forEach(function(parent) {
-                        if (parent[0] == "e") {
-                            // check if status for event is active so we don't match to supplies from past events
-                            var event_doc = self.stor.getCached(parent);
-                            if (event_doc.status && event_doc.status == 3) {
-                                // completed / archived event
-                                is_valid_date = false;
-                            }
+                var parents = item.parent;
+                parents.forEach(function(parent) {
+                    if (parent[0] == "e") {
+                        // check if status for event is active so we don't match to supplies from past events
+                        var event_doc = self.stor.getCached(parent);
+                        if (event_doc.status && event_doc.status == 3) {
+                            // completed / archived event
+                            is_valid_date = false;
                         }
-                    });
-
-                    if (!is_valid_date) {
-                        return console.log("item is in range but from previous event date: " + item.id);
                     }
+                });
 
-                    console.log("item is in range: " + item.id);
-
-                    vu.categories[index].count++;
+                if (!is_valid_date) {
+                    return console.log("item is in range but from previous event date: " + item._id);
                 }
-            });
+
+                console.log("item is in range: " + item._id);
+
+                vu.categories[index].count++;
+            }
         });
+
+        return vu.categories[index].count;
     }
 
     
@@ -128,6 +129,7 @@ window.page = (function() {
 
     // filter search to selected categories
     self.addData("last_selected_category", null);
+    self.addData("coverage", "none");
     self.addData("selected_category_list", []);
 
     //------------------------------------------------------------------------
@@ -148,7 +150,6 @@ window.page = (function() {
 
 
     self.addHelper("showRegion", function(region) {
-        vu.show_supply_count = [];
         selectRegion(region);
     });
 
@@ -174,12 +175,19 @@ window.page = (function() {
     
     // Category filter grid
 
+    var matched = [];
+
     self.addHelper("handleCategorySelect", function(cat) {
         var cat_label, match_count;
         
+        cat_label = cat._id.substr(2, cat._id.length);
+
+        if (vu.show_supply_count.indexOf(cat_label) != -1) {
+            return;
+        }
+
         vu.searching = true;
         vu.last_selected_category = cat;
-        cat_label = cat._id.substr(2, cat._id.length);
         vu.$refs[cat.slug][0].classList.add("active");
 
         var geofilter = (vu.selected_region && vu.selected_region.geohash ? vu.selected_region.geohash : "").substr(0,2);
@@ -188,9 +196,24 @@ window.page = (function() {
 
         // artificial time delay for user to track
         setTimeout(function() {
+
+
+
             match_count = findMatchesForCategory(cat_label, geofilter);
             vu.show_supply_count.push(cat_label);
             vu.searching = false;
+
+            matched.push((match_count > 0));
+            
+            var total_matched = 0;
+            matched.forEach(function(match) {
+                if (match) {
+                    total_matched++;
+                }
+            });
+
+            vu.coverage = total_matched  + " of " + matched.length
+
         }, 200+(200*Math.random()));
     });
 
@@ -224,6 +247,7 @@ window.page = (function() {
         .then(function() {
         	vu.page_loading = false;
         })
+        .then(self.getItems)
         .then(self.getCategories)
         .then(renderFilterGrid)
         .then(self.getEvents)
