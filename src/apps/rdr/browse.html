@@ -1,0 +1,68 @@
+---
+id: "browse"
+---
+
+extends ../../_layouts/_master.pug
+
+block content
+  
+    div
+
+
+        // map view ----------------------------------------------------------
+        // map is empty by default - only certain pages will fill this region
+        #map(v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
+
+
+        // button group ----------------------------------------------------------
+        #map-prompt
+            .buttons.has-addons.is-centered
+                span.button(@click="handleShowMap" v-bind:class="show_map ? 'is-info is-selected' : ''")
+                    span.icon
+                        i.fas.fa-map
+                    span Map
+
+                span.button(@click="handleShowList" v-bind:class="show_list ? 'is-info is-selected' : ''")
+                    span.icon
+                        i.fas.fa-list
+                    span List
+
+
+
+        // venues view -------------------------------------------------------
+        #venues-view(v-if="show_list")
+            #venues(v-if="!page_loading")
+                p(v-if="!filtered_venues.length" ) No places found to match your search. Please check back soon or use the back button in your browser to expand your search.
+
+                div(v-if="filtered_venues.length")
+
+                    .panel(v-bind:data-id="venue._id" v-for="venue in filtered_venues")
+                        
+                        // heading
+                        .panel-heading(@click="handleVenueSelect(venue)")
+                            .distance(v-if="geo") {{ getDistanceFromVenue(geo, venue) }}
+                            
+
+                            h3 
+                                span.icon
+                                    i.fas.fa-truck(v-if="venue.category[0] == 'trk'")
+                                    i.fas.fa-building(v-if="venue.category[0] != 'trk'")
+                                | {{ venue.title }}
+
+                        // categories
+                        .panel-block(@click="handleVenueSelect(venue)")
+                            .category(
+                                v-for="item in getItemsForVenue(venue)" 
+                                @click="handleItemSelect(item, venue)" 
+                                v-bind:data-id="item._id"
+                            )
+                                span.icon.is-large(v-bind:class="(item.status ? 'active' : 'inactive')" v-bind:style="makeCategoryStyle(getCategory(item.category))")
+                                    i(v-bind:data-category="item.category" v-bind:class="makeCategoryIconClass(getCategory(item.category))")
+
+block styles
+    link(rel="stylesheet" type="text/css" href="/platform/map.css")
+    link(rel="stylesheet" type="text/css" href="/apps/rdr/browse.css")
+
+block scripts
+    script(src="/platform/map.js")
+    script(src="/apps/rdr/browse.js")

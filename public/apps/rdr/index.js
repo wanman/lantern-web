@@ -2,9 +2,27 @@ __base = "../../";
 
 window.page = (function() {
 
-    var self = new LX.Page("browse");
-    var vu;
-    //------------------------------------------------------------------------  
+    var vu; // our view object that will be created after render
+    var self = new LX.Page("search");
+
+
+    //------------------------------------------------------------------------
+
+    /**
+    * Array.hasObjectWithKey
+    * 
+    * Allows user to avoid duplicates when adding objects to an array
+    */
+    Array.prototype.hasObjectWithKey = function(key, value) {
+        var matched = false;
+        this.forEach(function(item) {
+            if (item.hasOwnProperty(key) && item[key] == value) {
+                matched = true;
+            }
+        });
+        return matched;
+    }
+
     Array.prototype.getIndexForObjectWithKey = function(key, value) {
         for (var idx in this) {
             var item = this[idx];
@@ -14,233 +32,185 @@ window.page = (function() {
         }
     }
 
-
-
-    //------------------------------------------------------------------------  
-    function setTitleWithCategories() {
-        vu.page_title = "Supplies";
-        categories = self.getHashParameterByName("cat");
-        if (categories) {
-            var category_list = categories.split(",");
-            if (category_list.length == 1) {
-                self.stor.get("c:" + category_list[0]).then(function(doc) {
-                    vu.page_title += " : " + doc.get("title");
-                });
-            }
-            else {
-                vu.page_title += " : Search";
-            }
-        }
-    }
-
-    function reflowView() {
-        console.log("[rdr] reflow view");
-        setTitleWithCategories();
-        // default to map view
-        if (self.getHashParameterByName("v") == "list") { 
-            vu.show_map = false;
-            vu.show_list = true;
-        }
-        else {
-            vu.show_map = true;
-            vu.show_list = false;
-            showMap();
-        }
-        updateFilteredVenues();
-
-        if (vu.show_map) {
-            drawMarkers();
-        }
-
-    }
-
-    /*
-    * requestUserLocation
-    *
-    * Ensure we have a location-based context for user before we display any list or map results
-    */
-    function requestUserLocation() {
-        var reuse_known_location = true;
-        return LX.Location.getCurrentGeohash(reuse_known_location)
-            .then(function(geo) {
-                console.log("[rdr] my geo:", geo);
-                vu.geo = geo;
-                return reuse_known_location
-            })
-            .then(LX.Location.getCurrentPosition)
-            .then(function(pos) {
-                if (self.map) {
-                    self.map.setOwnLocation({lat:pos.coords.latitude, lng:pos.coords.longitude});
-                }
-                return pos;
-            })
-            .catch(function(err) {
-                console.log("geolocation unavailable");
-                console.log(err);
-            });
-    }
-
-
-    function drawMarker(venue, items) {
-
-        var geo = Geohash.decode(venue.geo[0]);
-        var top_item = items[0];
-        var category_doc = self.stor.getCached("c:"+top_item.category[0]);
-
-        console.log("[rdr] draw marker: ", venue.title, geo, category_doc);
-        var pt = self.map.addPoint(venue.title, geo, category_doc.icon, category_doc.style.color);
-        pt.on("click", function(e) {
-            window.location = "./detail.html#mrk=" + venue._id;
-        });
-        pt.openTooltip();
-               
-    }
-
-    function drawMarkers() {
-        console.log("[rdr] draw markers");
-        
-        var item_map = {};
-
-        self.map.clear();
-
-        // @todo optimize this with database query
-        vu.i_docs.forEach(function(item) {
-            var venue_id = item.parent[0]
-            item_map[venue_id] = item_map[venue_id] || [];
-            item_map[venue_id].push(item);
-        });
-
-        vu.filtered_venues.forEach(function(venue) {
-            if (venue.geo) {
-                var items = item_map[venue._id];
-                drawMarker(venue, items);
+    function renderDropdownMenu(events) {
+        events.forEach(function(event) {
+            var geo = event.get("geo")[0];
+            if (!vu.regions.hasObjectWithKey("geohash", geo)) {
+                var title = event.title || "Greater Boston Area"; // @todo use reverse location search to save title in document itself
+                vu.regions.push({"title": title, "geohash": geo});
             }
         });
-
-        self.map.fitAll();
     }
 
-    function updateFilteredVenues() {
-        console.log("[rdr] filtering venues");
-    
-        var catfilter = self.getHashParameterByName("cat");
+    function selectRegion(region) {
+        console.log("[rdr] show region: ", region.title, region.geohash);
+        vu.show_supply_count = [];
+        vu.categories.forEach(function(category) {
+            category.count = 0;
+        });
+        vu.selected_region = region;
+    }
+
+    function renderFilterGrid(categories) {
+        console.log("[rdr] render filter grid");
+        categories.forEach(function(cat) {
+            cat.set("count", 0); // default count for categories
+            vu.categories.push(cat.toJSONFriendly());
+        });
+    }
 
 
-        if (catfilter) {
-            catfilter = catfilter.split(',');
-            var matching_items = [];
-            vu.i_docs.forEach(function(item) {
-                var match_cat = item.category[0]
+    function isItemInRange(item, category, geofilter) {
+        // require category match
+        if (!item.has("category", category)) {
+            return;
+        }
+        // try for location match
+        if (geofilter) {
+            var venue = self.stor.getCached(item.get("parent")[0]);
+            var geohash = venue["geo"][0];
+            if (geohash.indexOf(geofilter) == -1) {
+                console.log("ignoring far away venue: " + venue._id, geohash);
+                return false;
+            }
+        }
+        return true;
+    }
 
-                if (catfilter.indexOf(match_cat) != -1) {
-                    matching_items.push(item);
+
+    function findMatchesForCategory(category, geofilter) {
+        var venues = self.stor.getManyCachedByType("v"); 
+        var index = vu.categories.getIndexForObjectWithKey("slug", category);
+
+        // zero out count for item
+        vu.categories[index].count = 0;
+
+        // @todo optimize this query
+        self.getItems().then(function(items) {
+            items.forEach(function(item) {
+                if (isItemInRange(item, category, geofilter)) {
+                        
+                    var is_valid_date = true;
+
+                    var parents = item.get("parent");
+                    parents.forEach(function(parent) {
+                        if (parent[0] == "e") {
+                            // check if status for event is active so we don't match to supplies from past events
+                            var event_doc = self.stor.getCached(parent);
+                            if (event_doc.status && event_doc.status == 3) {
+                                // completed / archived event
+                                is_valid_date = false;
+                            }
+                        }
+                    });
+
+                    if (!is_valid_date) {
+                        return console.log("item is in range but from previous event date: " + item.id);
+                    }
+
+                    console.log("item is in range: " + item.id);
+
+                    vu.categories[index].count++;
                 }
             });
-
-            var venues_with_categories = {};
-            matching_items.forEach(function(item) {
-                venues_with_categories[item.parent[0]] = true;
-            });
-        }
-
-        var geofilter = self.getHashParameterByName("g");
-
-        vu.v_docs.forEach(function(venue) {
-            var is_match = true;
-
-            if (catfilter) {
-                if (!venues_with_categories[venue._id]) {
-                    is_match = false;
-                }
-            }
-          
-            if (geofilter) {
-                var match_geo = venue.geo[0];
-                if (match_geo.indexOf(geofilter) == -1) {
-                    //console.log("ignoring far away venue: " + venue._id);
-                    is_match = false;
-                }
-            }
-
-
-            var index = vu.filtered_venues.getIndexForObjectWithKey("_id", venue._id);
-
-            if (!index) {
-                if (is_match) {
-                    vu.filtered_venues.push(venue);         
-                }
-            }
-            else {
-                if (is_match) {
-                    // already added              
-                }
-                else {
-                    // remove bad match
-                    vu.filtered_venues.splice(index,1);
-                }
-            }
-
         });
-
-        console.log("[rdr] final venue list", vu.filtered_venues);
     }
 
     
-    function showMap() {
-        console.log("[rdr] show map");
-        if (!self.map) {
-            self.map = new LX.Map("map", false, false);
-            self.map.setDefaultPosition();
+
+    //------------------------------------------------------------------------
+    self.addData("searching", false);
+    self.addData("show_supply_count", []);
+    self.addData("categories", []);
+
+    // selected region from drop-down menu
+    self.addData("regions", []);
+    self.addData("selected_region", null);
+    self.addData("show_region_dropdown", false);
+
+    // filter search to selected categories
+    self.addData("last_selected_category", null);
+    self.addData("selected_category_list", []);
+
+    //------------------------------------------------------------------------
+   
+    // Drop-down menu
+    
+    self.addHelper("handleSelectRegion", function(e) {
+        vu.show_region_dropdown = !vu.show_region_dropdown;
+    });
+
+
+    self.addHelper("showAllRegions", function(e) {
+        selectRegion({
+            "title": e.target.innerHTML,
+            "geohash": null
+        });
+    });
+
+
+    self.addHelper("showRegion", function(region) {
+        vu.show_supply_count = [];
+        selectRegion(region);
+    });
+
+
+    self.addHelper("handleContinueButton", function() {
+        var hash_str = "#";
+        var view_type = self.getHashParameterByName("v") || "map";
+        hash_str+="&v="+view_type+"&r="+Math.round(Math.random()*10);
+        if (vu.selected_region && vu.selected_region.geohash) {
+            hash_str+="&g=" + vu.selected_region.geohash.substr(0,2);
+        }
+        if (vu.show_supply_count.length) {
+            hash_str+="&cat="+vu.show_supply_count.join(",");
         }
 
-    }
+        window.location = "./browse.html" + hash_str;
+    });
 
-
-
-    //------------------------------------------------------------------------        
-    self.addData("category", null);
-    self.addData("show_map", false);
-    self.addData("geo", null);
-    self.addData("show_list", false);
-    self.addData("filtered_venues", []);
 
 
 
     //------------------------------------------------------------------------
-    self.addHelper("handleItemSelect", function(item, venue) {
-        window.location = "./detail.html#mrk=" + venue._id + "&itm=" + item._id;
+    
+    // Category filter grid
+
+    self.addHelper("handleCategorySelect", function(cat) {
+        var cat_label, match_count;
+        
+        vu.searching = true;
+        vu.last_selected_category = cat;
+        cat_label = cat._id.substr(2, cat._id.length);
+        vu.$refs[cat.slug][0].classList.add("active");
+
+        var geofilter = (vu.selected_region && vu.selected_region.geohash ? vu.selected_region.geohash : "").substr(0,2);
+
+        console.log("[rdr] category selected in location", cat_label, geofilter);
+
+        // artificial time delay for user to track
+        setTimeout(function() {
+            match_count = findMatchesForCategory(cat_label, geofilter);
+            vu.show_supply_count.push(cat_label);
+            vu.searching = false;
+        }, 200+(200*Math.random()));
     });
 
-    self.addHelper("handleVenueSelect", function(venue) {
-        window.location = "./detail.html#mrk=" + venue._id;
-    });
+    self.addComputed("supplies_located_count", function() {
+        var total = 0;
+        vu.categories.forEach(function(doc) {
+            total += doc.count;
+        });
+        return total;
+    })
 
 
-    self.addHelper("handleShowMap", function(evt) {
-        var hash_str = window.location.hash.replace("list", "map");
-        if (hash_str.indexOf("v=") == -1) {
-            hash_str = uri + "&v=map";
-        }
-        window.location.hash = hash_str;
-    });
-
-    self.addHelper("handleShowList", function(evt) {
-        var hash_str = window.location.hash.replace("map", "list");
-        if (hash_str.indexOf("v=") == -1) {
-            hash_str = uri + "&v=list";
-        }
-        window.location.hash = hash_str;
-    });
-
-    self.addHelper("getDistanceFromVenue", function(my_geo, venue) {
-        if (venue.hasOwnProperty("geo") && typeof(venue.geo[0]) == "string") {
-            var distance = LX.Location.getDistanceFrom(venue.geo[0]);
-            return distance + "km";
-        }
-        else {
-            console.log("[rdr] skip distance calc since venue missing geo", venue._id);
-            return;
-        }
+    self.addHelper("makeBadgeStyle", function(cat) {
+        if (!cat) return;
+        var doc = new LX.Document(cat, self.stor);
+        var style = [];
+        style.push("background-color: #" + doc.get("style", "color"));
+        return style.join("; ");
     });
 
 
@@ -248,23 +218,21 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.render()
         .then(function() {
-            vu = self.view;
+        	vu = self.view;
             vu.page_title = "Supplies";
         })
         .then(self.connect)
-        .then(setTitleWithCategories)
-        .then(self.getCategories)
-        .then(self.getItems)
-        .then(self.getVenues)
-        .then(reflowView)
-        .then(function() { 
-            window.onhashchange = reflowView;
-            vu.page_loading = false;
+        .then(self.getUsers)
+        .then(function() {
+        	vu.page_loading = false;
         })
-        .then(requestUserLocation)
-        
-       
+        .then(self.getCategories)
+        .then(renderFilterGrid)
+        .then(self.getEvents)
+        .then(renderDropdownMenu)
+        .then(self.getVenues)
 
-    return self; 
+
+    return self;
+
 }());
-

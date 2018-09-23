@@ -1,0 +1,74 @@
+html, body {
+  background: #FFF; }
+
+#browse-page .category .inactive {
+  opacity: 0.35; }
+
+#browse-page h2 {
+  margin-bottom: 2em; }
+
+#browse-page h3, #browse-page h4, #browse-page h5 {
+  margin: 3px;
+  color: #79828b; }
+
+#browse-page .panel {
+  margin-top: 1.8em;
+  margin-bottom: 2.2em; }
+
+#browse-page .distance {
+  float: right;
+  padding-top: 0.4em;
+  font-size: small; }
+
+#browse-page h3, #browse-page h4, #browse-page h5 {
+  font-weight: normal; }
+
+#browse-page .panel:hover .panel-heading, #browse-page .panel:hover {
+  cursor: pointer; }
+
+#browse-page .panel-block {
+  overflow-x: hidden; }
+  #browse-page .panel-block .icon {
+    border-radius: 4em;
+    font-weight: bold;
+    width: 3.50em;
+    height: 3.50em;
+    text-align: center;
+    margin-right: 1em;
+    float: left; }
+    #browse-page .panel-block .icon i {
+      margin: auto; }
+
+#browse-page #map-prompt {
+  position: fixed;
+  top: 3.89rem;
+  width: 100%;
+  height: 3.50rem;
+  padding: 0.5em;
+  border-bottom: 1px solid #f2f2f2;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02), 0 0 0 1px rgba(0, 0, 0, 0.02);
+  background: #FFF; }
+  #browse-page #map-prompt .field {
+    margin: auto; }
+  #browse-page #map-prompt .button {
+    padding: 0em 3em; }
+
+#browse-page #map-err {
+  padding: 2em; }
+
+#browse-page #map {
+  position: fixed !important;
+  top: 7rem;
+  z-index: 1000;
+  height: 100%;
+  width: 100%; }
+
+#browse-page #venues-view {
+  margin-top: 6em;
+  padding: 1em; }
+  #browse-page #venues-view h3 {
+    text-align: left; }
+  #browse-page #venues-view p {
+    margin: 4em;
+    text-align: center; }
+
