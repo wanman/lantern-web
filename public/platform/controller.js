@@ -117,6 +117,10 @@ LX.Location = (function() {
     self.getDistanceFrom = function(geo) {
         return Math.round(Geohash.inKm(geo, _last_known_geohash));
     }
+    
+    self.getDistanceBetween = function(geo_a, geo_b) {
+        return Math.round(Geohash.inKm(geo_a, geo_b));
+    }
 
     return self;
 })();
@@ -560,7 +564,7 @@ LX.Page = (function(id) {
         }
         var obj;
         if (typeof(arg) == "string") {
-            obj = self.stor.getCached(arg);
+            obj = self.stor.getCached("c:"+arg);
         }
         else if (arg.hasOwnProperty("category")) {
             obj = self.stor.getCached(obj.category[0]);

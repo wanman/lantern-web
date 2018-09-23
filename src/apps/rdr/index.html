@@ -6,93 +6,41 @@ extends ../../_layouts/_master.pug
 
 block content
   
-    div(v-if="!page_loading" v-cloak)
-
+    div
 
 
         // map view ----------------------------------------------------------
         // map is empty by default - only certain pages will fill this region
-
         #map(v-bind:style="'visibility:'  + (show_map ? 'visible' : 'hidden')")
 
 
-
-        #waiting-for-location(v-if="!show_map && !show_filters && !show_list")
-            .lds-ripple
-            
-
-  
-        #map-prompt(v-if="!show_filters && (show_list || show_map)")
+        // button group ----------------------------------------------------------
+        #map-prompt
             .buttons.has-addons.is-centered
-
-                span.button(@click="handleShowList" v-bind:class="show_map ? '' : 'is-info is-selected'")
-                    span.icon
-                        i.fas.fa-list
-                    span List
                 span.button(@click="handleShowMap" v-bind:class="show_map ? 'is-info is-selected' : ''")
                     span.icon
                         i.fas.fa-map
                     span Map
 
-
-        // filters view ------------------------------------------------------
-        #filters(v-if="show_filters && !page_loading")
-
-            div(v-if="personalizing") 
-                h1 Finding {{ last_selected_category.title }} nearby...&hellip;
-                h2 &nbsp; 
-
-            div(v-if="map_is_ready && !personalizing") 
-                h1 Your Map Is Ready
-                h2 We Personalized It For Your Needs
-
-            div(v-if="!map_is_ready && !personalizing")
-                h1 What Do You Need Most Today?
-                h2 {{ pluralize(u_docs.length) }} Are Listening
+                span.button(@click="handleShowList" v-bind:class="show_list ? 'is-info is-selected' : ''")
+                    span.icon
+                        i.fas.fa-list
+                    span List
 
 
-            #event-selector
-                .dropdown(@click="handleSelectRegion" v-bind:class='(show_region_dropdown ? "is-active" : "")')
-                    .dropdown-trigger
-                        button.button(aria-haspopup="true" controls="dropdown-menu")
-                            span {{ selected_region_name ? selected_region_name : "Select Your Region" }} 
-                            span.icon.is-small
-                                i.fas.fa-angle-down(aria-hidden="true")
-                    #dropdown-menu.dropdown-menu(role="menu")
-                        .dropdown-content
-                            a.dropdown-item(href="#" :class="selected_region == region ? 'is-active' : ''" @click="showRegion(region)" v-for="region in available_regions") Greater Boston Area
-                            a.dropdown-item(href="#" :class="selected_region == 'all' ? 'is-active' : ''" @click="showAllRegions") All Places
-
-            ul.item-list.is-clearfix
-                li.item(v-for="cat in c_docs" v-if="cat.tag && cat.tag[0] == 'itm'" v-bind:id="cat._id" v-bind:ref="cat.slug" 
-                   @click="handleCategorySelect(cat)" 
-                    )
-                        span.icon.is-large(v-bind:style="makeCategoryStyle(cat)") 
-                            i(v-bind:class="makeCategoryIconClass(cat)")
-                            .badge(v-if="show_supply_count.indexOf(cat.slug) != -1"  v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}
-
-                        .title {{ cat.title }} 
-
-
-            div.more
-                a(@click="handleAllCategorySelect" v-bind:class="primary_button_text == 'Launch Map' ? 'button is-primary' : ''") {{ primary_button_text }}
-
-            div.share(v-if="show_supply_count.length")
-                label.checkbox
-                    input(type="checkbox") 
-                    span Share my needs with the network
 
         // venues view -------------------------------------------------------
-        #venues-view(v-if="show_list && !show_filters")
-            #venues
-                p(v-if="!filtered_venues.length" ) No venues found to match your search. Please check back soon.
+        #venues-view(v-if="show_list")
+            #venues(v-if="!page_loading")
+                p(v-if="!filtered_venues.length" ) No places found to match your search. Please check back soon or use the back button in your browser to expand your search.
 
                 div(v-if="filtered_venues.length")
 
-                    .panel(v-bind:data-id="venue._id" v-for="venue in v_docs" v-if="filtered_venues.indexOf(venue._id) != -1")
+                    .panel(v-bind:data-id="venue._id" v-for="venue in filtered_venues")
                         
+                        // heading
                         .panel-heading(@click="handleVenueSelect(venue)")
-                            .distance(v-if="my_geo") {{ getDistanceFromVenue(my_geo, venue) }}
+                            .distance(v-if="geo") {{ getDistanceFromVenue(geo, venue) }}
                             
 
                             h3 
@@ -101,13 +49,18 @@ block content
                                     i.fas.fa-building(v-if="venue.category[0] != 'trk'")
                                 | {{ venue.title }}
 
+                        // categories
                         .panel-block(@click="handleVenueSelect(venue)")
 
-                            .category(v-for="item in i_docs" v-if="item.parent && item.parent == venue._id && item.category[0]" @click="handleItemSelect(item, venue)" v-bind:data-id="item._id")
+                            .category(
+                                v-for="item in i_docs" 
+                                v-if="item.parent && item.parent == venue._id && item.category[0]" 
+                                @click="handleItemSelect(item, venue)" 
+                                v-bind:data-id="item._id"
+                            )
 
-                                span.icon.is-large(v-bind:class="(item.status ? 'active' : 'inactive')" v-bind:style="makeCategoryStyle(getCategory(item.category))") 
-                                    i(v-bind:class="makeCategoryIconClass(getCategory(item.category))")
-
+                                span.icon.is-large(v-bind:class="(item.status ? 'active' : 'inactive')" v-bind:style="makeCategoryStyle(getCategory(item.category))")
+                                    i(v-bind:data-category="item.category" v-bind:class="makeCategoryIconClass(getCategory(item.category))")
 
 block styles
     link(rel="stylesheet" type="text/css" href="/platform/map.css")

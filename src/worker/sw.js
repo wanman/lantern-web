@@ -86,15 +86,27 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/rdr/index.css",
-    "revision": "041fd959e9326b532f71aa50649f61f6"
+    "revision": "2d3936457501a19483cb27ab181a6b3b"
   },
   {
     "url": "/apps/rdr/index.html",
-    "revision": "4add4b18ced76fc85b5cef9f27b6043c"
+    "revision": "575619614173a949a17ef2ef0312581c"
   },
   {
     "url": "/apps/rdr/index.js",
-    "revision": "caff64ae3e60a3e865598b467cf0251a"
+    "revision": "6d6b928f529dcc7d67dc3696e686dff1"
+  },
+  {
+    "url": "/apps/rdr/search.css",
+    "revision": "a478d18da1b73fc2fe47de3b619f7c7c"
+  },
+  {
+    "url": "/apps/rdr/search.html",
+    "revision": "d940517bcd412d1dbeeeb1d1e9c34532"
+  },
+  {
+    "url": "/apps/rdr/search.js",
+    "revision": "d078bb9a56086e5bd875825553406b14"
   },
   {
     "url": "/apps/rpt/index.css",
@@ -266,7 +278,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/controller.js",
-    "revision": "b8f1c4aded6ed15e583da38f3b2327e58252409412b0a01cff1b5ec0543b169921661ab90f1aa121fb5f30d03647498f30f3205ea9ee688292baf99f1916d69e572ddfff346edd129582a691c01fe4e4"
+    "revision": "b8f1c4aded6ed15e583da38f3b2327e58252409412b0a01cff1b5ec0543b169921661ab90f1aa121fb5f30d03647498f557381330c86ea8aae23585a1768c2ef439b535ce899310daaccb50f6e7d2640"
   },
   {
     "url": "/platform/map.css",
@@ -274,7 +286,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/map.js",
-    "revision": "b8f1c4aded6ed15e583da38f3b2327e58a6ca7e8a00960f59e265e8a79e8559ef8d7b41407250d40369c2de1989bdeaf73ec3813dd667a6de2c94ae7a678717b828a96ec088b917d9a924446b0e28ce4"
+    "revision": "b8f1c4aded6ed15e583da38f3b2327e58a6ca7e8a00960f59e265e8a79e8559ef8d7b41407250d40369c2de1989bdeaf73ec3813dd667a6de2c94ae7a678717bfd490b1aac715917ece6d56a5de11e64"
   },
   {
     "url": "/platform/storage.js",
@@ -286,7 +298,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/view.css",
-    "revision": "b9bf5a2312df150225aab214bab8e04431b296780e56df5cc8742864655616138ea5b53b007d00fde14cd2096e6eceb0"
+    "revision": "b9bf5a2312df150225aab214bab8e04431b296780e56df5cc874286465561613"
   },
   {
     "url": "/platform/view.js",

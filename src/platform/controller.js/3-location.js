@@ -48,6 +48,10 @@ LX.Location = (function() {
     self.getDistanceFrom = function(geo) {
         return Math.round(Geohash.inKm(geo, _last_known_geohash));
     }
+    
+    self.getDistanceBetween = function(geo_a, geo_b) {
+        return Math.round(Geohash.inKm(geo_a, geo_b));
+    }
 
     return self;
 })();

@@ -115,6 +115,9 @@ LX.Map = function(db_uri, use_cache, use_only_cache) {
 
 
     self.fitAll = function() {
+        if (self.objects.length == 0) {
+            return console.log("[map] skip fit all since no objects on map");
+        }
         var group = new L.featureGroup(self.objects);
         self.map.fitBounds(group.getBounds());
     };

@@ -438,7 +438,7 @@ LX.Page = (function(id) {
         }
         var obj;
         if (typeof(arg) == "string") {
-            obj = self.stor.getCached(arg);
+            obj = self.stor.getCached("c:"+arg);
         }
         else if (arg.hasOwnProperty("category")) {
             obj = self.stor.getCached(obj.category[0]);
