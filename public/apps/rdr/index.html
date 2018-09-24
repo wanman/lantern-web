@@ -59,11 +59,11 @@
                                     <div class="category" v-for="cat in categories" v-bind:data-category="cat.slug" v-if="cat.count"><i v-bind:class="makeCategoryIconClass(cat)" v-bind:style="makeCategoryStyle(cat) + '; background: #FFF;'"></i></div>
                                 </div>
                                 <p v-if="coverage.of == coverage.found">Success! We found all the items you are looking for. Still, please be advised that data changes quickly and availability cannot be guaranteed.</p>
-                                <p v-if="coverage.found == 0">We could not find any of the items you are looking for. However, there are {{ pluralize(u_docs.length) }} listening and we have included your requests in the database. We will send a notification when they become available.</p>
-                                <p v-if="coverage.of &gt; coverage.found &amp;&amp; coverage.found">We found {{ coverage.found }} of {{ coverage.of }} items you asked for. The other ones we have included in our request database and we will notify you when they become available.</p>
+                                <p v-if="coverage.found == 0">We could not find any of the items you are looking for. We have included your requests in the database and will send a notification once they become available.</p>
+                                <p v-if="coverage.of &gt; coverage.found &amp;&amp; coverage.found">We found {{ coverage.found }} of {{ coverage.of }} items you asked for. The other ones we have included in our request database and we will notify you once they become available.</p>
                             </section>
                             <footer class="modal-card-foot">
-                                <button class="button is-primary" @click="handleSubmitReportButton">Launch Map</button>
+                                <button class="button is-primary" @click="handleSubmitReportButton">Browse Locations</button>
                                 <button class="button" @click="handleReportNeedsClose">Cancel</button>
                             </footer>
                         </div>
@@ -71,7 +71,6 @@
                     <!-- filters view -------------------------------------------------------->
                     <div class="is-clearfix" id="filters" v-cloak v-if="!page_loading">
                         <h1>What Do You Need Most Today?</h1>
-                        <h2>{{ pluralize(u_docs.length) }} Are Listening</h2>
                         <div id="event-selector">
                             <div class="dropdown" @click="handleSelectRegion" v-bind:class="(show_region_dropdown ? &quot;is-active&quot; : &quot;&quot;)">
                                 <div class="dropdown-trigger">

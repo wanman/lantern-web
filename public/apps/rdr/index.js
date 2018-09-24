@@ -122,7 +122,7 @@ window.page = (function() {
 
     function continueToBrowse() {
         var hash_str = "#";
-        var view_type = self.getHashParameterByName("v") || "map";
+        var view_type = self.getHashParameterByName("v") || "list";
         hash_str+="&v="+view_type+"&r="+Math.round(Math.random()*10);
         if (vu.selected_region && vu.selected_region.geohash) {
             hash_str+="&g=" + vu.selected_region.geohash.substr(0,2);

@@ -35,14 +35,14 @@ window.page = (function() {
         console.log("[rdr] reflow view");
         setTitleWithCategories();
         // default to map view
-        if (self.getHashParameterByName("v") == "list") { 
-            vu.show_map = false;
-            vu.show_list = true;
-        }
-        else {
+        if (self.getHashParameterByName("v") == "map") { 
             vu.show_map = true;
             vu.show_list = false;
             showMap();
+        }
+        else {
+            vu.show_map = false;
+            vu.show_list = true;
         }
         updateFilteredVenues();
 

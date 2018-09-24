@@ -18,17 +18,17 @@ block content
         // button group ----------------------------------------------------------
         #map-prompt
             .buttons.has-addons.is-centered
-                span.button(@click="handleShowMap" v-bind:class="show_map ? 'is-info is-selected' : ''")
-                    span.icon
-                        i.fas.fa-map
-                    span Map
+             
 
                 span.button(@click="handleShowList" v-bind:class="show_list ? 'is-info is-selected' : ''")
                     span.icon
                         i.fas.fa-list
                     span List
 
-
+                span.button(@click="handleShowMap" v-bind:class="show_map ? 'is-info is-selected' : ''")
+                    span.icon
+                        i.fas.fa-map
+                    span Map
 
         // venues view -------------------------------------------------------
         #venues-view(v-if="show_list")

@@ -34,9 +34,7 @@
   border-top: 1px solid #f2f2f2; }
   #search-page #filters h1 {
     padding: 0em 1em;
-    margin-top: 2em; }
-  #search-page #filters h2 {
-    padding: 0em 1em;
+    margin-top: 2em;
     margin-bottom: 1em; }
   #search-page #filters .more {
     background: #FFF;
@@ -45,8 +43,7 @@
     font-weight: bold; }
     #search-page #filters .more a {
       display: block;
-      padding: 2em;
-      margin-bottom: 3em; }
+      margin-bottom: 4em; }
   #search-page #filters ul {
     margin-bottom: 0.5em; }
     #search-page #filters ul li {
