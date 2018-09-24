@@ -8,21 +8,18 @@ block content
     #succces.modal(:class="prompt_report_needs ? 'is-active' : ''")
         .modal-background
         .modal-card
-            .modal-card-head 
-                p.modal-card-title  
-                button.delete(aria-label="close" @click="handleReportNeedsClose")
             section.modal-card-body
+
+                .category-match.is-clearfix
+                    div.category(v-for="cat in categories" v-bind:data-category="cat.slug" v-if="cat.count")
+                        i(v-bind:class="makeCategoryIconClass(cat)" v-bind:style="makeCategoryStyle(cat) + '; background: #FFF;'")
+
                 p(v-if="coverage.of == coverage.found") Success! We found all the items you are looking for. Still, please be advised that data changes quickly and availability cannot be guaranteed.
 
                 p(v-if="coverage.found == 0") We could not find any of the items you are looking for. However, there are {{ pluralize(u_docs.length) }} listening and we have included your requests in the database. We will send a notification when they become available.
 
                 p(v-if="coverage.of > coverage.found && coverage.found") We found {{ coverage.found }} of {{ coverage.of }} items you asked for. The other ones we have included in our request database and we will notify you when they become available.
 
-
-                div.share(v-if="coverage.found < coverage.of")
-                    label.checkbox
-                        input(type="checkbox" checked="checked") 
-                        span Yes, please share my needs with the network
 
             footer.modal-card-foot
                 button.button.is-primary(@click="handleSubmitReportButton") Launch Map

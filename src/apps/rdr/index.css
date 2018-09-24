@@ -5,6 +5,15 @@
 
 	padding-bottom: 4em;
 
+	.modal-card-body {
+		border-top-left-radius: 6px;
+		border-top-right-radius: 6px;
+
+		.category {
+			float: left;
+		}
+
+	}
 	.modal-card-foot {
 		button.is-primary {
 			background: $blue;

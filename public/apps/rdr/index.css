@@ -1,5 +1,10 @@
 #search-page {
   padding-bottom: 4em; }
+  #search-page .modal-card-body {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px; }
+    #search-page .modal-card-body .category {
+      float: left; }
   #search-page .modal-card-foot button.is-primary {
     background: #3273dc; }
   #search-page .modal-card-foot button {

@@ -48,6 +48,8 @@ window.page = (function() {
             category.count = 0;
         });
         vu.selected_region = region;
+        vu.coverage.of = 0;
+        vu.coverage.found = 0;
     }
 
     function renderFilterGrid(categories) {
