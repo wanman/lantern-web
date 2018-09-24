@@ -211,27 +211,22 @@ window.page = (function() {
 
         console.log("[rdr] category selected in location", cat_label, geofilter);
 
-        // artificial time delay for user to track
-        setTimeout(function() {
 
 
+        match_count = findMatchesForCategory(cat_label, geofilter);
+        vu.show_supply_count.push(cat_label);
+        vu.searching = false;
 
-            match_count = findMatchesForCategory(cat_label, geofilter);
-            vu.show_supply_count.push(cat_label);
-            vu.searching = false;
+        matched.push((match_count > 0));
+        
+        vu.coverage.found = 0;
+        matched.forEach(function(match) {
+            if (match) {
+                vu.coverage.found++;
+            }
+        });
 
-            matched.push((match_count > 0));
-            
-            vu.coverage.found = 0;
-            matched.forEach(function(match) {
-                if (match) {
-                    vu.coverage.found++;
-                }
-            });
-
-            vu.coverage.of =  matched.length;
-
-        }, 200+(200*Math.random()));
+        vu.coverage.of =  matched.length;
     });
 
     self.addComputed("supplies_located_count", function() {

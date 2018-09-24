@@ -2,10 +2,7 @@
 
 #search-page {
 	padding-bottom: 5em;
-}
-#search-page {
-
-
+	background: #FFF;
 	.modal-card-body {
 		border-top-left-radius: 6px;
 		border-top-right-radius: 6px;
@@ -14,12 +11,15 @@
 			float: left;
 		}
 
+
 	}
 	.modal-card-foot {
 		button.is-primary {
 			background: $blue;
 		}
 		button {			
+			line-height: 0em;
+			padding: 2em;
 			text-transform: uppercase;
 			font-weight: bold;
 		}
@@ -45,12 +45,12 @@
 	    position: absolute;
 	    width: 100%;
 	    height: 100%;
-	    background: rgba(255,255,255,0.98);
+	    background: #FFF;
 	    border-top: 1px solid $light-border;
 	    
 	    h1 {
 	        padding: 0em 1em;
-	        margin-top: 2em;
+	        margin-top: 1em;
 	        margin-bottom: 1em;
 	    }
 	    
@@ -63,6 +63,12 @@
 	        a {
 	        	display: block;
 	            margin-bottom:4em;
+				padding: 1em;
+	        }
+	        a.button {
+	        	line-height: 0em;
+				padding: 2em;
+				width: 90%;
 	        }
 	    }
 
@@ -76,7 +82,7 @@
 	            background: #FFF;
 	            width: 33.33%;
 	            text-align: center;
-	            padding: 0.75em 0em;
+	            padding: 0.5em 0em;
 	            border-right: 1px solid $light-border;
 	            border-bottom: 1px solid $light-border;
 	        }
@@ -124,7 +130,6 @@
 
 	        .title {
 
-	            font-weight: bold;
 	        }
 
 	        // icons
