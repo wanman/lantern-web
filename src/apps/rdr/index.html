@@ -50,9 +50,10 @@ block content
                @click="handleCategorySelect(cat)" v-bind:class="show_supply_count.indexOf(cat.slug) != -1 ? 'active' : ''"
                 )
                     span.icon.is-large(v-bind:style="makeCategoryStyle(cat)") 
-                        i(v-bind:class="makeCategoryIconClass(cat)")
-                        
-                        //.badge(v-if="show_supply_count.indexOf(cat.slug) != -1"  v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}
+                        i(v-bind:class="makeCategoryIconClass(cat)" v-if="show_supply_count.indexOf(cat.slug) == -1")
+                        i.fas.fa-check(v-if="show_supply_count.indexOf(cat.slug) != -1")
+
+                        //.badge(v-if="show_supply_count.indexOf(cat.slug) != -1"  v-bind:style="makeBadgeStyle(cat)")
 
                     .title {{ cat.title }} 
 

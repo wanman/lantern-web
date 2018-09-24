@@ -92,7 +92,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/rdr/detail.html",
-    "revision": "6c99870b1b4a1d1e72d23bcbea0631a6"
+    "revision": "22de946839f89c8e92a74776d8635dd7"
   },
   {
     "url": "/apps/rdr/detail.js",
@@ -104,7 +104,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/rdr/index.html",
-    "revision": "a10b5450d5f7c28df649dd88b1ce37b6"
+    "revision": "145ad66a4d729aea24d8114393456295"
   },
   {
     "url": "/apps/rdr/index.js",

@@ -82,8 +82,8 @@
                             </div>
                         </div>
                         <ul class="item-list is-clearfix">
-                            <li class="item" v-for="cat in categories" v-if="cat.tag &amp;&amp; cat.tag[0] == 'itm'" v-bind:id="cat._id" v-bind:ref="cat.slug" @click="handleCategorySelect(cat)" v-bind:class="show_supply_count.indexOf(cat.slug) != -1 ? 'active' : ''"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)"></i>
-                                    <!--.badge(v-if="show_supply_count.indexOf(cat.slug) != -1"  v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}--></span>
+                            <li class="item" v-for="cat in categories" v-if="cat.tag &amp;&amp; cat.tag[0] == 'itm'" v-bind:id="cat._id" v-bind:ref="cat.slug" @click="handleCategorySelect(cat)" v-bind:class="show_supply_count.indexOf(cat.slug) != -1 ? 'active' : ''"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)" v-if="show_supply_count.indexOf(cat.slug) == -1"></i><i class="fas fa-check" v-if="show_supply_count.indexOf(cat.slug) != -1"></i>
+                                    <!--.badge(v-if="show_supply_count.indexOf(cat.slug) != -1"  v-bind:style="makeBadgeStyle(cat)")--></span>
                                 <div class="title">{{ cat.title }} </div>
                             </li>
                         </ul>
