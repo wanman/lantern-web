@@ -16,7 +16,7 @@ block content
 
                 p(v-if="coverage.of == coverage.found") Success! We found all the items you are looking for. Still, please be advised that data changes quickly and availability cannot be guaranteed.
 
-                p(v-if="coverage.found == 0") We could not find any of the items you are looking for. We have included your requests in the database and will send a notification once they become available.
+                p(v-if="coverage.found == 0") Sorry, we could not find the items you are looking for right now. We have included your requests in the database and will send a notification once they become available.
 
                 p(v-if="coverage.of > coverage.found && coverage.found") We found {{ coverage.found }} of {{ coverage.of }} items you asked for. The other ones we have included in our request database and we will notify you once they become available.
 

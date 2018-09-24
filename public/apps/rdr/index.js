@@ -43,7 +43,7 @@ window.page = (function() {
     }
 
     function selectRegion(region) {
-        console.log("[rdr] show region: ", region.title, region.geohash);
+        //console.log("[rdr] show region: ", region.title, region.geohash);
         vu.show_supply_count = [];
         matched = [];
         vu.categories.forEach(function(category) {
@@ -55,7 +55,7 @@ window.page = (function() {
     }
 
     function renderFilterGrid(categories) {
-        console.log("[rdr] render filter grid");
+        //console.log("[rdr] render filter grid");
         categories.forEach(function(cat) {
             cat.set("count", 0); // default count for categories
             vu.categories.push(cat.toJSONFriendly());
@@ -73,7 +73,7 @@ window.page = (function() {
             var venue = self.stor.getCached(item.parent[0]);
             var geohash = venue["geo"][0];
             if (geohash.indexOf(geofilter) == -1) {
-                console.log("ignoring far away venue: " + venue._id, geohash);
+                //console.log("ignoring far away venue: " + venue._id, geohash);
                 return false;
             }
         }
@@ -107,11 +107,11 @@ window.page = (function() {
                 });
 
                 if (!is_valid_date) {
-                    return console.log("item is in range but from previous event date: " + item._id);
+                    //return console.log("item is in range but from previous event date: " + item._id);
                 }
 
                 // @todo handle out-of-stock items
-                console.log("item is in range: " + item._id);
+                //console.log("item is in range: " + item._id);
 
                 vu.categories[index].count++;
             }
@@ -211,7 +211,7 @@ window.page = (function() {
 
         var geofilter = (vu.selected_region && vu.selected_region.geohash ? vu.selected_region.geohash : "").substr(0,2);
 
-        console.log("[rdr] category selected in location", cat_label, geofilter);
+        //console.log("[rdr] category selected in location", cat_label, geofilter);
 
 
 

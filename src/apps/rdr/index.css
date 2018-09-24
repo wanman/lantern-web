@@ -62,8 +62,8 @@
 	        font-weight: bold;
 	        a {
 	        	display: block;
-	            margin-bottom:4em;
-				padding: 1em;
+	            margin-bottom:3em;
+				padding: 2em;
 	        }
 	        a.button {
 	        	line-height: 0em;
@@ -74,8 +74,6 @@
 
 
 	    ul {
-
-	    	margin-bottom: 0.5em;
 	        li {
 	            float: left;
 	            display: block;
