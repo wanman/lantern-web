@@ -256,13 +256,13 @@ window.page = (function() {
     //------------------------------------------------------------------------
     self.render()
         .then(function() {
-        	vu = self.view;
+            vu = self.view;
             vu.page_title = "Supplies";
         })
         .then(self.connect)
         .then(self.getUsers)
         .then(function() {
-        	vu.page_loading = false;
+            vu.page_loading = false;
         })
         .then(self.getItems)
         .then(self.getCategories)
