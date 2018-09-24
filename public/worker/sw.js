@@ -100,11 +100,11 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/rdr/index.css",
-    "revision": "cdd64f282763ce517e1af71418e2f32f"
+    "revision": "2622e7b09aaa29996fbddbad877af4a8"
   },
   {
     "url": "/apps/rdr/index.html",
-    "revision": "2d911764c8e55fb5ec11331054260548"
+    "revision": "52ac71a589b9fb2b747cb9a643c295e8"
   },
   {
     "url": "/apps/rdr/index.js",

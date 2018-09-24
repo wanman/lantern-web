@@ -1,9 +1,10 @@
 @import "platform/variables";
 
-
+#search-page {
+	padding-bottom: 5em;
+}
 #search-page {
 
-	padding-bottom: 4em;
 
 	.modal-card-body {
 		border-top-left-radius: 6px;
@@ -58,11 +59,14 @@
 	    }
 
 	     .more {
+	     	background: #FFF;
 	        text-transform: uppercase;
 	        text-align: center;
 	        font-weight: bold;
 	        a {
+	        	display: block;
 	            padding: 2em;
+	            margin-bottom: 3em;
 	        }
 	    }
 

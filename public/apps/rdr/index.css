@@ -1,90 +1,99 @@
 #search-page {
-  padding-bottom: 4em; }
-  #search-page .modal-card-body {
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px; }
-    #search-page .modal-card-body .category {
-      float: left; }
-  #search-page .modal-card-foot button.is-primary {
-    background: #3273dc; }
-  #search-page .modal-card-foot button {
+  padding-bottom: 5em; }
+
+#search-page .modal-card-body {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px; }
+  #search-page .modal-card-body .category {
+    float: left; }
+
+#search-page .modal-card-foot button.is-primary {
+  background: #3273dc; }
+
+#search-page .modal-card-foot button {
+  text-transform: uppercase;
+  font-weight: bold; }
+
+#search-page #event-selector {
+  background: #f2f2f2;
+  padding: 1em;
+  text-align: center;
+  margin: auto; }
+  #search-page #event-selector button {
+    width: 15em; }
+
+#search-page .share {
+  margin-top: 1em;
+  text-align: center; }
+
+#search-page #filters {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.98);
+  border-top: 1px solid #f2f2f2; }
+  #search-page #filters h1 {
+    padding: 0em 1em;
+    margin-top: 2em; }
+  #search-page #filters h2 {
+    padding: 0em 1em;
+    margin-bottom: 1em; }
+  #search-page #filters .more {
+    background: #FFF;
     text-transform: uppercase;
-    font-weight: bold; }
-  #search-page #event-selector {
-    background: #f2f2f2;
-    padding: 1em;
     text-align: center;
-    margin: auto; }
-    #search-page #event-selector button {
-      width: 15em; }
-  #search-page .share {
-    margin-top: 1em;
-    text-align: center; }
-  #search-page #filters {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.98);
-    border-top: 1px solid #f2f2f2; }
-    #search-page #filters h1 {
-      padding: 0em 1em;
-      margin-top: 2em; }
-    #search-page #filters h2 {
-      padding: 0em 1em;
-      margin-bottom: 1em; }
-    #search-page #filters .more {
-      text-transform: uppercase;
+    font-weight: bold; }
+    #search-page #filters .more a {
+      display: block;
+      padding: 2em;
+      margin-bottom: 3em; }
+  #search-page #filters ul {
+    margin-bottom: 0.5em; }
+    #search-page #filters ul li {
+      float: left;
+      display: block;
+      background: #FFF;
+      width: 33.33%;
       text-align: center;
+      padding: 0.75em 0em;
+      border-right: 1px solid #f2f2f2;
+      border-bottom: 1px solid #f2f2f2; }
+    #search-page #filters ul li:hover {
+      background: #FAFAFA; }
+    #search-page #filters ul li.active .title {
       font-weight: bold; }
-      #search-page #filters .more a {
-        padding: 2em; }
-    #search-page #filters ul {
-      margin-bottom: 0.5em; }
-      #search-page #filters ul li {
-        float: left;
-        display: block;
-        background: #FFF;
-        width: 33.33%;
-        text-align: center;
-        padding: 0.75em 0em;
-        border-right: 1px solid #f2f2f2;
-        border-bottom: 1px solid #f2f2f2; }
-      #search-page #filters ul li:hover {
-        background: #FAFAFA; }
-      #search-page #filters ul li.active .title {
-        font-weight: bold; }
-      #search-page #filters ul li.active .icon {
-        border-width: 2px;
-        border-style: solid; }
-      #search-page #filters ul li:hover {
-        cursor: pointer; }
-      #search-page #filters ul li:nth-child(3n+0) {
-        border-right: 0px; }
-      #search-page #filters ul li:nth-child(3n) + li:nth-last-child(2),
-      #search-page #filters ul li:nth-child(3n) + li:nth-last-child(2) + li,
-      #search-page #filters ul li:nth-child(3n):nth-last-child(4) ~ li,
-      #search-page #filters ul li:nth-child(3n) + li:nth-last-child(1) {
-        border-bottom: none; }
-      #search-page #filters ul .badge {
-        color: #FFF;
-        border-radius: 10em;
-        width: 2em;
-        height: 2em;
-        padding: 0.25em;
-        text-align: center;
-        position: absolute; }
-      #search-page #filters ul .title {
-        font-weight: bold; }
-      #search-page #filters ul .icon {
-        border-radius: 4em;
-        font-weight: bold;
-        width: 4em;
-        height: 4em;
-        text-align: center;
-        margin-bottom: 0.5em;
-        margin-top: 0.5em; }
-        #search-page #filters ul .icon i {
-          margin: auto; }
-      #search-page #filters ul li:last-child .icon i {
-        padding-left: 0em; }
+    #search-page #filters ul li.active .icon {
+      border-width: 2px;
+      border-style: solid; }
+    #search-page #filters ul li:hover {
+      cursor: pointer; }
+    #search-page #filters ul li:nth-child(3n+0) {
+      border-right: 0px; }
+    #search-page #filters ul li:nth-child(3n) + li:nth-last-child(2),
+    #search-page #filters ul li:nth-child(3n) + li:nth-last-child(2) + li,
+    #search-page #filters ul li:nth-child(3n):nth-last-child(4) ~ li,
+    #search-page #filters ul li:nth-child(3n) + li:nth-last-child(1) {
+      border-bottom: none; }
+    #search-page #filters ul .badge {
+      color: #FFF;
+      border-radius: 10em;
+      width: 2em;
+      height: 2em;
+      padding: 0.25em;
+      text-align: center;
+      position: absolute; }
+    #search-page #filters ul .title {
+      font-weight: bold; }
+    #search-page #filters ul .icon {
+      border-radius: 4em;
+      font-weight: bold;
+      width: 4em;
+      height: 4em;
+      text-align: center;
+      margin-bottom: 0.5em;
+      margin-top: 0.5em; }
+      #search-page #filters ul .icon i {
+        margin: auto; }
+    #search-page #filters ul li:last-child .icon i {
+      padding-left: 0em; }
 
