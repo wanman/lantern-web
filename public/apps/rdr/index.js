@@ -127,7 +127,7 @@ window.page = (function() {
         if (vu.selected_region && vu.selected_region.geohash) {
             hash_str+="&g=" + vu.selected_region.geohash.substr(0,2);
         }
-        if (vu.show_supply_count.length) {
+        if (vu.coverage.found > 0) {
             hash_str+="&cat="+vu.show_supply_count.join(",");
         }
 
@@ -256,14 +256,14 @@ window.page = (function() {
             vu = self.view;
             vu.page_title = "Supplies";
         })
-        .then(self.connect)
-        .then(self.getUsers)
         .then(function() {
             vu.page_loading = false;
         })
+        .then(self.connect)
         .then(self.getItems)
         .then(self.getCategories)
         .then(renderFilterGrid)
+        .then(self.getUsers)
         .then(self.getEvents)
         .then(renderDropdownMenu)
         .then(self.getVenues)

@@ -14,15 +14,15 @@ block content
                     div.category(v-for="cat in categories" v-bind:data-category="cat.slug" v-if="cat.count")
                         i(v-bind:class="makeCategoryIconClass(cat)" v-bind:style="makeCategoryStyle(cat) + '; background: #FFF;'")
 
-                p(v-if="coverage.of == coverage.found") Success! We found all the items you are looking for. Still, please be advised that data changes quickly and availability cannot be guaranteed.
+                p(v-if="coverage.of == coverage.found") Success! We found all the items you are looking for. Please be advised that data changes quickly and availability cannot be guaranteed.
 
-                p(v-if="coverage.found == 0") Sorry, we could not find the items you are looking for right now. We have included your requests in the database and will send a notification once they become available.
+                p(v-if="coverage.found == 0") We saved your requests and will send a notification once supplies become available. While you wait, would you like to explore nearby shelters and outposts?
 
                 p(v-if="coverage.of > coverage.found && coverage.found") We found {{ coverage.found }} of {{ coverage.of }} items you asked for. The other ones we have included in our request database and we will notify you once they become available.
 
 
             footer.modal-card-foot
-                button.button.is-primary(@click="handleSubmitReportButton") Browse Locations
+                button.button.is-primary(@click="handleSubmitReportButton") Continue
                 button.button(@click="handleReportNeedsClose") Cancel
 
     // filters view ------------------------------------------------------
