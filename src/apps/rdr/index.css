@@ -60,9 +60,11 @@
 	        text-transform: uppercase;
 	        text-align: center;
 	        font-weight: bold;
+	        max-width: 30em;
+	        margin: auto;
 	        a {
 	        	display: block;
-	            margin-bottom:3em;
+	            margin-bottom:4em;
 				padding: 2em;
 	        }
 	        a.button {

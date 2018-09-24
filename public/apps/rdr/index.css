@@ -37,10 +37,12 @@
       background: #FFF;
       text-transform: uppercase;
       text-align: center;
-      font-weight: bold; }
+      font-weight: bold;
+      max-width: 30em;
+      margin: auto; }
       #search-page #filters .more a {
         display: block;
-        margin-bottom: 3em;
+        margin-bottom: 4em;
         padding: 2em; }
       #search-page #filters .more a.button {
         line-height: 0em;

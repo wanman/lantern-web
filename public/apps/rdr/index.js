@@ -35,21 +35,22 @@ window.page = (function() {
     function renderDropdownMenu(events) {
         events.forEach(function(event) {
             var geo = event.get("geo")[0];
-            if (!vu.regions.hasObjectWithKey("geohash", geo)) {
-                var title = event.title || "Greater Boston Area"; // @todo use reverse location search to save title in document itself
-                vu.regions.push({"title": title, "geohash": geo});
+            if (!vu.events.hasObjectWithKey("geohash", geo)) {
+                console.log(event)
+                var title = event.get("title") || "Greater Boston Area"; // @todo use reverse location search to save title in document itself
+                vu.events.push({"title": title, "geohash": geo});
             }
         });
     }
 
-    function selectRegion(region) {
-        //console.log("[rdr] show region: ", region.title, region.geohash);
+    function selectEvent(event) {
+        //console.log("[rdr] show event: ", event.title, event.geohash);
         vu.show_supply_count = [];
         matched = [];
         vu.categories.forEach(function(category) {
             category.count = 0;
         });
-        vu.selected_region = region;
+        vu.selected_event = event;
         vu.coverage.of = 0;
         vu.coverage.found = 0;
     }
@@ -124,8 +125,8 @@ window.page = (function() {
         var hash_str = "#";
         var view_type = self.getHashParameterByName("v") || "list";
         hash_str+="&v="+view_type+"&r="+Math.round(Math.random()*10);
-        if (vu.selected_region && vu.selected_region.geohash) {
-            hash_str+="&g=" + vu.selected_region.geohash.substr(0,2);
+        if (vu.selected_event && vu.selected_event.geohash) {
+            hash_str+="&g=" + vu.selected_event.geohash.substr(0,3);
         }
         if (vu.coverage.found > 0) {
             hash_str+="&cat="+vu.show_supply_count.join(",");
@@ -141,10 +142,10 @@ window.page = (function() {
     self.addData("show_supply_count", []);
     self.addData("categories", []);
 
-    // selected region from drop-down menu
-    self.addData("regions", []);
-    self.addData("selected_region", null);
-    self.addData("show_region_dropdown", false);
+    // selected event from drop-down menu
+    self.addData("events", []);
+    self.addData("selected_event", null);
+    self.addData("show_event_dropdown", false);
 
     // filter search to selected categories
     self.addData("last_selected_category", null);
@@ -155,21 +156,21 @@ window.page = (function() {
    
     // Drop-down menu
     
-    self.addHelper("handleSelectRegion", function(e) {
-        vu.show_region_dropdown = !vu.show_region_dropdown;
+    self.addHelper("handleSelectEvent", function(e) {
+        vu.show_event_dropdown = !vu.show_event_dropdown;
     });
 
 
-    self.addHelper("showAllRegions", function(e) {
-        selectRegion({
+    self.addHelper("showAllEvents", function(e) {
+        selectEvent({
             "title": e.target.innerHTML,
             "geohash": null
         });
     });
 
 
-    self.addHelper("showRegion", function(region) {
-        selectRegion(region);
+    self.addHelper("showEvent", function(event) {
+        selectEvent(event);
     });
 
 
@@ -209,7 +210,7 @@ window.page = (function() {
         vu.last_selected_category = cat;
         vu.$refs[cat.slug][0].classList.add("active");
 
-        var geofilter = (vu.selected_region && vu.selected_region.geohash ? vu.selected_region.geohash : "").substr(0,2);
+        var geofilter = (vu.selected_event && vu.selected_event.geohash ? vu.selected_event.geohash : "").substr(0,3);
 
         //console.log("[rdr] category selected in location", cat_label, geofilter);
 

@@ -34,16 +34,16 @@ block content
 
 
         #event-selector
-            .dropdown(@click="handleSelectRegion" v-bind:class='(show_region_dropdown ? "is-active" : "")')
+            .dropdown(@click="handleSelectEvent" v-bind:class='(show_event_dropdown ? "is-active" : "")')
                 .dropdown-trigger
                     button.button(aria-haspopup="true" controls="dropdown-menu")
-                        span {{ selected_region ? selected_region.title : "Select Your Region" }} 
+                        span {{ selected_event ? selected_event.title : "Select Your Situation" }} 
                         span.icon.is-small
                             i.fas.fa-angle-down(aria-hidden="true")
                 #dropdown-menu.dropdown-menu(role="menu")
                     .dropdown-content
-                        a.dropdown-item(href="#" :class="selected_region == region ? 'is-active' : ''" @click="showRegion(region)" v-for="region in regions") {{ region.title }}
-                        a.dropdown-item(href="#" :class="selected_region == 'all' ? 'is-active' : ''" @click="showAllRegions") Anywhere
+                        a.dropdown-item(href="#" :class="selected_event == event ? 'is-active' : ''" @click="showEvent(event)" v-for="event in events") {{ event.title }}
+                        a.dropdown-item(href="#" :class="selected_event == 'all' ? 'is-active' : ''" @click="showAllEvents") Just Exploring
 
         ul.item-list.is-clearfix
             li.item(v-for="cat in categories" v-if="cat.tag && cat.tag[0] == 'itm'" v-bind:id="cat._id" v-bind:ref="cat.slug" 
@@ -60,8 +60,8 @@ block content
 
         div.more
 
-            a(@click="handleContinueButton" v-if="!show_supply_count.length || !selected_region") Browse All Supplies
-            a.button.is-primary(@click="handleReportNeedsButton" v-if="show_supply_count.length && selected_region") Report Needs
+            a(@click="handleContinueButton" v-if="!show_supply_count.length || !selected_event") Browse All Supplies
+            a.button.is-primary(@click="handleReportNeedsButton" v-if="show_supply_count.length && selected_event") Report Needs
 
 
 
