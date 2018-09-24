@@ -10,6 +10,7 @@
 @import "bulma/sass/elements/table";
 @import "bulma/sass/elements/progress";
 @import "bulma/sass/components/navbar";
+@import "bulma/sass/components/modal";
 @import "bulma/sass/components/panel";
 @import "bulma/sass/components/dropdown";
 @import "bulma/sass/components/card";

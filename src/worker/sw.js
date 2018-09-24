@@ -78,7 +78,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/rdr/browse.html",
-    "revision": "b913df8dcf3267f3f580c4125c5fcb11"
+    "revision": "5985d17296db6e62ace6dd834417f875"
   },
   {
     "url": "/apps/rdr/browse.js",
@@ -98,15 +98,15 @@ self.__precacheManifest = [
   },
   {
     "url": "/apps/rdr/index.css",
-    "revision": "a478d18da1b73fc2fe47de3b619f7c7c"
+    "revision": "1c7ede5a54106e6964875d1ceb6c5113"
   },
   {
     "url": "/apps/rdr/index.html",
-    "revision": "d58141280686004eb617567089fdef3a"
+    "revision": "2dfb941735caaf6606d09353a7d9d2fd"
   },
   {
     "url": "/apps/rdr/index.js",
-    "revision": "ce3b95d6374823007393bc79bdd9cfb4"
+    "revision": "1f111baf7e5f434ef95641d55a0367a8"
   },
   {
     "url": "/apps/rpt/index.css",
@@ -298,7 +298,7 @@ self.__precacheManifest = [
   },
   {
     "url": "/platform/view.css",
-    "revision": "b9bf5a2312df150225aab214bab8e04431b296780e56df5cc874286465561613"
+    "revision": "83259ac6c435774eff2863d839d81a7831b296780e56df5cc874286465561613"
   },
   {
     "url": "/platform/view.js",

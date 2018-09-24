@@ -106,6 +106,7 @@ window.page = (function() {
                     return console.log("item is in range but from previous event date: " + item._id);
                 }
 
+                // @todo handle out-of-stock items
                 console.log("item is in range: " + item._id);
 
                 vu.categories[index].count++;
@@ -115,10 +116,24 @@ window.page = (function() {
         return vu.categories[index].count;
     }
 
+    function continueToBrowse() {
+        var hash_str = "#";
+        var view_type = self.getHashParameterByName("v") || "map";
+        hash_str+="&v="+view_type+"&r="+Math.round(Math.random()*10);
+        if (vu.selected_region && vu.selected_region.geohash) {
+            hash_str+="&g=" + vu.selected_region.geohash.substr(0,2);
+        }
+        if (vu.show_supply_count.length) {
+            hash_str+="&cat="+vu.show_supply_count.join(",");
+        }
+
+        window.location = "./browse.html" + hash_str;
+    }
     
 
     //------------------------------------------------------------------------
     self.addData("searching", false);
+    self.addData("prompt_report_needs", false);
     self.addData("show_supply_count", []);
     self.addData("categories", []);
 
@@ -129,7 +144,7 @@ window.page = (function() {
 
     // filter search to selected categories
     self.addData("last_selected_category", null);
-    self.addData("coverage", "none");
+    self.addData("coverage", {found: 0, of: 0});
     self.addData("selected_category_list", []);
 
     //------------------------------------------------------------------------
@@ -154,21 +169,21 @@ window.page = (function() {
     });
 
 
-    self.addHelper("handleContinueButton", function() {
-        var hash_str = "#";
-        var view_type = self.getHashParameterByName("v") || "map";
-        hash_str+="&v="+view_type+"&r="+Math.round(Math.random()*10);
-        if (vu.selected_region && vu.selected_region.geohash) {
-            hash_str+="&g=" + vu.selected_region.geohash.substr(0,2);
-        }
-        if (vu.show_supply_count.length) {
-            hash_str+="&cat="+vu.show_supply_count.join(",");
-        }
+    self.addHelper("handleContinueButton", continueToBrowse);
 
-        window.location = "./browse.html" + hash_str;
+    self.addHelper("handleSubmitReportButton", function() {
+        continueToBrowse();
+
     });
 
+    self.addHelper("handleReportNeedsButton", function() {
+        vu.prompt_report_needs = true;
 
+    });
+
+    self.addHelper("handleReportNeedsClose", function() {
+        vu.prompt_report_needs = false;
+    })
 
 
     //------------------------------------------------------------------------
@@ -205,14 +220,14 @@ window.page = (function() {
 
             matched.push((match_count > 0));
             
-            var total_matched = 0;
+            vu.coverage.found = 0;
             matched.forEach(function(match) {
                 if (match) {
-                    total_matched++;
+                    vu.coverage.found++;
                 }
             });
 
-            vu.coverage = total_matched  + " of " + matched.length
+            vu.coverage.of =  matched.length;
 
         }, 200+(200*Math.random()));
     });

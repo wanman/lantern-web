@@ -1,5 +1,10 @@
 #search-page {
   padding-bottom: 4em; }
+  #search-page .modal-card-foot button.is-primary {
+    background: #3273dc; }
+  #search-page .modal-card-foot button {
+    text-transform: uppercase;
+    font-weight: bold; }
   #search-page #event-selector {
     background: #f2f2f2;
     padding: 1em;
@@ -7,6 +12,9 @@
     margin: auto; }
     #search-page #event-selector button {
       width: 15em; }
+  #search-page .share {
+    margin-top: 1em;
+    text-align: center; }
   #search-page #filters {
     position: absolute;
     width: 100%;
@@ -25,9 +33,6 @@
       font-weight: bold; }
       #search-page #filters .more a {
         padding: 2em; }
-    #search-page #filters .share {
-      margin-top: 1em;
-      text-align: center; }
     #search-page #filters ul {
       margin-bottom: 0.5em; }
       #search-page #filters ul li {

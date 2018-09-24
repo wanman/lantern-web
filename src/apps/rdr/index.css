@@ -5,6 +5,16 @@
 
 	padding-bottom: 4em;
 
+	.modal-card-foot {
+		button.is-primary {
+			background: $blue;
+		}
+		button {			
+			text-transform: uppercase;
+			font-weight: bold;
+		}
+	}
+
     #event-selector {
         background: $light-border;
         padding: 1em;
@@ -15,6 +25,10 @@
         }
     }
 
+    .share {
+        margin-top: 1em;
+        text-align: center;
+    }
 	    
 	#filters {
 
@@ -43,10 +57,6 @@
 	        }
 	    }
 
-	    .share {
-	        margin-top: 1em;
-	        text-align: center;
-	    }
 
 	    ul {
 

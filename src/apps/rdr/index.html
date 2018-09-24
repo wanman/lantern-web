@@ -5,23 +5,36 @@ extends ../../_layouts/_master.pug
 
 block content
 
+    #succces.modal(:class="prompt_report_needs ? 'is-active' : ''")
+        .modal-background
+        .modal-card
+            .modal-card-head 
+                p.modal-card-title  
+                button.delete(aria-label="close" @click="handleReportNeedsClose")
+            section.modal-card-body
+                p(v-if="coverage.of == coverage.found") Success! We found all the items you are looking for. Still, please be advised that data changes quickly and availability cannot be guaranteed.
+
+                p(v-if="coverage.found == 0") We could not find any of the items you are looking for. However, there are {{ pluralize(u_docs.length) }} listening and we have included your requests in the database. We will send a notification when they become available.
+
+                p(v-if="coverage.of > coverage.found && coverage.found") We found {{ coverage.found }} of {{ coverage.of }} items you asked for. The other ones we have included in our request database and we will notify you when they become available.
+
+
+                div.share(v-if="coverage.found < coverage.of")
+                    label.checkbox
+                        input(type="checkbox" checked="checked") 
+                        span Yes, please share my needs with the network
+
+            footer.modal-card-foot
+                button.button.is-primary(@click="handleSubmitReportButton") Launch Map
+                button.button(@click="handleReportNeedsClose") Cancel
+
     // filters view ------------------------------------------------------
     #filters(v-cloak v-if="!page_loading")
 
+        
+        h1 What Do You Need Most Today?
+        h2 {{ pluralize(u_docs.length) }} Are Listening
 
-
-        div(v-if="searching")
-            h1 Finding {{ last_selected_category.title }} nearby...&hellip;
-            h2 &nbsp; 
-
-        div(v-if="!searching")
-            div(v-if="!show_supply_count.length")
-                h1 What Do You Need Most Today?
-                h2 {{ pluralize(u_docs.length) }} Are Listening
-
-            div(v-if="show_supply_count.length") 
-                h1 Your Map Is Ready
-                h2 We Found {{ coverage }} Supply Types
 
 
 
@@ -43,19 +56,16 @@ block content
                 )
                     span.icon.is-large(v-bind:style="makeCategoryStyle(cat)") 
                         i(v-bind:class="makeCategoryIconClass(cat)")
-                        .badge(v-if="show_supply_count.indexOf(cat.slug) != -1"  v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}
+                        
+                        //.badge(v-if="show_supply_count.indexOf(cat.slug) != -1"  v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}
 
                     .title {{ cat.title }} 
 
 
-        div.share(v-if="show_supply_count.length")
-            label.checkbox
-                input(type="checkbox") 
-                span Share my needs with the network
         div.more
 
-            a(@click="handleContinueButton" v-if="!supplies_located_count") Browse All Supplies
-            a.button.is-primary(@click="handleContinueButton" v-if="supplies_located_count") Launch Map
+            a(@click="handleContinueButton" v-if="!show_supply_count.length || !selected_region") Browse All Supplies
+            a.button.is-primary(@click="handleReportNeedsButton" v-if="show_supply_count.length && selected_region") Report Needs
 
 
 

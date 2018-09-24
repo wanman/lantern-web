@@ -51,22 +51,33 @@
                 </nav>
                 <!-- main page content-->
                 <div class="page-content">
+                    <div class="modal" id="succces" :class="prompt_report_needs ? 'is-active' : ''">
+                        <div class="modal-background"></div>
+                        <div class="modal-card">
+                            <div class="modal-card-head"> 
+                                <p class="modal-card-title"> </p>
+                                <button class="delete" aria-label="close" @click="handleReportNeedsClose"></button>
+                            </div>
+                            <section class="modal-card-body">
+                                <p v-if="coverage.of == coverage.found">Success! We found all the items you are looking for. Still, please be advised that data changes quickly and availability cannot be guaranteed.</p>
+                                <p v-if="coverage.found == 0">We could not find any of the items you are looking for. However, there are {{ pluralize(u_docs.length) }} listening and we have included your requests in the database. We will send a notification when they become available.</p>
+                                <p v-if="coverage.of &gt; coverage.found &amp;&amp; coverage.found">We found {{ coverage.found }} of {{ coverage.of }} items you asked for. The other ones we have included in our request database and we will notify you when they become available.</p>
+                                <div class="share" v-if="coverage.found &lt; coverage.of">
+                                    <label class="checkbox">
+                                        <input type="checkbox" checked="checked"><span>Yes, please share my needs with the network</span>
+                                    </label>
+                                </div>
+                            </section>
+                            <footer class="modal-card-foot">
+                                <button class="button is-primary" @click="handleSubmitReportButton">Launch Map</button>
+                                <button class="button" @click="handleReportNeedsClose">Cancel</button>
+                            </footer>
+                        </div>
+                    </div>
                     <!-- filters view -------------------------------------------------------->
                     <div id="filters" v-cloak v-if="!page_loading">
-                        <div v-if="searching">
-                            <h1>Finding {{ last_selected_category.title }} nearby...&hellip;</h1>
-                            <h2>&nbsp; </h2>
-                        </div>
-                        <div v-if="!searching">
-                            <div v-if="!show_supply_count.length">
-                                <h1>What Do You Need Most Today?</h1>
-                                <h2>{{ pluralize(u_docs.length) }} Are Listening</h2>
-                            </div>
-                            <div v-if="show_supply_count.length"> 
-                                <h1>Your Map Is Ready</h1>
-                                <h2>We Found {{ coverage }} Supply Types</h2>
-                            </div>
-                        </div>
+                        <h1>What Do You Need Most Today?</h1>
+                        <h2>{{ pluralize(u_docs.length) }} Are Listening</h2>
                         <div id="event-selector">
                             <div class="dropdown" @click="handleSelectRegion" v-bind:class="(show_region_dropdown ? &quot;is-active&quot; : &quot;&quot;)">
                                 <div class="dropdown-trigger">
@@ -79,16 +90,11 @@
                         </div>
                         <ul class="item-list is-clearfix">
                             <li class="item" v-for="cat in categories" v-if="cat.tag &amp;&amp; cat.tag[0] == 'itm'" v-bind:id="cat._id" v-bind:ref="cat.slug" @click="handleCategorySelect(cat)" v-bind:class="show_supply_count.indexOf(cat.slug) != -1 ? 'active' : ''"><span class="icon is-large" v-bind:style="makeCategoryStyle(cat)"> <i v-bind:class="makeCategoryIconClass(cat)"></i>
-                                    <div class="badge" v-if="show_supply_count.indexOf(cat.slug) != -1" v-bind:style="makeBadgeStyle(cat)">{{ cat.count }}</div></span>
+                                    <!--.badge(v-if="show_supply_count.indexOf(cat.slug) != -1"  v-bind:style="makeBadgeStyle(cat)") {{ cat.count }}--></span>
                                 <div class="title">{{ cat.title }} </div>
                             </li>
                         </ul>
-                        <div class="share" v-if="show_supply_count.length">
-                            <label class="checkbox">
-                                <input type="checkbox"><span>Share my needs with the network</span>
-                            </label>
-                        </div>
-                        <div class="more"><a @click="handleContinueButton" v-if="!supplies_located_count">Browse All Supplies</a><a class="button is-primary" @click="handleContinueButton" v-if="supplies_located_count">Launch Map</a></div>
+                        <div class="more"><a @click="handleContinueButton" v-if="!show_supply_count.length || !selected_region">Browse All Supplies</a><a class="button is-primary" @click="handleReportNeedsButton" v-if="show_supply_count.length &amp;&amp; selected_region">Report Needs</a></div>
                     </div>
                 </div>
             </section>
